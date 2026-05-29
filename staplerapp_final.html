@@ -987,7 +987,10 @@ function showLoginError(regnr){
     'Jetzt anmelden →</a></div>';
 }
 
+let currentUser = {};
+
 function enterApp(user){
+  currentUser = user;
   const who = document.getElementById('whoami');
   if(who){
     const name = (user.vorname + ' ' + user.nachname).trim();
@@ -1051,11 +1054,17 @@ function render(){
 function go(d){idx=Math.max(0,Math.min(STEPS.length-1,idx+d));render();}
 
 /* ---- WELCOME ---- */
+function welcomeGreeting(){
+  const name = currentUser.vorname ? ', ' + currentUser.vorname + '!' : '';
+  const greet = { de:'Willkommen', en:'Welcome', pl:'Witaj', ro:'Bun venit', sq:'Mirë se vini' };
+  return (greet[lang] || 'Willkommen') + name;
+}
+
 function renderWelcome(host){
   document.getElementById('crumb').textContent='';
   host.innerHTML=`<div class="welcome-card">
     <div class="w-icon"><svg viewBox="0 0 24 24"><path d="M12 2 4 6v6c0 5 3.4 8.5 8 10 4.6-1.5 8-5 8-10V6l-8-4zm-1 12.2L8.5 11.7 7 13.2l4 4 6-6-1.5-1.5L11 14.2z"/></svg></div>
-    <h2>${T('welcome')}</h2>
+    <h2>${welcomeGreeting()}</h2>
     <p>${T('welcomeText')}</p>
     <div class="w-stats">
       <div class="wstat"><div class="wn">${KAPITEL.length}</div><div class="wl">${T('chapters')}</div></div>
