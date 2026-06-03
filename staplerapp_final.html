@@ -1003,6 +1003,15 @@ function enterApp(user){
 }
 
 document.getElementById('regnr').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin();});
+
+// Auto-Login per URL-Parameter (von Startseite)
+(function(){
+  const params = new URLSearchParams(window.location.search);
+  const regnr = params.get('regnr');
+  if(regnr && /^\d{4}-\d{3,4}$/.test(regnr)){
+    enterApp({ vorname:'', nachname:'', regnr: regnr });
+  }
+})();
 function toggleMenu(){document.getElementById('sidebar').classList.toggle('open');document.getElementById('scrim').classList.toggle('show');}
 function closeMenu(){document.getElementById('sidebar').classList.remove('open');document.getElementById('scrim').classList.remove('show');}
 
