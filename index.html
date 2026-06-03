@@ -135,6 +135,13 @@ body::before{
   border-top-color:#fff;border-radius:50%;
   animation:spin .7s linear infinite;display:inline-block;vertical-align:middle;
 }
+.back-btn{
+  display:block;width:100%;padding:11px;border:2px solid var(--line);
+  border-radius:12px;background:#fff;color:var(--muted);
+  font-size:14px;font-weight:600;cursor:pointer;margin-top:12px;
+  transition:all .15s;text-align:center;
+}
+.back-btn:hover{border-color:var(--green);color:var(--green)}
 
 /* ANIMATIONEN */
 @keyframes fadeDown{from{opacity:0;transform:translateY(-12px)}to{opacity:1;transform:none}}
@@ -175,12 +182,24 @@ body::before{
         <div class="greeting-sub">Bitte wählen Sie Ihre Schulung</div>
       </div>
       <div class="modules" id="moduleList"></div>
+      <div style="padding:0 24px 20px">
+        <button class="back-btn" onclick="goBack()">← Zurück zur Anmeldung</button>
+      </div>
     </div>
   </div>
 
 </div>
 
 <script>
+let currentRegnr = '';
+
+function goBack(){
+  currentRegnr = '';
+  document.getElementById('moduleCard').style.display = 'none';
+  document.getElementById('loginCard').style.display = 'block';
+  document.getElementById('lerr').textContent = '';
+}
+
 const FLOW_URL = 'https://default8af25f9034bc4ef4aba22ab6f641d5.01.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/7058b6c8090842748465472db6085773/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=nxepIsGToa5my_-oIW5ZR5c3CQLtufN5DwNvM-qG1G4';
 
 const BASE = 'https://danieleckmeierausbildung1986.github.io/Ausbildung-Flurf-rderzeuge/';
@@ -206,6 +225,7 @@ async function doLogin(){
     const data = await res.json();
 
     if(data && data.zugang === true){
+      currentRegnr = val;
       showModules(data);
     } else {
       errEl.textContent = data.grund || 'Nummer nicht gefunden. Bitte Ausbilder kontaktieren.';
@@ -232,7 +252,7 @@ function showModules(data){
 
   if(data.stufe1){
     list.innerHTML += `
-      <a class="module-btn stufe1" href="${BASE}staplerapp_final.html">
+      <a class="module-btn stufe1" href="${BASE}staplerapp_final.html?regnr=${encodeURIComponent(currentRegnr)}">
         <div class="mod-icon">
           <svg viewBox="0 0 24 24"><path d="M20 8h-3V4H3c-1.1 0-2 .9-2 2v11h2c0 1.66 1.34 3 3 3s3-1.34 3-3h6c0 1.66 1.34 3 3 3s3-1.34 3-3h2v-5l-3-4zM6 18.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm13.5-9l1.96 2.5H17V9.5h2.5zm-1.5 9c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>
         </div>
@@ -247,7 +267,7 @@ function showModules(data){
 
   if(data.stufe2){
     list.innerHTML += `
-      <a class="module-btn stufe2" href="${BASE}staplerapp_stufe2.html">
+      <a class="module-btn stufe2" href="${BASE}staplerapp_stufe2.html?regnr=${encodeURIComponent(currentRegnr)}">
         <div class="mod-icon">
           <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 3c1.93 0 3.5 1.57 3.5 3.5S13.93 13 12 13s-3.5-1.57-3.5-3.5S10.07 6 12 6zm7 13H5v-.23c0-.62.28-1.2.76-1.58C7.47 15.82 9.64 15 12 15s4.53.82 6.24 2.19c.48.38.76.97.76 1.58V19z"/></svg>
         </div>
@@ -262,7 +282,7 @@ function showModules(data){
 
   if(data.lasi){
     list.innerHTML += `
-      <a class="module-btn lasi" href="${BASE}staplerapp_lasi_1.html">
+      <a class="module-btn lasi" href="${BASE}staplerapp_lasi_1.html?regnr=${encodeURIComponent(currentRegnr)}">
         <div class="mod-icon">
           <svg viewBox="0 0 24 24"><path d="M20 8h-3V4H3c-1.1 0-2 .9-2 2v11h2c0 1.66 1.34 3 3 3s3-1.34 3-3h6c0 1.66 1.34 3 3 3s3-1.34 3-3h2v-5l-3-4z"/></svg>
         </div>
