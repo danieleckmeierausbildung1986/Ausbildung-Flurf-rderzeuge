@@ -201,7 +201,7 @@ async function doLogin(){
     const res = await fetch(FLOW_URL, {
       method:'POST',
       headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({ registriernummer: val })
+      body: JSON.stringify({ registrierungsnummer: val })
     });
     const data = await res.json();
 
