@@ -291,9 +291,6 @@ function doLogin(){
   errEl.textContent = '';
   if(!val){ errEl.textContent = 'Bitte Registriernummer eingeben.'; return; }
   if(!/^\d{4}-\d{3,4}$/.test(val)){ errEl.textContent = 'Ungültig. Format: 2025-001'; return; }
-
-  const btn = document.querySelector('.lbtn');
-
   startApp('Teilnehmer', val);
 }
 
@@ -304,6 +301,15 @@ function startApp(name, nr){
   buildSidebar();
   goStep(0);
 }
+
+// Auto-Login per URL-Parameter
+(function(){
+  const params = new URLSearchParams(window.location.search);
+  const regnr = params.get('regnr');
+  if(regnr && /^\d{4}-\d{3,4}$/.test(regnr)){
+    startApp('Teilnehmer', regnr);
+  }
+})();
 
 /* ============================================================
    NAVIGATION STATE
