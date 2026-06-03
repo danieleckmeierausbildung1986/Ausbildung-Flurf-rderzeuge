@@ -302,15 +302,6 @@ function startApp(name, nr){
   goStep(0);
 }
 
-// Auto-Login per URL-Parameter
-(function(){
-  const params = new URLSearchParams(window.location.search);
-  const regnr = params.get('regnr');
-  if(regnr && /^\d{4}-\d{3,4}$/.test(regnr)){
-    startApp('Teilnehmer', regnr);
-  }
-})();
-
 /* ============================================================
    NAVIGATION STATE
    ============================================================ */
@@ -1108,6 +1099,15 @@ function closeSidebar(){
    ============================================================ */
 buildSteps();
 buildSidebar();
+
+// Auto-Login per URL-Parameter (muss nach buildSteps/buildSidebar stehen)
+(function(){
+  const params = new URLSearchParams(window.location.search);
+  const regnr = params.get('regnr');
+  if(regnr && /^\d{4}-\d{3,4}$/.test(regnr)){
+    startApp('Teilnehmer', regnr);
+  }
+})();
 </script>
 </body>
 </html>
