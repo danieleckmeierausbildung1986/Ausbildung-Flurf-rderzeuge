@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Ausbildungsportal – E-Learning</title>
+<style>
+:root{
+  --bg:#0d1f12;--bg2:#14301a;--card:#fff;
+  --green:#1a7a4a;--green-l:#2ea865;--green-d:#0d4a24;
+  --navy:#16243f;--safety:#f5a623;--safety-d:#d4880f;
+  --muted:#68788f;--line:#e3e8f0;--ink:#1a2330;
+  --shadow:0 8px 40px rgba(0,0,0,.25);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:"Segoe UI",system-ui,sans-serif;
+  min-height:100vh;
+  background:var(--bg);
+  display:flex;align-items:center;justify-content:center;
+  padding:20px;
+}
+
+/* Hintergrund-Animation */
+body::before{
+  content:'';position:fixed;inset:0;
+  background:
+    radial-gradient(ellipse 80% 60% at 20% 20%, rgba(26,122,74,.25) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 80% at 80% 80%, rgba(13,74,36,.3) 0%, transparent 60%);
+  pointer-events:none;z-index:0;
+}
+
+.container{
+  position:relative;z-index:1;
+  width:100%;max-width:480px;
+}
+
+/* LOGO-BEREICH */
+.logo-area{text-align:center;margin-bottom:32px;animation:fadeDown .5s ease both}
+.logo-icon{
+  width:72px;height:72px;border-radius:18px;
+  background:linear-gradient(135deg,var(--green),var(--green-l));
+  display:flex;align-items:center;justify-content:center;
+  margin:0 auto 16px;
+  box-shadow:0 8px 32px rgba(26,122,74,.4);
+}
+.logo-icon svg{width:38px;height:38px;fill:#fff}
+.logo-area h1{color:#fff;font-size:22px;font-weight:700;margin-bottom:4px}
+.logo-area p{color:rgba(255,255,255,.45);font-size:13px}
+
+/* LOGIN-KARTE */
+.card{
+  background:#fff;border-radius:20px;
+  box-shadow:var(--shadow);
+  overflow:hidden;
+  animation:fadeUp .5s ease .1s both;
+}
+.card-body{padding:28px 30px 30px}
+
+.lf{margin-bottom:16px}
+.lf label{
+  display:block;font-size:11px;font-weight:700;
+  color:var(--navy);text-transform:uppercase;
+  letter-spacing:.6px;margin-bottom:7px
+}
+.lf input{
+  width:100%;padding:13px 16px;
+  border:2px solid var(--line);border-radius:12px;
+  font-size:16px;background:#fafbfc;
+  transition:border-color .15s;color:var(--ink);
+}
+.lf input:focus{outline:none;border-color:var(--green);background:#fff}
+
+.login-btn{
+  width:100%;padding:14px;border:none;border-radius:12px;
+  background:linear-gradient(135deg,var(--green),var(--green-d));
+  color:#fff;font-size:15px;font-weight:700;cursor:pointer;
+  transition:opacity .15s;letter-spacing:.3px;
+}
+.login-btn:hover{opacity:.9}
+.login-btn:disabled{opacity:.6;cursor:not-allowed}
+
+.lerr{
+  color:#c0392b;font-size:13px;
+  margin-top:10px;text-align:center;min-height:18px;
+}
+.lhint{
+  font-size:11px;color:var(--muted);
+  text-align:center;margin-top:10px;
+}
+
+/* MODULE */
+.module-area{animation:fadeUp .4s ease both}
+.greeting{
+  text-align:center;padding:24px 24px 16px;
+  border-bottom:1px solid var(--line);
+}
+.greeting-name{
+  font-size:20px;font-weight:700;color:var(--navy);margin-bottom:4px
+}
+.greeting-sub{font-size:13px;color:var(--muted)}
+
+.modules{padding:20px 24px 24px;display:flex;flex-direction:column;gap:12px}
+
+.module-btn{
+  display:flex;align-items:center;gap:16px;
+  padding:16px 18px;border-radius:14px;border:none;
+  cursor:pointer;text-align:left;transition:all .15s;
+  text-decoration:none;width:100%;
+}
+.module-btn.stufe1{background:linear-gradient(135deg,#1e3a6b,#2b6cb0);color:#fff}
+.module-btn.stufe2{background:linear-gradient(135deg,#2d1b6b,#5b3db0);color:#fff}
+.module-btn.lasi{background:linear-gradient(135deg,var(--green-d),var(--green));color:#fff}
+.module-btn:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.2)}
+
+.mod-icon{
+  width:46px;height:46px;border-radius:12px;
+  background:rgba(255,255,255,.2);
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;
+}
+.mod-icon svg{width:24px;height:24px;fill:#fff}
+.mod-info{flex:1}
+.mod-title{font-size:15px;font-weight:700;margin-bottom:2px}
+.mod-sub{font-size:12px;opacity:.7}
+.mod-arrow{font-size:18px;opacity:.7;flex-shrink:0}
+
+.no-modules{
+  text-align:center;padding:28px 20px;color:var(--muted);font-size:14px;line-height:1.6
+}
+
+/* SPINNER */
+.spinner{
+  width:22px;height:22px;border:3px solid rgba(255,255,255,.3);
+  border-top-color:#fff;border-radius:50%;
+  animation:spin .7s linear infinite;display:inline-block;vertical-align:middle;
+}
+
+/* ANIMATIONEN */
+@keyframes fadeDown{from{opacity:0;transform:translateY(-12px)}to{opacity:1;transform:none}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+@keyframes spin{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="logo-area">
+    <div class="logo-icon">
+      <svg viewBox="0 0 24 24"><path d="M12 3L1 9l11 6 9-4.91V17h2V9L12 3zM5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82z"/></svg>
+    </div>
+    <h1>Ausbildungsportal</h1>
+    <p>E-Learning · DGUV 308-001 · VDI 2700</p>
+  </div>
+
+  <!-- LOGIN -->
+  <div class="card" id="loginCard">
+    <div class="card-body">
+      <div class="lf">
+        <label>Registriernummer</label>
+        <input type="text" id="regnr" placeholder="2025-001" autocomplete="off"
+          onkeydown="if(event.key==='Enter')doLogin()">
+      </div>
+      <button class="login-btn" id="loginBtn" onclick="doLogin()">Anmelden →</button>
+      <div class="lerr" id="lerr"></div>
+      <div class="lhint">Format: 2025-001 – erhalten Sie von Ihrem Ausbilder</div>
+    </div>
+  </div>
+
+  <!-- MODULE (versteckt bis Login) -->
+  <div class="card" id="moduleCard" style="display:none">
+    <div class="module-area">
+      <div class="greeting">
+        <div class="greeting-name" id="greetName">Willkommen</div>
+        <div class="greeting-sub">Bitte wählen Sie Ihre Schulung</div>
+      </div>
+      <div class="modules" id="moduleList"></div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const FLOW_URL = 'https://default8af25f9034bc4ef4aba22ab6f641d5.01.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/7058b6c8090842748465472db6085773/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=nxepIsGToa5my_-oIW5ZR5c3CQLtufN5DwNvM-qG1G4';
+
+const BASE = 'https://danieleckmeierausbildung1986.github.io/Ausbildung-Flurf-rderzeuge/';
+
+async function doLogin(){
+  const val = document.getElementById('regnr').value.trim();
+  const errEl = document.getElementById('lerr');
+  const btn = document.getElementById('loginBtn');
+  errEl.textContent = '';
+
+  if(!val){ errEl.textContent = 'Bitte Registriernummer eingeben.'; return; }
+  if(!/^\d{4}-\d{3,4}$/.test(val)){ errEl.textContent = 'Ungültig. Format: 2025-001'; return; }
+
+  btn.innerHTML = '<span class="spinner"></span>';
+  btn.disabled = true;
+
+  try {
+    const res = await fetch(FLOW_URL, {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ registrierungsnummer: val })
+    });
+    const data = await res.json();
+
+    if(data && data.zugang === true){
+      showModules(data);
+    } else {
+      errEl.textContent = data.grund || 'Nummer nicht gefunden. Bitte Ausbilder kontaktieren.';
+    }
+  } catch(e){
+    errEl.textContent = 'Verbindungsfehler. Bitte erneut versuchen.';
+  } finally {
+    btn.innerHTML = 'Anmelden →';
+    btn.disabled = false;
+  }
+}
+
+function showModules(data){
+  document.getElementById('loginCard').style.display = 'none';
+  document.getElementById('moduleCard').style.display = 'block';
+
+  const name = (data.vorname || '') + ' ' + (data.nachname || '');
+  document.getElementById('greetName').textContent = 'Hallo, ' + name.trim() + '!';
+
+  const list = document.getElementById('moduleList');
+  list.innerHTML = '';
+
+  let count = 0;
+
+  if(data.stufe1){
+    list.innerHTML += `
+      <a class="module-btn stufe1" href="${BASE}staplerapp_final.html">
+        <div class="mod-icon">
+          <svg viewBox="0 0 24 24"><path d="M20 8h-3V4H3c-1.1 0-2 .9-2 2v11h2c0 1.66 1.34 3 3 3s3-1.34 3-3h6c0 1.66 1.34 3 3 3s3-1.34 3-3h2v-5l-3-4zM6 18.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm13.5-9l1.96 2.5H17V9.5h2.5zm-1.5 9c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>
+        </div>
+        <div class="mod-info">
+          <div class="mod-title">Stapler Stufe 1</div>
+          <div class="mod-sub">DGUV Grundsatz 308-001</div>
+        </div>
+        <div class="mod-arrow">→</div>
+      </a>`;
+    count++;
+  }
+
+  if(data.stufe2){
+    list.innerHTML += `
+      <a class="module-btn stufe2" href="${BASE}staplerapp_stufe2.html">
+        <div class="mod-icon">
+          <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 3c1.93 0 3.5 1.57 3.5 3.5S13.93 13 12 13s-3.5-1.57-3.5-3.5S10.07 6 12 6zm7 13H5v-.23c0-.62.28-1.2.76-1.58C7.47 15.82 9.64 15 12 15s4.53.82 6.24 2.19c.48.38.76.97.76 1.58V19z"/></svg>
+        </div>
+        <div class="mod-info">
+          <div class="mod-title">Stapler Stufe 2</div>
+          <div class="mod-sub">DGUV Grundsatz 308-001</div>
+        </div>
+        <div class="mod-arrow">→</div>
+      </a>`;
+    count++;
+  }
+
+  if(data.lasi){
+    list.innerHTML += `
+      <a class="module-btn lasi" href="${BASE}staplerapp_lasi_1.html">
+        <div class="mod-icon">
+          <svg viewBox="0 0 24 24"><path d="M20 8h-3V4H3c-1.1 0-2 .9-2 2v11h2c0 1.66 1.34 3 3 3s3-1.34 3-3h6c0 1.66 1.34 3 3 3s3-1.34 3-3h2v-5l-3-4z"/></svg>
+        </div>
+        <div class="mod-info">
+          <div class="mod-title">Ladungssicherung</div>
+          <div class="mod-sub">VDI 2700 ff. · DGUV 308-009</div>
+        </div>
+        <div class="mod-arrow">→</div>
+      </a>`;
+    count++;
+  }
+
+  if(count === 0){
+    list.innerHTML = `<div class="no-modules">
+      Für diese Registriernummer sind keine E-Learning-Module gebucht.<br>
+      Bitte wenden Sie sich an Ihren Ausbilder.
+    </div>`;
+  }
+}
+</script>
+</body>
+</html>
