@@ -285,7 +285,7 @@ const IMG = 'https://danieleckmeierausbildung1986.github.io/Ausbildung-Flurf-rde
    ============================================================ */
 const FLOW_URL = 'https://prod-21.germanywestcentral.logic.azure.com:443/workflows/3261e8b0c51a4bdb95c83aaeb42025fe/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=MFifSUHdHSNBDN0n4fvHBP6dpyH1MYQKg7I3JnH3R50';
 
-async function doLogin(){
+function doLogin(){
   const val = document.getElementById('regnr').value.trim();
   const errEl = document.getElementById('lerr');
   errEl.textContent = '';
@@ -293,25 +293,8 @@ async function doLogin(){
   if(!/^\d{4}-\d{3,4}$/.test(val)){ errEl.textContent = 'Ungültig. Format: 2025-001'; return; }
 
   const btn = document.querySelector('.lbtn');
-  btn.textContent = 'Prüfe …'; btn.disabled = true;
 
-  try {
-    const res = await fetch(FLOW_URL, {
-      method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({ registriernummer: val, schulungstyp: 'LaSi' })
-    });
-    const data = await res.json();
-    if(data && data.name){
-      startApp(data.name, val);
-    } else {
-      // Fallback: Format stimmt, direkt einloggen
-      startApp('Teilnehmer', val);
-    }
-  } catch(e){
-    startApp('Teilnehmer', val);
-  } finally {
-    btn.textContent = 'Anmelden →'; btn.disabled = false;
-  }
+  startApp('Teilnehmer', val);
 }
 
 function startApp(name, nr){
