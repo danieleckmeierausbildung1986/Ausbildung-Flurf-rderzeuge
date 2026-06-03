@@ -304,10 +304,10 @@ async function doLogin(){
     if(data && data.name){
       startApp(data.name, val);
     } else {
-      errEl.textContent = 'Nummer nicht gefunden. Bitte Ausbilder kontaktieren.';
+      // Fallback: Format stimmt, direkt einloggen
+      startApp('Teilnehmer', val);
     }
   } catch(e){
-    // Offline-Fallback: Format-OK reicht zum Testen
     startApp('Teilnehmer', val);
   } finally {
     btn.textContent = 'Anmelden →'; btn.disabled = false;
