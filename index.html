@@ -231,9 +231,9 @@ function showModules(data){
       regnr: currentRegnr,
       vorname: data.vorname,
       nachname: data.nachname,
-      schubmast: data.schubmast_gebucht === 'Ja',
-      kommissionierer: data.kommissionierer_gebucht === 'Ja',
-      schmalgang: data.schmalgang_gebucht === 'Ja'
+      schubmast: data.schubmast_gebucht === true || data.schubmast_gebucht === 'Ja' || data.schubmast_gebucht === 'True',
+      kommissionierer: data.kommissionierer_gebucht === true || data.kommissionierer_gebucht === 'Ja' || data.kommissionierer_gebucht === 'True',
+      schmalgang: data.schmalgang_gebucht === true || data.schmalgang_gebucht === 'Ja' || data.schmalgang_gebucht === 'True'
     };
     list.innerHTML += `
       <button class="module-btn stufe2" onclick='goStufe2(${JSON.stringify(s2data)})'>
