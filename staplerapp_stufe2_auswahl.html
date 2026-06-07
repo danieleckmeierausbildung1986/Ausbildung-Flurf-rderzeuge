@@ -163,7 +163,7 @@ function init(){
   let hasDisabled = false;
 
   GERAETE.forEach(g => {
-    const booked = data[g.key] === true;
+    const booked = data[g.key] === true || data[g.key] === 'True' || data[g.key] === 'Ja';
     if(!booked) hasDisabled = true;
 
     if(booked){
