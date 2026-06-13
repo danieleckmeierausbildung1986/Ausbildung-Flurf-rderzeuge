@@ -10,13 +10,13 @@
   --navy:#16243f;--muted:#68788f;--line:#e3e8f0;--ink:#1a2330;
   --shadow:0 8px 40px rgba(0,0,0,.25);
   --accent1:#1a3a6b;--accent2:#2e6cb0;
+  --ok:#1a9e6e;--okbg:#e8f7f2;--no:#c0392b;--nobg:#fdecea;
 }
 *{box-sizing:border-box;margin:0;padding:0}
 body{
   font-family:"Segoe UI",system-ui,sans-serif;
   min-height:100vh;background:var(--bg);
-  display:flex;flex-direction:column;align-items:center;
-  padding:16px;
+  display:flex;flex-direction:column;align-items:center;padding:16px;
 }
 body::before{
   content:'';position:fixed;inset:0;
@@ -26,104 +26,84 @@ body::before{
   pointer-events:none;z-index:0;
 }
 .wrap{position:relative;z-index:1;width:100%;max-width:1000px;display:flex;flex-direction:column;flex:1}
-.topbar{
-  display:flex;align-items:center;gap:14px;margin-bottom:14px;
-  animation:fadeDown .4s ease both;
-}
+.topbar{display:flex;align-items:center;gap:14px;margin-bottom:14px;animation:fadeDown .4s ease both}
 .topbar .ti{
   width:46px;height:46px;border-radius:12px;flex-shrink:0;
   background:linear-gradient(135deg,var(--accent1),var(--accent2));
-  display:flex;align-items:center;justify-content:center;
-  box-shadow:0 6px 20px rgba(0,0,0,.3);
+  display:flex;align-items:center;justify-content:center;box-shadow:0 6px 20px rgba(0,0,0,.3);
 }
 .topbar .ti svg{width:24px;height:24px;fill:#fff}
 .topbar h1{color:#fff;font-size:18px;font-weight:700;line-height:1.2}
 .topbar p{color:rgba(255,255,255,.45);font-size:12px}
-.stage{
-  background:#fff;border-radius:18px;box-shadow:var(--shadow);
-  overflow:hidden;animation:fadeUp .4s ease .1s both;
-  display:flex;flex-direction:column;flex:1;
-}
-.slidebox{
-  position:relative;background:#0d1f12;
-  display:flex;align-items:center;justify-content:center;
-  min-height:300px;flex:1;
-}
-.slidebox img{
-  width:100%;height:auto;display:block;max-height:72vh;object-fit:contain;
-}
-.nav-zone{position:absolute;top:0;bottom:0;width:32%;cursor:pointer;z-index:2;
-  display:flex;align-items:center;opacity:0;transition:opacity .15s}
-.nav-zone:hover{opacity:1}
-.nav-zone.prev{left:0;justify-content:flex-start;
-  background:linear-gradient(90deg,rgba(0,0,0,.35),transparent)}
-.nav-zone.next{right:0;justify-content:flex-end;
-  background:linear-gradient(270deg,rgba(0,0,0,.35),transparent)}
-.nav-zone span{color:#fff;font-size:30px;padding:0 14px;text-shadow:0 2px 8px rgba(0,0,0,.5)}
-.controls{
-  display:flex;align-items:center;justify-content:space-between;
-  padding:14px 18px;background:#fff;border-top:1px solid var(--line);gap:12px;
-}
-.ctrl-btn{
-  display:flex;align-items:center;gap:7px;
-  padding:11px 20px;border:none;border-radius:11px;
-  background:linear-gradient(135deg,var(--accent1),var(--accent2));
-  color:#fff;font-size:14px;font-weight:700;cursor:pointer;
-  transition:opacity .15s;font-family:inherit;
-}
-.ctrl-btn:hover{opacity:.9}
-.ctrl-btn:disabled{opacity:.35;cursor:not-allowed}
-.counter{font-size:14px;font-weight:700;color:var(--navy)}
+.stage{background:#fff;border-radius:18px;box-shadow:var(--shadow);overflow:hidden;
+  animation:fadeUp .4s ease .1s both;display:flex;flex-direction:column;flex:1}
 .progress{height:5px;background:var(--line);width:100%}
 .progress-bar{height:100%;background:linear-gradient(90deg,var(--accent1),var(--accent2));
   transition:width .25s ease;width:0}
-.dots{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;
-  padding:12px 18px;background:#fafbfc;border-top:1px solid var(--line)}
-.dot{width:9px;height:9px;border-radius:50%;background:var(--line);border:none;
-  cursor:pointer;transition:all .15s;padding:0}
-.dot.active{background:var(--accent2);transform:scale(1.3)}
-.dot:hover{background:var(--accent1)}
+.slidebox{position:relative;background:#0d1f12;display:flex;align-items:center;justify-content:center;
+  min-height:300px;flex:1;}
+.slidebox img{width:100%;height:auto;display:block;max-height:68vh;object-fit:contain;}
+.nav-zone{position:absolute;top:0;bottom:0;width:32%;cursor:pointer;z-index:2;
+  display:flex;align-items:center;opacity:0;transition:opacity .15s}
+.nav-zone:hover{opacity:1}
+.nav-zone.prev{left:0;justify-content:flex-start;background:linear-gradient(90deg,rgba(0,0,0,.35),transparent)}
+.nav-zone.next{right:0;justify-content:flex-end;background:linear-gradient(270deg,rgba(0,0,0,.35),transparent)}
+.nav-zone span{color:#fff;font-size:30px;padding:0 14px;text-shadow:0 2px 8px rgba(0,0,0,.5)}
+/* QUIZ */
+.quizbox{padding:30px 28px 26px;flex:1;display:flex;flex-direction:column;justify-content:center}
+.quiz-badge{font-size:12px;font-weight:700;color:var(--accent2);text-transform:uppercase;
+  letter-spacing:.6px;margin-bottom:12px;text-align:center}
+.quiz-q{font-size:20px;font-weight:700;color:var(--navy);margin-bottom:22px;line-height:1.4;text-align:center;max-width:640px;margin-left:auto;margin-right:auto}
+.quiz-opts{display:flex;flex-direction:column;gap:10px;max-width:600px;margin:0 auto;width:100%}
+.opt{display:block;width:100%;text-align:left;padding:15px 18px;border:2px solid var(--line);
+  border-radius:12px;background:#fff;font-size:15px;color:var(--ink);transition:all .12s;cursor:pointer;font-family:inherit}
+.opt:hover:not(:disabled){border-color:var(--accent2);background:#f5f8fc}
+.opt:disabled{cursor:default}
+.opt.correct{border-color:var(--ok)!important;background:var(--okbg)!important;color:var(--ok)!important;font-weight:700}
+.opt.wrong{border-color:var(--no)!important;background:var(--nobg)!important;color:var(--no)!important}
+.quiz-fb{text-align:center;margin-top:18px;font-size:15px;font-weight:700;min-height:24px}
+.quiz-fb.ok{color:var(--ok)}.quiz-fb.no{color:var(--no)}
+/* ERGEBNIS */
+.result{padding:48px 28px;text-align:center;flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center}
+.result .ic{width:84px;height:84px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  margin:0 auto 18px;font-size:38px;font-weight:800}
+.result .ic.ok{background:var(--okbg);color:var(--ok)}
+.result .ic.no{background:var(--nobg);color:var(--no)}
+.result h2{font-size:30px;color:var(--navy);margin-bottom:8px}
+.result p{color:var(--muted);font-size:15px;margin-bottom:24px;max-width:420px}
+.controls{display:flex;align-items:center;justify-content:space-between;
+  padding:14px 18px;background:#fff;border-top:1px solid var(--line);gap:12px}
+.ctrl-btn{display:flex;align-items:center;gap:7px;padding:11px 20px;border:none;border-radius:11px;
+  background:linear-gradient(135deg,var(--accent1),var(--accent2));
+  color:#fff;font-size:14px;font-weight:700;cursor:pointer;transition:opacity .15s;font-family:inherit}
+.ctrl-btn:hover{opacity:.9}
+.ctrl-btn:disabled{opacity:.35;cursor:not-allowed}
+.counter{font-size:14px;font-weight:700;color:var(--navy)}
 .bottom{margin-top:14px;animation:fadeUp .4s ease .2s both}
-.back-btn{
-  display:block;width:100%;padding:12px;border:2px solid rgba(255,255,255,.2);
+.back-btn{display:block;width:100%;padding:12px;border:2px solid rgba(255,255,255,.2);
   border-radius:12px;background:rgba(255,255,255,.06);color:rgba(255,255,255,.8);
-  font-size:14px;font-weight:600;cursor:pointer;text-align:center;
-  font-family:inherit;transition:all .15s;
-}
+  font-size:14px;font-weight:600;cursor:pointer;text-align:center;font-family:inherit;transition:all .15s}
 .back-btn:hover{border-color:var(--green-l);color:#fff;background:rgba(255,255,255,.12)}
 @keyframes fadeDown{from{opacity:0;transform:translateY(-12px)}to{opacity:1;transform:none}}
 @keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
-@media(max-width:600px){
-  .topbar h1{font-size:16px}.ctrl-btn{padding:10px 14px;font-size:13px}
-  .nav-zone{opacity:.4}
-}
+@media(max-width:600px){.topbar h1{font-size:16px}.ctrl-btn{padding:10px 14px;font-size:13px}.nav-zone{opacity:.4}.quiz-q{font-size:18px}}
 </style>
 </head>
 <body>
 <div class="wrap">
   <div class="topbar">
-    <div class="ti">
-      <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 3c1.93 0 3.5 1.57 3.5 3.5S13.93 13 12 13s-3.5-1.57-3.5-3.5S10.07 6 12 6zm7 13H5v-.23c0-.62.28-1.2.76-1.58C7.47 15.82 9.64 15 12 15s4.53.82 6.24 2.19c.48.38.76.97.76 1.58V19z"/></svg>
-    </div>
-    <div>
-      <h1>Schubmaststapler</h1>
-      <p>Zusatzqualifizierung Stufe 2 · DGUV 308-001</p>
-    </div>
+    <div class="ti"><svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 3c1.93 0 3.5 1.57 3.5 3.5S13.93 13 12 13s-3.5-1.57-3.5-3.5S10.07 6 12 6zm7 13H5v-.23c0-.62.28-1.2.76-1.58C7.47 15.82 9.64 15 12 15s4.53.82 6.24 2.19c.48.38.76.97.76 1.58V19z"/></svg></div>
+    <div><h1>Schubmaststapler</h1><p>Zusatzqualifizierung Stufe 2 · DGUV 308-001</p></div>
   </div>
 
   <div class="stage">
     <div class="progress"><div class="progress-bar" id="pbar"></div></div>
-    <div class="slidebox">
-      <div class="nav-zone prev" onclick="prev()"><span>‹</span></div>
-      <img id="slideImg" src="SCHUB_BILDER/Folie1.PNG" alt="Folie 1">
-      <div class="nav-zone next" onclick="next()"><span>›</span></div>
-    </div>
+    <div id="host"></div>
     <div class="controls">
       <button class="ctrl-btn" id="prevBtn" onclick="prev()">‹ Zurück</button>
-      <div class="counter"><span id="cur">1</span> / 10</div>
+      <div class="counter" id="counter"></div>
       <button class="ctrl-btn" id="nextBtn" onclick="next()">Weiter ›</button>
     </div>
-    <div class="dots" id="dots"></div>
   </div>
 
   <div class="bottom">
@@ -134,55 +114,122 @@ body::before{
 <script>
 const BASE = 'https://danieleckmeierausbildung1986.github.io/Ausbildung-Flurf-rderzeuge/';
 const ORDNER = 'SCHUB_BILDER';
-const TOTAL = 10;
-let idx = 1;
+const FOLIEN = 10;
+const QUIZ = [{"nach": 3, "q": "Was ist das wesentliche Merkmal eines Schubmaststaplers?", "o": ["Der Fahrer fährt mit der Kabine in die Höhe", "Der Mast wird zur Lastaufnahme nach vorne ausgeschoben und für die Fahrt eingezogen", "Er dreht sich im Gang um 360°"], "c": 1}, {"nach": 3, "q": "Welchen Vorteil bietet der einziehbare Mast?", "o": ["Die Last kann innerhalb der Radbasis transportiert werden – kompakt, schmale Gänge", "Der Stapler wird schneller", "Man braucht kein Gegengewicht"], "c": 0}, {"nach": 5, "q": "Ein Flurförderzeug mit drei Auflagepunkten bildet …", "o": ["einen Schwerpunkt", "ein Kippkantendreieck", "einen Wendekreis"], "c": 1}, {"nach": 5, "q": "Was passiert mit dem Lastschwerpunkt beim Ausschieben des Mastes?", "o": ["Er bleibt unverändert", "Er wandert nach vorne aus dem Kippkantendreieck heraus – erhöhte Kippgefahr", "Er wandert nach hinten zum Gegengewicht"], "c": 1}, {"nach": 7, "q": "Wie verhält sich die Tragfähigkeit mit zunehmender Hubhöhe?", "o": ["Sie bleibt gleich", "Sie nimmt mit steigender Höhe ab", "Sie steigt mit der Höhe"], "c": 1}, {"nach": 10, "q": "Warum darf man nie mit ausgefahrenem Mast fahren oder lenken?", "o": ["Das Gerät wird langsamer", "Der Schwerpunkt ist nach vorne verlagert – akute Kippgefahr", "Die Kamera funktioniert nicht"], "c": 1}, {"nach": 10, "q": "Was ist beim Heck des Schubmaststaplers zu beachten?", "o": ["Es schwenkt schnell und weit aus – Abstand halten", "Es bleibt immer starr", "Es kann nicht ausschwenken"], "c": 0}];
 
-const img = document.getElementById('slideImg');
-const cur = document.getElementById('cur');
+// Schritt-Liste bauen: Folien + Quizfragen gemischt (Quiz "nach" der jeweiligen Folie)
+let STEPS = [];
+for(let f=1; f<=FOLIEN; f++){
+  STEPS.push({type:'folie', fn:f});
+  QUIZ.forEach((q,qi)=>{ if(q.nach===f) STEPS.push({type:'quiz', qi:qi}); });
+}
+STEPS.push({type:'result'});
+
+let cur = 0;
+let answered = {};   // qi -> true/false (richtig?)
+let score = 0;
+const totalQuiz = QUIZ.length;
+
+const host = document.getElementById('host');
 const pbar = document.getElementById('pbar');
 const prevBtn = document.getElementById('prevBtn');
 const nextBtn = document.getElementById('nextBtn');
-const dotsWrap = document.getElementById('dots');
-
-// Dots aufbauen
-for(let i=1;i<=TOTAL;i++){
-  const d = document.createElement('button');
-  d.className = 'dot' + (i===1?' active':'');
-  d.onclick = ()=>goTo(i);
-  dotsWrap.appendChild(d);
-}
-const dots = dotsWrap.querySelectorAll('.dot');
+const counter = document.getElementById('counter');
 
 function render(){
-  img.src = ORDNER + '/Folie' + idx + '.PNG';
-  img.alt = 'Folie ' + idx;
-  cur.textContent = idx;
-  pbar.style.width = (idx/TOTAL*100) + '%';
-  prevBtn.disabled = (idx===1);
-  nextBtn.disabled = (idx===TOTAL);
-  dots.forEach((d,i)=>d.classList.toggle('active', i===idx-1));
-}
-function next(){ if(idx<TOTAL){idx++;render();} }
-function prev(){ if(idx>1){idx--;render();} }
-function goTo(n){ idx=n; render(); }
+  const s = STEPS[cur];
+  pbar.style.width = (cur/(STEPS.length-1)*100) + '%';
+  prevBtn.disabled = (cur===0);
 
-// Tastatur
+  if(s.type==='folie'){
+    host.innerHTML = `<div class="slidebox">
+      <div class="nav-zone prev" onclick="prev()"><span>‹</span></div>
+      <img src="${ORDNER}/Folie${s.fn}.PNG" alt="Folie ${s.fn}">
+      <div class="nav-zone next" onclick="next()"><span>›</span></div>
+    </div>`;
+    counter.textContent = 'Folie ' + s.fn + ' / ' + FOLIEN;
+    nextBtn.disabled = false;
+    nextBtn.textContent = 'Weiter ›';
+  }
+  else if(s.type==='quiz'){
+    const q = QUIZ[s.qi];
+    const alreadyAnswered = (s.qi in answered);
+    host.innerHTML = `<div class="quizbox">
+      <div class="quiz-badge">Wissensfrage</div>
+      <div class="quiz-q">${q.q}</div>
+      <div class="quiz-opts" id="opts">
+        ${q.o.map((o,i)=>`<button class="opt" id="opt-${i}" onclick="answer(${s.qi},${i})">${o}</button>`).join('')}
+      </div>
+      <div class="quiz-fb" id="fb"></div>
+    </div>`;
+    counter.textContent = 'Frage';
+    // Wenn schon beantwortet: Zustand wiederherstellen
+    if(alreadyAnswered){
+      showAnswerState(s.qi);
+      nextBtn.disabled = false;
+    } else {
+      nextBtn.disabled = true;  // erst antworten
+    }
+    nextBtn.textContent = 'Weiter ›';
+  }
+  else if(s.type==='result'){
+    const pct = Math.round(score/totalQuiz*100);
+    const pass = pct>=70;
+    host.innerHTML = `<div class="result">
+      <div class="ic ${pass?'ok':'no'}">${pass?'✓':'✗'}</div>
+      <h2>${score} / ${totalQuiz} richtig</h2>
+      <p>${pass?'Sehr gut! Sie haben die Schulung erfolgreich durchgearbeitet.':'Bitte gehen Sie die Folien noch einmal durch und wiederholen Sie das Quiz.'}</p>
+      <button class="ctrl-btn" onclick="${pass?'goBack()':'restart()'}">${pass?'← Zur Geräteauswahl':'Quiz wiederholen'}</button>
+    </div>`;
+    counter.textContent = 'Ergebnis';
+    nextBtn.disabled = true;
+    nextBtn.textContent = 'Fertig';
+  }
+}
+
+function answer(qi, chosen){
+  const q = QUIZ[qi];
+  if(qi in answered) return;
+  document.querySelectorAll('.opt').forEach(b=>b.disabled=true);
+  document.getElementById('opt-'+q.c).classList.add('correct');
+  const fb = document.getElementById('fb');
+  const richtig = (chosen===q.c);
+  if(richtig){ score++; fb.className='quiz-fb ok'; fb.textContent='✓ Richtig!'; }
+  else { document.getElementById('opt-'+chosen).classList.add('wrong'); fb.className='quiz-fb no'; fb.textContent='✗ Leider falsch. Richtig: '+q.o[q.c]; }
+  answered[qi] = richtig;
+  nextBtn.disabled = false;
+}
+
+function showAnswerState(qi){
+  const q = QUIZ[qi];
+  document.querySelectorAll('.opt').forEach(b=>b.disabled=true);
+  document.getElementById('opt-'+q.c).classList.add('correct');
+  const fb = document.getElementById('fb');
+  if(answered[qi]){ fb.className='quiz-fb ok'; fb.textContent='✓ Richtig!'; }
+  else { fb.className='quiz-fb no'; fb.textContent='✓ Richtige Antwort markiert'; }
+}
+
+function next(){ if(cur<STEPS.length-1){ cur++; render(); } }
+function prev(){ if(cur>0){ cur--; render(); } }
+function restart(){ cur=0; answered={}; score=0; render(); }
+
 document.addEventListener('keydown', e=>{
-  if(e.key==='ArrowRight'||e.key===' ') next();
+  if(e.key==='ArrowRight') { if(!nextBtn.disabled) next(); }
   if(e.key==='ArrowLeft') prev();
 });
 
-// Touch / Wischen
 let tx=0;
-document.querySelector('.slidebox').addEventListener('touchstart', e=>{tx=e.changedTouches[0].screenX;}, {passive:true});
-document.querySelector('.slidebox').addEventListener('touchend', e=>{
+document.getElementById('host').addEventListener('touchstart', e=>{tx=e.changedTouches[0].screenX;}, {passive:true});
+document.getElementById('host').addEventListener('touchend', e=>{
   const dx = e.changedTouches[0].screenX - tx;
-  if(dx < -50) next();
+  if(dx < -50 && !nextBtn.disabled) next();
   if(dx > 50) prev();
 }, {passive:true});
 
 function goBack(){
-  window.location.href = BASE + 'staplerapp_stufe2_auswahl.html';
+  const params = new URLSearchParams(window.location.search);
+  const nr = params.get('regnr');
+  window.location.href = BASE + 'staplerapp_stufe2_auswahl.html' + (nr ? '?regnr=' + encodeURIComponent(nr) : '');
 }
 
 render();
