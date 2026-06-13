@@ -143,14 +143,27 @@ const GERAETE = [
   }
 ];
 
+// Registriernummer aus URL lesen (Fallback, falls sessionStorage leer ist)
+function getRegnrFromUrl(){
+  const params = new URLSearchParams(window.location.search);
+  const nr = params.get('regnr');
+  return (nr && /^\d{4}-\d{3,4}$/.test(nr)) ? nr : null;
+}
+
 function goBack(){
-  window.location.href = BASE + 'index.html';
+  // Mit Registriernummer zurück, damit index.html per Auto-Login direkt die Modulauswahl zeigt
+  const nr = getRegnrFromUrl();
+  window.location.href = BASE + 'index.html' + (nr ? '?regnr=' + encodeURIComponent(nr) : '');
 }
 
 function init(){
   const raw = sessionStorage.getItem('stufe2data');
+
+  // Kein sessionStorage? Dann zurück zur Startseite – aber mit Registriernummer aus der URL,
+  // damit man NICHT erneut eingeben muss (index.html meldet sich automatisch an).
   if(!raw){
-    window.location.href = BASE + 'index.html';
+    const nr = getRegnrFromUrl();
+    window.location.href = BASE + 'index.html' + (nr ? '?regnr=' + encodeURIComponent(nr) : '');
     return;
   }
 
