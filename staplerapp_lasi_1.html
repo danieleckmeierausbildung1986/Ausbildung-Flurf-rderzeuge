@@ -183,6 +183,87 @@ button{font-family:inherit;cursor:pointer}
     background:rgba(0,0,0,.36);z-index:29}
   .stage{padding:14px 14px 60px}
 }
+
+/* ════════ MODUL: Beladen & Lücken sichern ════════ */
+.spiel-wrap-outer{--lasi-m:#1a7a4a;--lasi-l-m:#2ea865;--lasi-d-m:#0d4a24;}
+.spiel-wrap-outer *{box-sizing:border-box}
+.spiel-wrap-outer button{font-family:inherit;cursor:pointer}
+.spiel-wrap-outer .hidden{display:none!important}
+.spiel-wrap-outer .m-topbar{background:linear-gradient(90deg,#0d2b1a,#1a5c38);color:#fff;height:48px;display:flex;align-items:center;gap:10px;padding:0 14px;border-radius:10px 10px 0 0}
+.spiel-wrap-outer .m-tlogo{width:24px;height:24px;border-radius:6px;background:linear-gradient(135deg,var(--lasi-m),var(--lasi-l-m));display:flex;align-items:center;justify-content:center}
+.spiel-wrap-outer .m-tlogo svg{width:14px;height:14px;fill:#fff}
+.spiel-wrap-outer .m-ttitle{font-size:13px;font-weight:700;flex:1}
+.spiel-wrap-outer .m-tsub{font-size:10px;color:rgba(255,255,255,.5)}
+.spiel-wrap-outer .m-wrap{background:var(--bg);border-radius:0 0 10px 10px;padding:12px}
+.spiel-wrap-outer .m-card{background:#fff;border-radius:11px;box-shadow:0 3px 14px rgba(22,36,63,.08);overflow:hidden;margin-bottom:10px}
+.spiel-wrap-outer .m-chd{padding:11px 15px 9px;border-bottom:1px solid var(--line);background:linear-gradient(135deg,#f4fbf7,#fff)}
+.spiel-wrap-outer .m-chd h2{font-size:14px;font-weight:800;color:var(--navy);margin-bottom:1px}
+.spiel-wrap-outer .m-chd p{font-size:11px;color:var(--muted)}
+.spiel-wrap-outer .m-cbody{padding:13px}
+.spiel-wrap-outer .m-btn{padding:7px 16px;border:none;border-radius:9px;background:linear-gradient(135deg,var(--lasi-m),var(--lasi-d-m));color:#fff;font-size:12px;font-weight:700;cursor:pointer}
+.spiel-wrap-outer .m-btn:hover{opacity:.88}
+.spiel-wrap-outer .m-btn.out{background:#fff;border:1.5px solid var(--lasi-m);color:var(--lasi-m)}
+.spiel-wrap-outer .m-btn.sm{padding:5px 10px;font-size:11px}
+.spiel-wrap-outer .m-btn.safety{background:linear-gradient(135deg,var(--safety),#d4880f);color:#3a2800}
+.spiel-wrap-outer .m-fb{border-radius:9px;padding:10px 12px;margin-top:9px;font-size:12px;line-height:1.6;display:none}
+.spiel-wrap-outer .m-fb.ok{background:var(--okbg);border:1.5px solid var(--ok);color:#0d5c3a}
+.spiel-wrap-outer .m-fb.no{background:var(--nobg);border:1.5px solid var(--no);color:#7b1a12}
+.spiel-wrap-outer .m-fb.warn{background:#fef3c7;border:1.5px solid #d97706;color:#92400e}
+.spiel-wrap-outer .m-fb.show{display:block}
+.spiel-wrap-outer .m-spcard{background:#f4fbf7;border:1.5px solid var(--line);border-radius:10px;padding:11px;cursor:pointer;transition:all .15s;text-align:center}
+.spiel-wrap-outer .m-spcard:hover{border-color:var(--lasi-m);background:#e6f5ec;transform:translateY(-1px)}
+.spiel-wrap-outer .m-phase-bar{display:flex;gap:5px;margin-bottom:9px}
+.spiel-wrap-outer .m-ps{flex:1;padding:6px 4px;border-radius:7px;border:1.5px solid var(--line);text-align:center;font-size:10px;font-weight:700;color:var(--muted);background:#fff;transition:all .2s}
+.spiel-wrap-outer .m-ps.act{border-color:var(--lasi-m);background:var(--lasi-m);color:#fff}
+.spiel-wrap-outer .m-ps.done{border-color:var(--ok);background:var(--okbg);color:var(--ok)}
+.spiel-wrap-outer .m-stats-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
+.spiel-wrap-outer .m-stat{background:#f4f7fc;border-radius:7px;padding:6px 8px;text-align:center;flex:1;min-width:52px}
+.spiel-wrap-outer .m-stat-n{font-size:13px;font-weight:800;color:var(--lasi-m)}
+.spiel-wrap-outer .m-stat-l{font-size:8px;color:var(--muted);text-transform:uppercase;letter-spacing:.4px}
+.spiel-wrap-outer .m-fill-bar-wrap{height:7px;background:var(--line);border-radius:4px;overflow:hidden}
+.spiel-wrap-outer .m-fill-bar{height:100%;border-radius:4px;transition:width .4s,background .3s}
+.spiel-wrap-outer .m-palette-wrap{display:flex;gap:5px;flex-wrap:wrap;padding:7px;background:#f4fbf7;border-radius:8px;border:1.5px dashed var(--lasi-m);min-height:46px;margin-bottom:8px}
+.spiel-wrap-outer .m-pgut{padding:5px 7px;border-radius:6px;border:1.5px solid var(--line);background:#fff;font-size:9px;font-weight:600;cursor:grab;user-select:none;display:flex;flex-direction:column;align-items:center;gap:1px;touch-action:none;min-width:55px;text-align:center}
+.spiel-wrap-outer .m-pgut:hover{border-color:var(--lasi-m);background:#f0faf4}
+.spiel-wrap-outer .m-pgut.placed{border-color:var(--ok);background:var(--okbg);color:var(--ok);opacity:.5;cursor:default}
+.spiel-wrap-outer .m-pgut.dragging{opacity:.3}
+@keyframes m-shake{0%,100%{transform:translateX(0)}33%{transform:translateX(-3px)}66%{transform:translateX(3px)}}
+.spiel-wrap-outer .m-pgut.no-fit{border-color:var(--no);background:var(--nobg);animation:m-shake .3s}
+.spiel-wrap-outer .m-p2wrap{display:grid;grid-template-columns:190px 1fr;gap:10px;align-items:start}
+@media(max-width:540px){.spiel-wrap-outer .m-p2wrap{grid-template-columns:1fr}}
+.spiel-wrap-outer .m-lasi-pal{background:#fff8e1;border:1.5px dashed #d97706;border-radius:9px;padding:8px}
+.spiel-wrap-outer .m-lasi-pal-title{font-size:9px;font-weight:700;color:#d97706;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
+.spiel-wrap-outer .m-lmat{padding:5px 8px;border-radius:6px;border:1.5px solid #f5d76e;background:#fff;font-size:10px;font-weight:600;cursor:grab;user-select:none;display:flex;align-items:center;gap:5px;transition:all .12s;touch-action:none;margin-bottom:5px}
+.spiel-wrap-outer .m-lmat:hover{border-color:#d97706;background:#fef9e7}
+.spiel-wrap-outer .m-lmat.dragging-lasi{opacity:.3}
+.spiel-wrap-outer .m-luecken-info{display:flex;flex-direction:column;gap:6px;margin-top:8px}
+.spiel-wrap-outer .m-luecke-card{border-radius:8px;padding:8px 10px;border:1.5px solid var(--no);background:var(--nobg);transition:all .3s}
+.spiel-wrap-outer .m-luecke-card.ok{border-color:var(--ok);background:var(--okbg)}
+.spiel-wrap-outer .m-luecke-card.nok{border-color:var(--no);background:var(--nobg)}
+.spiel-wrap-outer .m-lc-title{font-size:10px;font-weight:700;color:var(--no);margin-bottom:3px}
+.spiel-wrap-outer .m-luecke-card.ok .m-lc-title{color:var(--ok)}
+.spiel-wrap-outer .m-lc-placed{display:flex;flex-wrap:wrap;gap:3px;min-height:20px;margin-bottom:3px}
+.spiel-wrap-outer .m-lc-mat-tag{display:inline-flex;align-items:center;gap:3px;padding:2px 6px;border-radius:4px;font-size:9px;font-weight:700;cursor:pointer}
+.spiel-wrap-outer .m-lc-mat-tag.ok-tag{background:var(--okbg);color:var(--ok);border:1px solid var(--ok)}
+.spiel-wrap-outer .m-lc-mat-tag.no-tag{background:var(--nobg);color:var(--no);border:1px solid var(--no)}
+.spiel-wrap-outer .m-lc-mat-tag.neu{background:#f4f7fc;color:var(--navy);border:1px solid var(--line)}
+.spiel-wrap-outer .m-lc-fb{font-size:9px;color:var(--muted);line-height:1.4;display:none;margin-top:3px}
+.spiel-wrap-outer .m-drop-over{outline:2px dashed #d97706!important;transform:scale(1.01)}
+.spiel-wrap-outer .m-auswert-canvas-wrap{margin-bottom:12px;position:relative}
+.spiel-wrap-outer .m-auswert-canvas-title{font-size:10px;font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;display:flex;align-items:center;gap:6px}
+.spiel-wrap-outer .m-legende{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+.spiel-wrap-outer .m-leg-item{display:flex;align-items:center;gap:4px;font-size:10px;color:var(--muted)}
+.spiel-wrap-outer .m-leg-dot{width:10px;height:10px;border-radius:2px;flex-shrink:0}
+.spiel-wrap-outer .m-ck-list{display:flex;flex-direction:column;gap:5px;margin-bottom:10px}
+.spiel-wrap-outer .m-ck-item{display:flex;gap:7px;padding:7px 10px;border-radius:8px;background:#f4f7fc;align-items:flex-start}
+.spiel-wrap-outer .m-ck-item.ok{background:var(--okbg)}
+.spiel-wrap-outer .m-ck-item.no{background:var(--nobg)}
+.spiel-wrap-outer .m-ck-icon{font-size:14px;flex-shrink:0}
+.spiel-wrap-outer .m-ck-txt{flex:1}
+.spiel-wrap-outer .m-ck-lbl{font-size:11px;font-weight:700}
+.spiel-wrap-outer .m-ck-item.ok .m-ck-lbl{color:var(--ok)}
+.spiel-wrap-outer .m-ck-item.no .m-ck-lbl{color:var(--no)}
+.spiel-wrap-outer .m-ck-sub{font-size:10px;color:var(--muted);margin-top:1px}
 </style>
 </head>
 <body>
@@ -324,6 +405,7 @@ function buildSteps(){
     k.folien.forEach((fn,fi)=>STEPS.push({type:'folie',ki,fi,fn}));
     STEPS.push({type:'quiz',ki,qi:0});
   });
+  STEPS.push({type:'spiel'});
   STEPS.push({type:'exam'});
 }
 
@@ -365,6 +447,16 @@ function buildSidebar(){
     div.onclick=()=>{goStep(chIdx);closeSidebar();};
     list.appendChild(div);
   });
+  const spielIdx = STEPS.findIndex(s=>s.type==='spiel');
+  const spielDiv = document.createElement('div');
+  spielDiv.className='sidebar-item'+(STEPS[cur]?.type==='spiel'?' active':'');
+  spielDiv.id='si-spiel';
+  spielDiv.innerHTML=`<div class="snum">🎮</div>
+    <div class="stxt"><div class="stitle">Ladespiel</div>
+    <div class="scnt">Beladen &amp; Lücken sichern</div></div>`;
+  spielDiv.onclick=()=>{goStep(spielIdx);closeSidebar();};
+  list.appendChild(spielDiv);
+
   const examIdx = STEPS.findIndex(s=>s.type==='exam');
   const examDiv = document.createElement('div');
   examDiv.className='sidebar-item'+(STEPS[cur]?.type==='exam'?' active':'');
@@ -386,6 +478,8 @@ function updateSidebar(){
     const el=document.getElementById('si-'+ki);
     if(el)el.classList.toggle('active',isInChapter(ki));
   });
+  const spielEl=document.getElementById('si-spiel');
+  if(spielEl)spielEl.classList.toggle('active',STEPS[cur]?.type==='spiel');
   const examEl=document.getElementById('si-exam');
   if(examEl)examEl.classList.toggle('active',STEPS[cur]?.type==='exam');
 }
@@ -427,6 +521,7 @@ function render(){
   else if(s.type==='chapter'){crumb.textContent=`Kapitel ${s.ki+1}`;renderChapter(host,s.ki);}
   else if(s.type==='folie'){crumb.textContent=`Kapitel ${s.ki+1} · Folie ${s.fi+1}`;renderFolie(host,s);}
   else if(s.type==='quiz'){crumb.textContent=`Kapitel ${s.ki+1} · Wissenstest`;renderQuiz(host,s.ki);}
+  else if(s.type==='spiel'){crumb.textContent='Praxismodul';renderSpiel(host);}
   else if(s.type==='exam'){crumb.textContent='';renderExam(host);}
 }
 
@@ -542,45 +637,169 @@ function resetQuiz(ki){
   goStep(chIdx);
 }
 
-/* ── EXAM ── */
-function renderExam(host){
-  host.innerHTML=`<div class="exam-card">
-    <div class="exam-icon"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg></div>
-    <h2>Theoretische Prüfung</h2>
-    <p style="color:var(--muted);font-size:15px;max-width:480px;margin:10px auto 24px;line-height:1.6">
-      Sie haben alle Lerneinheiten abgeschlossen.<br>Bitte melden Sie sich bei Ihrem Ausbilder.<br><br>
-      <strong>Bestehensgrenze: 12 von 20 Fragen (60 %)</strong>
-    </p>
-    <a href="https://wa.me/${WA_NR}?text=${encodeURIComponent('Hallo, ich habe die Ladungssicherungs-Ausbildung abgeschlossen und möchte die Prüfung anmelden.')}"
-       target="_blank"
-       style="display:inline-flex;align-items:center;gap:10px;padding:12px 24px;background:#25D366;color:#fff;border-radius:11px;font-size:15px;font-weight:700;text-decoration:none">
-      <svg viewBox="0 0 24 24" width="22" height="22" fill="#fff"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-      WhatsApp – Prüfung anmelden
-    </a>
-  </div>`;
+
+/* ── SPIEL (Modul: Beladen & Lücken sichern) ── */
+let spielInitDone = false;
+function renderSpiel(host){
+  host.innerHTML = `<div class="spiel-wrap-outer" style="border-radius:10px;overflow:hidden;box-shadow:0 4px 18px rgba(0,0,0,.12)">
+<div class="m-topbar">
+  <div class="m-tlogo"><svg viewBox="0 0 24 24"><path d="M20 8h-3V4H3c-1.1 0-2 .9-2 2v11h2c0 1.66 1.34 3 3 3s3-1.34 3-3h6c0 1.66 1.34 3 3 3s3-1.34 3-3h2v-5l-3-4z"/></svg></div>
+  <div><div class="m-ttitle">🎮 Beladen & Lücken sichern – mit Auswertungs-Visualisierung</div><div class="m-tsub">Auswertung zeigt Lkw mit Fehlermarkierungen</div></div>
+</div>
+<div class="m-wrap">
+<div class="m-card">
+  <div class="m-chd"><h2>🎮 Ladespiel mit Auswertungs-Bild</h2><p>Phase 1: Güter platzieren · Phase 2: Lücken sichern · Phase 3: Lkw mit Fehlermarkierungen</p></div>
+  <div class="m-cbody">
+
+    <div id="spsel">
+      <div style="display:grid;gap:8px;grid-template-columns:repeat(auto-fill,minmax(150px,1fr))">
+        <div class="m-spcard" onclick="stSpiel(0)"><div style="font-size:22px;margin-bottom:4px">📦</div><div style="font-size:11px;font-weight:700;color:var(--navy);margin-bottom:1px">Palettenware</div><div style="font-size:9px;color:var(--muted)">6 Paletten · 12t Lkw</div></div>
+        <div class="m-spcard" onclick="stSpiel(1)"><div style="font-size:22px;margin-bottom:4px">⚙️</div><div style="font-size:11px;font-weight:700;color:var(--navy);margin-bottom:1px">Maschinen</div><div style="font-size:9px;color:var(--muted)">5 Güter · 18t Sattelzug</div></div>
+        <div class="m-spcard" onclick="stSpiel(2)"><div style="font-size:22px;margin-bottom:4px">🔄</div><div style="font-size:11px;font-weight:700;color:var(--navy);margin-bottom:1px">Gemischte Ladung</div><div style="font-size:9px;color:var(--muted)">6 Güter · 3 Lücken</div></div>
+      </div>
+    </div>
+
+    <div id="spgame" class="hidden">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:7px;flex-wrap:wrap;gap:5px">
+        <div style="font-size:11px;font-weight:700;color:var(--navy)" id="sptit"></div>
+        <button class="m-btn out sm" onclick="rstSpiel()">← Szenarien</button>
+      </div>
+      <div class="m-phase-bar">
+        <div class="m-ps act" id="ph1">① Güter platzieren</div>
+        <div class="m-ps" id="ph2">② Lücken sichern</div>
+        <div class="m-ps" id="ph3">③ Auswertung</div>
+      </div>
+      <div style="background:#f4f7fc;border-radius:7px;padding:8px 11px;font-size:11px;line-height:1.5;border-left:3px solid #2b6cb0;color:var(--navy);margin-bottom:8px" id="sptask"></div>
+      <div style="display:flex;align-items:center;gap:7px;margin-bottom:6px">
+        <span style="font-size:8px;font-weight:700;color:var(--lasi);text-transform:uppercase;white-space:nowrap">Füllstand</span>
+        <div class="m-fill-bar-wrap" style="flex:1"><div class="m-fill-bar" id="fillbar" style="width:0%"></div></div>
+        <span style="font-size:10px;font-weight:800;white-space:nowrap" id="fillpct">0%</span>
+      </div>
+      <div class="m-stats-row" id="statsrow"></div>
+
+      <!-- P1 -->
+      <div id="p1">
+        <div style="font-size:9px;font-weight:700;color:var(--lasi);text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px">Ladefläche</div>
+        <div id="cv1wrap"><canvas id="cv1" style="border-radius:8px;display:block;width:100%;touch-action:none"></canvas></div>
+        <div style="margin:3px 0 7px;font-size:9px;color:var(--muted)">Gut ziehen → rastet ein · Bereits platzierte Güter verschiebbar</div>
+        <div style="font-size:9px;font-weight:700;color:var(--lasi);text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px">Verfügbare Güter</div>
+        <div class="m-palette-wrap" id="pal1"></div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap">
+          <button class="m-btn safety" id="btnP2" onclick="goP2()" style="display:none">Weiter: Lücken sichern →</button>
+          <button class="m-btn out" onclick="leere()">Zurücksetzen</button>
+        </div>
+        <div class="m-fb" id="fb1"></div>
+      </div>
+
+      <!-- P2 -->
+      <div id="p2" class="hidden">
+        <div style="font-size:9px;font-weight:700;color:var(--lasi);text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px">Ladefläche – rote Lücken sichern</div>
+        <div class="m-p2wrap">
+          <div class="m-lasi-pal">
+            <div class="m-lasi-pal-title">🧰 LaSi-Material</div>
+            <div id="lasiPal"></div>
+          </div>
+          <div>
+            <div id="cv2wrap"><canvas id="cv2" style="border-radius:8px;display:block;width:100%;touch-action:none"></canvas></div>
+            <div style="margin-top:2px;font-size:9px;color:var(--muted)">Material auf rote Lücken ziehen · ✕ zum Entfernen</div>
+            <div class="m-luecken-info" id="lueckenInfo"></div>
+          </div>
+        </div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px">
+          <button class="m-btn" onclick="ausw()">Auswertung ✓</button>
+          <button class="m-btn out" onclick="goP1()">← Zurück</button>
+        </div>
+        <div class="m-fb" id="fb2"></div>
+      </div>
+
+      <!-- P3: AUSWERTUNG mit Canvas -->
+      <div id="p3" class="hidden">
+        <!-- Ergebnis-Banner -->
+        <div class="m-fb show" id="fb3" style="margin-top:0;font-size:14px"></div>
+
+        <!-- Lkw-Auswertungs-Canvas -->
+        <div class="m-auswert-canvas-wrap" style="margin-top:12px">
+          <div class="m-auswert-canvas-title">
+            🚛 Lkw-Auswertung – Fehler auf einen Blick
+          </div>
+          <canvas id="cvAusw" style="border-radius:10px;display:block;width:100%;border:2px solid var(--line)"></canvas>
+          <div class="m-legende" id="legende"></div>
+        </div>
+
+        <!-- Kriterien-Liste -->
+        <div class="m-ck-list" id="ckList"></div>
+
+        <!-- LaSi-Tipps -->
+        <div style="background:#f4f7fc;border-radius:8px;padding:10px 12px;margin-bottom:10px">
+          <div style="font-size:10px;font-weight:700;color:var(--navy);margin-bottom:5px">📚 LaSi-Grundsatz</div>
+          <div id="tipps3"></div>
+        </div>
+
+        <div style="display:flex;gap:6px;flex-wrap:wrap">
+          <button class="m-btn out sm" onclick="leere();showP(1)">Nochmal</button>
+          <button class="m-btn sm" onclick="rstSpiel()">Anderes Szenario</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+</div>
+`;
   document.getElementById('foot').innerHTML='';
+  if(!spielInitDone){
+    spielInitDone = true;
+  }
 }
 
-/* ── SIDEBAR TOGGLE ── */
-function toggleSidebar(){
-  document.getElementById('sidebar').classList.toggle('open');
-  document.getElementById('scrim').classList.toggle('show');
-}
-function closeSidebar(){
-  document.getElementById('sidebar').classList.remove('open');
-  document.getElementById('scrim').classList.remove('show');
-}
+const COLS=12,ROWS=4;
+const PAD={l:46,r:9,t:20,b:18};
 
-/* ── INIT ── */
-buildSteps();
-buildSidebar();
+const LASI=[
+  {id:'airbag',n:'Stausack (Airbag)',ic:'💨',f:'#8e44ad',ok_typen:['längs_vorne','längs_mitte','längs_hinten'],erkl:'Stausäcke (0,1–0,4 bar) passen sich individuell an. Ideal für druckempfindliche Ladung. (BGI 649)'},
+  {id:'stauholz',n:'Stauholz / Kantholz',ic:'🪵',f:'#8B4513',ok_typen:['längs_vorne','längs_mitte','längs_hinten'],erkl:'Schließt Längs-Lücken formschlüssig. (VDI 2700, BGI 649)'},
+  {id:'leerpalette',n:'Leerpalette',ic:'🏗️',f:'#6d4c41',ok_typen:['längs_vorne','längs_mitte','längs_hinten'],erkl:'Leerpaletten hochkant als Lückenfüller. (BGI 649)'},
+  {id:'sperrstange',n:'Sperrstange',ic:'🔒',f:'#555',ok_typen:['längs_vorne','längs_mitte','quer_seite'],erkl:'Bildet formschlüssige Ladeabteilungen. (VDI 2700, DIN EN 12642)'},
+  {id:'antirutsch',n:'Antirutschmatte',ic:'🟥',f:'#c0392b',ok_typen:['reibung_boden'],erkl:'Erhöht μ auf 0,60. Reduziert Gurtanzahl. (VDI 2700 Bl.5)'},
+  {id:'niederzurren',n:'Niederzurren',ic:'🔗',f:'#1a7a4a',ok_typen:['quer_seite','reibung_boden'],erkl:'Min. 2 Gurte, Winkel ≥30°. (§22 StVO, VDI 2700)'},
+  {id:'direktzurren',n:'Direktzurren',ic:'⛓️',f:'#2b6cb0',ok_typen:['quer_seite','reibung_boden','schwer'],erkl:'LC wirkt direkt. Diagonalzurren 4 Gurte. (DIN EN 12195-2)'},
+  {id:'keil',n:'Keile / Unterlegkeile',ic:'📐',f:'#d97706',ok_typen:['rund_rollen'],erkl:'Sichern runde Ladung gegen Wegrollen. (VDI 2700 Bl.9)'},
+];
 
-// Auto-Login per URL-Parameter
-(function(){
-  const params=new URLSearchParams(window.location.search);
-  const nr=params.get('regnr');
-  if(nr&&/^\d{4}-\d{3,4}$/.test(nr)) startApp(nr);
-})();
-</script>
-</body>
-</html>
+const SZP=[
+  {t:'Szenario 1: Palettenware',fz:{nl:7500,va:0.2,ha:0.8,mh:10000},
+   auf:'Sechs Paletten auf 12t-Lkw. Platziere sie und sichere alle entstehenden Lücken.',
+   g:[{id:'B1',n:'900kg',ic:'📦',gw:900,cw:3,ch:2,f:'#c0392b'},{id:'B2',n:'800kg',ic:'📦',gw:800,cw:3,ch:2,f:'#c0392b'},{id:'B3',n:'700kg',ic:'📦',gw:700,cw:3,ch:2,f:'#d97706'},{id:'B4',n:'600kg',ic:'📦',gw:600,cw:3,ch:2,f:'#d97706'},{id:'B5',n:'500kg',ic:'📦',gw:500,cw:3,ch:2,f:'#1a7a4a'},{id:'B6',n:'450kg',ic:'📦',gw:450,cw:3,ch:2,f:'#1a7a4a'}],
+   sp:[0.35,0.65],tipps:['Lücken zur Stirnwand: formschlüssig schließen (§22 StVO)','Lücken hinten: formschlüssig oder Direktzurren','Antirutschmatte unter jede Palette empfohlen']},
+  {t:'Szenario 2: Maschinen',fz:{nl:24000,va:0.15,ha:0.75,mh:16000},
+   auf:'Fünf Maschinenteile auf 18t-Sattelzug. Güter füllen Breite nicht vollständig. Seitenlücken sichern.',
+   g:[{id:'A1',n:'Maschine A\n3.000kg',ic:'⚙️',gw:3000,cw:4,ch:2,f:'#2b6cb0'},{id:'A2',n:'Maschine B\n2.500kg',ic:'⚙️',gw:2500,cw:4,ch:2,f:'#2b6cb0'},{id:'A3',n:'Anbauteil\n800kg',ic:'🔧',gw:800,cw:2,ch:2,f:'#1a7a4a'},{id:'A4',n:'Ersatzteile\n600kg',ic:'📦',gw:600,cw:2,ch:2,f:'#d97706'},{id:'A5',n:'Werkzeug\n400kg',ic:'🧰',gw:400,cw:2,ch:2,f:'#d97706'}],
+   sp:[0.4,0.65],tipps:['Seitliche Lücken: Direktzurren bevorzugen','Stahl/Stahl μ=0,25: Antirutschmatte!','Maschinen über Hinterachse (§37 DGUV Vo70)']},
+  {t:'Szenario 3: Gemischte Ladung',fz:{nl:24000,va:0.15,ha:0.75,mh:16000},
+   auf:'Coil + Paletten + Kartonage. Alle entstehenden Lücken richtig sichern.',
+   g:[{id:'C1',n:'Coil 5t',ic:'🔄',gw:5000,cw:3,ch:4,f:'#2b6cb0'},{id:'C2',n:'Holzpal.\n900kg',ic:'🪵',gw:900,cw:2,ch:2,f:'#d97706'},{id:'C3',n:'Holzpal.\n800kg',ic:'🪵',gw:800,cw:2,ch:2,f:'#d97706'},{id:'C4',n:'Karton\n600kg',ic:'📦',gw:600,cw:2,ch:2,f:'#1a7a4a'},{id:'C5',n:'Karton\n550kg',ic:'📦',gw:550,cw:2,ch:2,f:'#1a7a4a'},{id:'C6',n:'Gestell\n300kg',ic:'🗂️',gw:300,cw:1,ch:4,f:'#68788f'}],
+   sp:[0.4,0.65],tipps:['Coil: Direktzurren durch Auge (DIN EN 12195-3)','Lücken vorne/hinten: Stauholz oder Airbag','Alle Richtungen sichern (§22 StVO)']}
+];
+
+let spa=null,grid=null,spp={},lueckenMat={};
+let palDrag=null,lasiDrag=null,canDrag=null,ghost=null,dragPrev=null,lasiHover=null;
+let cv1=null,ctx1=null,cv2=null,ctx2=null,cvA=null,ctxA=null;
+let detLuecken=[],auswCks=[];
+
+function mkGrid(){grid=Array.from({length:ROWS},()=>Array(COLS).fill(null));}
+function canPlace(c,r,cw,ch,ex=null){if(c<0||r<0||c+cw>COLS||r+ch>ROWS)return false;for(let rr=r;rr<r+ch;rr++)for(let cc=c;cc<c+cw;cc++)if(grid[rr][cc]&&grid[rr][cc]!==ex)return false;return true;}
+function placeGrid(id,c,r,cw,ch){for(let rr=r;rr<r+ch;rr++)for(let cc=c;cc<c+cw;cc++)grid[rr][cc]=id;}
+function removeGrid(id){for(let r=0;r<ROWS;r++)for(let c=0;c<COLS;c++)if(grid[r][c]===id)grid[r][c]=null;}
+function snapPos(px,py,cw,ch,cv,ex=null){const tr=gTR(cv);const cW=tr.w/COLS,cH=tr.h/ROWS;let col=Math.round((px-tr.x)/cW-cw/2),row=Math.round((py-tr.y)/cH-ch/2);col=Math.max(0,Math.min(COLS-cw,col));row=Math.max(0,Math.min(ROWS-ch,row));return{col,row,fits:canPlace(col,row,cw,ch,ex)};}
+function gTR(cv){return{x:PAD.l,y:PAD.t,w:cv.width-PAD.l-PAD.r,h:cv.height-PAD.t-PAD.b};}
+function fillPct(){let u=0;for(let r=0;r<ROWS;r++)for(let c=0;c<COLS;c++)if(grid[r][c])u++;return Math.round(u/(ROWS*COLS)*100);}
+
+function erkenneLuecken(){
+  const luecken=[];
+  let lCol=[];
+  for(let c=0;c<COLS;c++){
+    const allLeer=Array.from({length:ROWS},(_,r)=>!grid[r][c]).every(Boolean);
+    if(allLeer)lCol.push(c);
+    else if(lCol.length>0){addLL(luecken,lCol);lCol=[];}
+  }
+  i... (33 kB verbleibend)
