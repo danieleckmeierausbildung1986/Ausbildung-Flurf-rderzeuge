@@ -1010,6 +1010,9 @@ document.getElementById('regnr').addEventListener('keydown',e=>{if(e.key==='Ente
   const regnr = params.get('regnr');
   if(regnr && /^\d{4}-\d{3,4}$/.test(regnr)){
     enterApp({ vorname:'', nachname:'', regnr: regnr });
+  } else {
+    // Kein gültiger regnr-Parameter → zurück zur Startseite
+    window.location.replace('https://danieleckmeierausbildung1986.github.io/Ausbildung-Flurf-rderzeuge/');
   }
 })();
 function toggleMenu(){document.getElementById('sidebar').classList.toggle('open');document.getElementById('scrim').classList.toggle('show');}
