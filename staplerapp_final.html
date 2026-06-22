@@ -17,7 +17,7 @@ body{font-family:"Segoe UI",system-ui,sans-serif;background:var(--bg);color:var(
 button{font-family:inherit;cursor:pointer}
 
 /* ===== LOGIN ===== */
-#login{min-height:100vh;display:none;align-items:center;justify-content:center;
+#login{min-height:100vh;display:flex;align-items:center;justify-content:center;
   background:linear-gradient(135deg,#0d1a30,var(--navy2) 55%,#1e3a6b);padding:20px}
 .lcard{background:#fff;border-radius:22px;box-shadow:0 24px 64px rgba(0,0,0,.28);
   width:100%;max-width:420px;overflow:hidden}
@@ -265,12 +265,6 @@ button{font-family:inherit;cursor:pointer}
   .slide-imgs.two,.slide-imgs.three,.slide-imgs.four{grid-template-columns:1fr}
 }
 </style>
-<script>
-// Kein regnr in URL → zurück zu index.html
-if(!new URLSearchParams(window.location.search).get('regnr')){
-  window.location.replace('https://danieleckmeierausbildung1986.github.io/Ausbildung-Flurf-rderzeuge/');
-}
-</script>
 </head>
 <body>
 
@@ -551,19 +545,11 @@ const LANG = {
   },
 };
 
-// Sprache aus URL-Parameter oder sessionStorage laden
-const _urlLang = new URLSearchParams(window.location.search).get('lang');
-const _storedLang = sessionStorage.getItem('lang');
-const _validLangs = ['de','en','pl','ro','sq'];
-let lang = (_validLangs.includes(_urlLang) ? _urlLang : null)
-        || (_validLangs.includes(_storedLang) ? _storedLang : null)
-        || 'de';
-sessionStorage.setItem('lang', lang);
+let lang = 'de';
 function T(key){ return LANG[lang][key] || LANG['de'][key] || key; }
 
 function setLang(l){
   lang = l;
-  sessionStorage.setItem('lang', l);
   // Update login page
   document.getElementById('l-title').textContent = T('loginTitle');
   document.getElementById('l-regnr-lbl').textContent = T('regnrLabel');
@@ -583,7 +569,7 @@ function setLang(l){
   if(!document.getElementById('app').classList.contains('hidden')) {
     document.getElementById('app-title').textContent = T('appTitle');
     buildSidebar();
-    if(STEPS.length > 0){ idx=0; render(); }
+    render();
   }
 }
 
@@ -1012,19 +998,17 @@ function enterApp(user){
   }
   document.getElementById('login').classList.add('hidden');
   document.getElementById('app').classList.remove('hidden');
-  buildSteps(); // Erst STEPS aufbauen
-  setLang(lang); // Dann Sprache anwenden (baut Sidebar + render)
+  document.getElementById('app-title').textContent = T('appTitle');
+  buildSteps(); buildSidebar(); idx=0; render();
 }
 
-const _regnrEl = document.getElementById('regnr'); if(_regnrEl) _regnrEl.addEventListener('keydown',e=>{if(e.key==='Enter')doLogin();});
+document.getElementById('regnr').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin();});
 
 // Auto-Login per URL-Parameter (von Startseite)
 (function(){
   const params = new URLSearchParams(window.location.search);
   const regnr = params.get('regnr');
   if(regnr && /^\d{4}-\d{3,4}$/.test(regnr)){
-    // Login-Screen sofort ausblenden — verhindert Flackern
-    document.getElementById('login').style.display = 'none';
     enterApp({ vorname:'', nachname:'', regnr: regnr });
   }
 })();
@@ -1125,7 +1109,11 @@ function renderSlide(host,f,ch_title){
 
   // If image-only slide (full-width image)
   if(f.imgonly && f.imgs && f.imgs.length>0){
-    html+=`<img class="slide-img" src="${f.imgs[0]}" alt="${title}">`;
+    const EN_BASE='https://danieleckmeierausbildung1986.github.io/Ausbildung-Flurf-rderzeuge/EN_BILDER/';
+    const imgSrc=(lang==='en' && f.nr>=2 && f.nr<=167)
+      ? EN_BASE+'Folie'+f.nr+'.PNG'
+      : f.imgs[0];
+    html+=`<img class="slide-img" src="${imgSrc}" alt="${title}">`;
     const waText=encodeURIComponent(T('waHello')+'\n📚 '+(ch_title||'')+'\n📄 '+T('folie')+' '+f.nr+'\n\n'+T('waQuestion')+' ');
     const waUrl='https://wa.me/4916096877039?text='+waText;
     html+=`<div class="slide-footer">
@@ -1165,7 +1153,13 @@ function renderSlide(host,f,ch_title){
   if(f.imgs && f.imgs.length>0){
     const cls=['','one','two','three','four'][Math.min(f.imgs.length,4)];
     html+=`<div class="slide-imgs ${cls}">`;
-    f.imgs.forEach(img=>{ html+=`<img src="${img}" alt="">`; });
+    const EN_BASE='https://danieleckmeierausbildung1986.github.io/Ausbildung-Flurf-rderzeuge/EN_BILDER/';
+    f.imgs.forEach((img,i)=>{
+      const imgSrc=(lang==='en' && f.nr>=2 && f.nr<=167 && i===0)
+        ? EN_BASE+'Folie'+f.nr+'.PNG'
+        : img;
+      html+=`<img src="${imgSrc}" alt="">`;
+    });
     html+='</div>';
   }
 
