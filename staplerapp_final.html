@@ -17,7 +17,7 @@ body{font-family:"Segoe UI",system-ui,sans-serif;background:var(--bg);color:var(
 button{font-family:inherit;cursor:pointer}
 
 /* ===== LOGIN ===== */
-#login{min-height:100vh;display:flex;align-items:center;justify-content:center;
+#login{min-height:100vh;display:none;align-items:center;justify-content:center;
   background:linear-gradient(135deg,#0d1a30,var(--navy2) 55%,#1e3a6b);padding:20px}
 .lcard{background:#fff;border-radius:22px;box-shadow:0 24px 64px rgba(0,0,0,.28);
   width:100%;max-width:420px;overflow:hidden}
@@ -62,10 +62,6 @@ button{font-family:inherit;cursor:pointer}
 .topbar-lang{padding:4px 10px;border-radius:7px;border:1px solid rgba(255,255,255,.25);
   background:rgba(255,255,255,.1);color:#fff;font-size:12px;font-weight:600;cursor:pointer}
 .topbar-lang:hover{background:rgba(255,255,255,.2)}
-.back-home{padding:4px 10px;border-radius:7px;border:1px solid rgba(255,255,255,.25);
-  background:rgba(255,255,255,.1);color:#fff;font-size:12px;font-weight:600;cursor:pointer;
-  text-decoration:none;display:inline-flex;align-items:center;gap:4px}
-.back-home:hover{background:rgba(255,255,255,.2)}
 .pbar-wrap{height:3px;background:rgba(255,255,255,.1)}
 .pbar{height:100%;background:var(--safety);width:0;transition:width .35s}
 
@@ -269,6 +265,12 @@ button{font-family:inherit;cursor:pointer}
   .slide-imgs.two,.slide-imgs.three,.slide-imgs.four{grid-template-columns:1fr}
 }
 </style>
+<script>
+// Login nur einblenden wenn KEIN regnr in URL
+if(!new URLSearchParams(window.location.search).get('regnr')){
+  document.write('<style>#login{display:flex!important}</style>');
+}
+</script>
 </head>
 <body>
 
@@ -307,7 +309,6 @@ button{font-family:inherit;cursor:pointer}
     <div class="topbar-title" id="app-title">Staplerfahrer-Ausbildung</div>
     <div class="topbar-right">
       <span class="topbar-who" id="whoami"></span>
-      <a class="back-home" id="backHomeBtn" href="#">← <span class="t" data-key="back">Zurück</span></a>
       <button class="topbar-lang" id="lang-toggle" onclick="openLangModal()">🇩🇪 DE</button>
     </div>
   </div>
@@ -550,11 +551,19 @@ const LANG = {
   },
 };
 
-let lang = 'de';
+// Sprache aus URL-Parameter oder sessionStorage laden
+const _urlLang = new URLSearchParams(window.location.search).get('lang');
+const _storedLang = sessionStorage.getItem('lang');
+const _validLangs = ['de','en','pl','ro','sq'];
+let lang = (_validLangs.includes(_urlLang) ? _urlLang : null)
+        || (_validLangs.includes(_storedLang) ? _storedLang : null)
+        || 'de';
+sessionStorage.setItem('lang', lang);
 function T(key){ return LANG[lang][key] || LANG['de'][key] || key; }
 
 function setLang(l){
   lang = l;
+  sessionStorage.setItem('lang', l);
   // Update login page
   document.getElementById('l-title').textContent = T('loginTitle');
   document.getElementById('l-regnr-lbl').textContent = T('regnrLabel');
@@ -1001,14 +1010,9 @@ function enterApp(user){
     const name = (user.vorname + ' ' + user.nachname).trim();
     who.textContent = name || ('Nr.: ' + user.regnr);
   }
-  // Zurück-Button: zur Modulauswahl (index.html) mit Registriernummer, damit kein erneuter Login nötig ist
-  const backBtn = document.getElementById('backHomeBtn');
-  if(backBtn){
-    backBtn.href = 'https://danieleckmeierausbildung1986.github.io/Ausbildung-Flurf-rderzeuge/index.html?regnr=' + encodeURIComponent(user.regnr);
-  }
   document.getElementById('login').classList.add('hidden');
   document.getElementById('app').classList.remove('hidden');
-  document.getElementById('app-title').textContent = T('appTitle');
+  setLang(lang); // Sprache anwenden (aus URL/sessionStorage)
   buildSteps(); buildSidebar(); idx=0; render();
 }
 
@@ -1019,6 +1023,8 @@ document.getElementById('regnr').addEventListener('keydown',e=>{if(e.key==='Ente
   const params = new URLSearchParams(window.location.search);
   const regnr = params.get('regnr');
   if(regnr && /^\d{4}-\d{3,4}$/.test(regnr)){
+    // Login-Screen sofort ausblenden — verhindert Flackern
+    document.getElementById('login').style.display = 'none';
     enterApp({ vorname:'', nachname:'', regnr: regnr });
   }
 })();
