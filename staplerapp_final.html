@@ -583,7 +583,7 @@ function setLang(l){
   if(!document.getElementById('app').classList.contains('hidden')) {
     document.getElementById('app-title').textContent = T('appTitle');
     buildSidebar();
-    render();
+    if(STEPS.length > 0){ idx=0; render(); }
   }
 }
 
@@ -1012,11 +1012,11 @@ function enterApp(user){
   }
   document.getElementById('login').classList.add('hidden');
   document.getElementById('app').classList.remove('hidden');
-  setLang(lang); // Sprache anwenden (aus URL/sessionStorage)
-  buildSteps(); buildSidebar(); idx=0; render();
+  buildSteps(); // Erst STEPS aufbauen
+  setLang(lang); // Dann Sprache anwenden (baut Sidebar + render)
 }
 
-document.getElementById('regnr').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin();});
+const _regnrEl = document.getElementById('regnr'); if(_regnrEl) _regnrEl.addEventListener('keydown',e=>{if(e.key==='Enter')doLogin();});
 
 // Auto-Login per URL-Parameter (von Startseite)
 (function(){
