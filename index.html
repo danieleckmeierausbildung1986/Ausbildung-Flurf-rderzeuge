@@ -138,6 +138,9 @@ body::before{
   <div class="lang-switcher">
     <button class="lang-btn active" id="btn-de" onclick="setLang('de')">🇩🇪 DE</button>
     <button class="lang-btn" id="btn-en" onclick="setLang('en')">🇬🇧 EN</button>
+    <button class="lang-btn" id="btn-pl" onclick="setLang('pl')">🇵🇱 PL</button>
+    <button class="lang-btn" id="btn-ro" onclick="setLang('ro')">🇷🇴 RO</button>
+    <button class="lang-btn" id="btn-sq" onclick="setLang('sq')">🇦🇱 SQ</button>
   </div>
 
   <div class="logo-area">
@@ -223,6 +226,72 @@ const TRANSLATIONS = {
       stufe2:     { title: 'Forklift Level 2',   sub: 'DGUV Principle 308-001' },
       lasi:       { title: 'Load Securing',      sub: 'VDI 2700 ff. · DGUV 308-009' },
     }
+  },
+  pl: {
+    title:        'Witamy na platformie e-learningowej',
+    welcome:      'Cieszymy się, że jesteś!',
+    sub:          'Szkolenie z wózków jezdniowych i mocowania ładunków – zgodnie z DGUV 308-001 i VDI 2700.',
+    intro:        'Proszę zalogować się numerem rejestracyjnym.',
+    label:        'Numer rejestracyjny',
+    loginBtn:     'Zaloguj →',
+    hint:         'Format: 2025-001 – podany przez instruktora',
+    choose:       'Proszę wybrać moduł szkoleniowy',
+    back:         '← Powrót do logowania',
+    noModules:    'Dla tego numeru rejestracyjnego nie są zarezerwowane żadne moduły e-learning.<br>Proszę skontaktować się z instruktorem.',
+    errEmpty:     'Proszę podać numer rejestracyjny.',
+    errFormat:    'Nieprawidłowy format. Przykład: 2025-001',
+    errNotFound:  'Numer nie znaleziony. Proszę skontaktować się z instruktorem.',
+    errConn:      'Błąd połączenia. Proszę spróbować ponownie.',
+    hallo:        'Cześć, ',
+    mod: {
+      stufe1:     { title: 'Wózek widłowy – poziom 1', sub: 'DGUV Zasada 308-001' },
+      stufe2:     { title: 'Wózek widłowy – poziom 2', sub: 'DGUV Zasada 308-001' },
+      lasi:       { title: 'Mocowanie ładunków',       sub: 'VDI 2700 ff. · DGUV 308-009' },
+    }
+  },
+  ro: {
+    title:        'Bun venit pe platforma e-learning',
+    welcome:      'Ne bucurăm că ești aici!',
+    sub:          'Instruire pentru stivuitoare și securizarea sarcinii – conform DGUV 308-001 și VDI 2700.',
+    intro:        'Vă rugăm să vă autentificați cu numărul de înregistrare.',
+    label:        'Număr de înregistrare',
+    loginBtn:     'Autentificare →',
+    hint:         'Format: 2025-001 – furnizat de instructor',
+    choose:       'Vă rugăm selectați modulul de instruire',
+    back:         '← Înapoi la autentificare',
+    noModules:    'Pentru acest număr de înregistrare nu sunt rezervate module e-learning.<br>Vă rugăm contactați instructorul.',
+    errEmpty:     'Vă rugăm introduceți numărul de înregistrare.',
+    errFormat:    'Format invalid. Exemplu: 2025-001',
+    errNotFound:  'Număr negăsit. Vă rugăm contactați instructorul.',
+    errConn:      'Eroare de conexiune. Vă rugăm încercați din nou.',
+    hallo:        'Bună, ',
+    mod: {
+      stufe1:     { title: 'Stivuitor – nivelul 1', sub: 'Principiu DGUV 308-001' },
+      stufe2:     { title: 'Stivuitor – nivelul 2', sub: 'Principiu DGUV 308-001' },
+      lasi:       { title: 'Securizarea sarcinii',  sub: 'VDI 2700 ff. · DGUV 308-009' },
+    }
+  },
+  sq: {
+    title:        'Mirë se vini në platformën e-learning',
+    welcome:      'Gëzohemi që jeni këtu!',
+    sub:          'Trajnim për karikues industrialë dhe sigurimin e ngarkesës – sipas DGUV 308-001 dhe VDI 2700.',
+    intro:        'Ju lutemi hyni me numrin tuaj të regjistrimit.',
+    label:        'Numri i regjistrimit',
+    loginBtn:     'Hyrje →',
+    hint:         'Format: 2025-001 – dhënë nga instruktori',
+    choose:       'Ju lutemi zgjidhni modulin e trajnimit',
+    back:         '← Kthehu te hyrja',
+    noModules:    'Për këtë numër regjistrimi nuk janë rezervuar module e-learning.<br>Ju lutemi kontaktoni instruktorin.',
+    errEmpty:     'Ju lutemi vendosni numrin e regjistrimit.',
+    errFormat:    'Format i pavlefshëm. Shembull: 2025-001',
+    errNotFound:  'Numri nuk u gjet. Ju lutemi kontaktoni instruktorin.',
+    errConn:      'Gabim lidhjeje. Ju lutemi provoni përsëri.',
+    hallo:        'Përshëndetje, ',
+    mod: {
+      stufe1:     { title: 'Ngarkues – niveli 1', sub: 'Parimi DGUV 308-001' },
+      stufe2:     { title: 'Ngarkues – niveli 2', sub: 'Parimi DGUV 308-001' },
+      lasi:       { title: 'Sigurimi i ngarkesës', sub: 'VDI 2700 ff. · DGUV 308-009' },
+    }
   }
 };
 
@@ -235,8 +304,10 @@ function setLang(lang){
   document.documentElement.lang = lang;
 
   // Buttons
-  document.getElementById('btn-de').classList.toggle('active', lang === 'de');
-  document.getElementById('btn-en').classList.toggle('active', lang === 'en');
+  ['de','en','pl','ro','sq'].forEach(l => {
+    const b = document.getElementById('btn-'+l);
+    if(b) b.classList.toggle('active', lang === l);
+  });
 
   const t = TRANSLATIONS[lang];
 
