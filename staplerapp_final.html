@@ -266,9 +266,9 @@ button{font-family:inherit;cursor:pointer}
 }
 </style>
 <script>
-// Login nur einblenden wenn KEIN regnr in URL
+// Kein regnr in URL → zurück zu index.html
 if(!new URLSearchParams(window.location.search).get('regnr')){
-  document.write('<style>#login{display:flex!important}</style>');
+  window.location.replace('https://danieleckmeierausbildung1986.github.io/Ausbildung-Flurf-rderzeuge/');
 }
 </script>
 </head>
