@@ -6,7 +6,8 @@
 <title>Gabelstapler Stufe 1 – Allgemeine Ausbildung</title>
 <style>
 :root{
-  --bg:#1a0e00;--orange:#E8640A;--orange-d:#C4520A;--orange-l:#FDF0E7;
+  --bg:#0d1f12;--green:#1a7a4a;--green-l:#2ea865;--green-d:#0d4a24;
+  --acc1:#1a3a6b;--acc2:#2e6cb0;
   --navy:#16243f;--muted:#68788f;--line:#e3e8f0;--ink:#1a2330;
   --shadow:0 8px 40px rgba(0,0,0,.25);
   --ok:#1a9e6e;--okbg:#e8f7f2;--no:#c0392b;--nobg:#fdecea;
@@ -20,15 +21,15 @@ body{
 body::before{
   content:'';position:fixed;inset:0;
   background:
-    radial-gradient(ellipse 80% 60% at 20% 20%, rgba(232,100,10,.2) 0%, transparent 60%),
-    radial-gradient(ellipse 60% 80% at 80% 80%, rgba(196,82,10,.15) 0%, transparent 60%);
+    radial-gradient(ellipse 80% 60% at 20% 20%, rgba(26,122,74,.25) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 80% at 80% 80%, rgba(13,74,36,.3) 0%, transparent 60%);
   pointer-events:none;z-index:0;
 }
 .wrap{position:relative;z-index:1;width:100%;max-width:1000px;display:flex;flex-direction:column;flex:1}
 /* TOPBAR */
 .topbar{display:flex;align-items:center;gap:14px;margin-bottom:12px;}
 .ti{width:46px;height:46px;border-radius:12px;flex-shrink:0;
-  background:linear-gradient(135deg,var(--orange-d),var(--orange));
+  background:linear-gradient(135deg,var(--acc1),var(--acc2));
   display:flex;align-items:center;justify-content:center;font-size:22px;box-shadow:0 6px 20px rgba(0,0,0,.3);}
 .topbar h1{color:#fff;font-size:18px;font-weight:700;line-height:1.2}
 .topbar p{color:rgba(255,255,255,.45);font-size:12px}
@@ -36,9 +37,9 @@ body::before{
 .stage{background:#fff;border-radius:18px;box-shadow:var(--shadow);overflow:hidden;
   display:flex;flex-direction:column;flex:1}
 .progress{height:5px;background:var(--line)}
-.progress-bar{height:100%;background:linear-gradient(90deg,var(--orange-d),var(--orange));transition:width .25s ease;width:0}
+.progress-bar{height:100%;background:linear-gradient(90deg,var(--acc1),var(--acc2));transition:width .25s ease;width:0}
 /* WELCOME */
-.welcome-box{padding:40px 28px;text-align:center;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;background:linear-gradient(135deg,var(--orange-d),var(--orange));}
+.welcome-box{padding:40px 28px;text-align:center;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;background:linear-gradient(135deg,var(--green-d),var(--green-l));}
 .welcome-logo{font-size:60px;}
 .welcome-titel{font-size:26px;font-weight:800;color:#fff;line-height:1.3;}
 .welcome-sub{font-size:15px;color:rgba(255,255,255,.85);line-height:1.6;max-width:500px;}
@@ -48,9 +49,9 @@ body::before{
 .wg-titel{font-size:12px;font-weight:700;color:#fff;margin-bottom:2px;}
 .wg-text{font-size:11px;color:rgba(255,255,255,.75);}
 .welcome-start{padding:14px 36px;border:none;border-radius:12px;font-size:16px;font-weight:700;
-  cursor:pointer;font-family:inherit;background:#fff;color:var(--orange-d);margin-top:6px;}
+  cursor:pointer;font-family:inherit;background:#fff;color:var(--green-d);margin-top:6px;}
 /* KAPITEL-TITELFOLIE */
-.kapitel-box{padding:48px 28px;text-align:center;background:linear-gradient(135deg,var(--orange-d),var(--orange));
+.kapitel-box{padding:48px 28px;text-align:center;background:linear-gradient(135deg,var(--acc1),var(--acc2));
   color:#fff;min-height:280px;display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;}
 .kapitel-nr{font-size:13px;font-weight:700;color:rgba(255,255,255,.7);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;}
 .kapitel-titel{font-size:30px;font-weight:800;line-height:1.3;}
@@ -67,12 +68,12 @@ body::before{
 .nav-zone span{color:#fff;font-size:30px;padding:0 14px;text-shadow:0 2px 8px rgba(0,0,0,.5)}
 /* QUIZ */
 .quizbox{padding:28px;flex:1;display:flex;flex-direction:column;}
-.quiz-badge{font-size:12px;font-weight:700;color:var(--orange);text-transform:uppercase;letter-spacing:.6px;margin-bottom:12px;}
+.quiz-badge{font-size:12px;font-weight:700;color:var(--acc2);text-transform:uppercase;letter-spacing:.6px;margin-bottom:12px;}
 .quiz-q{font-size:19px;font-weight:700;color:var(--navy);margin-bottom:20px;line-height:1.4;}
 .quiz-opts{display:flex;flex-direction:column;gap:10px;}
 .opt{text-align:left;padding:14px 18px;border:2px solid var(--line);border-radius:12px;
   background:#fff;font-size:15px;color:var(--ink);cursor:pointer;font-family:inherit;transition:all .12s;}
-.opt:hover:not(:disabled){border-color:var(--orange);background:var(--orange-l);}
+.opt:hover:not(:disabled){border-color:var(--acc2);background:#f0f7ff;}
 .opt:disabled{cursor:default;}
 .opt.correct{border-color:var(--ok)!important;background:var(--okbg)!important;color:var(--ok)!important;font-weight:700;}
 .opt.wrong{border-color:var(--no)!important;background:var(--nobg)!important;color:var(--no)!important;}
@@ -86,7 +87,7 @@ body::before{
 .abschluss-sub{font-size:14px;color:var(--muted);max-width:400px;}
 .abschluss-score{background:var(--okbg);border:1px solid var(--ok);border-radius:12px;padding:12px 20px;font-size:15px;color:#0d5c3a;font-weight:600;}
 .abschluss-btn{padding:14px 32px;border:none;border-radius:12px;font-size:16px;font-weight:700;
-  cursor:pointer;font-family:inherit;background:linear-gradient(135deg,var(--orange-d),var(--orange));color:#fff;transition:all .15s;}
+  cursor:pointer;font-family:inherit;background:linear-gradient(135deg,var(--acc1),var(--acc2));color:#fff;transition:all .15s;}
 .abschluss-btn:hover:not(:disabled){opacity:.9;}
 .abschluss-btn:disabled{opacity:.6;cursor:not-allowed;}
 .abschluss-status{font-size:13px;color:var(--ok);font-weight:600;min-height:18px;}
@@ -101,7 +102,7 @@ body::before{
 .controls{display:flex;align-items:center;justify-content:space-between;
   padding:14px 18px;background:#fff;border-top:1px solid var(--line);gap:12px;}
 .ctrl-btn{display:flex;align-items:center;gap:7px;padding:11px 20px;border:none;border-radius:11px;
-  background:linear-gradient(135deg,var(--orange-d),var(--orange));
+  background:linear-gradient(135deg,var(--acc1),var(--acc2));
   color:#fff;font-size:14px;font-weight:700;cursor:pointer;transition:opacity .15s;font-family:inherit;}
 .ctrl-btn:hover{opacity:.9;}
 .ctrl-btn:disabled{opacity:.35;cursor:not-allowed;}
@@ -116,7 +117,28 @@ body::before{
 .back-btn{display:block;width:100%;padding:12px;border:2px solid rgba(255,255,255,.2);
   border-radius:12px;background:rgba(255,255,255,.06);color:rgba(255,255,255,.8);
   font-size:14px;font-weight:600;cursor:pointer;text-align:center;font-family:inherit;margin-top:8px;}
-.back-btn:hover{border-color:var(--orange);color:#fff;background:rgba(255,255,255,.12);}
+.back-btn:hover{border-color:var(--green-l);color:#fff;background:rgba(255,255,255,.12);}
+/* DIAGRAM */
+.diag-card{background:#fff;border-radius:18px;box-shadow:var(--shadow);overflow:hidden;flex:1;display:flex;flex-direction:column;}
+.diag-hd{padding:14px 20px;border-bottom:1px solid var(--line);background:linear-gradient(135deg,var(--acc1),var(--acc2));}
+.diag-hd-title{font-size:15px;font-weight:700;color:#fff;}
+.diag-svg-box{padding:12px 16px;background:#fafbfc;border-bottom:1px solid var(--line);}
+.diag-info{padding:12px 20px;font-size:14px;color:var(--muted);line-height:1.6;border-bottom:1px solid var(--line);}
+.dq{padding:14px 20px;border-bottom:1px solid var(--line);}
+.dq:last-child{border-bottom:none;}
+.dq-text{font-size:14px;color:var(--ink);line-height:1.5;margin-bottom:10px;}
+.dq-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.dq-input{padding:7px 11px;border-radius:8px;border:1px solid var(--line);background:#fafbfc;color:var(--ink);font-size:14px;width:120px;font-family:inherit;}
+.dq-input:focus{outline:none;border-color:var(--acc2);}
+.dqbtn{padding:8px 16px;border-radius:8px;border:1px solid var(--line);background:#fff;color:var(--muted);font-size:13px;transition:all .12s;cursor:pointer;font-family:inherit;}
+.dqbtn:hover{background:#f3f7fc;}
+.dqbtn.info{border-color:var(--acc2);color:var(--acc2);}.dqbtn.info:hover{background:#e8f0fb;}
+.dqhbtn{padding:8px 14px;border-radius:8px;border:2px solid;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;}
+.dqhbtn.ok{border-color:var(--ok)!important;background:var(--okbg)!important;color:var(--ok)!important;}
+.dqhbtn.no{border-color:var(--no)!important;background:var(--nobg)!important;color:var(--no)!important;}
+.dq-fb{display:none;margin-top:8px;padding:8px 12px;border-radius:8px;font-size:13px;}
+.dq-fb.ok{display:block;background:var(--okbg);color:var(--ok);border:1px solid #9dd4b8;}
+.dq-fb.no{display:block;background:var(--nobg);color:var(--no);border:1px solid #f5b7b1;}
 @media(max-width:600px){.ctrl-btn{padding:10px 14px;font-size:13px;}.nav-zone{opacity:.4;}.welcome-grid{grid-template-columns:1fr;}}
 </style>
 </head>
@@ -150,6 +172,51 @@ var WA_NR='4916096877039';
 var MAIL='DanielEckmeier@Ausbildung1986.onmicrosoft.com';
 var FLOW_URL='DEIN_FLOW_URL_HIER';
 
+/* ---- TRAGLASTDIAGRAMM ---- */
+var SINGLE_MAX=function(x){return Math.round(3000-5*(x-500));};
+var MULTI_LINES=[
+  {hub:4250,color:'#1a1a2e',w:3,  a:[500,1081],b:[1000,674]},
+  {hub:5250,color:'#0a7a5a',w:2.5,a:[500,1027],b:[1000,620]},
+  {hub:6150,color:'#1a5fa8',w:2.5,a:[500,917], b:[1000,510]},
+];
+var mMax=function(hub,x){var L=MULTI_LINES.find(function(l){return l.hub===hub;});return Math.round(L.a[1]+(x-L.a[0])/(L.b[0]-L.a[0])*(L.b[1]-L.a[1]));};
+var mX=function(hub,y){var L=MULTI_LINES.find(function(l){return l.hub===hub;});return Math.round(L.a[0]+(y-L.a[1])/(L.b[1]-L.a[1])*(L.b[0]-L.a[0]));};
+var DIAG_PAGES=[
+  {svg:'single',title:'Traglastdiagramm – Grundprinzip',
+   info:'Das Diagramm zeigt die <b>zulässige Last</b> abhängig vom <b>Lastschwerpunktabstand</b>. Je weiter die Last vom Gabelrücken entfernt ist, desto geringer darf sie sein.',qs:[]},
+  {svg:'single',title:'Übungsbeispiele 1–2',info:null,qs:[
+    {type:'input',unit:'kg',q:'1. Wie hoch darf das max. Gewicht bei <b>700 mm</b> Lastschwerpunktabstand sein?',
+     check:function(v){return Math.abs(v-SINGLE_MAX(700))<=150;},
+     ans:function(){return SINGLE_MAX(700)+' kg';},arrow:function(){return[700,SINGLE_MAX(700)];}},
+    {type:'yn',q:'2. Darf eine Last mit <b>1600 kg</b> bei <b>900 mm</b> gehoben werden?',correct:'nein',
+     explain:function(){return'Bei 900 mm max. '+SINGLE_MAX(900)+' kg.';},
+     arrow:function(){return[900,SINGLE_MAX(900)];}},
+  ]},
+  {svg:'multi',title:'Diagramm mit Hubhöhen-Kennlinien',
+   info:'Drei <b>Hubhöhen-Kennlinien</b> (4250, 5250, 6150 mm). Je höher die Hubhöhe, desto geringer die zulässige Traglast. Stets die Kennlinie wählen, die der Einlagerungshöhe <b>entspricht oder darüber liegt</b>.',qs:[]},
+  {svg:'multi',title:'Übungsbeispiele 3–5 – Kennlinie wählen',info:null,qs:[
+    {type:'hub',q:'3. Welche Kennlinie für Einlagerung in <b>5,20 m</b>?',correct:5250,highlight:5250},
+    {type:'hub',q:'4. Welche Kennlinie für Einlagerung bis <b>4,20 m</b>?',correct:4250,highlight:4250},
+    {type:'hub',q:'5. Welche Kennlinie für Einlagerung in <b>5,90 m</b>?',correct:6150,highlight:6150},
+  ]},
+  {svg:'multi',title:'Übungsbeispiele 6–7',info:null,qs:[
+    {type:'input',unit:'mm',q:'6. Max. Lastschwerpunktabstand für <b>1000 kg</b> in <b>4,20 m</b>?',
+     check:function(v){return Math.abs(v-mX(4250,1000))<=80;},
+     ans:function(){return'ca. '+mX(4250,1000)+' mm';},arrow:function(){return[mX(4250,1000),1000];},highlight:4250},
+    {type:'yn',q:'7. Darf <b>800 kg</b> bei <b>700 mm</b> in <b>6 m</b> Höhe eingelagert werden?',correct:'nein',
+     explain:function(){return'Kennlinie 6150 erlaubt bei 700 mm max. '+mMax(6150,700)+' kg.';},
+     arrow:function(){return[700,mMax(6150,700)];},highlight:6150},
+  ]},
+  {svg:'multi',title:'Übungsbeispiele 8–9',info:null,qs:[
+    {type:'input',unit:'kg',q:'8. Max. Last bei <b>600 mm</b> Lastschwerpunktabstand und ca. <b>4 m</b> Höhe?',
+     check:function(v){return Math.abs(v-1000)<=100;},
+     ans:function(){return'ca. 1000 kg';},arrow:function(){return[600,1000];},highlight:4250},
+    {type:'yn',q:'9. Reicht die Tragfähigkeit für <b>700 kg</b> bei <b>800 mm</b> und <b>5,10 m</b>?',correct:'ja',
+     explain:function(){return'Kennlinie 5250 erlaubt bei 800 mm ca. '+mMax(5250,800)+' kg.';},
+     arrow:function(){return[800,mMax(5250,800)];},highlight:5250},
+  ]},
+];
+
 var KAPITEL=[{"nr":1,"titel":"Arbeitsunfall & Rechtsfolgen","folien_von":1,"folien_bis":14},{"nr":2,"titel":"Berufsgenossenschaft & Regelwerk","folien_von":15,"folien_bis":23},{"nr":3,"titel":"Voraussetzungen & Eignungskriterien","folien_von":24,"folien_bis":28},{"nr":4,"titel":"Unfallgeschehen","folien_von":29,"folien_bis":38},{"nr":5,"titel":"Lagern & Stapeln","folien_von":39,"folien_bis":49},{"nr":6,"titel":"Verkehrswege","folien_von":50,"folien_bis":60},{"nr":7,"titel":"Tragfähigkeit & Standsicherheit","folien_von":61,"folien_bis":76},{"nr":8,"titel":"Traglastdiagramm","folien_von":77,"folien_bis":86},{"nr":9,"titel":"Staplerbetrieb — Allgemeines","folien_von":87,"folien_bis":95},{"nr":10,"titel":"Staplerbetrieb — Sondereinsätze & Prüfungen","folien_von":96,"folien_bis":101}];
 var QUIZ_DATA={"1":[{"q":"Welche drei Voraussetzungen müssen für einen Arbeitsunfall erfüllt sein?","o":["Versicherte Person, versicherte Tätigkeit, körperliche Schädigung","Vorsatz, Schaden, Zeugen","Arbeitsvertrag, Verletzung, Arztbesuch","Fahrlässigkeit, Schaden, Meldung"],"c":0},{"q":"Wie viele Unfälle ereignen sich jährlich beim Umgang mit Flurförderzeugen in Deutschland?","o":["ca. 2.000","ca. 5.000","mehr als 20.000","mehr als 50.000"],"c":2},{"q":"Wie viele tödliche Staplerunfälle gibt es in Deutschland pro Jahr?","o":["ca. 5","ca. 23","ca. 50","ca. 100"],"c":1},{"q":"Was ist KEINE mögliche Rechtsfolge nach einem Arbeitsunfall?","o":["Strafrecht","Steuerrecht","Ordnungswidrigkeitenrecht","Arbeitsrecht"],"c":1},{"q":"Was kann die BG bei grob fahrlässig verursachten Unfällen tun?","o":["Nichts","Strafanzeige erstatten","Ihre Aufwendungen zurückfordern","Den Führerschein entziehen"],"c":2},{"q":"Welches Strafmaß droht bei strafrechtlichen Folgen eines Arbeitsunfalls?","o":["Nur Verwarnungsgeld","Freiheitsstrafe oder Geldstrafe","Nur Bußgeld","Fahrverbot"],"c":1},{"q":"Was ist Voraussetzung für ein Ordnungswidrigkeitenverfahren?","o":["Ein Vorsatz ist erforderlich","Verstoß gegen einen bußgeldbewährten Tatbestand","Eine Körperverletzung","Ein Zeuge muss vorhanden sein"],"c":1},{"q":"Welche arbeitsrechtliche Konsequenz ist die schwerste?","o":["Ermahnung","Abmahnung","Verwarnung","Kündigung"],"c":3},{"q":"Wann haftet der Unternehmer nach BGB für einen Arbeitsunfall?","o":["Immer","Nur bei vorsätzlich verursachten Unfällen","Nur bei Fahrlässigkeit","Nie"],"c":1},{"q":"Was ist KEIN Unfallschwerpunkt bei Staplern?","o":["Anfahrunfälle","Kippunfälle","Elektroschäden","Sturz von der Last"],"c":2}],"2":[{"q":"Wie heißt der aktuelle berufsgenossenschaftliche Grundsatz für Staplerfahrer?","o":["BGG 925","DGUV Grundsatz 308-001","DGUV Vorschrift 68","UVV Flurförderzeuge"],"c":1},{"q":"Was ist die Berufsgenossenschaft?","o":["Ein Berufsverband","Träger der gesetzlichen Unfallversicherung","Eine staatliche Behörde","Ein Bildungsträger"],"c":1},{"q":"Wie viele Ausbildungsstufen sieht der DGUV Grundsatz 308-001 vor?","o":["1","2","3","4"],"c":2},{"q":"Was ist Stufe 1 der Staplerausbildung?","o":["Betriebliche Ausbildung","Zusatzausbildung","Allgemeine Ausbildung","Prüfungsvorbereitung"],"c":2},{"q":"Was ist Stufe 3 der Staplerausbildung?","o":["Allgemeine Ausbildung","Zusatzausbildung","Betriebliche Ausbildung","Abschlussprüfung"],"c":2},{"q":"Was beinhaltet Stufe 2 der Staplerausbildung?","o":["Nur Theorieunterricht","Zusatzausbildung für spezielle FFZ","Betriebliche Einweisung","Erste-Hilfe-Kurs"],"c":1},{"q":"Was wird nach Abschluss der allgemeinen Ausbildung (Stufe 1) ausgestellt?","o":["Fahrerlaubnis","Zertifikat","Führerschein","Arbeitszeugnis"],"c":1},{"q":"Was verhütet die BG hauptsächlich?","o":["Diebstahl","Arbeitsunfälle und Berufskrankheiten","Feuer","Betriebsausfälle"],"c":1},{"q":"Welches Dokument regelt Ausbildung und Beauftragung von Staplerfahrern?","o":["StVZO","DGUV Grundsatz 308-001","Arbeitsstättenverordnung","BetrVG"],"c":1},{"q":"Was muss nach Abschluss der betrieblichen Ausbildung (Stufe 3) gemacht werden?","o":["Prüfung ablegen","Zertifikat ausstellen","Durchführung dokumentieren","Fahrausweis beantragen"],"c":2}],"3":[{"q":"Was ist das Mindestalter für das selbstständige Führen von Flurförderzeugen?","o":["16 Jahre","17 Jahre","18 Jahre","21 Jahre"],"c":2},{"q":"Wer erteilt die Beauftragung zum Führen von Flurförderzeugen?","o":["Der Ausbilder","Der Betriebsrat","Der Unternehmer","Die Berufsgenossenschaft"],"c":2},{"q":"In welcher Form muss die Beauftragung erteilt werden?","o":["Mündlich","Schriftlich","Per E-Mail reicht","Gar nicht notwendig"],"c":1},{"q":"Kann die Beauftragung auf andere Unternehmen übertragen werden?","o":["Ja, immer","Ja, mit BG-Genehmigung","Nein","Nur innerhalb der Branche"],"c":2},{"q":"Welche körperliche Eignung ist für Staplerfahrer NICHT gefordert?","o":["Ausreichende Sehschärfe","Hörvermögen","Überdurchschnittliche Körpergröße","Gute Reaktionsfähigkeit"],"c":2},{"q":"Wie wird die körperliche Eignung festgestellt?","o":["Durch einen Sehtest","Durch arbeitsmedizinische Vorsorgeuntersuchung G25","Durch den Ausbilder","Durch den Betriebsrat"],"c":1},{"q":"Was ist KEINE Voraussetzung für das Führen von Flurförderzeugen?","o":["Mindestalter 18 Jahre","Geeignet und ausgebildet","Mitglied in der Gewerkschaft","Schriftliche Beauftragung"],"c":2},{"q":"Was gehört zur geistigen Eignung eines Staplerfahrers?","o":["Überdurchschnittliche Intelligenz","Verständnis für technische und physikalische Zusammenhänge","Akademischer Abschluss","Sprachkenntnisse"],"c":1},{"q":"Wie kann die Beauftragung erteilt werden?","o":["Nur schriftlich per Brief","Durch einen innerbetrieblichen Fahrausweis","Durch Handschlag","Durch Eintrag im Personalausweis"],"c":1},{"q":"Was ist bei der charakterlichen Eignung besonders wichtig?","o":["Sportlichkeit","Verantwortungsbewusstsein und Zuverlässigkeit","Kreativität","Kommunikationsstärke"],"c":1}],"4":[{"q":"Bei welchem Anteil der tödlichen Staplerunfälle handelt es sich um Kippunfälle?","o":["mehr als 20%","mehr als 30%","mehr als 50%","mehr als 80%"],"c":2},{"q":"Was ist eine häufige Ursache für Anfahrunfälle?","o":["Zu schwere Last","Unachtsamkeit des Staplerfahrers","Falsches Schuhwerk","Zu langsames Fahren"],"c":1},{"q":"Was ist eine häufige Ursache für Kippunfälle?","o":["Zu langsames Fahren","Fahren mit angehobener Last","Zu leichte Last","Rückwärtsfahren"],"c":1},{"q":"Wie viele schwere Staplerunfälle durch Fallen und Kippen gibt es jährlich?","o":["ca. 20","ca. 100","ca. 200","ca. 500"],"c":2},{"q":"Was schützt am besten vor Kippunfällen?","o":["Fahren mit angehobener Last","Fahrerrückhalteeinrichtung anlegen und langsam fahren","Immer rückwärts fahren","Nur kleine Lasten transportieren"],"c":1},{"q":"Was passiert bei Kippunfällen häufig mit dem Fahrer?","o":["Er wird leicht verletzt","Er wird unter dem Stapler eingequetscht","Er springt rechtzeitig ab","Es passiert ihm nichts"],"c":1},{"q":"Warum sind Kippunfälle besonders gefährlich?","o":["Weil sie häufig sind","Weil sie oft mit schwerwiegenden Verletzungen verbunden sind","Weil sie teuer sind","Weil sie schwer zu dokumentieren sind"],"c":1},{"q":"Was ist bei mehr als 80% der tödlichen Kippunfälle besonders?","o":["Die Stapler waren überladen","Die Stapler waren unbeladen","Die Fahrer waren unerfahren","Es war dunkel"],"c":1},{"q":"Was versteht man unter Anfahrunfällen?","o":["Unfälle beim Anlassen des Motors","Unfälle bei denen der Stapler Personen oder Gegenstände anfährt","Unfälle beim Einparken","Unfälle beim Aufladen"],"c":1},{"q":"Welche Maßnahme hilft gegen Anfahrunfälle?","o":["Schneller fahren","Achtsamkeit und klare Verkehrsregeln im Betrieb","Lauter hupen","Rückspiegel abmontieren"],"c":1}],"5":[{"q":"Wie hoch darf eine Europalette max. belastet werden?","o":["500–800 kg","1000–1500 kg","2000–2500 kg","3000 kg"],"c":1},{"q":"Wie hoch darf eine Gitterboxpalette max. gestapelt werden?","o":["Dreifach","Vierfach","Fünffach","Sechsfach"],"c":2},{"q":"Ab welcher Hubhöhe ist ein Fahrerschutzdach vorgeschrieben?","o":["1,20 m","1,50 m","1,80 m","2,00 m"],"c":2},{"q":"Was muss bei Schäden an Regalen getan werden?","o":["Selbst reparieren","Schaden melden, erst nach Instandsetzung nutzen","Ignorieren","Mehr Gewicht darauflegen"],"c":1},{"q":"Wo dürfen Lasten NICHT abgestellt werden?","o":["Im Hochregallager","Vor Feuerlöscheinrichtungen","Auf Europaletten","In Lagerhallen"],"c":1},{"q":"Was muss bei der Lagerung in obersten Regalablagen vorhanden sein?","o":["Nichts Besonderes","Mindestens 0,5 m hohe Sicherungseinrichtung gegen Herabfallen","Ein Sicherheitsnetz","Ein Wächter"],"c":1},{"q":"Was ist beim Stapeln von Gitterboxen zu beachten?","o":["Beliebig stapeln","Max. Nutzlast 1000 kg, max. fünffach stapeln","Immer nass stapeln","Nur innen lagern"],"c":1},{"q":"Wann darf der Hubmast nach vorne geneigt werden?","o":["Immer beim Fahren","Nur zum Aufnehmen und Absetzen der Last","Nur beim Rückwärtsfahren","Nie"],"c":1},{"q":"Was ist bei nicht ordnungsgemäß gepackten Lasten zu tun?","o":["Trotzdem stapeln","Nicht stapeln und nicht auf höheren Stellen absetzen","Langsamer fahren","Einen Kollegen holen"],"c":1},{"q":"Wo müssen Verkehrswege immer freigehalten werden?","o":["Nur in der Nähe des Büros","Überall im Betrieb","Nur vor dem Ausgang","Nur in Schmalgängen"],"c":1}],"6":[{"q":"Wie groß ist der Randzuschlag bei Einbahnverkehr auf einer Seite?","o":["0,30 m","0,40 m","0,50 m","0,75 m"],"c":2},{"q":"Wie groß ist der Begegnungszuschlag bei Gegenverkehr?","o":["0,20 m","0,40 m","0,50 m","0,75 m"],"c":1},{"q":"Welche Mindest-Bodenbelastbarkeit muss ein Verkehrsweg haben?","o":["800 kg/m²","1200 kg/m²","1700 kg/m²","2000 kg/m²"],"c":2},{"q":"Was gilt bei Ladebrücken als ausreichende Breite?","o":["FFZ-Breite + 0,50 m","FFZ-Breite + 0,70 m","FFZ-Breite + 1,00 m","FFZ-Breite allein"],"c":1},{"q":"Was ist beim Einfahren in Schmalgänge zu beachten?","o":["Immer Vollgas","Erst einfahren wenn keine Fußgänger darin sind","Hupen und weiterfahren","Nichts Besonderes"],"c":1},{"q":"Wie groß ist der Sicherheitsabstand vor Toren und Türen?","o":["Mind. 0,5 m","Mind. 1 m","Mind. 2 m","Kein Abstand nötig"],"c":1},{"q":"Was erhöht den Randzuschlag bei Gehverkehr auf 0,75 m?","o":["Nur der Gegenverkehr","Die gleichzeitige Nutzung als Gehweg","Schwere Lasten","Schmalgänge"],"c":1},{"q":"Welche Maßnahme schützt in Schmalgängen vor Personengefährdung?","o":["Lautere Hupe","Lichtschranken, Zäune oder Sensoren am Stapler","Mehr Beleuchtung","Langsamere Fahrt"],"c":1},{"q":"Was muss bei Kreuzungen innerhalb von Verkehrswegen gelten?","o":["Kein Vorfahrtsrecht","Eindeutige Vorfahrtsregeln z.B. Rechts vor Links","Immer bremsen","Fahrzeuge haben immer Vorfahrt"],"c":1},{"q":"Welche Fahrerlaubnisklasse gilt für Stapler unter 25 km/h auf öffentlichen Straßen?","o":["Klasse B","Klasse C","Klasse L","Keine notwendig"],"c":2}],"7":[{"q":"Was ist die Kippachse des Staplers?","o":["Die Hinterachse","Die Vorderachse","Der Schwerpunkt","Das Gegengewicht"],"c":1},{"q":"Was passiert wenn der Gesamtschwerpunkt über die Vorderachse wandert?","o":["Der Stapler bremst","Der Stapler kippt nach vorne","Die Last fällt ab","Der Motor stoppt"],"c":1},{"q":"Beim unbeladenen Stapler befindet sich der Schwerpunkt...","o":["Weit von den Kippkanten entfernt","Nahe an den seitlichen Kippkanten","Hinter der Hinterachse","Über dem Hubmast"],"c":1},{"q":"Was beschreibt das Hebelgesetz beim Stapler?","o":["Kraft × Kraftarm = Last × Lastarm","Kraft × Last = Arm × Drehpunkt","Gewicht × Höhe = Energie","Last × Hub = Arbeit"],"c":0},{"q":"Wo muss die Last aufgenommen werden um den Lastarm klein zu halten?","o":["An den Gabelspitzen","In der Mitte der Zinken","Am Gabelrücken","Spielt keine Rolle"],"c":2},{"q":"Was passiert mit der Standsicherheit wenn die Last angehoben wird?","o":["Sie steigt","Sie bleibt gleich","Sie sinkt","Sie ist nicht messbar"],"c":2},{"q":"Was ist das Kippkantendreieck?","o":["Ein Warnschild","Das Standdreieck aus Vorderrädern und Hinterachsmittelpunkt","Eine Schutzvorrichtung","Die Form der Gabelzinken"],"c":1},{"q":"Was ist bei mehr als 80% der tödlichen Kippunfälle besonders?","o":["Stapler waren überladen","Stapler waren unbeladen","Es war Nacht","Fahrer waren neu"],"c":1},{"q":"Wie wirkt sich eine Verdoppelung der Fahrgeschwindigkeit auf die Fliehkraft aus?","o":["Verdoppelt sie","Verdreifacht sie","Vervierfacht sie","Keine Auswirkung"],"c":2},{"q":"Was ist beim Kurvenfahren mit dem Stapler besonders wichtig?","o":["Schnell fahren","Angepasste Geschwindigkeit und großer Kurvenradius","Immer hupen","Last anheben"],"c":1}],"8":[{"q":"Wovon hängt die tatsächliche Tragfähigkeit des Staplers ab?","o":["Nur vom Eigengewicht","Von Lastschwerpunktabstand und Hubhöhe","Vom Reifendruck","Vom Kraftstoff"],"c":1},{"q":"Was gibt die Nenntragfähigkeit an?","o":["Die maximale Hubhöhe","Die Tragfähigkeit bei genormter Hubhöhe und festgelegtem LSA","Das Eigengewicht des Staplers","Die Fahrgeschwindigkeit"],"c":1},{"q":"Was passiert mit der Tragfähigkeit wenn der Lastschwerpunktabstand größer wird?","o":["Sie steigt","Sie bleibt gleich","Sie sinkt","Sie verdoppelt sich"],"c":2},{"q":"Was passiert mit der Tragfähigkeit wenn die Hubhöhe steigt?","o":["Sie steigt","Sie bleibt gleich","Sie sinkt","Sie ist unabhängig davon"],"c":2},{"q":"Wo ist die tatsächliche Tragfähigkeit zu entnehmen?","o":["Im Reifenprofil","Im Traglastdiagramm","Im Fahrzeugbrief","Im Werkzeugkasten"],"c":1},{"q":"Was zeigt die X-Achse im einfachen Traglastdiagramm?","o":["Hubhöhe in mm","Lastschwerpunktabstand in mm","Eigengewicht in kg","Fahrgeschwindigkeit"],"c":1},{"q":"Was zeigt die Y-Achse im einfachen Traglastdiagramm?","o":["Hubhöhe in mm","Lastschwerpunktabstand in mm","Zulässige Last in kg","Reifendruck"],"c":2},{"q":"Welche Kennlinie ist zu wählen wenn in 5,20 m eingelagert werden soll?","o":["4250 mm","5250 mm","6150 mm","Keine"],"c":1},{"q":"Was bedeutet die Nenntragfähigkeit auf dem Fabrikschild?","o":["Die maximale Last bei jeder Hubhöhe","Die Last bei genormter Hubhöhe und festgelegtem LSA","Das Eigengewicht","Die Nutzlast des Anbaugeräts"],"c":1},{"q":"Darf eine Last von 1600 kg bei 900 mm Lastschwerpunktabstand gehoben werden (laut Beispieldiagramm)?","o":["Ja, immer","Nein, die Tragfähigkeit ist überschritten","Nur in geringer Höhe","Nur mit Gegengewicht"],"c":1}],"9":[{"q":"In welcher Stellung muss der Hubmast beim Verfahren von Lasten sein?","o":["Senkrecht","Nach vorne geneigt","Zurückgeneigt","Spielt keine Rolle"],"c":2},{"q":"Wie hoch darf die Last beim Verfahren max. bodenfrei angehoben sein?","o":["20 cm","30 cm","50 cm","80 cm"],"c":2},{"q":"Was ist beim Verlassen des Staplers ZUERST zu tun?","o":["Schlüssel abziehen","Gabelzinken absenken","Feststellbremse betätigen","Motor abstellen"],"c":2},{"q":"Wie muss die Last beim Befahren von Steigungen geführt werden?","o":["Talwärts","Bergseitig","Seitwärts","Spielt keine Rolle"],"c":1},{"q":"Was gilt als Faustformel für ausreichende Sicht in Fahrtrichtung?","o":["Max. 5 m verdeckt","Max. 10 m verdeckt","Max. 15 m verdeckt","Sicht muss immer frei sein"],"c":1},{"q":"Was ist beim Befahren von Aufzügen zu beachten?","o":["Immer mit Last einfahren","Vom Stapler absteigen und Feststellbremse betätigen","So schnell wie möglich","Stapler abstellen und zu Fuß gehen"],"c":1},{"q":"Was ist bei der täglichen Einsatzprüfung zu tun?","o":["Nur tanken","Stapler nach Betriebsanleitung prüfen, Mängel melden","Reifen wechseln","Stapler waschen"],"c":1},{"q":"Welcher Mangel ist ein Sicherheitsmangel?","o":["Leichter Kratzer im Lack","Risse an tragenden Teilen wie dem Hubmast","Verschmutzte Sitze","Verblasste Aufkleber"],"c":1},{"q":"Wer darf Sicherheitsmängel am Stapler beseitigen?","o":["Jeder Fahrer","Nur fachkundige Personen (z.B. Monteure)","Der Vorgesetzte","Der Betriebsrat"],"c":1},{"q":"Was muss beim Absetzen einer Last im Regal zuletzt getan werden?","o":["Hubmast nach vorne neigen","Gabelzinken absenken und wegfahren","Motor abstellen","Feststellbremse anziehen"],"c":1}],"10":[{"q":"In welchem Abstand müssen Stapler geprüft werden?","o":["Alle 3 Monate","Alle 6 Monate","Längstens alle 12 Monate","Alle 2 Jahre"],"c":2},{"q":"Was muss im Prüfnachweis enthalten sein?","o":["Nur das Datum","Datum, Ergebnis, Name des Prüfers, Mängelangaben","Nur der Name des Prüfers","Nur ob bestanden oder nicht"],"c":1},{"q":"Was ist beim Einsatz von Arbeitsbühnen am Stapler grundsätzlich erforderlich?","o":["Jeder Stapler ist geeignet","Ausreichend tragfähiger Stapler und vorschriftsmäßige Arbeitsbühne","Nur eine Sicherungsleine","Ein zweiter Fahrer"],"c":1},{"q":"Was ist beim Einsatz von Anbaugeräten zu beachten?","o":["Jedes Gerät passt auf jeden Stapler","Anbaugeräte und Stapler müssen aufeinander abgestimmt sein","Anbaugeräte erhöhen immer die Tragfähigkeit","Keine besonderen Vorschriften"],"c":1},{"q":"Wann darf der Fahrer seinen Platz bei hochgefahrener Arbeitsbühne verlassen?","o":["Immer","Nur kurz","Nie","Bei Pausen"],"c":2},{"q":"Was muss beim Transport hängender Lasten beachtet werden?","o":["Keine Besonderheiten","Nur geeignete Stapler verwenden, Personen nicht in Fahrspur","Immer rückwärts fahren","Last immer anheben"],"c":1},{"q":"Was ist Voraussetzung für die Mitnahme von Personen auf dem Stapler?","o":["Immer erlaubt","In Betriebsanweisung geregelt, Sitzplätze und Rückhalteeinrichtung","Nur auf kurzen Strecken","Nur der Vorgesetzte darf mitfahren"],"c":1},{"q":"Was muss bei beschädigten Gabelzinken getan werden?","o":["Weiterfahren","Als Sicherheitsmangel melden und nicht verwenden","Selbst reparieren","Nur leichte Lasten transportieren"],"c":1},{"q":"Wann sollte eine Prüfplakette am Stapler angebracht werden?","o":["Sofort nach der Prüfung","Erst wenn alle Mängel beseitigt sind","Vor der Prüfung","Gar nicht notwendig"],"c":1},{"q":"Was muss vor dem Verfahren von Anhängern bekannt sein?","o":["Die Farbe","Die zulässige Anhängelast","Das Baujahr","Der Hersteller"],"c":1}]};
 
@@ -164,6 +231,12 @@ KAPITEL.forEach(function(k){
   // Folienbilder
   for(var f=k.folien_von;f<=k.folien_bis;f++){
     STEPS.push({type:'folie',fn:f,kapitel_nr:k.nr,kapitel_titel:k.titel});
+  }
+  // Diagramm-Übungen nach Kapitel 8 (Traglastdiagramm)
+  if(k.nr===8){
+    DIAG_PAGES.forEach(function(dp,di){
+      STEPS.push({type:'diag',di:di,kapitel_nr:8,kapitel_titel:k.titel});
+    });
   }
   // Quiz
   var qs=QUIZ_DATA[k.nr]||[];
@@ -191,6 +264,94 @@ var pbar=document.getElementById('pbar');
 var prevBtn=document.getElementById('prevBtn');
 var nextBtn=document.getElementById('nextBtn');
 var counter=document.getElementById('counter');
+
+/* ---- DIAGRAM DRAWING ---- */
+var NS='http://www.w3.org/2000/svg';
+var _ds={};
+function mkEl(t,a){var e=document.createElementNS(NS,t);Object.keys(a).forEach(function(k){e.setAttribute(k,a[k]);});return e;}
+
+function drawDiag(svgId,type,hl,arrows){
+  hl=hl||[];arrows=arrows||[];
+  var svg=document.getElementById(svgId);if(!svg)return;
+  svg.innerHTML='';
+  var iS=type==='single';
+  var ox=58,w=370,oy=iS?200:185,h=iS?160:150,yMin=500,yMax=iS?3200:1200;
+  var sx=function(v){return ox+(v-500)/500*w;};
+  var sy=function(v){return oy-(v-yMin)/(yMax-yMin)*h;};
+  _ds[svgId]={sx:sx,sy:sy,oy:oy};
+  [500,600,700,800,900,1000].forEach(function(g){
+    svg.appendChild(mkEl('line',{x1:sx(g),y1:oy,x2:sx(g),y2:oy-h,stroke:'var(--line)'}));
+    var t=mkEl('text',{x:sx(g),y:oy+14,'font-size':10,'text-anchor':'middle',fill:'var(--muted)'});t.textContent=g;svg.appendChild(t);
+  });
+  (iS?[500,1000,1500,2000,2500,3000]:[500,600,700,800,900,1000,1100,1200]).forEach(function(g){
+    svg.appendChild(mkEl('line',{x1:ox,y1:sy(g),x2:ox+w,y2:sy(g),stroke:'var(--line)'}));
+    var t=mkEl('text',{x:ox-5,y:sy(g)+4,'font-size':10,'text-anchor':'end',fill:'var(--muted)'});t.textContent=g;svg.appendChild(t);
+  });
+  svg.appendChild(mkEl('line',{x1:ox,y1:oy,x2:ox+w,y2:oy,stroke:'var(--ink)','stroke-width':2}));
+  svg.appendChild(mkEl('line',{x1:ox,y1:oy,x2:ox,y2:oy-h,stroke:'var(--ink)','stroke-width':2}));
+  if(iS){
+    svg.appendChild(mkEl('polygon',{points:sx(500)+','+sy(3000)+' '+sx(1000)+','+sy(500)+' '+sx(1000)+','+oy+' '+sx(500)+','+oy,fill:'rgba(29,158,117,.12)',stroke:'none'}));
+    svg.appendChild(mkEl('line',{x1:sx(500),y1:sy(3000),x2:sx(1000),y2:sy(500),stroke:'var(--ink)','stroke-width':3}));
+    var gt=mkEl('text',{x:sx(560),y:sy(1800),'font-size':11,fill:'var(--muted)'});gt.textContent='← Gabelrücken';svg.appendChild(gt);
+  }else{
+    MULTI_LINES.forEach(function(L){
+      var dim=hl.length>0&&hl.indexOf(L.hub)<0;
+      svg.appendChild(mkEl('line',{x1:sx(L.a[0]),y1:sy(L.a[1]),x2:sx(L.b[0]),y2:sy(L.b[1]),stroke:L.color,'stroke-width':hl.indexOf(L.hub)>=0?L.w+1.5:L.w,opacity:dim?.2:1}));
+      var lt=mkEl('text',{x:sx(L.b[0])+6,y:sy(L.b[1])+4,'font-size':10,'font-weight':'bold',fill:L.color,opacity:dim?.3:1});lt.textContent=L.hub;svg.appendChild(lt);
+    });
+    var ht=mkEl('text',{x:sx(1000)+6,y:oy-h+2,'font-size':9,fill:'var(--muted)'});ht.textContent='Hub in mm';svg.appendChild(ht);
+  }
+  var xl=mkEl('text',{x:ox+w/2,y:oy+26,'font-size':10,'text-anchor':'middle',fill:'var(--muted)'});xl.textContent='Lastschwerpunktabstand in mm';svg.appendChild(xl);
+  var yl=mkEl('text',{x:13,y:oy-h/2,'font-size':10,'text-anchor':'middle',fill:'var(--muted)',transform:'rotate(-90,13,'+(oy-h/2)+')'});yl.textContent='Last in kg';svg.appendChild(yl);
+  arrows.forEach(function(arr){
+    var ax=arr[0],ayv=arr[1],ds=_ds[svgId],col='#D85A30';
+    svg.appendChild(mkEl('line',{x1:ds.sx(500),y1:ds.sy(ayv),x2:ds.sx(ax),y2:ds.sy(ayv),stroke:col,'stroke-width':2.5,'stroke-dasharray':'5,3'}));
+    svg.appendChild(mkEl('line',{x1:ds.sx(ax),y1:ds.sy(ayv),x2:ds.sx(ax),y2:ds.oy,stroke:col,'stroke-width':2.5}));
+    svg.appendChild(mkEl('circle',{cx:ds.sx(ax),cy:ds.sy(ayv),r:4,fill:col}));
+    var p=document.createElementNS(NS,'polygon');p.setAttribute('points',(ds.sx(ax)-5)+','+(ds.oy-8)+' '+(ds.sx(ax)+5)+','+(ds.oy-8)+' '+ds.sx(ax)+','+(ds.oy-1));p.setAttribute('fill',col);svg.appendChild(p);
+  });
+}
+
+function renderDiag(host,di){
+  var dp=DIAG_PAGES[di];
+  var vb=dp.svg==='single'?'0 0 480 220':'0 0 480 200';
+  var qHtml='';
+  dp.qs.forEach(function(q,qi){
+    if(q.type==='input'){
+      qHtml+='<div class="dq"><div class="dq-text">'+q.q+'</div>'+
+        '<div class="dq-row">'+
+        '<input class="dq-input" type="number" id="di'+di+'q'+qi+'" placeholder="'+q.unit+'" step="'+(q.unit==='mm'?50:100)+'">'+
+        '<button class="dqbtn info" onclick="chkDI('+di+','+qi+')">Prüfen</button>'+
+        '<button class="dqbtn" onclick="hintDI('+di+','+qi+')">Lösung</button>'+
+        '</div><div class="dq-fb" id="dfb'+di+''+qi+'"></div></div>';
+    }else if(q.type==='yn'){
+      qHtml+='<div class="dq"><div class="dq-text">'+q.q+'</div>'+
+        '<div class="dq-row">'+
+        '<button class="dqbtn info" onclick="ynDI('+di+','+qi+',\'ja\')">Ja</button>'+
+        '<button class="dqbtn info" onclick="ynDI('+di+','+qi+',\'nein\')">Nein</button>'+
+        '</div><div class="dq-fb" id="dfb'+di+''+qi+'"></div></div>';
+    }else if(q.type==='hub'){
+      qHtml+='<div class="dq"><div class="dq-text">'+q.q+'</div>'+
+        '<div class="dq-row">'+
+        '<button class="dqhbtn" style="color:#1a1a2e;border-color:#1a1a2e" onclick="hubDI('+di+','+qi+',4250)">4250 mm</button>'+
+        '<button class="dqhbtn" style="color:#0a7a5a;border-color:#0a7a5a" onclick="hubDI('+di+','+qi+',5250)">5250 mm</button>'+
+        '<button class="dqhbtn" style="color:#1a5fa8;border-color:#1a5fa8" onclick="hubDI('+di+','+qi+',6150)">6150 mm</button>'+
+        '</div><div class="dq-fb" id="dfb'+di+''+qi+'"></div></div>';
+    }
+  });
+  var info=dp.info?'<div class="diag-info">'+dp.info+'</div>':'';
+  host.innerHTML='<div class="diag-card">'+
+    '<div class="diag-hd"><span class="diag-hd-title">'+dp.title+'</span></div>'+
+    '<div class="diag-svg-box"><svg id="dsvg" viewBox="'+vb+'" width="100%"></svg></div>'+
+    info+qHtml+'</div>';
+  drawDiag('dsvg',dp.svg,[],[]);
+}
+
+function dFb(di,qi,ok,msg){var d=document.getElementById('dfb'+di+''+qi);if(!d)return;d.className='dq-fb '+(ok?'ok':'no');d.textContent=msg;}
+function chkDI(di,qi){var dp=DIAG_PAGES[di],q=dp.qs[qi],v=parseFloat(document.getElementById('di'+di+'q'+qi).value);if(isNaN(v)){dFb(di,qi,false,'Bitte Wert eingeben.');return;}var ok=q.check(v);drawDiag('dsvg',dp.svg,q.highlight?[q.highlight]:[],[q.arrow()]);dFb(di,qi,ok,ok?'✓ '+q.ans():'✗ '+q.ans());}
+function hintDI(di,qi){var dp=DIAG_PAGES[di],q=dp.qs[qi];drawDiag('dsvg',dp.svg,q.highlight?[q.highlight]:[],[q.arrow()]);dFb(di,qi,true,'✓ '+q.ans());}
+function ynDI(di,qi,ans){var dp=DIAG_PAGES[di],q=dp.qs[qi],ok=ans===q.correct;drawDiag('dsvg',dp.svg,q.highlight?[q.highlight]:[],[q.arrow()]);dFb(di,qi,ok,ok?'✓ Richtig! '+q.explain():'✗ Falsch. '+q.explain());}
+function hubDI(di,qi,sel){var dp=DIAG_PAGES[di],q=dp.qs[qi],ok=sel===q.correct;drawDiag('dsvg',dp.svg,[q.highlight||q.correct],[]);dFb(di,qi,ok,ok?'✓ Richtig! Kennlinie '+sel+' mm.':'✗ Korrekt: '+q.correct+' mm.');}
 
 function quizScoreForKapitel(knr){
   var richtig=0,gesamt=0;
@@ -277,6 +438,11 @@ function render(){
       '</div>';
     counter.textContent='Kapitel '+s.kapitel_nr+' / '+KAPITEL.length+' abschließen';
     nextBtn.disabled=!done;
+  }
+  else if(s.type==='diag'){
+    nextBtn.disabled=false;
+    renderDiag(host,s.di);
+    counter.textContent='Diagramm '+(s.di+1)+' / '+DIAG_PAGES.length+' (Kap. 8)';
   }
   else if(s.type==='ergebnis'){
     var total=0,richtig=0;
