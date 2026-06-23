@@ -182,6 +182,13 @@ body::before{
   background:linear-gradient(135deg,var(--acc1),var(--acc2));color:#fff;
   font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;}
 .ov-weiter:hover{opacity:.9;}
+/* VIDEO */
+.vid-bar{background:#0b1620;padding:10px 16px;display:flex;flex-direction:column;gap:10px;}
+.vid-toggle{display:flex;align-items:center;gap:8px;padding:9px 18px;border:none;border-radius:10px;
+  background:rgba(255,255,255,.12);color:#fff;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;width:fit-content;}
+.vid-toggle:hover{background:rgba(255,255,255,.2);}
+.vid-box{border-radius:10px;overflow:hidden;background:#000;}
+.vid-box iframe{display:block;width:100%;aspect-ratio:16/9;border:none;}
 </style>
 </head>
 <body>
@@ -213,6 +220,17 @@ var ORDNER='STUFE1_BILDER';
 var TOTAL_FOLIEN=101;
 var WA_NR='4916096877039';
 var MAIL='DanielEckmeier@Ausbildung1986.onmicrosoft.com';
+
+/* ---- VIDEO-KONFIGURATION ----
+   Foliennummer → Video-URL (YouTube oder SharePoint-Embed-URL)
+   Beispiel:
+     5: 'https://www.youtube.com/watch?v=XXXXXXXXXX',
+    14: 'https://ihr-tenant.sharepoint.com/...',
+   ----------------------------- */
+var VIDEO_MAP={
+  // Hier Foliennummern und Links eintragen:
+  // 1: 'https://www.youtube.com/watch?v=BEISPIEL',
+};
 var FLOW_URL='DEIN_FLOW_URL_HIER';
 
 /* ---- TRAGLASTDIAGRAMM ---- */
@@ -311,6 +329,23 @@ var pbar=document.getElementById('pbar');
 var prevBtn=document.getElementById('prevBtn');
 var nextBtn=document.getElementById('nextBtn');
 var counter=document.getElementById('counter');
+
+/* ---- VIDEO HELPERS ---- */
+function getEmbedUrl(url){
+  var m=url.match(/(?:youtube\.com\/watch\?(?:.*&)?v=|youtu\.be\/)([^&?#]+)/);
+  if(m)return'https://www.youtube.com/embed/'+m[1]+'?rel=0&modestbranding=1';
+  return url; // SharePoint-Embed-URL oder andere – direkt verwenden
+}
+function toggleVid(btn){
+  var box=btn.nextElementSibling;
+  var open=box.style.display!=='none'&&box.style.display!=='';
+  if(open){box.style.display='none';btn.innerHTML='&#9654; Video ansehen';}
+  else{
+    box.style.display='block';
+    btn.innerHTML='&#9660; Video schlie&szlig;en';
+    if(!box.querySelector('iframe').src)box.querySelector('iframe').src=box.dataset.src;
+  }
+}
 
 /* ---- LERNFORTSCHRITT ---- */
 function saveProgress(){
@@ -507,11 +542,18 @@ function render(){
     counter.textContent='Kapitel '+s.nr;
   }
   else if(s.type==='folie'){
+    var vidUrl=VIDEO_MAP[s.fn]?getEmbedUrl(VIDEO_MAP[s.fn]):null;
+    var vidHtml=vidUrl
+      ?'<div class="vid-bar">'+
+         '<button class="vid-toggle" onclick="toggleVid(this)">&#9654; Video ansehen</button>'+
+         '<div class="vid-box" style="display:none" data-src="'+vidUrl+'"><iframe src="" allowfullscreen loading="lazy"></iframe></div>'+
+        '</div>'
+      :'';
     host.innerHTML='<div class="slidebox">'+
       '<div class="nav-zone prev" onclick="prev()"><span>‹</span></div>'+
       '<img src="'+ORDNER+'/Folie'+s.fn+'.PNG" alt="Folie '+s.fn+'">'+
       '<div class="nav-zone next" onclick="next()"><span>›</span></div>'+
-      '</div>';
+      '</div>'+vidHtml;
     counter.textContent='Folie '+s.fn+' / '+TOTAL_FOLIEN;
   }
   else if(s.type==='quiz'){
