@@ -415,7 +415,7 @@ function render(){
       '<div class="quiz-badge">✏️ Wissensfrage '+qNr+' / '+qGes+'</div>'+
       '<div class="quiz-q">'+s.q+'</div>'+
       '<div class="quiz-opts" id="opts">'+
-        s.o.map(function(o,i){return'<button class="opt" id="opt-'+i+'" onclick="answer(''+key+'','+i+','+s.c+')">'+o+'</button>';}).join('')+
+        s.o.map(function(o,i){return'<button class="opt" id="opt-'+i+'" onclick="answer(&#39;'+key+'&#39;,'+i+','+s.c+')">'+o+'</button>';}).join('')+
       '</div>'+
       '<div class="quiz-fb" id="fb"></div>'+
       '</div>';
@@ -432,7 +432,7 @@ function render(){
       '<div class="abschluss-titel">Kapitel '+s.kapitel_nr+': '+s.kapitel_titel+'</div>'+
       '<div class="abschluss-sub">Sie haben alle Inhalte und Fragen dieses Kapitels durchgearbeitet.</div>'+
       '<div class="abschluss-score">Quiz-Ergebnis: '+sc.richtig+' / '+sc.gesamt+' richtig ('+pct+' %)</div>'+
-      '<button class="abschluss-btn" id="aBtn" onclick="kapitelAbschliessen('+s.kapitel_nr+',''+s.kapitel_titel.replace(/'/g,"\'")+'')" '+
+      '<button class="abschluss-btn" id="aBtn" onclick="kapitelAbschliessen('+s.kapitel_nr+',&#39;'+s.kapitel_titel.replace(/'/g,'&#39;')+'&#39;)" '+
         (done?'disabled style="background:var(--ok)"':'')+'>'+(done?'✓ Abgeschlossen':'Thema abschlie&szlig;en &amp; speichern')+'</button>'+
       '<div class="abschluss-status" id="aStat">'+(done?'Kapitel '+s.kapitel_nr+' wurde gespeichert.':'')+'</div>'+
       '</div>';
