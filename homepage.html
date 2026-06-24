@@ -226,6 +226,49 @@ nav{
 }
 .btn-login:hover{background:#0d1b30;transform:translateY(-2px)}
 
+/* KONTAKT */
+.kontakt-section{background:var(--bg);padding:80px 24px}
+.kontakt-inner{max-width:1100px;margin:0 auto}
+.kontakt-grid{display:grid;grid-template-columns:1fr 1fr;gap:40px;margin-top:0}
+.kontakt-card{background:#fff;border-radius:20px;border:1px solid var(--line);padding:36px;box-shadow:var(--shadow-sm)}
+.kontakt-card h3{font-size:18px;font-weight:800;color:var(--navy);margin-bottom:20px}
+.kontakt-row{display:flex;align-items:flex-start;gap:14px;margin-bottom:18px}
+.kontakt-icon{
+  width:40px;height:40px;border-radius:10px;flex-shrink:0;
+  background:var(--green-xl);display:flex;align-items:center;justify-content:center;
+}
+.kontakt-icon svg{width:20px;height:20px;fill:var(--green-d)}
+.kontakt-text{font-size:14px;color:var(--muted);line-height:1.6}
+.kontakt-text strong{display:block;color:var(--ink);font-weight:700;margin-bottom:2px}
+.kontakt-text a{color:var(--green);font-weight:600}
+.kontakt-text a:hover{text-decoration:underline}
+.btn-mail{
+  display:inline-flex;align-items:center;gap:8px;margin-top:8px;
+  padding:12px 22px;border-radius:10px;font-size:14px;font-weight:700;
+  background:var(--green);color:#fff;transition:all .15s;
+}
+.btn-mail:hover{background:var(--green-d);transform:translateY(-1px)}
+@media(max-width:768px){.kontakt-grid{grid-template-columns:1fr}}
+.kform-field{margin-bottom:14px}
+.kform-field label{display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--navy);margin-bottom:6px}
+.kform-field input,.kform-field textarea{
+  width:100%;padding:11px 14px;border:2px solid var(--line);border-radius:10px;
+  font-size:14px;font-family:inherit;background:var(--bg);color:var(--ink);
+  transition:border-color .15s;resize:vertical;
+}
+.kform-field input:focus,.kform-field textarea:focus{outline:none;border-color:var(--green);background:#fff}
+.kform-success{text-align:center;padding:24px;color:var(--green-d);font-weight:700;font-size:15px}
+
+/* IMPRESSUM */
+.impressum-section{background:#fff;padding:80px 24px}
+.impressum-inner{max-width:800px;margin:0 auto}
+.impressum-box{background:var(--bg);border:1px solid var(--line);border-radius:20px;padding:40px}
+.impressum-box h3{font-size:16px;font-weight:800;color:var(--navy);margin:24px 0 8px}
+.impressum-box h3:first-child{margin-top:0}
+.impressum-box p{font-size:14px;color:var(--muted);line-height:1.7;margin-bottom:6px}
+.impressum-box a{color:var(--green);font-weight:600}
+.impressum-box a:hover{text-decoration:underline}
+
 /* FOOTER */
 footer{
   background:var(--navy);color:rgba(255,255,255,.5);
@@ -263,6 +306,7 @@ footer strong{color:rgba(255,255,255,.85)}
     <div class="nav-links">
       <a class="nav-link" href="#kurse">Schulungen</a>
       <a class="nav-link" href="#normen">Normen</a>
+      <a class="nav-link" href="#kontakt">Kontakt</a>
       <a class="nav-link" href="#portal">Teilnehmer-Login</a>
     </div>
     <a class="nav-cta" href="https://forms.cloud.microsoft/Pages/ResponsePage.aspx?id=kF_yirw09E6roiq29kHVASuivr7CgF5HmpZGfRSpj5tUQTVXUThIUTYwNFpCUDdFWTVWR0VTMENBOS4u" target="_blank">Jetzt buchen →</a>
@@ -457,12 +501,116 @@ footer strong{color:rgba(255,255,255,.85)}
   </div>
 </section>
 
+<!-- KONTAKT -->
+<section class="kontakt-section" id="kontakt">
+  <div class="kontakt-inner">
+    <div class="section-label">Kontakt</div>
+    <h2 class="section-title">So erreichen Sie uns</h2>
+    <p class="section-sub">Fragen zur Buchung, zum Ablauf oder zu den Schulungsinhalten? Melden Sie sich gerne direkt bei uns.</p>
+    <div class="kontakt-grid">
+      <div class="kontakt-card">
+        <h3>Kontaktdaten</h3>
+        <div class="kontakt-row">
+          <div class="kontakt-icon"><svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg></div>
+          <div class="kontakt-text">
+            <strong>Adresse</strong>
+            Daniel Eckmeier<br>
+            Am Schwimmbad 12<br>
+            94436 Simbach
+          </div>
+        </div>
+        <div class="kontakt-row">
+          <div class="kontakt-icon"><svg viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg></div>
+          <div class="kontakt-text">
+            <strong>Telefon</strong>
+            Wird in Kürze ergänzt
+          </div>
+        </div>
+        <div class="kontakt-row">
+          <div class="kontakt-icon"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg></div>
+          <div class="kontakt-text">
+            <strong>E-Mail</strong>
+            <a href="mailto:DanielEckmeier@Ausbildung1986.onmicrosoft.com">DanielEckmeier@Ausbildung1986.onmicrosoft.com</a>
+          </div>
+        </div>
+        <a class="btn-mail" href="mailto:DanielEckmeier@Ausbildung1986.onmicrosoft.com">✉ E-Mail schreiben</a>
+      </div>
+      <div class="kontakt-card">
+        <h3>Nachricht senden</h3>
+        <form id="kontaktForm">
+          <div class="kform-field">
+            <label>Name</label>
+            <input type="text" id="kf-name" placeholder="Ihr Name" required>
+          </div>
+          <div class="kform-field">
+            <label>E-Mail</label>
+            <input type="email" id="kf-email" placeholder="ihre@email.de" required>
+          </div>
+          <div class="kform-field">
+            <label>Betreff</label>
+            <input type="text" id="kf-betreff" placeholder="z.B. Anfrage Gabelstapler-Schulung">
+          </div>
+          <div class="kform-field">
+            <label>Nachricht</label>
+            <textarea id="kf-nachricht" rows="4" placeholder="Ihre Nachricht..." required></textarea>
+          </div>
+          <button type="submit" class="btn-mail" style="width:100%;justify-content:center">✉ Nachricht senden</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- IMPRESSUM -->
+<section class="impressum-section" id="impressum">
+  <div class="impressum-inner">
+    <div class="section-label">Rechtliches</div>
+    <h2 class="section-title" style="margin-bottom:28px">Impressum</h2>
+    <div class="impressum-box">
+      <h3>Angaben gemäß § 5 TMG</h3>
+      <p>Daniel Eckmeier</p>
+      <p>Am Schwimmbad 12</p>
+      <p>94436 Simbach</p>
+
+      <h3>Kontakt</h3>
+      <p>Telefon: wird ergänzt</p>
+      <p>E-Mail: <a href="mailto:DanielEckmeier@Ausbildung1986.onmicrosoft.com">DanielEckmeier@Ausbildung1986.onmicrosoft.com</a></p>
+
+      <h3>Verantwortlich für den Inhalt nach § 55 Abs. 2 RStV</h3>
+      <p>Daniel Eckmeier, Am Schwimmbad 12, 94436 Simbach</p>
+
+      <h3>Haftungsausschluss</h3>
+      <p>Die Inhalte dieser Seite wurden mit größter Sorgfalt erstellt. Für die Richtigkeit, Vollständigkeit und Aktualität der Inhalte kann jedoch keine Gewähr übernommen werden.</p>
+
+      <h3>Urheberrecht</h3>
+      <p>Die durch den Seitenbetreiber erstellten Inhalte und Werke auf diesen Seiten unterliegen dem deutschen Urheberrecht. Die Vervielfältigung, Bearbeitung, Verbreitung und jede Art der Verwertung außerhalb der Grenzen des Urheberrechts bedürfen der schriftlichen Zustimmung des jeweiligen Autors bzw. Erstellers.</p>
+    </div>
+  </div>
+</section>
+
 <!-- FOOTER -->
 <footer>
   <strong>Ausbildung Niederbayern</strong> &nbsp;·&nbsp;
-  Flurförderzeuge &amp; Ladungssicherung &nbsp;·&nbsp;
-  Schulungen nach DGUV 308-001 &amp; VDI 2700
+  Daniel Eckmeier &nbsp;·&nbsp;
+  Am Schwimmbad 12, 94436 Simbach &nbsp;·&nbsp;
+  <a href="#impressum" style="color:rgba(255,255,255,.5);text-decoration:underline">Impressum</a>
 </footer>
 
+<script>
+document.getElementById('kontaktForm').addEventListener('submit',function(e){
+  e.preventDefault();
+  var name     = document.getElementById('kf-name').value.trim();
+  var email    = document.getElementById('kf-email').value.trim();
+  var betreff  = document.getElementById('kf-betreff').value.trim() || 'Kontaktanfrage';
+  var nachricht= document.getElementById('kf-nachricht').value.trim();
+  var body     = 'Name: ' + name + '\nE-Mail: ' + email + '\n\n' + nachricht;
+  var mailto   = 'mailto:DanielEckmeier@Ausbildung1986.onmicrosoft.com'
+               + '?subject=' + encodeURIComponent(betreff)
+               + '&body='    + encodeURIComponent(body);
+  window.location.href = mailto;
+  document.getElementById('kontaktForm').innerHTML =
+    '<div class="kform-success">✅ Ihr E-Mail-Programm öffnet sich gleich.<br>Bitte senden Sie die vorbereitete E-Mail ab.</div>';
+});
+</script>
 </body>
 </html>
