@@ -259,6 +259,45 @@ nav{
 .kform-field input:focus,.kform-field textarea:focus{outline:none;border-color:var(--green);background:#fff}
 .kform-success{text-align:center;padding:24px;color:var(--green-d);font-weight:700;font-size:15px}
 
+/* ANMELDUNG */
+.anmeldung-section{background:var(--bg);padding:80px 24px}
+.anmeldung-inner{max-width:820px;margin:0 auto}
+.af-card{background:#fff;border:1px solid var(--line);border-radius:20px;padding:40px;box-shadow:var(--shadow-sm)}
+.af-row2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.af-row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
+.af-field{margin-bottom:14px}
+.af-field label{display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--navy);margin-bottom:6px}
+.af-field input,.af-field select{
+  width:100%;padding:11px 14px;border:2px solid var(--line);border-radius:10px;
+  font-size:14px;font-family:inherit;background:var(--bg);color:var(--ink);
+  transition:border-color .15s;
+}
+.af-field input:focus,.af-field select:focus{outline:none;border-color:var(--green);background:#fff}
+.af-field select:disabled{opacity:.45;cursor:not-allowed}
+.af-divider{border:none;border-top:1px solid var(--line);margin:24px 0}
+.af-kurs-block{border:1px solid var(--line);border-radius:12px;padding:16px 18px;margin-bottom:12px;transition:border-color .15s}
+.af-kurs-block.active{border-color:var(--green);background:var(--green-xl)}
+.af-kurs-top{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.af-kurs-label{display:flex;align-items:center;gap:10px;cursor:pointer;font-weight:600;font-size:15px;color:var(--navy);flex:1;min-width:200px}
+.af-kurs-label input[type=checkbox]{width:18px;height:18px;accent-color:var(--green);flex-shrink:0}
+.af-kurs-select{width:180px;padding:8px 12px;border:2px solid var(--line);border-radius:8px;font-size:13px;font-family:inherit;background:#fff}
+.af-kurs-select:disabled{opacity:.4;cursor:not-allowed}
+.af-subkurse{margin-top:14px;padding-top:14px;border-top:1px solid var(--line);display:none}
+.af-subkurse-title{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-bottom:10px}
+.af-sub-checks{display:flex;gap:20px;flex-wrap:wrap}
+.af-sub-check{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--ink);cursor:pointer}
+.af-sub-check input{width:16px;height:16px;accent-color:var(--green)}
+.af-submit{
+  width:100%;padding:15px;border-radius:12px;border:none;cursor:pointer;
+  font-size:16px;font-weight:700;font-family:inherit;
+  background:var(--green);color:#fff;margin-top:10px;transition:all .15s;
+}
+.af-submit:hover{background:var(--green-d);transform:translateY(-1px)}
+.af-submit:disabled{opacity:.6;cursor:not-allowed;transform:none}
+.af-success{text-align:center;padding:40px 24px;color:var(--green-d);font-weight:700;font-size:17px;line-height:1.6}
+.af-error{color:#c0392b;font-size:13px;margin-top:10px;text-align:center}
+@media(max-width:600px){.af-row2,.af-row3{grid-template-columns:1fr}.af-kurs-top{flex-direction:column;align-items:flex-start}.af-kurs-select{width:100%}}
+
 /* IMPRESSUM */
 .impressum-section{background:#fff;padding:80px 24px}
 .impressum-inner{max-width:800px;margin:0 auto}
@@ -307,9 +346,10 @@ footer strong{color:rgba(255,255,255,.85)}
       <a class="nav-link" href="#kurse">Schulungen</a>
       <a class="nav-link" href="#normen">Normen</a>
       <a class="nav-link" href="#kontakt">Kontakt</a>
+      <a class="nav-link" href="#anmeldung">Anmeldung</a>
       <a class="nav-link" href="#portal">Teilnehmer-Login</a>
     </div>
-    <a class="nav-cta" href="https://forms.cloud.microsoft/Pages/ResponsePage.aspx?id=kF_yirw09E6roiq29kHVASuivr7CgF5HmpZGfRSpj5tUQTVXUThIUTYwNFpCUDdFWTVWR0VTMENBOS4u" target="_blank">Jetzt buchen →</a>
+    <a class="nav-cta" href="#anmeldung">Jetzt buchen →</a>
   </div>
 </nav>
 
@@ -320,7 +360,7 @@ footer strong{color:rgba(255,255,255,.85)}
     <h1>Professionelle Schulungen für <em>Flurförderzeuge</em> & Ladungssicherung</h1>
     <p>Berufsgenossenschaftskonforme Aus- und Weiterbildungen für Ihren Betrieb — mit modernem E-Learning und praxisnaher Präsenzschulung.</p>
     <div class="hero-actions">
-      <a class="btn-primary" href="https://forms.cloud.microsoft/Pages/ResponsePage.aspx?id=kF_yirw09E6roiq29kHVASuivr7CgF5HmpZGfRSpj5tUQTVXUThIUTYwNFpCUDdFWTVWR0VTMENBOS4u" target="_blank">📋 Schulung buchen</a>
+      <a class="btn-primary" href="#anmeldung">📋 Schulung buchen</a>
       <a class="btn-secondary" href="#kurse">Alle Schulungen ansehen</a>
     </div>
     <div class="hero-stats">
@@ -457,6 +497,113 @@ footer strong{color:rgba(255,255,255,.85)}
     <h2>Schulung für Ihr Unternehmen buchen</h2>
     <p>Füllen Sie unser Buchungsformular aus — wir melden uns zeitnah zurück und stimmen Termin, Ort und Teilnehmerzahl mit Ihnen ab.</p>
     <a class="btn-primary" href="https://forms.cloud.microsoft/Pages/ResponsePage.aspx?id=kF_yirw09E6roiq29kHVASuivr7CgF5HmpZGfRSpj5tUQTVXUThIUTYwNFpCUDdFWTVWR0VTMENBOS4u" target="_blank">📋 Zum Buchungsformular</a>
+  </div>
+</section>
+
+<!-- ANMELDUNG -->
+<section class="anmeldung-section" id="anmeldung">
+  <div class="anmeldung-inner">
+    <div class="section-label">Direkte Anmeldung</div>
+    <h2 class="section-title" style="margin-bottom:8px">Schulung buchen</h2>
+    <p style="color:var(--muted);margin-bottom:32px;font-size:15px">Füllen Sie das Formular aus — Sie erhalten umgehend eine Bestätigungs-E-Mail mit Ihrer persönlichen Registrierungsnummer.</p>
+    <div class="af-card">
+      <form id="anmeldungForm">
+        <div class="af-row2">
+          <div class="af-field">
+            <label>Nachname *</label>
+            <input type="text" id="af-nachname" placeholder="Mustermann" required>
+          </div>
+          <div class="af-field">
+            <label>Vorname *</label>
+            <input type="text" id="af-vorname" placeholder="Max" required>
+          </div>
+        </div>
+        <div class="af-field">
+          <label>E-Mail *</label>
+          <input type="email" id="af-email" placeholder="max.mustermann@firma.de" required>
+        </div>
+        <div class="af-row2">
+          <div class="af-field">
+            <label>Geburtsdatum *</label>
+            <input type="date" id="af-geburtsdatum" required>
+          </div>
+          <div class="af-field">
+            <label>Geburtsort *</label>
+            <input type="text" id="af-geburtsort" placeholder="München" required>
+          </div>
+        </div>
+
+        <hr class="af-divider">
+        <div style="font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--navy);margin-bottom:14px">Schulungsauswahl (Mehrfachauswahl möglich)</div>
+
+        <!-- Stufe 1 -->
+        <div class="af-kurs-block" id="block-stufe1">
+          <div class="af-kurs-top">
+            <label class="af-kurs-label">
+              <input type="checkbox" id="ck-stufe1">
+              Ausbildung Flurförderzeuge Stufe 1
+            </label>
+            <select class="af-kurs-select" id="sel-stufe1" disabled>
+              <option value="">Format wählen</option>
+              <option value="Elearning">E-Learning</option>
+              <option value="Präsenz">Präsenz</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Stufe 2 -->
+        <div class="af-kurs-block" id="block-stufe2">
+          <div class="af-kurs-top">
+            <label class="af-kurs-label">
+              <input type="checkbox" id="ck-stufe2">
+              Zusatzausbildung Stufe 2
+            </label>
+            <select class="af-kurs-select" id="sel-stufe2" disabled>
+              <option value="">Format wählen</option>
+              <option value="Online">Online</option>
+              <option value="Präsenz">Präsenz</option>
+            </select>
+          </div>
+          <div class="af-subkurse" id="stufe2-typen">
+            <div class="af-subkurse-title">Fahrzeugtypen (Mehrfachauswahl)</div>
+            <div class="af-sub-checks">
+              <label class="af-sub-check"><input type="checkbox" id="ck-schubmast"> Schubmaststapler</label>
+              <label class="af-sub-check"><input type="checkbox" id="ck-komm"> Kommissionierer</label>
+              <label class="af-sub-check"><input type="checkbox" id="ck-schmal"> Schmalgangstapler</label>
+            </div>
+          </div>
+        </div>
+
+        <!-- LaSi -->
+        <div class="af-kurs-block" id="block-lasi">
+          <div class="af-kurs-top">
+            <label class="af-kurs-label">
+              <input type="checkbox" id="ck-lasi">
+              Ladungssicherung nach VDI 2700 ff.
+            </label>
+            <select class="af-kurs-select" id="sel-lasi" disabled>
+              <option value="">Format wählen</option>
+              <option value="Online">Online</option>
+              <option value="Präsenz">Präsenz</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Grundlagentraining -->
+        <div class="af-kurs-block" id="block-training">
+          <div class="af-kurs-top">
+            <label class="af-kurs-label">
+              <input type="checkbox" id="ck-training">
+              Grundlagentraining Flurförderzeuge
+              <span style="font-size:12px;font-weight:400;color:var(--muted)">(nur Präsenz)</span>
+            </label>
+          </div>
+        </div>
+
+        <div id="af-error" class="af-error" style="display:none"></div>
+        <button type="submit" class="af-submit">Anmeldung absenden</button>
+      </form>
+    </div>
   </div>
 </section>
 
@@ -597,6 +744,105 @@ footer strong{color:rgba(255,255,255,.85)}
 </footer>
 
 <script>
+// Anmeldung Flow
+var ANMELDUNG_URL = 'https://default8af25f9034bc4ef4aba22ab6f641d5.01.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/dbe5673986dd498bb2049e8a80220add/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=ogUKNB6jpCkEcxwY87bHLFJbIzrnQm5TPAwNTX4DYFQ';
+
+// Toggle Kurs-Blöcke
+['stufe1','stufe2','lasi'].forEach(function(id){
+  document.getElementById('ck-'+id).addEventListener('change',function(){
+    var sel = document.getElementById('sel-'+id);
+    sel.disabled = !this.checked;
+    if(!this.checked) sel.value = '';
+    document.getElementById('block-'+id).classList.toggle('active', this.checked);
+  });
+});
+document.getElementById('ck-training').addEventListener('change',function(){
+  document.getElementById('block-training').classList.toggle('active',this.checked);
+});
+document.getElementById('ck-stufe2').addEventListener('change',function(){
+  document.getElementById('stufe2-typen').style.display = this.checked ? 'block' : 'none';
+});
+
+document.getElementById('anmeldungForm').addEventListener('submit', async function(e){
+  e.preventDefault();
+  var errEl = document.getElementById('af-error');
+  errEl.style.display = 'none';
+
+  var stufe1   = document.getElementById('ck-stufe1').checked;
+  var stufe2   = document.getElementById('ck-stufe2').checked;
+  var lasi     = document.getElementById('ck-lasi').checked;
+  var training = document.getElementById('ck-training').checked;
+
+  if(!stufe1 && !stufe2 && !lasi && !training){
+    errEl.textContent = 'Bitte wählen Sie mindestens eine Schulung aus.';
+    errEl.style.display = 'block';
+    return;
+  }
+
+  var s1form = stufe1 ? document.getElementById('sel-stufe1').value : '';
+  var s2form = stufe2 ? document.getElementById('sel-stufe2').value : '';
+  var liform = lasi   ? document.getElementById('sel-lasi').value   : '';
+
+  if((stufe1 && !s1form)||(stufe2 && !s2form)||(lasi && !liform)){
+    errEl.textContent = 'Bitte wählen Sie für jede gebuchte Schulung ein Format.';
+    errEl.style.display = 'block';
+    return;
+  }
+
+  var schulungen = [];
+  if(stufe1)   schulungen.push('Ausbildung Flurförderzeuge Stufe 1');
+  if(stufe2)   schulungen.push('Zusatzausbildung Stufe 2');
+  if(lasi)     schulungen.push('Ladungssicherung VDI 2700');
+  if(training) schulungen.push('Grundlagentraining');
+
+  var formen = [s1form, s2form, liform];
+  var schulungstyp = formen.indexOf('Elearning') >= 0 ? 'Elearning' :
+                     formen.indexOf('Online')    >= 0 ? 'Online' : 'Präsenz';
+
+  var payload = {
+    nachname:               document.getElementById('af-nachname').value.trim(),
+    vorname:                document.getElementById('af-vorname').value.trim(),
+    email:                  document.getElementById('af-email').value.trim(),
+    geburtsdatum:           document.getElementById('af-geburtsdatum').value,
+    geburtsort:             document.getElementById('af-geburtsort').value.trim(),
+    stufe1_gebucht:         stufe1,
+    stufe1_schulungsform:   s1form,
+    stufe2_gebucht:         stufe2,
+    stufe2_schulungsform:   s2form,
+    schubmast_gebucht:      stufe2 && document.getElementById('ck-schubmast').checked,
+    kommissionierer_gebucht:stufe2 && document.getElementById('ck-komm').checked,
+    schmalgang_gebucht:     stufe2 && document.getElementById('ck-schmal').checked,
+    lasi_gebucht:           lasi,
+    lasi_schulungsform:     liform,
+    training_gebucht:       training,
+    schulung:               schulungen.join(', '),
+    schulungstyp:           schulungstyp
+  };
+
+  var btn = e.target.querySelector('.af-submit');
+  btn.disabled = true;
+  btn.textContent = 'Wird gesendet…';
+
+  try {
+    var resp = await fetch(ANMELDUNG_URL, {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify(payload)
+    });
+    if(resp.ok || resp.status === 202){
+      document.getElementById('anmeldungForm').innerHTML =
+        '<div class="af-success">✅ Anmeldung erfolgreich!<br>Sie erhalten in Kürze eine Bestätigungs-E-Mail mit Ihrer persönlichen Registrierungsnummer.</div>';
+    } else {
+      throw new Error(resp.status);
+    }
+  } catch(err){
+    btn.disabled = false;
+    btn.textContent = 'Anmeldung absenden';
+    errEl.textContent = 'Fehler beim Senden. Bitte versuchen Sie es erneut oder kontaktieren Sie uns per E-Mail.';
+    errEl.style.display = 'block';
+  }
+});
+
 document.getElementById('kontaktForm').addEventListener('submit',function(e){
   e.preventDefault();
   var name     = document.getElementById('kf-name').value.trim();
