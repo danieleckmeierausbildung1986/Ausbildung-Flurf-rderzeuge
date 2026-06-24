@@ -182,13 +182,11 @@ body::before{
   background:linear-gradient(135deg,var(--acc1),var(--acc2));color:#fff;
   font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;}
 .ov-weiter:hover{opacity:.9;}
-/* VIDEO */
-.vid-bar{background:#0b1620;padding:10px 16px;display:flex;flex-direction:column;gap:10px;}
-.vid-toggle{display:flex;align-items:center;gap:8px;padding:9px 18px;border:none;border-radius:10px;
-  background:rgba(255,255,255,.12);color:#fff;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;width:fit-content;}
-.vid-toggle:hover{background:rgba(255,255,255,.2);}
-.vid-box{border-radius:10px;overflow:hidden;background:#000;}
-.vid-box iframe{display:block;width:100%;aspect-ratio:16/9;border:none;}
+/* VIDEO SLIDE */
+.video-slide{display:flex;flex-direction:row;align-items:stretch;background:#0b1620;border-radius:12px;overflow:hidden;}
+.video-wrap{flex:1;display:flex;flex-direction:column;}
+.video-label{background:#1a2a3a;color:#7ec8e3;font-size:13px;font-weight:700;padding:8px 16px;letter-spacing:.03em;}
+.video-wrap iframe{display:block;width:100%;aspect-ratio:16/9;border:none;flex:1;}
 </style>
 </head>
 <body>
@@ -228,12 +226,12 @@ var MAIL='DanielEckmeier@Ausbildung1986.onmicrosoft.com';
     14: 'https://ihr-tenant.sharepoint.com/...',
    ----------------------------- */
 var VIDEO_MAP={
-  35:'https://www.youtube-nocookie.com/embed/e-8fKqqJYv4',
-  56:'https://ausbildung1986.sharepoint.com/sites/AusbildungZentrale/_layouts/15/embed.aspx?UniqueId=8d5a491d-ccf2-41b9-be09-de15a170be4d&embed=%7B%22ust%22%3Atrue%2C%22hv%22%3A%22CopyEmbedCode%22%7D&referrer=StreamWebApp&referrerScenario=EmbedDialog.Create',
-  76:'https://ausbildung1986.sharepoint.com/sites/AusbildungZentrale/_layouts/15/embed.aspx?UniqueId=9ab11b83-9a9b-46ee-b1c6-454154327092&embed=%7B%22ust%22%3Atrue%2C%22hv%22%3A%22CopyEmbedCode%22%7D&referrer=StreamWebApp&referrerScenario=EmbedDialog.Create',
-  84:'https://www.youtube-nocookie.com/embed/n_nxdiaQTd0',
-  96:'https://ausbildung1986.sharepoint.com/sites/AusbildungZentrale/_layouts/15/embed.aspx?UniqueId=f90232fe-39b8-40db-a81a-88ef3e589e8c&embed=%7B%22ust%22%3Atrue%2C%22hv%22%3A%22CopyEmbedCode%22%7D&referrer=StreamWebApp&referrerScenario=EmbedDialog.Create',
-  106:'https://ausbildung1986.sharepoint.com/sites/AusbildungZentrale/_layouts/15/embed.aspx?UniqueId=9b79fd92-88cd-4227-af56-77ebad89a4f8&embed=%7B%22ust%22%3Atrue%2C%22hv%22%3A%22CopyEmbedCode%22%7D&referrer=StreamWebApp&referrerScenario=EmbedDialog.Create',
+  35:{url:'https://www.youtube-nocookie.com/embed/e-8fKqqJYv4',titel:'Unfallbeispiel: Linde Crash'},
+  56:{url:'https://ausbildung1986.sharepoint.com/sites/AusbildungZentrale/_layouts/15/embed.aspx?UniqueId=8d5a491d-ccf2-41b9-be09-de15a170be4d&embed=%7B%22ust%22%3Atrue%2C%22hv%22%3A%22CopyEmbedCode%22%7D&referrer=StreamWebApp&referrerScenario=EmbedDialog.Create',titel:'Verkehrswege'},
+  76:{url:'https://ausbildung1986.sharepoint.com/sites/AusbildungZentrale/_layouts/15/embed.aspx?UniqueId=9ab11b83-9a9b-46ee-b1c6-454154327092&embed=%7B%22ust%22%3Atrue%2C%22hv%22%3A%22CopyEmbedCode%22%7D&referrer=StreamWebApp&referrerScenario=EmbedDialog.Create',titel:'Fahrerrückhalteeinrichtungen'},
+  84:{url:'https://www.youtube-nocookie.com/embed/n_nxdiaQTd0',titel:'Sichtverhältnisse'},
+  96:{url:'https://ausbildung1986.sharepoint.com/sites/AusbildungZentrale/_layouts/15/embed.aspx?UniqueId=f90232fe-39b8-40db-a81a-88ef3e589e8c&embed=%7B%22ust%22%3Atrue%2C%22hv%22%3A%22CopyEmbedCode%22%7D&referrer=StreamWebApp&referrerScenario=EmbedDialog.Create',titel:'Arbeitsbühnen'},
+  106:{url:'https://ausbildung1986.sharepoint.com/sites/AusbildungZentrale/_layouts/15/embed.aspx?UniqueId=9b79fd92-88cd-4227-af56-77ebad89a4f8&embed=%7B%22ust%22%3Atrue%2C%22hv%22%3A%22CopyEmbedCode%22%7D&referrer=StreamWebApp&referrerScenario=EmbedDialog.Create',titel:'Gabelstapler — Zusammenfassung'},
 };
 var FLOW_URL='DEIN_FLOW_URL_HIER';
 
@@ -293,9 +291,13 @@ STEPS.push({type:'welcome'});
 KAPITEL.forEach(function(k){
   // Kapitel-Titelfolie
   STEPS.push({type:'kapitel',nr:k.nr,titel:k.titel});
-  // Folienbilder
+  // Folienbilder (Video-Platzhalter-Folien werden als Video-Step eingebaut)
   for(var f=k.folien_von;f<=k.folien_bis;f++){
-    STEPS.push({type:'folie',fn:f,kapitel_nr:k.nr,kapitel_titel:k.titel});
+    if(VIDEO_MAP[f]){
+      STEPS.push({type:'video',fn:f,kapitel_nr:k.nr,kapitel_titel:k.titel,vidUrl:VIDEO_MAP[f].url,titel:VIDEO_MAP[f].titel});
+    } else {
+      STEPS.push({type:'folie',fn:f,kapitel_nr:k.nr,kapitel_titel:k.titel});
+    }
   }
   // Diagramm-Übungen nach Kapitel 8 (Traglastdiagramm)
   if(k.nr===8){
@@ -335,21 +337,6 @@ var nextBtn=document.getElementById('nextBtn');
 var counter=document.getElementById('counter');
 
 /* ---- VIDEO HELPERS ---- */
-function getEmbedUrl(url){
-  var m=url.match(/(?:youtube\.com\/watch\?(?:.*&)?v=|youtu\.be\/)([^&?#]+)/);
-  if(m)return'https://www.youtube.com/embed/'+m[1]+'?rel=0&modestbranding=1';
-  return url; // SharePoint-Embed-URL oder andere – direkt verwenden
-}
-function toggleVid(btn){
-  var box=btn.nextElementSibling;
-  var open=box.style.display!=='none'&&box.style.display!=='';
-  if(open){box.style.display='none';btn.innerHTML='&#9654; Video ansehen';}
-  else{
-    box.style.display='block';
-    btn.innerHTML='&#9660; Video schlie&szlig;en';
-    if(!box.querySelector('iframe').src)box.querySelector('iframe').src=box.dataset.src;
-  }
-}
 
 /* ---- LERNFORTSCHRITT ---- */
 function saveProgress(){
@@ -546,19 +533,23 @@ function render(){
     counter.textContent='Kapitel '+s.nr;
   }
   else if(s.type==='folie'){
-    var vidUrl=VIDEO_MAP[s.fn]?getEmbedUrl(VIDEO_MAP[s.fn]):null;
-    var vidHtml=vidUrl
-      ?'<div class="vid-bar">'+
-         '<button class="vid-toggle" onclick="toggleVid(this)">&#9654; Video ansehen</button>'+
-         '<div class="vid-box" style="display:none" data-src="'+vidUrl+'"><iframe src="" allowfullscreen loading="lazy"></iframe></div>'+
-        '</div>'
-      :'';
     host.innerHTML='<div class="slidebox">'+
       '<div class="nav-zone prev" onclick="prev()"><span>‹</span></div>'+
       '<img src="'+ORDNER+'/Folie'+s.fn+'.PNG" alt="Folie '+s.fn+'">'+
       '<div class="nav-zone next" onclick="next()"><span>›</span></div>'+
-      '</div>'+vidHtml;
+      '</div>';
     counter.textContent='Folie '+s.fn+' / '+TOTAL_FOLIEN;
+  }
+  else if(s.type==='video'){
+    host.innerHTML='<div class="slidebox video-slide">'+
+      '<div class="nav-zone prev" onclick="prev()"><span>‹</span></div>'+
+      '<div class="video-wrap">'+
+        '<div class="video-label">&#9654; '+s.titel+'</div>'+
+        '<iframe src="'+s.vidUrl+'" allow="autoplay; fullscreen; picture-in-picture; encrypted-media" allowfullscreen></iframe>'+
+      '</div>'+
+      '<div class="nav-zone next" onclick="next()"><span>›</span></div>'+
+      '</div>';
+    counter.textContent='&#9654; '+s.titel;
   }
   else if(s.type==='quiz'){
     var key=s.kapitel_nr+'-'+s.qi;
