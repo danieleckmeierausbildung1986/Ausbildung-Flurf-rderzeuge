@@ -240,7 +240,9 @@ body::before{
 /* VIDEO SLIDE */
 .video-slide{display:flex;flex-direction:row;align-items:stretch;background:#0b1620;border-radius:12px;overflow:hidden;}
 .video-wrap{flex:1;display:flex;flex-direction:column;}
-.video-label{background:#1a2a3a;color:#7ec8e3;font-size:13px;font-weight:700;padding:8px 16px;letter-spacing:.03em;}
+.video-label{background:#1a2a3a;color:#7ec8e3;font-size:13px;font-weight:700;padding:8px 16px;letter-spacing:.03em;display:flex;align-items:center;justify-content:space-between;}
+.video-fs-btn{background:rgba(255,255,255,.15);border:none;border-radius:7px;color:#fff;font-size:12px;font-weight:600;padding:4px 10px;cursor:pointer;font-family:inherit;flex-shrink:0;}
+.video-fs-btn:hover{background:rgba(255,255,255,.28);}
 .video-wrap iframe{display:block;width:100%;aspect-ratio:16/9;border:none;flex:1;}
 </style>
 </head>
@@ -392,6 +394,12 @@ var nextBtn=document.getElementById('nextBtn');
 var counter=document.getElementById('counter');
 
 /* ---- VIDEO HELPERS ---- */
+function videoVollbild(){
+  var el=document.getElementById('videoFrame');
+  if(!el)return;
+  var req=el.requestFullscreen||el.webkitRequestFullscreen||el.mozRequestFullScreen||el.msRequestFullscreen;
+  if(req)req.call(el);
+}
 
 /* ---- LERNFORTSCHRITT ---- */
 function saveProgress(){
@@ -599,8 +607,8 @@ function render(){
     host.innerHTML='<div class="slidebox video-slide">'+
       '<div class="nav-zone prev" onclick="prev()"><span>‹</span></div>'+
       '<div class="video-wrap">'+
-        '<div class="video-label">&#9654; '+s.titel+'</div>'+
-        '<iframe src="'+s.vidUrl+'" allow="autoplay; fullscreen; picture-in-picture; encrypted-media" allowfullscreen></iframe>'+
+        '<div class="video-label"><span>&#9654; '+s.titel+'</span><button class="video-fs-btn" onclick="videoVollbild()">&#x26F6; Vollbild</button></div>'+
+        '<iframe id="videoFrame" src="'+s.vidUrl+'" allow="autoplay; fullscreen; picture-in-picture; encrypted-media" allowfullscreen></iframe>'+
       '</div>'+
       '<div class="nav-zone next" onclick="next()"><span>›</span></div>'+
       '</div>';
