@@ -826,17 +826,14 @@ document.getElementById('anmeldungForm').addEventListener('submit', async functi
   btn.textContent = 'Wird gesendet…';
 
   try {
-    var resp = await fetch(ANMELDUNG_URL, {
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify(payload)
+    await fetch(ANMELDUNG_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: {'Content-Type': 'text/plain'},
+      body: JSON.stringify(payload)
     });
-    if(resp.ok || resp.status === 202){
-      document.getElementById('anmeldungForm').innerHTML =
-        '<div class="af-success">✅ Anmeldung erfolgreich!<br>Sie erhalten in Kürze eine Bestätigungs-E-Mail mit Ihrer persönlichen Registrierungsnummer.</div>';
-    } else {
-      throw new Error(resp.status);
-    }
+    document.getElementById('anmeldungForm').innerHTML =
+      '<div class="af-success">✅ Anmeldung erfolgreich!<br>Sie erhalten in Kürze eine Bestätigungs-E-Mail mit Ihrer persönlichen Registrierungsnummer.</div>';
   } catch(err){
     btn.disabled = false;
     btn.textContent = 'Anmeldung absenden';
