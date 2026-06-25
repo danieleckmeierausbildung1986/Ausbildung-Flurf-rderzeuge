@@ -107,6 +107,25 @@ nav{
 .stat-num{font-size:32px;font-weight:800;line-height:1;color:var(--safety)}
 .stat-label{font-size:13px;color:rgba(255,255,255,.6);margin-top:4px}
 
+/* FORMATE */
+.formate-section{background:var(--bg);padding:40px 24px;border-bottom:1px solid var(--line)}
+.formate-inner{max-width:1100px;margin:0 auto}
+.formate-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:0}
+.format-card{
+  background:#fff;border:1px solid var(--line);border-radius:14px;
+  padding:22px 24px;display:flex;align-items:flex-start;gap:16px;
+}
+.format-icon{
+  width:42px;height:42px;border-radius:10px;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;font-size:20px;
+}
+.fi-elearning{background:#e8f5ee}
+.fi-online{background:#e8eaf6}
+.fi-praesenz{background:#fff3e0}
+.format-text h3{font-size:14px;font-weight:800;color:var(--navy);margin-bottom:4px}
+.format-text p{font-size:13px;color:var(--muted);line-height:1.55}
+@media(max-width:680px){.formate-grid{grid-template-columns:1fr}}
+
 /* SECTIONS */
 .section{padding:80px 24px}
 .section-inner{max-width:1100px;margin:0 auto}
@@ -347,6 +366,35 @@ footer a{color:rgba(255,255,255,.4);text-decoration:underline}
       <div class="stat"><div class="stat-num">DGUV</div><div class="stat-label">Grundsatz 308-001</div></div>
       <div class="stat"><div class="stat-num">VDI</div><div class="stat-label">2700 ff. Ladungssicherung</div></div>
       <div class="stat"><div class="stat-num">4</div><div class="stat-label">Schulungsmodule</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- SCHULUNGSFORMATE -->
+<section class="formate-section">
+  <div class="formate-inner">
+    <div class="formate-grid">
+      <div class="format-card">
+        <div class="format-icon fi-elearning">💻</div>
+        <div class="format-text">
+          <h3>E-Learning</h3>
+          <p>Theorie flexibel online lernen — jederzeit und ortsunabhängig. Die praktische Prüfung findet anschließend vor Ort statt.</p>
+        </div>
+      </div>
+      <div class="format-card">
+        <div class="format-icon fi-online">🎥</div>
+        <div class="format-text">
+          <h3>Online-Schulung</h3>
+          <p>Live-Unterricht per Video mit direktem Ausbilder-Kontakt. Interaktiv, termingebunden und ohne Anfahrtsweg.</p>
+        </div>
+      </div>
+      <div class="format-card">
+        <div class="format-icon fi-praesenz">🏭</div>
+        <div class="format-text">
+          <h3>Präsenzschulung</h3>
+          <p>Klassische Schulung vor Ort in Simbach — Theorie und Praxis gemeinsam an einem Tag mit zertifiziertem Ausbilder.</p>
+        </div>
+      </div>
     </div>
   </div>
 </section>
