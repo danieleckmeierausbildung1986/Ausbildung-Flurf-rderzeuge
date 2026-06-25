@@ -374,6 +374,7 @@ async function pruefeUndZeige(val, silent){
     if(data && data.zugang === true){
       currentRegnr = val;
       currentData  = data;
+      console.log('LOGIN DATA:', JSON.stringify(data));
       showModules(data);
     } else if(!silent){
       errEl.textContent = data.grund || t.errNotFound;
