@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Schulung buchen – Ausbildung Niederbayern</title>
+<meta name="description" content="Schulung für Flurförderzeuge oder Ladungssicherung buchen — schnelle Online-Anmeldung.">
+<style>
+:root{
+  --green:#1a7a4a;--green-l:#2ea865;--green-d:#0d4a24;--green-xl:#e8f5ee;
+  --navy:#16243f;--ink:#1a2330;--muted:#5a6a7a;--line:#e3e8f0;
+  --safety:#f5a623;--white:#fff;--bg:#f7f9fb;
+  --shadow-sm:0 2px 8px rgba(0,0,0,.08);
+  --shadow-md:0 8px 32px rgba(0,0,0,.12);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:"Segoe UI",system-ui,sans-serif;color:var(--ink);background:var(--bg);line-height:1.6}
+a{text-decoration:none;color:inherit}
+
+/* NAV */
+nav{
+  position:sticky;top:0;z-index:100;
+  background:rgba(255,255,255,.95);backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--line);padding:0 24px;
+}
+.nav-inner{
+  max-width:1100px;margin:0 auto;
+  display:flex;align-items:center;justify-content:space-between;
+  height:64px;gap:16px;
+}
+.nav-logo{display:flex;align-items:center;gap:12px}
+.nav-logo-icon{
+  width:38px;height:38px;border-radius:10px;flex-shrink:0;
+  background:linear-gradient(135deg,var(--green),var(--green-l));
+  display:flex;align-items:center;justify-content:center;
+}
+.nav-logo-icon svg{width:22px;height:22px;fill:#fff}
+.nav-brand{font-size:16px;font-weight:700;color:var(--navy);line-height:1.2}
+.nav-brand span{display:block;font-size:11px;font-weight:400;color:var(--muted)}
+.nav-back{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:8px 16px;border-radius:10px;font-size:14px;font-weight:600;
+  color:var(--muted);border:1.5px solid var(--line);background:#fff;
+  transition:all .15s;
+}
+.nav-back:hover{color:var(--ink);border-color:var(--navy)}
+
+/* PAGE */
+.page{max-width:720px;margin:0 auto;padding:48px 24px 80px}
+.page-label{font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--green);margin-bottom:10px}
+.page-title{font-size:clamp(24px,4vw,36px);font-weight:800;color:var(--navy);margin-bottom:8px}
+.page-sub{font-size:15px;color:var(--muted);margin-bottom:36px;line-height:1.65}
+
+/* FORM CARD */
+.af-card{
+  background:#fff;border-radius:20px;border:1px solid var(--line);
+  box-shadow:var(--shadow-sm);padding:36px;
+}
+.af-row2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+@media(max-width:540px){.af-row2{grid-template-columns:1fr}}
+.af-field{display:flex;flex-direction:column;gap:6px}
+.af-field label{font-size:13px;font-weight:700;color:var(--navy)}
+.af-field input,.af-field select{
+  padding:10px 14px;border-radius:10px;border:1.5px solid var(--line);
+  font-size:14px;font-family:inherit;color:var(--ink);
+  background:#fff;transition:border-color .15s;
+}
+.af-field input:focus,.af-field select:focus{outline:none;border-color:var(--green)}
+.af-divider{border:none;border-top:1px solid var(--line);margin:24px 0}
+
+.af-kurs-block{
+  border:1.5px solid var(--line);border-radius:12px;
+  padding:14px 16px;margin-bottom:10px;transition:border-color .2s,background .2s;
+}
+.af-kurs-block.active{border-color:var(--green);background:var(--green-xl)}
+.af-kurs-top{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.af-kurs-label{display:flex;align-items:center;gap:10px;font-size:14px;font-weight:600;cursor:pointer}
+.af-kurs-label input[type=checkbox]{width:17px;height:17px;accent-color:var(--green);cursor:pointer}
+.af-kurs-select{
+  padding:7px 12px;border-radius:8px;border:1.5px solid var(--line);
+  font-size:13px;font-family:inherit;background:#fff;cursor:pointer;min-width:160px;
+}
+.af-kurs-select:disabled{opacity:.5;cursor:default}
+.af-subkurse{margin-top:12px;padding-top:12px;border-top:1px solid var(--line);display:none}
+.af-subkurse-title{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-bottom:8px}
+.af-sub-checks{display:flex;flex-wrap:wrap;gap:10px}
+.af-sub-check{display:flex;align-items:center;gap:7px;font-size:13px;cursor:pointer}
+.af-sub-check input{accent-color:var(--green)}
+
+.af-error{
+  background:#fef2f2;border:1px solid #fecaca;color:#dc2626;
+  border-radius:10px;padding:12px 16px;font-size:14px;margin-top:16px;
+}
+.af-submit{
+  display:block;width:100%;padding:14px;border-radius:12px;
+  font-size:16px;font-weight:700;background:var(--green);color:#fff;
+  border:none;cursor:pointer;transition:all .15s;margin-top:20px;
+}
+.af-submit:hover{background:var(--green-d)}
+.af-submit:disabled{opacity:.6;cursor:default}
+
+footer{
+  text-align:center;padding:24px;font-size:13px;color:var(--muted);
+  border-top:1px solid var(--line);background:#fff;margin-top:0;
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a class="nav-logo" href="homepage.html">
+      <div class="nav-logo-icon">
+        <svg viewBox="0 0 24 24"><path d="M20 8h-3V4H3c-1.1 0-2 .9-2 2v11h2c0 1.66 1.34 3 3 3s3-1.34 3-3h6c0 1.66 1.34 3 3 3s3-1.34 3-3h2v-5l-3-4zM6 18.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm13.5-9l1.96 2.5H17V9.5h2.5zm-1.5 9c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>
+      </div>
+      <div class="nav-brand">Ausbildung Niederbayern<span>Flurförderzeuge & Ladungssicherung</span></div>
+    </a>
+    <a class="nav-back" href="homepage.html">← Zurück zur Übersicht</a>
+  </div>
+</nav>
+
+<div class="page">
+  <div class="page-label">Direkte Anmeldung</div>
+  <h1 class="page-title">Schulung buchen</h1>
+  <p class="page-sub">Füllen Sie das Formular aus — Sie erhalten umgehend eine Bestätigungs-E-Mail mit Ihrer persönlichen Registrierungsnummer.</p>
+
+  <div class="af-card">
+    <div id="af-success-msg" style="display:none;text-align:center;padding:32px 16px">
+      <div style="font-size:48px;margin-bottom:12px">✅</div>
+      <div style="font-size:20px;font-weight:800;color:var(--green-d);margin-bottom:8px">Anmeldung erfolgreich!</div>
+      <div style="font-size:15px;color:var(--muted);margin-bottom:28px">Sie erhalten in Kürze eine Bestätigungs-E-Mail mit Ihrer persönlichen Registrierungsnummer.</div>
+      <button onclick="weitererTeilnehmer()" class="af-submit" style="max-width:320px;margin:0 auto">+ Weiteren Teilnehmer anmelden</button>
+    </div>
+
+    <form id="anmeldungForm">
+      <div class="af-row2">
+        <div class="af-field">
+          <label>Nachname *</label>
+          <input type="text" id="af-nachname" placeholder="Mustermann" required>
+        </div>
+        <div class="af-field">
+          <label>Vorname *</label>
+          <input type="text" id="af-vorname" placeholder="Max" required>
+        </div>
+      </div>
+      <div class="af-row2">
+        <div class="af-field">
+          <label>E-Mail *</label>
+          <input type="email" id="af-email" placeholder="max.mustermann@firma.de" required>
+        </div>
+        <div class="af-field">
+          <label>Telefon</label>
+          <input type="tel" id="af-telefon" placeholder="+49 123 456789">
+        </div>
+      </div>
+      <div class="af-row2">
+        <div class="af-field">
+          <label>Geburtsdatum *</label>
+          <input type="date" id="af-geburtsdatum" required>
+        </div>
+        <div class="af-field">
+          <label>Geburtsort *</label>
+          <input type="text" id="af-geburtsort" placeholder="München" required>
+        </div>
+      </div>
+
+      <hr class="af-divider">
+      <div style="font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--navy);margin-bottom:14px">Schulungsauswahl (Mehrfachauswahl möglich)</div>
+
+      <div class="af-kurs-block" id="block-stufe1">
+        <div class="af-kurs-top">
+          <label class="af-kurs-label">
+            <input type="checkbox" id="ck-stufe1">
+            Ausbildung Flurförderzeuge Stufe 1
+          </label>
+          <select class="af-kurs-select" id="sel-stufe1" disabled>
+            <option value="">Format wählen</option>
+            <option value="Elearning">E-Learning</option>
+            <option value="Online">Online</option>
+            <option value="Präsenz">Präsenz</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="af-kurs-block" id="block-stufe2">
+        <div class="af-kurs-top">
+          <label class="af-kurs-label">
+            <input type="checkbox" id="ck-stufe2">
+            Zusatzausbildung Stufe 2
+          </label>
+          <select class="af-kurs-select" id="sel-stufe2" disabled>
+            <option value="">Format wählen</option>
+            <option value="Elearning">E-Learning</option>
+            <option value="Online">Online</option>
+            <option value="Präsenz">Präsenz</option>
+          </select>
+        </div>
+        <div class="af-subkurse" id="stufe2-typen">
+          <div class="af-subkurse-title">Fahrzeugtypen (Mehrfachauswahl)</div>
+          <div class="af-sub-checks">
+            <label class="af-sub-check"><input type="checkbox" id="ck-schubmast"> Schubmaststapler</label>
+            <label class="af-sub-check"><input type="checkbox" id="ck-komm"> Kommissionierer</label>
+            <label class="af-sub-check"><input type="checkbox" id="ck-schmal"> Schmalgangstapler</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="af-kurs-block" id="block-lasi">
+        <div class="af-kurs-top">
+          <label class="af-kurs-label">
+            <input type="checkbox" id="ck-lasi">
+            Ladungssicherung nach VDI 2700 ff.
+          </label>
+          <select class="af-kurs-select" id="sel-lasi" disabled>
+            <option value="">Format wählen</option>
+            <option value="Elearning">E-Learning</option>
+            <option value="Online">Online</option>
+            <option value="Präsenz">Präsenz</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="af-kurs-block" id="block-training">
+        <div class="af-kurs-top">
+          <label class="af-kurs-label">
+            <input type="checkbox" id="ck-training">
+            Grundlagentraining Flurförderzeuge
+            <span style="font-size:12px;font-weight:400;color:var(--muted)">(nur Präsenz)</span>
+          </label>
+        </div>
+      </div>
+
+      <div id="af-error" class="af-error" style="display:none"></div>
+      <button type="submit" class="af-submit">Anmeldung absenden</button>
+    </form>
+  </div>
+</div>
+
+<footer>
+  <strong>Ausbildung Niederbayern</strong> &nbsp;·&nbsp;
+  Daniel Eckmeier &nbsp;·&nbsp;
+  Am Schwimmbad 12, 94436 Simbach &nbsp;·&nbsp;
+  <a href="homepage.html#impressum">Impressum</a>
+</footer>
+
+<script>
+var ANMELDUNG_URL = 'https://default8af25f9034bc4ef4aba22ab6f641d5.01.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/dbe5673986dd498bb2049e8a80220add/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=ogUKNB6jpCkEcxwY87bHLFJbIzrnQm5TPAwNTX4DYFQ';
+
+// Kurs per URL-Parameter vorauswählen (?kurs=stufe1 etc.)
+(function(){
+  var params = new URLSearchParams(window.location.search);
+  var kurs = params.get('kurs');
+  if(!kurs) return;
+  var ck = document.getElementById('ck-' + kurs);
+  if(!ck) return;
+  ck.checked = true;
+  ck.dispatchEvent(new Event('change'));
+  document.getElementById('block-' + kurs).scrollIntoView({behavior:'smooth', block:'center'});
+})();
+
+['stufe1','stufe2','lasi'].forEach(function(id){
+  document.getElementById('ck-'+id).addEventListener('change',function(){
+    var sel = document.getElementById('sel-'+id);
+    sel.disabled = !this.checked;
+    if(!this.checked) sel.value = '';
+    document.getElementById('block-'+id).classList.toggle('active', this.checked);
+  });
+});
+document.getElementById('ck-training').addEventListener('change',function(){
+  document.getElementById('block-training').classList.toggle('active',this.checked);
+});
+document.getElementById('ck-stufe2').addEventListener('change',function(){
+  document.getElementById('stufe2-typen').style.display = this.checked ? 'block' : 'none';
+});
+
+function weitererTeilnehmer(){
+  document.getElementById('af-success-msg').style.display = 'none';
+  document.getElementById('anmeldungForm').style.display = 'block';
+  ['af-nachname','af-vorname','af-email','af-telefon','af-geburtsdatum','af-geburtsort'].forEach(function(id){
+    document.getElementById(id).value = '';
+  });
+  document.getElementById('af-error').style.display = 'none';
+  var btn = document.querySelector('#anmeldungForm .af-submit');
+  btn.disabled = false;
+  btn.textContent = 'Anmeldung absenden';
+}
+
+document.getElementById('anmeldungForm').addEventListener('submit', async function(e){
+  e.preventDefault();
+  var errEl = document.getElementById('af-error');
+  errEl.style.display = 'none';
+
+  var stufe1   = document.getElementById('ck-stufe1').checked;
+  var stufe2   = document.getElementById('ck-stufe2').checked;
+  var lasi     = document.getElementById('ck-lasi').checked;
+  var training = document.getElementById('ck-training').checked;
+
+  if(!stufe1 && !stufe2 && !lasi && !training){
+    errEl.textContent = 'Bitte wählen Sie mindestens eine Schulung aus.';
+    errEl.style.display = 'block';
+    return;
+  }
+
+  var s1form = stufe1 ? document.getElementById('sel-stufe1').value : '';
+  var s2form = stufe2 ? document.getElementById('sel-stufe2').value : '';
+  var liform = lasi   ? document.getElementById('sel-lasi').value   : '';
+
+  if((stufe1 && !s1form)||(stufe2 && !s2form)||(lasi && !liform)){
+    errEl.textContent = 'Bitte wählen Sie für jede gebuchte Schulung ein Format.';
+    errEl.style.display = 'block';
+    return;
+  }
+
+  var schulungen = [];
+  if(stufe1)   schulungen.push('Ausbildung Flurförderzeuge Stufe 1');
+  if(stufe2)   schulungen.push('Zusatzausbildung Stufe 2');
+  if(lasi)     schulungen.push('Ladungssicherung VDI 2700');
+  if(training) schulungen.push('Grundlagentraining');
+
+  var formen = [s1form, s2form, liform];
+  var schulungstyp = formen.indexOf('Elearning') >= 0 ? 'Elearning' :
+                     formen.indexOf('Online')    >= 0 ? 'Online' : 'Präsenz';
+
+  var payload = {
+    nachname:                document.getElementById('af-nachname').value.trim(),
+    vorname:                 document.getElementById('af-vorname').value.trim(),
+    email:                   document.getElementById('af-email').value.trim(),
+    telefon:                 document.getElementById('af-telefon').value.trim(),
+    geburtsdatum:            document.getElementById('af-geburtsdatum').value,
+    geburtsort:              document.getElementById('af-geburtsort').value.trim(),
+    stufe1_gebucht:          stufe1,
+    stufe1_schulungsform:    s1form,
+    stufe2_gebucht:          stufe2,
+    stufe2_schulungsform:    s2form,
+    schubmast_gebucht:       stufe2 && document.getElementById('ck-schubmast').checked,
+    kommissionierer_gebucht: stufe2 && document.getElementById('ck-komm').checked,
+    schmalgang_gebucht:      stufe2 && document.getElementById('ck-schmal').checked,
+    lasi_gebucht:            lasi,
+    lasi_schulungsform:      liform,
+    training_gebucht:        training,
+    schulung:                schulungen.join(', '),
+    schulungstyp:            schulungstyp
+  };
+
+  var btn = e.target.querySelector('.af-submit');
+  btn.disabled = true;
+  btn.textContent = 'Wird gesendet…';
+
+  try {
+    var resp = await fetch(ANMELDUNG_URL, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(payload)
+    });
+    if(resp.ok || resp.status === 202){
+      document.getElementById('anmeldungForm').style.display = 'none';
+      document.getElementById('af-success-msg').style.display = 'block';
+      window.scrollTo({top:0, behavior:'smooth'});
+    } else {
+      throw new Error('Status: ' + resp.status);
+    }
+  } catch(err){
+    btn.disabled = false;
+    btn.textContent = 'Anmeldung absenden';
+    errEl.textContent = 'Fehler beim Senden — bitte per E-Mail melden: DanielEckmeier@Ausbildung1986.onmicrosoft.com';
+    errEl.style.display = 'block';
+  }
+});
+</script>
+</body>
+</html>
