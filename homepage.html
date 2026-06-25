@@ -783,6 +783,18 @@ var KURS_NORM = {
   lasi:'VDI 2700', training:'DGUV 308-001'
 };
 
+function normalizeKursId(val){
+  if(!val) return '';
+  var v = (typeof val === 'object' && val.Value) ? val.Value : String(val);
+  var map = {
+    'stufe 1':'stufe1','stufe1':'stufe1',
+    'stufe 2':'stufe2','stufe2':'stufe2',
+    'lasi':'lasi',
+    'training':'training','grundlagentraining':'training'
+  };
+  return map[v.toLowerCase().trim()] || v.toLowerCase().replace(/\s+/g,'');
+}
+
 function formatDatum(von, bis){
   var dv = new Date(von);
   var db = bis ? new Date(bis) : null;
@@ -814,7 +826,8 @@ async function ladeTermine(){
       return;
     }
     grid.innerHTML = list.map(function(t){
-      var norm = KURS_NORM[t.kurs_id] || '';
+      var kid  = normalizeKursId(t.kurs_id);
+      var norm = KURS_NORM[kid] || '';
       return '<div class="termin-card">'
         +'<div class="termin-date">📅 '+formatDatum(t.datum_von, t.datum_bis)+'</div>'
         +'<div class="termin-title">'+t.titel+'</div>'
@@ -823,7 +836,7 @@ async function ladeTermine(){
         +'<span>💻 '+t.format+'</span>'
         +'</div>'
         +(norm?'<span class="termin-tag tag-norm">'+norm+'</span>':'')
-        +'<button class="termin-book" onclick="selectKurs(\''+t.kurs_id+'\')">Jetzt anmelden →</button>'
+        +'<button class="termin-book" onclick="selectKurs(\''+kid+'\')">Jetzt anmelden →</button>'
         +'</div>';
     }).join('');
   }catch(e){
