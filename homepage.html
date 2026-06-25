@@ -778,9 +778,18 @@ var ANMELDUNG_URL = 'https://default8af25f9034bc4ef4aba22ab6f641d5.01.environmen
 // Termine Flow URL — nach Anlegen des Flows hier eintragen
 var TERMINE_URL = '';
 
-var KURS_NORM = {
-  stufe1:'DGUV 308-001', stufe2:'DGUV 308-001',
-  lasi:'VDI 2700', training:'DGUV 308-001'
+var KURS_NORM   = {stufe1:'DGUV 308-001',stufe2:'DGUV 308-001',lasi:'VDI 2700',training:'DGUV 308-001'};
+var KURS_TITEL  = {
+  stufe1:'Ausbildung Flurförderzeuge Stufe 1',
+  stufe2:'Zusatzausbildung Flurförderzeuge Stufe 2',
+  lasi:'Ladungssicherung nach VDI 2700 ff.',
+  training:'Grundlagentraining Flurförderzeuge'
+};
+var KURS_FORMAT = {
+  stufe1:'E-Learning · Online · Präsenz',
+  stufe2:'E-Learning · Online · Präsenz',
+  lasi:'E-Learning · Online · Präsenz',
+  training:'Präsenzschulung'
 };
 
 function normalizeKursId(val){
@@ -826,14 +835,16 @@ async function ladeTermine(){
       return;
     }
     grid.innerHTML = list.map(function(t){
-      var kid  = normalizeKursId(t.kurs_id);
-      var norm = KURS_NORM[kid] || '';
+      var kid    = normalizeKursId(t.kurs_id);
+      var titel  = KURS_TITEL[kid]  || t.kurs_id;
+      var format = KURS_FORMAT[kid] || '';
+      var norm   = KURS_NORM[kid]   || '';
       return '<div class="termin-card">'
         +'<div class="termin-date">📅 '+formatDatum(t.datum_von, t.datum_bis)+'</div>'
-        +'<div class="termin-title">'+t.titel+'</div>'
+        +'<div class="termin-title">'+titel+'</div>'
         +'<div class="termin-meta">'
-        +'<span>📍 '+(t.ort||'Simbach')+'</span>'
-        +'<span>💻 '+t.format+'</span>'
+        +'<span>📍 Simbach</span>'
+        +'<span>💻 '+format+'</span>'
         +'</div>'
         +(norm?'<span class="termin-tag tag-norm">'+norm+'</span>':'')
         +'<button class="termin-book" onclick="selectKurs(\''+kid+'\')">Jetzt anmelden →</button>'
