@@ -202,7 +202,9 @@ nav{
 /* TERMINE */
 .termine-section{background:var(--bg);padding:80px 24px}
 .termine-inner{max-width:1100px;margin:0 auto}
-.termine-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px}
+.termine-grid{display:flex;flex-direction:column;gap:32px}
+.termin-gruppe-titel{font-size:17px;font-weight:800;color:var(--navy);margin:0 0 14px 0;padding-bottom:8px;border-bottom:2px solid var(--green)}
+.termin-gruppe-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
 .termin-card{
   background:#fff;border:1px solid var(--line);border-radius:16px;
   padding:24px;display:flex;flex-direction:column;gap:12px;
@@ -828,20 +830,33 @@ async function ladeTermine(){
       grid.innerHTML = '<div class="termine-empty"><h3>Aktuell keine Termine eingetragen</h3><p>Melden Sie sich gerne — wir finden gemeinsam einen passenden Termin.</p><a href="#kontakt">Termin anfragen →</a></div>';
       return;
     }
-    grid.innerHTML = list.map(function(t){
-      var kid   = normalizeKursId(t.kurs_id);
-      var titel = KURS_TITEL[kid] || t.kurs_id;
+    // Gruppieren nach Schulungsart
+    var gruppen = {};
+    list.forEach(function(t){
+      var kid = normalizeKursId(t.kurs_id);
+      if(!gruppen[kid]) gruppen[kid] = [];
+      gruppen[kid].push(t);
+    });
+    var reihenfolge = ['stufe1','stufe2','lasi','training'];
+    var html = '';
+    reihenfolge.forEach(function(kid){
+      if(!gruppen[kid]) return;
+      var titel = KURS_TITEL[kid] || kid;
       var norm  = KURS_NORM[kid]  || '';
-      return '<div class="termin-card">'
-        +'<div class="termin-date">📅 '+formatDatum(t.datum_von, t.datum_bis)+'</div>'
-        +'<div class="termin-title">'+titel+'</div>'
-        +'<div class="termin-meta">'
-        +'<span>📍 Simbach</span>'
-        +'</div>'
-        +(norm?'<span class="termin-tag tag-norm">'+norm+'</span>':'')
-        +'<button class="termin-book" onclick="selectKurs(\''+kid+'\')">Jetzt anmelden →</button>'
-        +'</div>';
-    }).join('');
+      html += '<div class="termin-gruppe">'
+        +'<h3 class="termin-gruppe-titel">'+titel+'</h3>'
+        +'<div class="termin-gruppe-cards">'
+        + gruppen[kid].map(function(t){
+            return '<div class="termin-card">'
+              +'<div class="termin-date">📅 '+formatDatum(t.von, t.bis)+'</div>'
+              +'<div class="termin-meta"><span>📍 Simbach</span></div>'
+              +(norm?'<span class="termin-tag tag-norm">'+norm+'</span>':'')
+              +'<button class="termin-book" onclick="selectKurs(\''+kid+'\')">Jetzt anmelden →</button>'
+              +'</div>';
+          }).join('')
+        +'</div></div>';
+    });
+    grid.innerHTML = html;
   }catch(e){
     grid.innerHTML = '<div class="termine-empty"><h3>Termine konnten nicht geladen werden</h3><p>Bitte kontaktieren Sie uns direkt für aktuelle Termine.</p><a href="#kontakt">Kontakt →</a></div>';
   }
