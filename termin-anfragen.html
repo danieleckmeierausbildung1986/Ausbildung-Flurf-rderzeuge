@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Termin anfragen – Ausbildung Niederbayern</title>
+<style>
+:root{
+  --green:#1a7a4a;--green-l:#2ea865;--green-d:#0d4a24;--green-xl:#e8f5ee;
+  --navy:#16243f;--ink:#1a2330;--muted:#5a6a7a;--line:#e3e8f0;
+  --safety:#f5a623;--bg:#f7f9fb;
+  --shadow-sm:0 2px 8px rgba(0,0,0,.08);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:"Segoe UI",system-ui,sans-serif;color:var(--ink);background:var(--bg);line-height:1.6}
+a{text-decoration:none;color:inherit}
+
+nav{
+  position:sticky;top:0;z-index:100;
+  background:rgba(255,255,255,.95);backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--line);padding:0 24px;
+}
+.nav-inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:64px;gap:16px}
+.nav-logo{display:flex;align-items:center;gap:12px}
+.nav-logo-icon{width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,var(--green),#2ea865);display:flex;align-items:center;justify-content:center}
+.nav-logo-icon svg{width:22px;height:22px;fill:#fff}
+.nav-brand{font-size:16px;font-weight:700;color:var(--navy);line-height:1.2}
+.nav-brand span{display:block;font-size:11px;font-weight:400;color:var(--muted)}
+.nav-back{display:inline-flex;align-items:center;gap:8px;padding:8px 16px;border-radius:10px;font-size:14px;font-weight:600;color:var(--muted);border:1.5px solid var(--line);background:#fff;transition:all .15s}
+.nav-back:hover{color:var(--ink);border-color:var(--navy)}
+
+.page{max-width:760px;margin:0 auto;padding:48px 24px 80px}
+.page-label{font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--green);margin-bottom:10px}
+.page-title{font-size:clamp(24px,4vw,34px);font-weight:800;color:var(--navy);margin-bottom:8px}
+.page-sub{font-size:15px;color:var(--muted);margin-bottom:36px;line-height:1.65}
+
+.card{background:#fff;border-radius:20px;border:1px solid var(--line);box-shadow:var(--shadow-sm);padding:32px;margin-bottom:20px}
+.card-title{font-size:15px;font-weight:800;color:var(--navy);margin-bottom:18px;display:flex;align-items:center;gap:8px}
+
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+@media(max-width:540px){.row2{grid-template-columns:1fr}}
+.field{display:flex;flex-direction:column;gap:6px}
+.field label{font-size:13px;font-weight:700;color:var(--navy)}
+.field input,.field textarea{padding:10px 14px;border-radius:10px;border:1.5px solid var(--line);font-size:14px;font-family:inherit;color:var(--ink);background:#fff;transition:border-color .15s}
+.field input:focus,.field textarea:focus{outline:none;border-color:var(--green)}
+.field textarea{resize:vertical;min-height:90px}
+
+/* Schulungsauswahl */
+.kurs-block{border:1.5px solid var(--line);border-radius:12px;padding:12px 16px;margin-bottom:10px;transition:border-color .2s,background .2s;cursor:pointer}
+.kurs-block.active{border-color:var(--green);background:var(--green-xl)}
+.kurs-label{display:flex;align-items:center;gap:10px;font-size:14px;font-weight:600;cursor:pointer}
+.kurs-label input[type=checkbox]{width:17px;height:17px;accent-color:var(--green)}
+
+/* Kalender */
+.cal-wrap{user-select:none}
+.cal-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.cal-nav button{background:none;border:1.5px solid var(--line);border-radius:8px;width:34px;height:34px;cursor:pointer;font-size:16px;color:var(--navy);transition:all .15s}
+.cal-nav button:hover{border-color:var(--green);color:var(--green)}
+.cal-month{font-size:16px;font-weight:700;color:var(--navy)}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.cal-dow{text-align:center;font-size:11px;font-weight:700;color:var(--muted);padding:4px 0;text-transform:uppercase}
+.cal-day{
+  text-align:center;padding:8px 4px;border-radius:8px;
+  font-size:13px;font-weight:500;cursor:pointer;transition:all .15s;
+  border:1.5px solid transparent;
+}
+.cal-day:hover:not(.cal-empty):not(.cal-past){background:var(--green-xl);color:var(--green-d)}
+.cal-day.selected{background:var(--green);color:#fff;font-weight:700;border-color:var(--green-d)}
+.cal-day.cal-past{color:var(--line);cursor:default}
+.cal-day.cal-empty{cursor:default}
+.cal-day.cal-today{border-color:var(--safety)}
+
+.selected-dates{margin-top:16px;display:flex;flex-wrap:wrap;gap:8px;min-height:32px}
+.date-chip{
+  display:inline-flex;align-items:center;gap:6px;
+  background:var(--green-xl);color:var(--green-d);border-radius:20px;
+  padding:4px 12px;font-size:13px;font-weight:600;
+}
+.date-chip button{background:none;border:none;cursor:pointer;color:var(--green-d);font-size:15px;line-height:1;padding:0 0 1px 2px}
+.cal-hint{font-size:12px;color:var(--muted);margin-top:8px}
+
+.divider{border:none;border-top:1px solid var(--line);margin:24px 0}
+
+.submit-btn{
+  display:block;width:100%;padding:14px;border-radius:12px;
+  font-size:16px;font-weight:700;background:var(--green);color:#fff;
+  border:none;cursor:pointer;transition:all .15s;margin-top:8px;
+}
+.submit-btn:hover{background:var(--green-d)}
+.submit-btn:disabled{opacity:.6;cursor:default}
+.error-msg{background:#fef2f2;border:1px solid #fecaca;color:#dc2626;border-radius:10px;padding:12px 16px;font-size:14px;margin-top:16px;display:none}
+
+footer{text-align:center;padding:24px;font-size:13px;color:var(--muted);border-top:1px solid var(--line);background:#fff}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a class="nav-logo" href="homepage.html">
+      <div class="nav-logo-icon">
+        <svg viewBox="0 0 24 24"><path d="M20 8h-3V4H3c-1.1 0-2 .9-2 2v11h2c0 1.66 1.34 3 3 3s3-1.34 3-3h6c0 1.66 1.34 3 3 3s3-1.34 3-3h2v-5l-3-4zM6 18.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm13.5-9l1.96 2.5H17V9.5h2.5zm-1.5 9c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>
+      </div>
+      <div class="nav-brand">Ausbildung Niederbayern<span>Flurförderzeuge & Ladungssicherung</span></div>
+    </a>
+    <a class="nav-back" href="homepage.html">← Zurück zur Übersicht</a>
+  </div>
+</nav>
+
+<div class="page">
+  <div class="page-label">Terminanfrage</div>
+  <h1 class="page-title">Wunschtermin anfragen</h1>
+  <p class="page-sub">Wählen Sie Ihre gewünschte Schulung und klicken Sie auf bevorzugte Termine im Kalender — wir melden uns dann zur Bestätigung.</p>
+
+  <div id="success-msg" style="display:none;text-align:center;padding:48px 16px;background:#fff;border-radius:20px;border:1px solid var(--line)">
+    <div style="font-size:48px;margin-bottom:16px">📅</div>
+    <div style="font-size:20px;font-weight:800;color:var(--green-d);margin-bottom:8px">Anfrage gesendet!</div>
+    <div style="font-size:15px;color:var(--muted);margin-bottom:28px">Wir melden uns in Kürze bei Ihnen zur Terminbestätigung.</div>
+    <a href="homepage.html" style="display:inline-block;padding:12px 28px;background:var(--green);color:#fff;border-radius:12px;font-weight:700">Zurück zur Startseite</a>
+  </div>
+
+  <form id="anfragForm" style="">
+
+    <!-- Kontaktdaten -->
+    <div class="card">
+      <div class="card-title">👤 Ihre Kontaktdaten</div>
+      <div class="row2">
+        <div class="field"><label>Nachname *</label><input type="text" id="f-nachname" placeholder="Mustermann" required></div>
+        <div class="field"><label>Vorname *</label><input type="text" id="f-vorname" placeholder="Max" required></div>
+      </div>
+      <div class="row2">
+        <div class="field"><label>E-Mail *</label><input type="email" id="f-email" placeholder="max@firma.de" required></div>
+        <div class="field"><label>Telefon</label><input type="tel" id="f-telefon" placeholder="+49 123 456789"></div>
+      </div>
+      <div class="field"><label>Unternehmen</label><input type="text" id="f-firma" placeholder="Muster GmbH" style="margin-top:0"></div>
+    </div>
+
+    <!-- Schulungsauswahl -->
+    <div class="card">
+      <div class="card-title">📚 Gewünschte Schulung</div>
+      <div class="kurs-block" id="kb-stufe1" onclick="toggleKurs('stufe1')">
+        <label class="kurs-label"><input type="checkbox" id="ck-stufe1"> Ausbildung Flurförderzeuge Stufe 1</label>
+      </div>
+      <div class="kurs-block" id="kb-stufe2" onclick="toggleKurs('stufe2')">
+        <label class="kurs-label"><input type="checkbox" id="ck-stufe2"> Zusatzausbildung Flurförderzeuge Stufe 2</label>
+      </div>
+      <div class="kurs-block" id="kb-lasi" onclick="toggleKurs('lasi')">
+        <label class="kurs-label"><input type="checkbox" id="ck-lasi"> Ladungssicherung nach VDI 2700 ff.</label>
+      </div>
+      <div class="kurs-block" id="kb-training" onclick="toggleKurs('training')">
+        <label class="kurs-label"><input type="checkbox" id="ck-training"> Grundlagentraining Flurförderzeuge</label>
+      </div>
+    </div>
+
+    <!-- Kalender -->
+    <div class="card">
+      <div class="card-title">📅 Wunschtermine (mehrere auswählbar)</div>
+      <div class="cal-wrap">
+        <div class="cal-nav">
+          <button type="button" onclick="calPrev()">‹</button>
+          <span class="cal-month" id="cal-month"></span>
+          <button type="button" onclick="calNext()">›</button>
+        </div>
+        <div class="cal-grid" id="cal-grid"></div>
+        <p class="cal-hint">Klicken Sie auf einen oder mehrere bevorzugte Starttage.</p>
+        <div class="selected-dates" id="selected-dates"></div>
+      </div>
+    </div>
+
+    <!-- Anmerkungen -->
+    <div class="card">
+      <div class="card-title">💬 Anmerkungen</div>
+      <div class="field">
+        <label>Anzahl Teilnehmer / sonstige Hinweise</label>
+        <textarea id="f-notiz" placeholder="z.B. 3 Teilnehmer, Präsenz beim Kunden bevorzugt, ..."></textarea>
+      </div>
+    </div>
+
+    <div class="error-msg" id="f-error"></div>
+    <button type="submit" class="submit-btn">Terminanfrage absenden →</button>
+  </form>
+</div>
+
+<footer>
+  <strong>Ausbildung Niederbayern</strong> &nbsp;·&nbsp; Daniel Eckmeier &nbsp;·&nbsp;
+  Am Schwimmbad 12, 94436 Simbach &nbsp;·&nbsp;
+  <a href="homepage.html#impressum">Impressum</a>
+</footer>
+
+<script>
+var ANMELDUNG_URL = 'https://default8af25f9034bc4ef4aba22ab6f641d5.01.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/dbe5673986dd498bb2049e8a80220add/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=ogUKNB6jpCkEcxwY87bHLFJbIzrnQm5TPAwNTX4DYFQ';
+
+// Vorauswahl per URL-Parameter
+(function(){
+  var k = new URLSearchParams(window.location.search).get('kurs');
+  if(k && document.getElementById('ck-'+k)){
+    document.getElementById('ck-'+k).checked = true;
+    document.getElementById('kb-'+k).classList.add('active');
+  }
+})();
+
+function toggleKurs(id){
+  var ck = document.getElementById('ck-'+id);
+  ck.checked = !ck.checked;
+  document.getElementById('kb-'+id).classList.toggle('active', ck.checked);
+}
+
+// ── Kalender ──────────────────────────────────────────────
+var selDates = [];
+var calYear, calMonth;
+(function(){
+  var now = new Date();
+  calYear  = now.getFullYear();
+  calMonth = now.getMonth();
+})();
+
+var MONATE = ['Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'];
+var TAGE   = ['Mo','Di','Mi','Do','Fr','Sa','So'];
+
+function isoDate(y,m,d){ return y+'-'+String(m+1).padStart(2,'0')+'-'+String(d).padStart(2,'0'); }
+function fmtDE(iso){
+  var p = iso.split('-');
+  return p[2]+'.'+p[1]+'.'+p[0];
+}
+
+function renderCal(){
+  document.getElementById('cal-month').textContent = MONATE[calMonth] + ' ' + calYear;
+  var grid = document.getElementById('cal-grid');
+  grid.innerHTML = TAGE.map(function(t){ return '<div class="cal-dow">'+t+'</div>'; }).join('');
+
+  var first = new Date(calYear, calMonth, 1).getDay();
+  var offset = (first === 0) ? 6 : first - 1;
+  var days = new Date(calYear, calMonth+1, 0).getDate();
+  var today = new Date(); today.setHours(0,0,0,0);
+
+  for(var i=0; i<offset; i++) grid.innerHTML += '<div class="cal-day cal-empty"></div>';
+  for(var d=1; d<=days; d++){
+    var iso  = isoDate(calYear, calMonth, d);
+    var dt   = new Date(calYear, calMonth, d);
+    var past = dt < today;
+    var sel  = selDates.indexOf(iso) >= 0;
+    var isToday = dt.toDateString() === today.toDateString();
+    var cls  = 'cal-day'+(past?' cal-past':'')+(sel?' selected':'')+(isToday?' cal-today':'');
+    grid.innerHTML += '<div class="'+cls+'"'+(past?'':' onclick="toggleDate(\''+iso+'\')"')+'>'+d+'</div>';
+  }
+  renderChips();
+}
+
+function toggleDate(iso){
+  var idx = selDates.indexOf(iso);
+  if(idx >= 0) selDates.splice(idx,1);
+  else selDates.push(iso);
+  selDates.sort();
+  renderCal();
+}
+
+function renderChips(){
+  var el = document.getElementById('selected-dates');
+  if(selDates.length === 0){
+    el.innerHTML = '<span style="font-size:13px;color:var(--muted)">Noch keine Termine gewählt</span>';
+    return;
+  }
+  el.innerHTML = selDates.map(function(iso){
+    return '<span class="date-chip">'+fmtDE(iso)
+      +'<button type="button" onclick="removeDate(\''+iso+'\')">×</button></span>';
+  }).join('');
+}
+
+function removeDate(iso){
+  selDates = selDates.filter(function(d){ return d !== iso; });
+  renderCal();
+}
+
+function calPrev(){
+  calMonth--;
+  if(calMonth < 0){ calMonth = 11; calYear--; }
+  renderCal();
+}
+function calNext(){
+  calMonth++;
+  if(calMonth > 11){ calMonth = 0; calYear++; }
+  renderCal();
+}
+
+renderCal();
+
+// ── Formular absenden ────────────────────────────────────
+document.getElementById('anfragForm').addEventListener('submit', async function(e){
+  e.preventDefault();
+  var errEl = document.getElementById('f-error');
+  errEl.style.display = 'none';
+
+  var schulungen = [];
+  ['stufe1','stufe2','lasi','training'].forEach(function(id){
+    if(document.getElementById('ck-'+id).checked) schulungen.push(id);
+  });
+  if(schulungen.length === 0){
+    errEl.textContent = 'Bitte wählen Sie mindestens eine Schulung aus.';
+    errEl.style.display = 'block'; return;
+  }
+  if(selDates.length === 0){
+    errEl.textContent = 'Bitte wählen Sie mindestens einen Wunschtermin im Kalender aus.';
+    errEl.style.display = 'block'; return;
+  }
+
+  var payload = {
+    nachname:      document.getElementById('f-nachname').value.trim(),
+    vorname:       document.getElementById('f-vorname').value.trim(),
+    email:         document.getElementById('f-email').value.trim(),
+    telefon:       document.getElementById('f-telefon').value.trim(),
+    firma:         document.getElementById('f-firma').value.trim(),
+    schulung:      schulungen.join(', '),
+    wunschdaten:   selDates.map(fmtDE).join(', '),
+    notiz:         document.getElementById('f-notiz').value.trim(),
+    anfrage_typ:   'Terminanfrage'
+  };
+
+  var btn = e.target.querySelector('.submit-btn');
+  btn.disabled = true; btn.textContent = 'Wird gesendet…';
+
+  try {
+    var resp = await fetch(ANMELDUNG_URL, {
+      method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload)
+    });
+    if(resp.ok || resp.status === 202){
+      document.getElementById('anfragForm').style.display = 'none';
+      document.getElementById('success-msg').style.display = 'block';
+      window.scrollTo({top:0, behavior:'smooth'});
+    } else { throw new Error('Status '+resp.status); }
+  } catch(err){
+    btn.disabled = false; btn.textContent = 'Terminanfrage absenden →';
+    errEl.textContent = 'Fehler beim Senden — bitte per E-Mail melden: DanielEckmeier@Ausbildung1986.onmicrosoft.com';
+    errEl.style.display = 'block';
+  }
+});
+</script>
+</body>
+</html>
