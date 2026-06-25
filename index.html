@@ -374,7 +374,6 @@ async function pruefeUndZeige(val, silent){
     if(data && data.zugang === true){
       currentRegnr = val;
       currentData  = data;
-      console.log('LOGIN DATA:', JSON.stringify(data));
       showModules(data);
     } else if(!silent){
       errEl.textContent = data.grund || t.errNotFound;
@@ -417,9 +416,14 @@ function showModules(data){
   let count = 0;
   const langParam = '&lang=' + currentLang;
 
-  const s1form = (data.stufe1_schulungsform || data.Stufe1_Schulungsform || '').toLowerCase();
-  const s2form = (data.stufe2_schulungsform || data.Stufe2_Schulungsform || '').toLowerCase();
-  const lform  = (data.lasi_schulungsform   || data.LaSi_Schulungsform   || '').toLowerCase();
+  function getSF(val){
+    if(!val) return '';
+    if(typeof val === 'object' && val.Value) return val.Value.toLowerCase();
+    return String(val).toLowerCase();
+  }
+  const s1form = getSF(data.stufe1_schulungsform || data.Stufe1_Schulungsform);
+  const s2form = getSF(data.stufe2_schulungsform || data.Stufe2_Schulungsform);
+  const lform  = getSF(data.lasi_schulungsform   || data.LaSi_Schulungsform);
 
   if(data.stufe1 && s1form === 'elearning'){
     list.innerHTML += `
