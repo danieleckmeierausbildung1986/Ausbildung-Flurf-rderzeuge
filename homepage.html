@@ -518,9 +518,15 @@ footer strong{color:rgba(255,255,255,.85)}
             <input type="text" id="af-vorname" placeholder="Max" required>
           </div>
         </div>
-        <div class="af-field">
-          <label>E-Mail *</label>
-          <input type="email" id="af-email" placeholder="max.mustermann@firma.de" required>
+        <div class="af-row2">
+          <div class="af-field">
+            <label>E-Mail *</label>
+            <input type="email" id="af-email" placeholder="max.mustermann@firma.de" required>
+          </div>
+          <div class="af-field">
+            <label>Telefon</label>
+            <input type="tel" id="af-telefon" placeholder="+49 123 456789">
+          </div>
         </div>
         <div class="af-row2">
           <div class="af-field">
@@ -546,6 +552,7 @@ footer strong{color:rgba(255,255,255,.85)}
             <select class="af-kurs-select" id="sel-stufe1" disabled>
               <option value="">Format wählen</option>
               <option value="Elearning">E-Learning</option>
+              <option value="Online">Online</option>
               <option value="Präsenz">Präsenz</option>
             </select>
           </div>
@@ -805,6 +812,7 @@ document.getElementById('anmeldungForm').addEventListener('submit', async functi
     nachname:               document.getElementById('af-nachname').value.trim(),
     vorname:                document.getElementById('af-vorname').value.trim(),
     email:                  document.getElementById('af-email').value.trim(),
+    telefon:                document.getElementById('af-telefon').value.trim(),
     geburtsdatum:           document.getElementById('af-geburtsdatum').value,
     geburtsort:             document.getElementById('af-geburtsort').value.trim(),
     stufe1_gebucht:         stufe1,
