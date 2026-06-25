@@ -785,12 +785,6 @@ var KURS_TITEL  = {
   lasi:'Ladungssicherung nach VDI 2700 ff.',
   training:'Grundlagentraining Flurförderzeuge'
 };
-var KURS_FORMAT = {
-  stufe1:'E-Learning · Online · Präsenz',
-  stufe2:'E-Learning · Online · Präsenz',
-  lasi:'E-Learning · Online · Präsenz',
-  training:'Präsenzschulung'
-};
 
 function normalizeKursId(val){
   if(!val) return '';
@@ -835,16 +829,14 @@ async function ladeTermine(){
       return;
     }
     grid.innerHTML = list.map(function(t){
-      var kid    = normalizeKursId(t.kurs_id);
-      var titel  = KURS_TITEL[kid]  || t.kurs_id;
-      var format = KURS_FORMAT[kid] || '';
-      var norm   = KURS_NORM[kid]   || '';
+      var kid   = normalizeKursId(t.kurs_id);
+      var titel = KURS_TITEL[kid] || t.kurs_id;
+      var norm  = KURS_NORM[kid]  || '';
       return '<div class="termin-card">'
         +'<div class="termin-date">📅 '+formatDatum(t.datum_von, t.datum_bis)+'</div>'
         +'<div class="termin-title">'+titel+'</div>'
         +'<div class="termin-meta">'
         +'<span>📍 Simbach</span>'
-        +'<span>💻 '+format+'</span>'
         +'</div>'
         +(norm?'<span class="termin-tag tag-norm">'+norm+'</span>':'')
         +'<button class="termin-book" onclick="selectKurs(\''+kid+'\')">Jetzt anmelden →</button>'
