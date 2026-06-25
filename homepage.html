@@ -401,7 +401,7 @@ footer strong{color:rgba(255,255,255,.85)}
             <div class="detail-row"><span class="detail-icon">📜</span> <span><strong>Norm:</strong> DGUV Grundsatz 308-001</span></div>
           </div>
           <div class="course-actions">
-            <a class="btn-book" href="#anmeldung">Jetzt anmelden</a>
+            <button class="btn-book" onclick="selectKurs('stufe1')">Jetzt anmelden</button>
             <a class="btn-portal" href="index.html">Zum Portal →</a>
           </div>
         </div>
@@ -428,7 +428,7 @@ footer strong{color:rgba(255,255,255,.85)}
             <div class="detail-row"><span class="detail-icon">📜</span> <span><strong>Norm:</strong> DGUV Grundsatz 308-001</span></div>
           </div>
           <div class="course-actions">
-            <a class="btn-book" href="#anmeldung">Jetzt anmelden</a>
+            <button class="btn-book" onclick="selectKurs('stufe2')">Jetzt anmelden</button>
             <a class="btn-portal" href="index.html">Zum Portal →</a>
           </div>
         </div>
@@ -455,7 +455,7 @@ footer strong{color:rgba(255,255,255,.85)}
             <div class="detail-row"><span class="detail-icon">📜</span> <span><strong>Norm:</strong> VDI 2700 ff. · DGUV 308-009</span></div>
           </div>
           <div class="course-actions">
-            <a class="btn-book" href="#anmeldung">Jetzt anmelden</a>
+            <button class="btn-book" onclick="selectKurs('lasi')">Jetzt anmelden</button>
             <a class="btn-portal" href="index.html">Zum Portal →</a>
           </div>
         </div>
@@ -481,7 +481,7 @@ footer strong{color:rgba(255,255,255,.85)}
             <div class="detail-row"><span class="detail-icon">📜</span> <span><strong>Norm:</strong> DGUV Grundsatz 308-001</span></div>
           </div>
           <div class="course-actions">
-            <a class="btn-book" href="#anmeldung">Jetzt anmelden</a>
+            <button class="btn-book" onclick="selectKurs('training')">Jetzt anmelden</button>
             <span class="btn-disabled">Kein E-Learning</span>
           </div>
         </div>
@@ -753,6 +753,15 @@ footer strong{color:rgba(255,255,255,.85)}
 </footer>
 
 <script>
+function selectKurs(id) {
+  var ck = document.getElementById('ck-' + id);
+  if (!ck.checked) {
+    ck.checked = true;
+    ck.dispatchEvent(new Event('change'));
+  }
+  document.getElementById('anmeldung').scrollIntoView({behavior: 'smooth'});
+}
+
 // Anmeldung Flow
 var ANMELDUNG_URL = 'https://default8af25f9034bc4ef4aba22ab6f641d5.01.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/dbe5673986dd498bb2049e8a80220add/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=ogUKNB6jpCkEcxwY87bHLFJbIzrnQm5TPAwNTX4DYFQ';
 
