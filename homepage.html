@@ -823,7 +823,7 @@ async function ladeTermine(){
   try{
     var res  = await fetch(TERMINE_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:'{}'});
     var data = await res.json();
-    var list = data.termine || [];
+    var list = Array.isArray(data) ? data : (data.termine || []);
     if(list.length === 0){
       grid.innerHTML = '<div class="termine-empty"><h3>Aktuell keine Termine eingetragen</h3><p>Melden Sie sich gerne — wir finden gemeinsam einen passenden Termin.</p><a href="#kontakt">Termin anfragen →</a></div>';
       return;
