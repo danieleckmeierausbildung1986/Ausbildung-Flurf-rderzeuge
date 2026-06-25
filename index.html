@@ -419,6 +419,10 @@ function showModules(data){
   function getSF(val){
     if(!val) return '';
     if(typeof val === 'object' && val.Value) return val.Value.toLowerCase();
+    if(typeof val === 'string'){
+      try{ var o=JSON.parse(val); if(o && o.Value) return o.Value.toLowerCase(); }catch(e){}
+      return val.toLowerCase();
+    }
     return String(val).toLowerCase();
   }
   const s1form = getSF(data.stufe1_schulungsform || data.Stufe1_Schulungsform);
