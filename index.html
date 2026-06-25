@@ -416,7 +416,11 @@ function showModules(data){
   let count = 0;
   const langParam = '&lang=' + currentLang;
 
-  if(data.stufe1){
+  const s1form = (data.stufe1_schulungsform || data.Stufe1_Schulungsform || '').toLowerCase();
+  const s2form = (data.stufe2_schulungsform || data.Stufe2_Schulungsform || '').toLowerCase();
+  const lform  = (data.lasi_schulungsform   || data.LaSi_Schulungsform   || '').toLowerCase();
+
+  if(data.stufe1 && s1form === 'elearning'){
     list.innerHTML += `
       <a class="module-btn stufe1" href="${BASE}staplerapp_stufe1.html?regnr=${encodeURIComponent(currentRegnr)}${langParam}">
         <div class="mod-icon">
@@ -431,7 +435,7 @@ function showModules(data){
     count++;
   }
 
-  if(data.stufe2){
+  if(data.stufe2 && s2form === 'elearning'){
     const s2data = {
       regnr:           currentRegnr,
       vorname:         data.vorname,
@@ -455,7 +459,7 @@ function showModules(data){
     count++;
   }
 
-  if(data.lasi){
+  if(data.lasi && lform === 'elearning'){
     list.innerHTML += `
       <a class="module-btn lasi" href="${BASE}staplerapp_lasi_1.html?regnr=${encodeURIComponent(currentRegnr)}${langParam}">
         <div class="mod-icon">
