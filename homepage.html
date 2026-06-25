@@ -139,9 +139,11 @@ nav{
 /* KURSE */
 .courses-grid{
   display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
-  gap:24px;
+  grid-template-columns:repeat(4,1fr);
+  gap:20px;
 }
+@media(max-width:1000px){.courses-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:520px){.courses-grid{grid-template-columns:1fr}}
 .course-card{
   background:#fff;border-radius:20px;
   border:1px solid var(--line);
@@ -150,7 +152,7 @@ nav{
   display:flex;flex-direction:column;
 }
 .course-card:hover{transform:translateY(-4px);box-shadow:var(--shadow-md)}
-.course-header{padding:28px 28px 0}
+.course-header{padding:22px 20px 0}
 .course-icon{
   width:52px;height:52px;border-radius:14px;
   display:flex;align-items:center;justify-content:center;
@@ -168,7 +170,7 @@ nav{
 .tag-norm{background:#e8eaf6;color:#3949ab}
 .course-title{font-size:18px;font-weight:800;color:var(--navy);margin-bottom:10px;line-height:1.3}
 .course-desc{font-size:14px;color:var(--muted);line-height:1.65;margin-bottom:20px}
-.course-body{padding:0 28px 28px;flex:1;display:flex;flex-direction:column;justify-content:flex-end}
+.course-body{padding:0 20px 22px;flex:1;display:flex;flex-direction:column;justify-content:flex-end}
 .course-details{
   display:flex;flex-direction:column;gap:8px;
   margin-bottom:24px;padding:16px;
