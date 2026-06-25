@@ -114,6 +114,15 @@ body::before{
 .mod-sub{font-size:12px;opacity:.7}
 .mod-arrow{font-size:18px;opacity:.7;flex-shrink:0}
 .no-modules{text-align:center;padding:28px 20px;color:var(--muted);font-size:14px;line-height:1.6}
+.mod-blocked{
+  text-align:center;padding:28px 20px;
+  color:#8a5000;font-size:14px;line-height:1.7;
+  background:#fff8ee;border:1.5px solid #f5a62355;
+  border-radius:12px;margin:4px;
+}
+.mod-blocked::before{
+  content:'🔒';display:block;font-size:34px;margin-bottom:12px;
+}
 .spinner{
   width:22px;height:22px;border:3px solid rgba(255,255,255,.3);
   border-top-color:#fff;border-radius:50%;
@@ -199,6 +208,8 @@ const TRANSLATIONS = {
     errNotFound:  'Nummer nicht gefunden. Bitte Ausbilder kontaktieren.',
     errConn:      'Verbindungsfehler. Bitte erneut versuchen.',
     hallo:        'Hallo, ',
+    errVorPruefung:  'Zugang gesperrt – Ihre Prüfung steht kurz bevor. Das E-Learning ist nicht mehr verfügbar. Wenden Sie sich bei Fragen an Ihren Ausbilder.',
+    errNachPruefung: 'Zugang gesperrt – Ihre Prüfung wurde bereits abgeschlossen. Der E-Learning-Zugang ist dauerhaft deaktiviert.',
     mod: {
       stufe1:     { title: 'Stapler Stufe 1',    sub: 'DGUV Grundsatz 308-001' },
       stufe2:     { title: 'Stapler Stufe 2',    sub: 'DGUV Grundsatz 308-001' },
@@ -221,6 +232,8 @@ const TRANSLATIONS = {
     errNotFound:  'Number not found. Please contact your instructor.',
     errConn:      'Connection error. Please try again.',
     hallo:        'Hello, ',
+    errVorPruefung:  'Access locked – Your exam is coming up soon. E-learning is no longer available. Please contact your instructor if you have questions.',
+    errNachPruefung: 'Access locked – Your exam has been completed. E-learning access is permanently deactivated.',
     mod: {
       stufe1:     { title: 'Forklift Level 1',   sub: 'DGUV Principle 308-001' },
       stufe2:     { title: 'Forklift Level 2',   sub: 'DGUV Principle 308-001' },
@@ -243,6 +256,8 @@ const TRANSLATIONS = {
     errNotFound:  'Numer nie znaleziony. Proszę skontaktować się z instruktorem.',
     errConn:      'Błąd połączenia. Proszę spróbować ponownie.',
     hallo:        'Cześć, ',
+    errVorPruefung:  'Dostęp zablokowany – Egzamin odbędzie się wkrótce. E-learning nie jest już dostępny. W razie pytań skontaktuj się z instruktorem.',
+    errNachPruefung: 'Dostęp zablokowany – Egzamin został już zakończony. Dostęp do e-learningu jest trwale dezaktywowany.',
     mod: {
       stufe1:     { title: 'Wózek widłowy – poziom 1', sub: 'DGUV Zasada 308-001' },
       stufe2:     { title: 'Wózek widłowy – poziom 2', sub: 'DGUV Zasada 308-001' },
@@ -265,6 +280,8 @@ const TRANSLATIONS = {
     errNotFound:  'Număr negăsit. Vă rugăm contactați instructorul.',
     errConn:      'Eroare de conexiune. Vă rugăm încercați din nou.',
     hallo:        'Bună, ',
+    errVorPruefung:  'Acces blocat – Examenul dvs. este în curând. E-learning-ul nu mai este disponibil. Contactați instructorul dacă aveți întrebări.',
+    errNachPruefung: 'Acces blocat – Examenul dvs. a fost deja finalizat. Accesul la e-learning este dezactivat definitiv.',
     mod: {
       stufe1:     { title: 'Stivuitor – nivelul 1', sub: 'Principiu DGUV 308-001' },
       stufe2:     { title: 'Stivuitor – nivelul 2', sub: 'Principiu DGUV 308-001' },
@@ -287,6 +304,8 @@ const TRANSLATIONS = {
     errNotFound:  'Numri nuk u gjet. Ju lutemi kontaktoni instruktorin.',
     errConn:      'Gabim lidhjeje. Ju lutemi provoni përsëri.',
     hallo:        'Përshëndetje, ',
+    errVorPruefung:  'Akses i bllokuar – Provimi juaj është së shpejti. E-learning-u nuk është më i disponueshëm. Kontaktoni instruktorin nëse keni pyetje.',
+    errNachPruefung: 'Akses i bllokuar – Provimi juaj është përfunduar tashmë. Aksesi në e-learning është çaktivizuar përgjithmonë.',
     mod: {
       stufe1:     { title: 'Ngarkues – niveli 1', sub: 'Parimi DGUV 308-001' },
       stufe2:     { title: 'Ngarkues – niveli 2', sub: 'Parimi DGUV 308-001' },
@@ -329,8 +348,25 @@ function setLang(lang){
 }
 
 // ── App-Status ─────────────────────────────────────────────────
+const TAGE_VOR_SPERRUNG = 1; // Zugang X Tag(e) vor dem Prüfungsdatum sperren
+
 let currentRegnr = '';
 let currentData  = {};
+
+function checkPruefungsdatum(data){
+  if(!data.pruefungsdatum) return null;
+  const heute = new Date();
+  heute.setHours(0,0,0,0);
+  const pruef = new Date(data.pruefungsdatum);
+  if(isNaN(pruef.getTime())) return null;
+  pruef.setHours(0,0,0,0);
+  const sperr = new Date(pruef);
+  sperr.setDate(sperr.getDate() - TAGE_VOR_SPERRUNG);
+  const t = TRANSLATIONS[currentLang];
+  if(heute > pruef)  return t.errNachPruefung;
+  if(heute >= sperr) return t.errVorPruefung;
+  return null;
+}
 
 function goBack(){
   currentRegnr = '';
@@ -372,9 +408,14 @@ async function pruefeUndZeige(val, silent){
     const data = await res.json();
 
     if(data && data.zugang === true){
+      const blocked = checkPruefungsdatum(data);
       currentRegnr = val;
       currentData  = data;
-      showModules(data);
+      if(blocked){
+        showBlockedModules(data, blocked);
+      } else {
+        showModules(data);
+      }
     } else if(!silent){
       errEl.textContent = data.grund || t.errNotFound;
     }
@@ -402,6 +443,16 @@ async function pruefeUndZeige(val, silent){
   }
 })();
 
+function showBlockedModules(data, message){
+  document.getElementById('loginCard').style.display  = 'none';
+  document.getElementById('moduleCard').style.display = 'block';
+  const t    = TRANSLATIONS[currentLang];
+  const name = (data.vorname || '') + ' ' + (data.nachname || '');
+  document.getElementById('greetName').textContent    = t.hallo + name.trim() + '!';
+  document.getElementById('txt-choose').textContent   = '';
+  document.getElementById('moduleList').innerHTML     = `<div class="mod-blocked">${message}</div>`;
+}
+
 function showModules(data){
   document.getElementById('loginCard').style.display  = 'none';
   document.getElementById('moduleCard').style.display = 'block';
@@ -418,12 +469,12 @@ function showModules(data){
 
   function getSF(val){
     if(!val) return '';
-    if(typeof val === 'object' && val.Value) return val.Value.toLowerCase();
-    if(typeof val === 'string'){
-      try{ var o=JSON.parse(val); if(o && o.Value) return o.Value.toLowerCase(); }catch(e){}
-      return val.toLowerCase();
-    }
-    return String(val).toLowerCase();
+    var str;
+    if(typeof val === 'object' && val.Value) str = val.Value;
+    else if(typeof val === 'string'){
+      try{ var o=JSON.parse(val); str = (o && o.Value) ? o.Value : val; }catch(e){ str = val; }
+    } else str = String(val);
+    return str.toLowerCase().replace(/-/g,'');
   }
   const s1form = getSF(data.stufe1_schulungsform || data.Stufe1_Schulungsform);
   const s2form = getSF(data.stufe2_schulungsform || data.Stufe2_Schulungsform);
