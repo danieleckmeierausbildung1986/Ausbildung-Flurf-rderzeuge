@@ -717,12 +717,7 @@ async function ladeTermine(){
       gruppen[kid].push(t);
     });
 
-    var reihenfolge = ['stufe1','stufe2','lasi','training'];
-    var vorhandenKids = reihenfolge.filter(function(k){ return gruppen[k]; });
-    var aktivTab = vorhandenKids[0] || '';
-
-    var TAB_LABEL  = {stufe1:'Stufe 1',stufe2:'Stufe 2',lasi:'LaSi',training:'Training'};
-    var KURS_SVG   = {
+    var KURS_SVG = {
       stufe1:'<path d="M20 8h-3V4H3c-1.1 0-2 .9-2 2v11h2c0 1.66 1.34 3 3 3s3-1.34 3-3h6c0 1.66 1.34 3 3 3s3-1.34 3-3h2v-5l-3-4zM6 18.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm13.5-9l1.96 2.5H17V9.5h2.5zm-1.5 9c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/>',
       stufe2:'<path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 3c1.93 0 3.5 1.57 3.5 3.5S13.93 13 12 13s-3.5-1.57-3.5-3.5S10.07 6 12 6zm7 13H5v-.23c0-.62.28-1.2.76-1.58C7.47 15.82 9.64 15 12 15s4.53.82 6.24 2.19c.48.38.76.97.76 1.58V19z"/>',
       lasi:'<path d="M20 8h-3V4H3c-1.1 0-2 .9-2 2v11h2c0 1.66 1.34 3 3 3s3-1.34 3-3h6c0 1.66 1.34 3 3 3s3-1.34 3-3h2v-5l-3-4z"/>',
@@ -735,21 +730,16 @@ async function ladeTermine(){
       training:'linear-gradient(135deg,#8b4513,#d4880f)'
     };
 
-    function renderTabs(){
-      var tabsEl = document.getElementById('termine-tabs');
-      tabsEl.innerHTML = vorhandenKids.map(function(kid){
-        return '<button class="termine-tab'+(kid===aktivTab?' active':'')+'" onclick="switchTab(\''+kid+'\')">'
-          +TAB_LABEL[kid]+'</button>';
-      }).join('');
-    }
-
-    function renderKarten(){
-      var norm  = KURS_NORM[aktivTab]  || '';
-      var titel = KURS_TITEL[aktivTab] || aktivTab;
-      var bg    = KURS_BG[aktivTab]    || 'var(--green)';
-      var svg   = KURS_SVG[aktivTab]   || '';
-      grid.innerHTML = (gruppen[aktivTab]||[]).map(function(t){
-        return '<div class="termin-card">'
+    var reihenfolge = ['stufe1','stufe2','lasi','training'];
+    var html = '';
+    reihenfolge.forEach(function(kid){
+      if(!gruppen[kid]) return;
+      var norm  = KURS_NORM[kid]  || '';
+      var titel = KURS_TITEL[kid] || kid;
+      var bg    = KURS_BG[kid]    || '#1a7a4a';
+      var svg   = KURS_SVG[kid]   || '';
+      gruppen[kid].forEach(function(t){
+        html += '<div class="termin-card">'
           +'<div class="termin-card-header">'
           +'<div class="termin-icon" style="background:'+bg+'"><svg viewBox="0 0 24 24">'+svg+'</svg></div>'
           +'<div class="termin-kursname">'+titel+'</div>'
@@ -757,23 +747,17 @@ async function ladeTermine(){
           +'<div class="termin-card-body">'
           +'<div class="termin-date">📅 '+formatDatum(t.von, t.bis)+'</div>'
           +(norm?'<span class="termin-tag tag-norm">'+norm+'</span>':'')
-          +'<a class="termin-book" href="anmeldung.html?kurs='+aktivTab+'" style="margin-top:auto">Jetzt anmelden →</a>'
+          +'<a class="termin-book" href="anmeldung.html?kurs='+kid+'">Jetzt anmelden →</a>'
           +'</div>'
           +'</div>';
-      }).join('') || '<div class="termine-empty"><p>Keine Termine für diese Schulung.</p><a href="termin-anfragen.html?kurs='+aktivTab+'">Termin anfragen →</a></div>';
-    }
+      });
+    });
 
-    window.switchTab = function(kid){
-      aktivTab = kid;
-      renderTabs();
-      renderKarten();
-    };
-
-    if(vorhandenKids.length === 0){
-      grid.innerHTML = '<div class="termine-empty"><h3>Aktuell keine Termine eingetragen</h3><p>Melden Sie sich gerne — wir finden gemeinsam einen passenden Termin.</p><a href="termin-anfragen.html">Termin anfragen →</a></div>';
+    if(html){
+      document.getElementById('termine-tabs').innerHTML = '';
+      grid.innerHTML = html;
     } else {
-      renderTabs();
-      renderKarten();
+      grid.innerHTML = '<div class="termine-empty"><h3>Aktuell keine Termine eingetragen</h3><p>Melden Sie sich gerne — wir finden gemeinsam einen passenden Termin.</p><a href="termin-anfragen.html">Termin anfragen →</a></div>';
     }
 
     // Kurs-Karten: Button auf "Termin anfragen" setzen wenn kein Termin vorhanden
