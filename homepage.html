@@ -783,9 +783,20 @@ var KURS_NORM = {
   lasi:'VDI 2700', training:'DGUV 308-001'
 };
 
-function formatDatum(str){
-  var d = new Date(str);
-  return d.toLocaleDateString('de-DE',{day:'2-digit',month:'long',year:'numeric'});
+function formatDatum(von, bis){
+  var dv = new Date(von);
+  var db = bis ? new Date(bis) : null;
+  var opts = {day:'2-digit',month:'long',year:'numeric'};
+  var optsKurz = {day:'2-digit',month:'long'};
+  if(!db || dv.toDateString() === db.toDateString()){
+    return dv.toLocaleDateString('de-DE', opts);
+  }
+  // Gleiches Jahr + gleicher Monat: "09. – 11. Februar 2026"
+  if(dv.getFullYear()===db.getFullYear() && dv.getMonth()===db.getMonth()){
+    return dv.toLocaleDateString('de-DE',{day:'2-digit'})
+      +'. – '+db.toLocaleDateString('de-DE', opts);
+  }
+  return dv.toLocaleDateString('de-DE', optsKurz)+' – '+db.toLocaleDateString('de-DE', opts);
 }
 
 async function ladeTermine(){
@@ -805,12 +816,11 @@ async function ladeTermine(){
     grid.innerHTML = list.map(function(t){
       var norm = KURS_NORM[t.kurs_id] || '';
       return '<div class="termin-card">'
-        +'<div class="termin-date">📅 '+formatDatum(t.datum)+'</div>'
+        +'<div class="termin-date">📅 '+formatDatum(t.datum_von, t.datum_bis)+'</div>'
         +'<div class="termin-title">'+t.titel+'</div>'
         +'<div class="termin-meta">'
         +'<span>📍 '+(t.ort||'Simbach')+'</span>'
         +'<span>💻 '+t.format+'</span>'
-        +(t.plaetze?'<span>👥 '+t.plaetze+'</span>':'')
         +'</div>'
         +(norm?'<span class="termin-tag tag-norm">'+norm+'</span>':'')
         +'<button class="termin-book" onclick="selectKurs(\''+t.kurs_id+'\')">Jetzt anmelden →</button>'
