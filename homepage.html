@@ -224,6 +224,24 @@ nav{
   border:none;cursor:pointer;transition:all .15s;margin-top:auto;
 }
 .termin-book:hover{background:var(--green-d)}
+.termine-loading{
+  grid-column:1/-1;text-align:center;padding:40px;
+  color:var(--muted);font-size:14px;
+}
+.termine-empty{
+  grid-column:1/-1;
+  background:#fff;border:1px solid var(--line);border-radius:16px;
+  padding:40px 32px;text-align:center;
+}
+.termine-empty h3{font-size:17px;font-weight:800;color:var(--navy);margin-bottom:8px}
+.termine-empty p{font-size:14px;color:var(--muted);margin-bottom:20px;line-height:1.6}
+.termine-empty a{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:11px 22px;border-radius:10px;
+  background:var(--green);color:#fff;font-size:14px;font-weight:700;
+  transition:background .15s;
+}
+.termine-empty a:hover{background:var(--green-d)}
 
 /* ANMELDUNG */
 .anmeldung-section{background:#fff;padding:80px 24px}
@@ -527,56 +545,8 @@ footer a{color:rgba(255,255,255,.4);text-decoration:underline}
     <div class="section-label">Schulungskalender</div>
     <h2 class="section-title">Nächste Termine</h2>
     <p class="section-sub" style="margin-bottom:36px">Alle Termine auf einen Blick — wählen Sie Ihre Wunschschulung und melden Sie sich direkt an.</p>
-    <div class="termine-grid">
-
-      <div class="termin-card">
-        <div class="termin-date">📅 14. Juli 2026</div>
-        <div class="termin-title">Ausbildung Flurförderzeuge Stufe 1</div>
-        <div class="termin-meta">
-          <span>📍 Simbach</span>
-          <span>💻 E-Learning + Präsenzschulung</span>
-          <span>👥 Noch Plätze verfügbar</span>
-        </div>
-        <span class="termin-tag tag-norm">DGUV 308-001</span>
-        <button class="termin-book" onclick="selectKurs('stufe1')">Jetzt anmelden →</button>
-      </div>
-
-      <div class="termin-card">
-        <div class="termin-date">📅 21. Juli 2026</div>
-        <div class="termin-title">Zusatzausbildung Flurförderzeuge Stufe 2</div>
-        <div class="termin-meta">
-          <span>📍 Simbach</span>
-          <span>💻 E-Learning + Präsenzschulung</span>
-          <span>👥 Noch Plätze verfügbar</span>
-        </div>
-        <span class="termin-tag tag-norm">DGUV 308-001</span>
-        <button class="termin-book" onclick="selectKurs('stufe2')">Jetzt anmelden →</button>
-      </div>
-
-      <div class="termin-card">
-        <div class="termin-date">📅 28. Juli 2026</div>
-        <div class="termin-title">Ladungssicherung nach VDI 2700 ff.</div>
-        <div class="termin-meta">
-          <span>📍 Simbach</span>
-          <span>💻 E-Learning + Präsenzschulung</span>
-          <span>👥 Noch Plätze verfügbar</span>
-        </div>
-        <span class="termin-tag tag-norm">VDI 2700</span>
-        <button class="termin-book" onclick="selectKurs('lasi')">Jetzt anmelden →</button>
-      </div>
-
-      <div class="termin-card">
-        <div class="termin-date">📅 04. August 2026</div>
-        <div class="termin-title">Grundlagentraining Flurförderzeuge</div>
-        <div class="termin-meta">
-          <span>📍 Simbach</span>
-          <span>🏭 Reine Präsenzschulung</span>
-          <span>👥 Noch Plätze verfügbar</span>
-        </div>
-        <span class="termin-tag tag-norm">DGUV 308-001</span>
-        <button class="termin-book" onclick="selectKurs('training')">Jetzt anmelden →</button>
-      </div>
-
+    <div class="termine-grid" id="termine-grid">
+      <div class="termine-loading">Termine werden geladen…</div>
     </div>
   </div>
 </section>
@@ -804,6 +774,54 @@ function weitererTeilnehmer() {
 }
 
 var ANMELDUNG_URL = 'https://default8af25f9034bc4ef4aba22ab6f641d5.01.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/dbe5673986dd498bb2049e8a80220add/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=ogUKNB6jpCkEcxwY87bHLFJbIzrnQm5TPAwNTX4DYFQ';
+
+// Termine Flow URL — nach Anlegen des Flows hier eintragen
+var TERMINE_URL = '';
+
+var KURS_NORM = {
+  stufe1:'DGUV 308-001', stufe2:'DGUV 308-001',
+  lasi:'VDI 2700', training:'DGUV 308-001'
+};
+
+function formatDatum(str){
+  var d = new Date(str);
+  return d.toLocaleDateString('de-DE',{day:'2-digit',month:'long',year:'numeric'});
+}
+
+async function ladeTermine(){
+  var grid = document.getElementById('termine-grid');
+  if(!TERMINE_URL){
+    grid.innerHTML = '<div class="termine-empty"><h3>Demnächst neue Termine</h3><p>Aktuelle Schulungstermine erfahren Sie auf Anfrage direkt bei uns.</p><a href="#kontakt">Termin anfragen →</a></div>';
+    return;
+  }
+  try{
+    var res  = await fetch(TERMINE_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:'{}'});
+    var data = await res.json();
+    var list = data.termine || [];
+    if(list.length === 0){
+      grid.innerHTML = '<div class="termine-empty"><h3>Aktuell keine Termine eingetragen</h3><p>Melden Sie sich gerne — wir finden gemeinsam einen passenden Termin.</p><a href="#kontakt">Termin anfragen →</a></div>';
+      return;
+    }
+    grid.innerHTML = list.map(function(t){
+      var norm = KURS_NORM[t.kurs_id] || '';
+      return '<div class="termin-card">'
+        +'<div class="termin-date">📅 '+formatDatum(t.datum)+'</div>'
+        +'<div class="termin-title">'+t.titel+'</div>'
+        +'<div class="termin-meta">'
+        +'<span>📍 '+(t.ort||'Simbach')+'</span>'
+        +'<span>💻 '+t.format+'</span>'
+        +(t.plaetze?'<span>👥 '+t.plaetze+'</span>':'')
+        +'</div>'
+        +(norm?'<span class="termin-tag tag-norm">'+norm+'</span>':'')
+        +'<button class="termin-book" onclick="selectKurs(\''+t.kurs_id+'\')">Jetzt anmelden →</button>'
+        +'</div>';
+    }).join('');
+  }catch(e){
+    grid.innerHTML = '<div class="termine-empty"><h3>Termine konnten nicht geladen werden</h3><p>Bitte kontaktieren Sie uns direkt für aktuelle Termine.</p><a href="#kontakt">Kontakt →</a></div>';
+  }
+}
+
+ladeTermine();
 
 ['stufe1','stufe2','lasi'].forEach(function(id){
   document.getElementById('ck-'+id).addEventListener('change',function(){
