@@ -264,7 +264,7 @@ body::before{
   </div>
   <div class="kontakt-bar">
     <a class="kontakt-btn wa" id="waBtn" href="https://wa.me/4916096877039" target="_blank">&#x1F4AC; WhatsApp</a>
-    <a class="kontakt-btn mail" href="mailto:DanielEckmeier@Ausbildung1986.onmicrosoft.com" target="_blank">&#x2709;&#xFE0F; E-Mail</a>
+    <a class="kontakt-btn mail" id="mailBtn" href="mailto:DanielEckmeier@Ausbildung1986.onmicrosoft.com" target="_blank">&#x2709;&#xFE0F; E-Mail</a>
   </div>
   <button class="back-btn" onclick="goBack()">&larr; Zur&uuml;ck zur Startseite</button>
 </div>
@@ -306,7 +306,10 @@ de:{
   gabelruecken:'← Gabelrücken',
   lsaLabel:'Lastschwerpunktabstand in mm',lastLabel:'Last in kg',hubLabel:'Hub in mm',
   richtigDiag:'✓ Richtig! ',falschDiag:'✗ Falsch. ',
-  kennlinieRichtig:'✓ Richtig! Kennlinie ',korrekt:'✗ Korrekt: ',vollbild:'Vollbild'
+  kennlinieRichtig:'✓ Richtig! Kennlinie ',korrekt:'✗ Korrekt: ',vollbild:'Vollbild',
+  waMsg:'Hallo, ich habe eine Frage zur Gabelstapler-Ausbildung.\n\nAktueller Abschnitt: {ctx}\n\nMeine Frage: ',
+  mailSubj:'Frage zur Staplerausbildung – {ctx}',
+  mailBody:'Hallo,\n\nich habe eine Frage zur Gabelstapler-Ausbildung.\n\nAktueller Abschnitt: {ctx}\n\nMeine Frage:\n'
 },
 pl:{
   weiter:'Dalej ›',willkommen:'Witamy',kapitel:'Rozdział',von:'z',folie:'Slajd',
@@ -340,7 +343,10 @@ pl:{
   gabelruecken:'← Tylna ścianka wideł',
   lsaLabel:'Odległość środka ciężkości ładunku w mm',lastLabel:'Ładunek w kg',hubLabel:'Skok w mm',
   richtigDiag:'✓ Prawidłowo! ',falschDiag:'✗ Błędnie. ',
-  kennlinieRichtig:'✓ Prawidłowo! Krzywa ',korrekt:'✗ Prawidłowo: ',vollbild:'Pełny ekran'
+  kennlinieRichtig:'✓ Prawidłowo! Krzywa ',korrekt:'✗ Prawidłowo: ',vollbild:'Pełny ekran',
+  waMsg:'Witam, mam pytanie dotyczące szkolenia na wózek widłowy.\n\nAktualny dział: {ctx}\n\nMoje pytanie: ',
+  mailSubj:'Pytanie dot. szkolenia na wózek – {ctx}',
+  mailBody:'Dzień dobry,\n\nmam pytanie dotyczące szkolenia na wózek widłowy.\n\nAktualny dział: {ctx}\n\nMoje pytanie:\n'
 }
 };
 var TOTAL_FOLIEN=107;
@@ -872,6 +878,27 @@ function render(){
     nextBtn.disabled=true;
     prevBtn.disabled=true;
   }
+  updateKontaktLinks();
+}
+
+function updateKontaktLinks(){
+  var s=STEPS[cur];
+  var ctx='';
+  if(s.type==='welcome') ctx=T.willkommen;
+  else if(s.type==='kapitel') ctx=T.kapitel+' '+s.nr+': '+s.titel;
+  else if(s.type==='folie') ctx=T.kapitel+' '+s.kapitel_nr+' | '+T.folie+' '+s.fn+' / '+TOTAL_FOLIEN;
+  else if(s.type==='video') ctx=T.kapitel+' '+s.kapitel_nr+' | '+s.titel;
+  else if(s.type==='quiz') ctx=T.kapitel+' '+s.kapitel_nr+' | '+T.wissensfrage+' '+(s.qi+1);
+  else if(s.type==='abschluss') ctx=T.kapitel+' '+s.kapitel_nr+': '+s.kapitel_titel;
+  else if(s.type==='diag') ctx=T.diagramm+' '+(s.di+1)+' '+T.kap8;
+  else if(s.type==='ergebnis') ctx=T.abschluss;
+  var waMsg=T.waMsg.replace('{ctx}',ctx);
+  var mailSubj=T.mailSubj.replace('{ctx}',ctx);
+  var mailBody=T.mailBody.replace('{ctx}',ctx);
+  var wa=document.getElementById('waBtn');
+  var ml=document.getElementById('mailBtn');
+  if(wa) wa.href='https://wa.me/'+WA_NR+'?text='+encodeURIComponent(waMsg);
+  if(ml) ml.href='mailto:'+MAIL+'?subject='+encodeURIComponent(mailSubj)+'&body='+encodeURIComponent(mailBody);
 }
 
 function answer(key,chosen,richtig){
