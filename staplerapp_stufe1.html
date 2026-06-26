@@ -307,6 +307,7 @@ de:{
   lsaLabel:'Lastschwerpunktabstand in mm',lastLabel:'Last in kg',hubLabel:'Hub in mm',
   richtigDiag:'✓ Richtig! ',falschDiag:'✗ Falsch. ',
   kennlinieRichtig:'✓ Richtig! Kennlinie ',korrekt:'✗ Korrekt: ',vollbild:'Vollbild',
+  prevBtnTxt:'‹ Zurück',backBtnTxt:'← Zurück zur Startseite',
   waMsg:'Hallo, ich habe eine Frage zur Gabelstapler-Ausbildung.\n\nAktueller Abschnitt: {ctx}\n\nMeine Frage: ',
   mailSubj:'Frage zur Staplerausbildung – {ctx}',
   mailBody:'Hallo,\n\nich habe eine Frage zur Gabelstapler-Ausbildung.\n\nAktueller Abschnitt: {ctx}\n\nMeine Frage:\n'
@@ -344,6 +345,7 @@ pl:{
   lsaLabel:'Odległość środka ciężkości ładunku w mm',lastLabel:'Ładunek w kg',hubLabel:'Skok w mm',
   richtigDiag:'✓ Prawidłowo! ',falschDiag:'✗ Błędnie. ',
   kennlinieRichtig:'✓ Prawidłowo! Krzywa ',korrekt:'✗ Prawidłowo: ',vollbild:'Pełny ekran',
+  prevBtnTxt:'‹ Wstecz',backBtnTxt:'← Do strony startowej',
   waMsg:'Witam, mam pytanie dotyczące szkolenia na wózek widłowy.\n\nAktualny dział: {ctx}\n\nMoje pytanie: ',
   mailSubj:'Pytanie dot. szkolenia na wózek – {ctx}',
   mailBody:'Dzień dobry,\n\nmam pytanie dotyczące szkolenia na wózek widłowy.\n\nAktualny dział: {ctx}\n\nMoje pytanie:\n'
@@ -794,20 +796,16 @@ function render(){
 
   if(s.type==='folie'){
     host.innerHTML='<div class="slidebox">'+
-      '<div class="nav-zone prev" onclick="prev()"><span>‹</span></div>'+
       '<img src="'+ORDNER+'/Folie'+s.fn+'.PNG" alt="Folie '+s.fn+'">'+
-      '<div class="nav-zone next" onclick="next()"><span>›</span></div>'+
       '</div>';
     counter.textContent=T.folie+' '+s.fn+' / '+TOTAL_FOLIEN;
   }
   else if(s.type==='video'){
     host.innerHTML='<div class="slidebox video-slide">'+
-      '<div class="nav-zone prev" onclick="prev()"><span>‹</span></div>'+
       '<div class="video-wrap">'+
-        '<div class="video-label"><span>&#9654; '+s.titel+'</span><button class="video-fs-btn" onclick="videoVollbild()">&#x26F6; Vollbild</button></div>'+
+        '<div class="video-label"><span>&#9654; '+s.titel+'</span><button class="video-fs-btn" onclick="videoVollbild()">&#x26F6; '+T.vollbild+'</button></div>'+
         '<iframe id="videoFrame" src="'+s.vidUrl+'" allow="autoplay; fullscreen; picture-in-picture; encrypted-media" allowfullscreen></iframe>'+
       '</div>'+
-      '<div class="nav-zone next" onclick="next()"><span>›</span></div>'+
       '</div>';
     counter.textContent='&#9654; '+s.titel;
   }
@@ -906,6 +904,8 @@ function answer(key,chosen,richtig){
   }
   answered[key]=(chosen===richtig);
   nextBtn.disabled=false;
+  if(quizTimer)clearTimeout(quizTimer);
+  quizTimer=setTimeout(function(){quizTimer=null;next();},1400);
 }
 
 function showAnswerState(key,richtig,opts){
@@ -944,8 +944,9 @@ function kapitelAbschliessen(knr,kname){
     .catch(function(){btn.disabled=false;btn.textContent=T.abschlussBtnTxt;stat.textContent=T.fehler;stat.style.color='var(--no)';});
 }
 
-function next(){if(cur<STEPS.length-1){cur++;render();saveProgress();}}
-function prev(){if(cur>0){cur--;render();saveProgress();}}
+var quizTimer=null;
+function next(){if(quizTimer){clearTimeout(quizTimer);quizTimer=null;}if(cur<STEPS.length-1){cur++;render();saveProgress();}}
+function prev(){if(quizTimer){clearTimeout(quizTimer);quizTimer=null;}if(cur>0){cur--;render();saveProgress();}}
 function restart(){cur=0;answered={};score=0;kapitelAbgeschlossen={};render();}
 
 document.addEventListener('keydown',function(e){
@@ -964,6 +965,8 @@ function goBack(){
   window.location.href=BASE+(regnr?'?regnr='+encodeURIComponent(regnr)+'&lang='+lang:'');
 }
 
+prevBtn.textContent=T.prevBtnTxt;
+document.querySelector('.back-btn').textContent=T.backBtnTxt;
 loadProgress();
 updateProgBadge();
 render();
