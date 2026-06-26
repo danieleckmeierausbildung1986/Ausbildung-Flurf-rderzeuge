@@ -386,6 +386,8 @@ var kapitelStartZeit=Date.now();
 var params=new URLSearchParams(window.location.search);
 var regnr=params.get('regnr')||'';
 var lang=params.get('lang')||sessionStorage.getItem('lang')||'de';
+if(lang==='pl') ORDNER='PL_BILDER';
+if(lang==='en') ORDNER='EN_BILDER';
 
 var host=document.getElementById('host');
 var pbar=document.getElementById('pbar');
