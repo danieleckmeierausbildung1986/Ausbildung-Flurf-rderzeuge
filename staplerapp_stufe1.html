@@ -552,10 +552,8 @@ var T=TXT[lang]||TXT.de;
 var STEPS=[];
 // Welcome
 STEPS.push({type:'welcome'});
-// Pro Kapitel: Kapitelfolie, Folien, Quiz, Abschluss
+// Pro Kapitel: Folien, Quiz, Abschluss
 KAPITEL.forEach(function(k){
-  // Kapitel-Titelfolie
-  STEPS.push({type:'kapitel',nr:k.nr,titel:k.titel});
   // Folienbilder (Video-Platzhalter-Folien werden als Video-Step eingebaut)
   for(var f=k.folien_von;f<=k.folien_bis;f++){
     if(VIDEO_MAP[f]){
@@ -583,7 +581,7 @@ STEPS.push({type:'ergebnis'});
 
 // Kapitel-Startindizes vorberechnen (für Navigation)
 var kapitelStart={};
-STEPS.forEach(function(s,i){if(s.type==='kapitel'&&!(s.nr in kapitelStart))kapitelStart[s.nr]=i;});
+STEPS.forEach(function(s,i){if((s.type==='folie'||s.type==='video')&&s.kapitel_nr&&!(s.kapitel_nr in kapitelStart))kapitelStart[s.kapitel_nr]=i;});
 
 var cur=0;
 var answered={};
@@ -794,15 +792,7 @@ function render(){
     nextBtn.style.display='';
   }
 
-  if(s.type==='kapitel'){
-    host.innerHTML='<div class="kapitel-box">'+
-      '<div class="kapitel-nr">'+T.kapitel+' '+s.nr+' '+T.von+' '+KAPITEL.length+'</div>'+
-      '<div class="kapitel-titel">'+s.titel+'</div>'+
-      '<div class="kapitel-sub">'+T.allgSub+'</div>'+
-      '</div>';
-    counter.textContent=T.kapitel+' '+s.nr;
-  }
-  else if(s.type==='folie'){
+  if(s.type==='folie'){
     host.innerHTML='<div class="slidebox">'+
       '<div class="nav-zone prev" onclick="prev()"><span>‹</span></div>'+
       '<img src="'+ORDNER+'/Folie'+s.fn+'.PNG" alt="Folie '+s.fn+'">'+
