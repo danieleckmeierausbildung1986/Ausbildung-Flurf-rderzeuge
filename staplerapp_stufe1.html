@@ -250,8 +250,8 @@ body::before{
 <div class="wrap">
   <div class="topbar">
     <div class="ti">🚜</div>
-    <div><h1>Gabelstapler Ausbildung</h1><p>Allgemeine Ausbildung Stufe 1 &middot; DGUV Grundsatz 308-001</p><div class="prog-badge" id="progBadge"></div></div>
-    <button class="ov-btn" onclick="openOv()">&#9776; Kapitel</button>
+    <div><h1 id="appTitle">Gabelstapler Ausbildung</h1><p id="appSubtitle">Allgemeine Ausbildung Stufe 1 &middot; DGUV Grundsatz 308-001</p><div class="prog-badge" id="progBadge"></div></div>
+    <button class="ov-btn" id="ovBtn" onclick="openOv()">&#9776; Kapitel</button>
   </div>
   <div class="stage">
     <div class="progress"><div class="progress-bar" id="pbar"></div></div>
@@ -308,6 +308,9 @@ de:{
   richtigDiag:'✓ Richtig! ',falschDiag:'✗ Falsch. ',
   kennlinieRichtig:'✓ Richtig! Kennlinie ',korrekt:'✗ Korrekt: ',vollbild:'Vollbild',
   prevBtnTxt:'‹ Zurück',backBtnTxt:'← Zurück zur Startseite',
+  appTitel:'Gabelstapler Ausbildung',
+  appSub:'Allgemeine Ausbildung Stufe 1 &middot; DGUV Grundsatz 308-001',
+  ovBtnTxt:'☰ Kapitel',
   waMsg:'Hallo, ich habe eine Frage zur Gabelstapler-Ausbildung.\n\nAktueller Abschnitt: {ctx}\n\nMeine Frage: ',
   mailSubj:'Frage zur Staplerausbildung – {ctx}',
   mailBody:'Hallo,\n\nich habe eine Frage zur Gabelstapler-Ausbildung.\n\nAktueller Abschnitt: {ctx}\n\nMeine Frage:\n'
@@ -346,9 +349,53 @@ pl:{
   richtigDiag:'✓ Prawidłowo! ',falschDiag:'✗ Błędnie. ',
   kennlinieRichtig:'✓ Prawidłowo! Krzywa ',korrekt:'✗ Prawidłowo: ',vollbild:'Pełny ekran',
   prevBtnTxt:'‹ Wstecz',backBtnTxt:'← Do strony startowej',
+  appTitel:'Wózek widłowy — szkolenie',
+  appSub:'Szkolenie ogólne Poziom 1 &middot; DGUV Grundsatz 308-001',
+  ovBtnTxt:'☰ Rozdziały',
   waMsg:'Witam, mam pytanie dotyczące szkolenia na wózek widłowy.\n\nAktualny dział: {ctx}\n\nMoje pytanie: ',
   mailSubj:'Pytanie dot. szkolenia na wózek – {ctx}',
   mailBody:'Dzień dobry,\n\nmam pytanie dotyczące szkolenia na wózek widłowy.\n\nAktualny dział: {ctx}\n\nMoje pytanie:\n'
+},
+ro:{
+  weiter:'Înainte ›',willkommen:'Bun venit',kapitel:'Capitol',von:'din',folie:'Diapozitiv',
+  kap:'Cap.',wissensfrage:'Întrebare de verificare',frage:'Întrebare',
+  allgSub:'Formare generală operator stivuitor &middot; DGUV 308-001',
+  welcomeTitel:'Bun venit la instruirea operatorului de stivuitor',
+  welcomeSub:'Această instruire transmite toate bazele teoretice conform <strong>DGUV Grundsatz 308-001</strong> pentru conducerea în siguranță a stivuitoarelor.',
+  wg1Titel:'10 capitole',wg1Text:'Toate temele formării generale',
+  wg2Titel:'100+ întrebări',wg2Text:'Min. 10 întrebări quiz pe capitol',
+  wg3Titel:'Contact',wg3Text:'WhatsApp &amp; e-mail pentru întrebări',
+  wg4Titel:'Dovadă',wg4Text:'Fiecare capitol este documentat',
+  startBtn:'Începe instruirea ›',
+  richtig:'✓ Corect!',falsch:'✗ Din păcate greșit. Corect: ',
+  richtigMarkiert:'✓ Răspuns corect marcat',
+  abschlussSub:'Ați parcurs toate conținuturile și întrebările acestui capitol.',
+  abschlussScore:'Rezultat quiz: ',richtigLabel:' corect (',
+  abschlussBtn:'Finalizați tema &amp; salvați',
+  abschlussBtnTxt:'Finalizați tema & salvați',
+  abschlussAbgeschlossen:'✓ Finalizat',
+  wirdGespeichert:'Se salvează...',gespeichert:'salvat.',
+  fehler:'⚠️ Eroare. Vă rugăm să încercați din nou.',
+  ergebnisPass:'Felicitări! Instruire finalizată cu succes.',
+  ergebnisFail:'Punctajul minim de 80% nu a fost atins. Vă rugăm să repetați.',
+  zurueck:'← La pagina principală',wiederholen:'Repetați instruirea',
+  abschluss:'Finalizare',diagramm:'Diagramă',kap8:'(Cap. 8)',
+  ovTitel:'Prezentare generală capitole',ovWeiter:'Continuați învățarea',
+  ovKap:'Cap. ',ovNochNicht:'Nu a fost început',ovQuizFragen:' Întrebări quiz',
+  kapitelAbgeschlossen:'capitole finalizate',
+  pruefen:'Verificați',loesung:'Soluție',ja:'Da',nein:'Nu',
+  bitteWert:'Vă rugăm să introduceți o valoare.',
+  gabelruecken:'← Spatele furcilor',
+  lsaLabel:'Distanța centrului de greutate al sarcinii în mm',lastLabel:'Sarcină în kg',hubLabel:'Înălțime ridicare în mm',
+  richtigDiag:'✓ Corect! ',falschDiag:'✗ Greșit. ',
+  kennlinieRichtig:'✓ Corect! Curbă ',korrekt:'✗ Corect: ',vollbild:'Ecran complet',
+  prevBtnTxt:'‹ Înapoi',backBtnTxt:'← Înapoi la pagina principală',
+  appTitel:'Instruire stivuitor',
+  appSub:'Formare generală Nivelul 1 &middot; DGUV Grundsatz 308-001',
+  ovBtnTxt:'☰ Capitole',
+  waMsg:'Bună ziua, am o întrebare despre instruirea stivuitorului.\n\nSecțiunea curentă: {ctx}\n\nÎntrebarea mea: ',
+  mailSubj:'Întrebare despre instruire – {ctx}',
+  mailBody:'Bună ziua,\n\nam o întrebare despre instruirea stivuitorului.\n\nSecțiunea curentă: {ctx}\n\nÎntrebarea mea:\n'
 }
 };
 var TOTAL_FOLIEN=107;
@@ -543,10 +590,135 @@ var QUIZ_DATA_PL={"1":[
 {"q":"Co należy znać przed przewożeniem przyczepu?","o":["Kolor","Dopuszczalną ładowność przyczepu","Rok produkcji","Producenta"],"c":1}
 ]};
 
+var KAPITEL_RO=[
+  {"nr":1,"titel":"Accident de muncă și consecințe juridice","folien_von":1,"folien_bis":13},
+  {"nr":2,"titel":"Asociația profesională și reglementări","folien_von":14,"folien_bis":22},
+  {"nr":3,"titel":"Cerințe și criterii de aptitudine","folien_von":23,"folien_bis":28},
+  {"nr":4,"titel":"Accidentele și cauzele lor","folien_von":29,"folien_bis":35},
+  {"nr":5,"titel":"Depozitare și stivuire","folien_von":36,"folien_bis":44},
+  {"nr":6,"titel":"Căi de circulație","folien_von":45,"folien_bis":56},
+  {"nr":7,"titel":"Capacitate de încărcare și stabilitate","folien_von":57,"folien_bis":68},
+  {"nr":8,"titel":"Diagrama de capacitate de încărcare","folien_von":69,"folien_bis":88},
+  {"nr":9,"titel":"Operarea stivuitorului — Aspecte generale","folien_von":89,"folien_bis":100},
+  {"nr":10,"titel":"Operarea stivuitorului — Utilizări speciale și verificări","folien_von":101,"folien_bis":107}
+];
+var QUIZ_DATA_RO={"1":[
+{"q":"Ce trei condiții trebuie îndeplinite pentru un accident de muncă?","o":["Persoană asigurată, activitate asigurată, vătămare corporală","Intenție, daune, martori","Contract de muncă, vătămare, vizită medicală","Neglijență, daune, notificare"],"c":0},
+{"q":"Câte accidente se produc anual în Germania la manipularea stivuitoarelor?","o":["aprox. 2.000","aprox. 5.000","peste 20.000","peste 50.000"],"c":2},
+{"q":"Câte accidente mortale cu stivuitoare se produc anual în Germania?","o":["aprox. 5","aprox. 23","aprox. 50","aprox. 100"],"c":1},
+{"q":"Ce NU este o posibilă consecință juridică după un accident de muncă?","o":["Drept penal","Drept fiscal","Drept contravențional","Drept al muncii"],"c":1},
+{"q":"Ce poate face BG în cazul accidentelor cauzate din neglijență gravă?","o":["Nimic","Depune plângere penală","Solicita rambursarea cheltuielilor","Retrage permisul de conducere"],"c":2},
+{"q":"Ce pedeapsă riscați pentru consecințe penale ale unui accident de muncă?","o":["Doar avertisment","Închisoare sau amendă","Doar amendă","Interdicție de conducere"],"c":1},
+{"q":"Ce este condiția pentru o procedură contravențională?","o":["Este necesară intenția","Încălcarea unei norme sancționate cu amendă","O vătămare corporală","Trebuie să existe un martor"],"c":1},
+{"q":"Care este cea mai gravă consecință în dreptul muncii?","o":["Avertisment oral","Avertisment scris","Atenționare","Concediere"],"c":3},
+{"q":"Când răspunde angajatorul conform BGB pentru un accident de muncă?","o":["Întotdeauna","Doar pentru accidente cauzate cu intenție","Doar pentru neglijență","Niciodată"],"c":1},
+{"q":"Ce NU este un punct de concentrare a accidentelor cu stivuitoare?","o":["Accidente de coliziune","Accidente de răsturnare","Deteriorări electrice","Cădere de pe sarcină"],"c":2}
+],"2":[
+{"q":"Cum se numește principiul actual al asigurărilor de accidente pentru șoferii de stivuitoare?","o":["BGG 925","DGUV Grundsatz 308-001","DGUV Vorschrift 68","UVV Flurförderzeuge"],"c":1},
+{"q":"Ce este Berufsgenossenschaft?","o":["O asociație profesională","Asigurător legal de accidente","Un organism de stat","O instituție de formare"],"c":1},
+{"q":"Câte niveluri de formare prevede DGUV Grundsatz 308-001?","o":["1","2","3","4"],"c":2},
+{"q":"Ce este nivelul 1 al formării pentru stivuitor?","o":["Formare la locul de muncă","Formare suplimentară","Formare generală","Pregătire pentru examen"],"c":2},
+{"q":"Ce este nivelul 3 al formării pentru stivuitor?","o":["Formare generală","Formare suplimentară","Formare la locul de muncă","Examen final"],"c":2},
+{"q":"Ce include nivelul 2 al formării pentru stivuitor?","o":["Doar teorie","Formare suplimentară pentru stivuitoare speciale","Instruire la locul de muncă","Curs de prim ajutor"],"c":1},
+{"q":"Ce se eliberează după finalizarea formării generale (nivelul 1)?","o":["Permis de conducere","Certificat","Brevet","Referință"],"c":1},
+{"q":"Ce previne în principal BG?","o":["Furtul","Accidentele de muncă și bolile profesionale","Incendiile","Întreruperile activității"],"c":1},
+{"q":"Care document reglementează formarea și autorizarea șoferilor de stivuitoare?","o":["StVZO","DGUV Grundsatz 308-001","Regulamentul privind locurile de muncă","BetrVG"],"c":1},
+{"q":"Ce trebuie făcut după finalizarea formării la locul de muncă (nivelul 3)?","o":["Susținerea examenului","Eliberarea certificatului","Documentarea realizării","Solicitarea permisului"],"c":2}
+],"3":[
+{"q":"Care este vârsta minimă pentru conducerea independentă a stivuitoarelor?","o":["16 ani","17 ani","18 ani","21 ani"],"c":2},
+{"q":"Cine acordă autorizația de conducere a stivuitoarelor?","o":["Instructorul","Comitetul de întreprindere","Angajatorul","Berufsgenossenschaft"],"c":2},
+{"q":"În ce formă trebuie acordată autorizația?","o":["Verbal","Scris","Prin e-mail este suficient","Nu este necesar"],"c":1},
+{"q":"Poate fi transferată autorizația altor întreprinderi?","o":["Da, întotdeauna","Da, cu aprobarea BG","Nu","Doar în aceeași ramură"],"c":2},
+{"q":"Ce aptitudine fizică NU este cerută operatorului de stivuitor?","o":["Acuitate vizuală suficientă","Capacitate auditivă","Înălțime peste medie","Bună capacitate de reacție"],"c":2},
+{"q":"Cum se stabilește aptitudinea fizică?","o":["Prin test de vedere","Prin examinare medicală preventivă G25","Prin instructor","Prin comitetul de întreprindere"],"c":1},
+{"q":"Ce NU este o condiție pentru conducerea stivuitoarelor?","o":["Vârstă min. 18 ani","Apt și instruit","Membru de sindicat","Autorizație scrisă"],"c":2},
+{"q":"Ce ține de aptitudinea mentală a operatorului de stivuitor?","o":["Inteligență peste medie","Înțelegerea conexiunilor tehnice și fizice","Studii superioare","Cunoașterea limbilor"],"c":1},
+{"q":"În ce mod poate fi acordată autorizația?","o":["Doar în scris prin scrisoare","Printr-un permis intern de conducere","Prin strângere de mână","Prin înregistrare în actul de identitate"],"c":1},
+{"q":"Ce este deosebit de important la aptitudinile caracteriale?","o":["Sportivitate","Simț al responsabilității și fiabilitate","Creativitate","Abilități de comunicare"],"c":1}
+],"4":[
+{"q":"Ce proporție din accidentele mortale cu stivuitoare sunt răsturnări?","o":["peste 20%","peste 30%","peste 50%","peste 80%"],"c":2},
+{"q":"Ce este o cauză frecventă a accidentelor de coliziune?","o":["Sarcină prea grea","Neatenția operatorului","Încălțăminte nepotrivită","Viteză prea mică"],"c":1},
+{"q":"Ce este o cauză frecventă a accidentelor de răsturnare?","o":["Viteză prea mică","Conducerea cu sarcina ridicată","Sarcină prea ușoară","Mersul în marșarier"],"c":1},
+{"q":"Câte accidente grave cu stivuitoare prin cădere și răsturnare se produc anual?","o":["aprox. 20","aprox. 100","aprox. 200","aprox. 500"],"c":2},
+{"q":"Ce protejează cel mai bine împotriva accidentelor de răsturnare?","o":["Conducerea cu sarcina ridicată","Purtarea centurii de siguranță și viteza redusă","Mersul întotdeauna în marșarier","Transportarea doar a sarcinilor ușoare"],"c":1},
+{"q":"Ce se întâmplă adesea cu șoferul în accidentele de răsturnare?","o":["Este ușor rănit","Este prins sub stivuitor","Sare la timp","Nu i se întâmplă nimic"],"c":1},
+{"q":"De ce sunt accidentele de răsturnare deosebit de periculoase?","o":["Pentru că sunt frecvente","Pentru că sunt adesea însoțite de vătămări grave","Pentru că sunt costisitoare","Pentru că sunt dificil de documentat"],"c":1},
+{"q":"Ce este caracteristic pentru peste 80% din accidentele mortale de răsturnare?","o":["Stivuitoarele erau supraîncărcate","Stivuitoarele nu aveau sarcină","Șoferii erau neexperimentați","Era întuneric"],"c":1},
+{"q":"Ce înseamnă accidentele de coliziune?","o":["Accidente la pornirea motorului","Accidente în care stivuitorul lovește persoane sau obiecte","Accidente la parcare","Accidente la încărcare"],"c":1},
+{"q":"Ce măsură ajută împotriva accidentelor de coliziune?","o":["Viteza mai mare","Atenția și regulile clare de circulație în întreprindere","Claxonarea mai puternică","Demontarea oglinzilor"],"c":1}
+],"5":[
+{"q":"Cât de mult poate fi încărcată maxim o europaletă?","o":["500–800 kg","1000–1500 kg","2000–2500 kg","3000 kg"],"c":1},
+{"q":"Cât de înalt pot fi stivuite maxim containerele cu plasă?","o":["De trei ori","De patru ori","De cinci ori","De șase ori"],"c":2},
+{"q":"De la ce înălțime de ridicare este prescrisă o protecție pentru șofer?","o":["1,20 m","1,50 m","1,80 m","2,00 m"],"c":2},
+{"q":"Ce trebuie făcut în caz de deteriorare a rafturilor?","o":["Repararea singur","Raportarea deteriorării, utilizarea după reparare","Ignorarea","Adăugarea mai multă greutate"],"c":1},
+{"q":"Unde NU pot fi depuse sarcinile?","o":["În depozitul înalt","În fața echipamentelor de stingere a incendiilor","Pe europalete","În halele de depozitare"],"c":1},
+{"q":"Ce trebuie să existe la depozitarea pe rafturile superioare?","o":["Nimic special","Dispozitiv de siguranță împotriva căderii de min. 0,5 m","O plasă de siguranță","Un paznic"],"c":1},
+{"q":"Ce trebuie respectat la stivuirea containerelor cu plasă?","o":["Stivuire arbitrară","Sarcină max. 1000 kg, stivuire max. de cinci ori","Stivuire întotdeauna umed","Depozitare doar interior"],"c":1},
+{"q":"Când poate fi înclinat mâtul înainte?","o":["Întotdeauna în timpul deplasării","Doar la preluarea și depunerea sarcinii","Doar la mersul în marșarier","Niciodată"],"c":1},
+{"q":"Ce trebuie făcut cu sarcinile necorespunzător ambalate?","o":["Stivuiți oricum","Nu stivuiți și nu depuneți pe locuri înalte","Mergeți mai încet","Chemați un coleg"],"c":1},
+{"q":"Unde trebuie menținute întotdeauna libere căile de circulație?","o":["Doar în apropierea biroului","Peste tot în întreprindere","Doar în fața ieșirii","Doar în culoarele înguste"],"c":1}
+],"6":[
+{"q":"Cât de mare este supralărgimea laterală la circulația cu sens unic pe o parte?","o":["0,30 m","0,40 m","0,50 m","0,75 m"],"c":2},
+{"q":"Cât de mare este supralărgimea de întâlnire la circulația bidirecțională?","o":["0,20 m","0,40 m","0,50 m","0,75 m"],"c":1},
+{"q":"Ce capacitate minimă de încărcare a solului trebuie să aibă o cale de circulație?","o":["800 kg/m²","1200 kg/m²","1700 kg/m²","2000 kg/m²"],"c":2},
+{"q":"Ce se consideră lățime suficientă pentru rampele de încărcare?","o":["Lățimea stivuitorului + 0,50 m","Lățimea stivuitorului + 0,70 m","Lățimea stivuitorului + 1,00 m","Lățimea stivuitorului singur"],"c":1},
+{"q":"Ce trebuie respectat la intrarea în culoarele înguste?","o":["Întotdeauna viteză maximă","Intrarea numai când nu sunt pietoni înăuntru","Claxonarea și continuarea","Nimic special"],"c":1},
+{"q":"Cât de mare este distanța de siguranță în fața porților și ușilor?","o":["Min. 0,5 m","Min. 1 m","Min. 2 m","Nu este necesară distanță"],"c":1},
+{"q":"Ce mărește supralărgimea laterală la traficul pietonal la 0,75 m?","o":["Doar circulația bidirecțională","Utilizarea simultană ca trotuar","Sarcinile grele","Culoarele înguste"],"c":1},
+{"q":"Ce măsură protejează în culoarele înguste de pericolul pentru persoane?","o":["Claxon mai puternic","Bariere fotoelectrice, garduri sau senzori pe stivuitor","Mai multă iluminare","Viteză mai mică"],"c":1},
+{"q":"Ce trebuie să se aplice la intersecțiile din interiorul căilor de circulație?","o":["Fără prioritate","Reguli clare de prioritate, ex. dreapta față de stânga","Frânare întotdeauna","Vehiculele au întotdeauna prioritate"],"c":1},
+{"q":"Ce categorie de permis de conducere se aplică pentru stivuitoare sub 25 km/h pe drumurile publice?","o":["Categoria B","Categoria C","Categoria L","Nu este necesar"],"c":2}
+],"7":[
+{"q":"Ce este axa de basculare a stivuitorului?","o":["Axa spate","Axa față","Centrul de greutate","Contragreutatea"],"c":1},
+{"q":"Ce se întâmplă când centrul de greutate general trece dincolo de axa față?","o":["Stivuitorul frânează","Stivuitorul se răstoarnă înainte","Sarcina cade","Motorul se oprește"],"c":1},
+{"q":"La stivuitorul fără sarcină, centrul de greutate se găsește...","o":["Departe de marginile de basculare","Aproape de marginile laterale de basculare","În spatele axei din spate","Deasupra mâtului"],"c":1},
+{"q":"Ce descrie regula pârghiei la stivuitor?","o":["Forță × brațul forței = Sarcină × brațul sarcinii","Forță × Sarcină = Braț × Punct de rotație","Greutate × Înălțime = Energie","Sarcină × Ridicare = Lucru mecanic"],"c":0},
+{"q":"Unde trebuie preluată sarcina pentru a menține mic brațul sarcinii?","o":["La vârfurile furcilor","La mijlocul furcilor","La spatele furcilor","Nu contează"],"c":2},
+{"q":"Ce se întâmplă cu stabilitatea când sarcina este ridicată?","o":["Crește","Rămâne neschimbată","Scade","Nu poate fi măsurată"],"c":2},
+{"q":"Ce este triunghiul marginilor de basculare?","o":["Un semn de avertizare","Triunghiul de stabilitate din roțile față și centrul axei spate","Un dispozitiv de protecție","Forma furcilor"],"c":1},
+{"q":"Ce este caracteristic pentru peste 80% din accidentele mortale de răsturnare?","o":["Stivuitoarele erau supraîncărcate","Stivuitoarele nu aveau sarcină","Era noapte","Șoferii erau noi"],"c":1},
+{"q":"Cum afectează dublarea vitezei forța centrifugă?","o":["O dublează","O triplează","O cvaduplează","Niciun efect"],"c":2},
+{"q":"Ce este deosebit de important la viraje cu stivuitorul?","o":["Viteză mare","Viteză adaptată și rază mare de viraj","Claxonare întotdeauna","Ridicarea sarcinii"],"c":1}
+],"8":[
+{"q":"De ce depinde capacitatea reală de încărcare a stivuitorului?","o":["Doar de masa proprie","De distanța centrului de greutate și înălțimea de ridicare","De presiunea anvelopelor","De combustibil"],"c":1},
+{"q":"Ce indică capacitatea nominală de încărcare?","o":["Înălțimea maximă de ridicare","Capacitatea la înălțimea standardizată și LSA stabilit","Masa proprie a stivuitorului","Viteza de deplasare"],"c":1},
+{"q":"Ce se întâmplă cu capacitatea când crește distanța centrului de greutate?","o":["Crește","Rămâne neschimbată","Scade","Se dublează"],"c":2},
+{"q":"Ce se întâmplă cu capacitatea când crește înălțimea de ridicare?","o":["Crește","Rămâne neschimbată","Scade","Este independentă"],"c":2},
+{"q":"De unde poate fi citită capacitatea reală de încărcare?","o":["Din profilul anvelopei","Din diagrama de capacitate de încărcare","Din cartea tehnică","Din cutia de scule"],"c":1},
+{"q":"Ce arată axa X din diagrama simplă de capacitate de încărcare?","o":["Înălțimea de ridicare în mm","Distanța centrului de greutate în mm","Masa proprie în kg","Viteza de deplasare"],"c":1},
+{"q":"Ce arată axa Y din diagrama simplă de capacitate de încărcare?","o":["Înălțimea de ridicare în mm","Distanța centrului de greutate în mm","Sarcina admisă în kg","Presiunea anvelopelor"],"c":2},
+{"q":"Ce curbă trebuie aleasă pentru depozitare la 5,20 m?","o":["4250 mm","5250 mm","6150 mm","Niciuna"],"c":1},
+{"q":"Ce înseamnă capacitatea nominală pe plăcuța fabricantului?","o":["Sarcina maximă la orice înălțime","Sarcina la înălțimea standardizată și LSA stabilit","Masa proprie","Sarcina utilă a dispozitivului atașat"],"c":1},
+{"q":"Poate fi ridicată o sarcină de 1600 kg la 900 mm distanța centrului de greutate?","o":["Da, întotdeauna","Nu, capacitatea de încărcare este depășită","Doar la înălțime mică","Doar cu contragreutate"],"c":1}
+],"9":[
+{"q":"În ce poziție trebuie să fie mâtul la transportul sarcinilor?","o":["Vertical","Înclinat înainte","Înclinat înapoi","Nu contează"],"c":2},
+{"q":"La ce înălțime maximă poate fi ridicată sarcina în timpul deplasării?","o":["20 cm","30 cm","50 cm","80 cm"],"c":2},
+{"q":"Ce trebuie făcut PRIMUL la părăsirea stivuitorului?","o":["Scoaterea cheii","Coborârea furcilor","Acționarea frânei de parcare","Oprirea motorului"],"c":2},
+{"q":"Cum trebuie condusă sarcina la deplasarea în rampe?","o":["Spre vale","Pe latura superioară","Lateral","Nu contează"],"c":1},
+{"q":"Care este regula de bază pentru vizibilitate suficientă în direcția de mers?","o":["Max. 5 m acoperit","Max. 10 m acoperit","Max. 15 m acoperit","Vizibilitatea trebuie să fie întotdeauna liberă"],"c":1},
+{"q":"Ce trebuie respectat la intrarea în lifturi?","o":["Întotdeauna intrarea cu sarcina","Coborârea din stivuitor și acționarea frânei de parcare","Cât mai repede posibil","Lăsarea stivuitorului și mergerea pe jos"],"c":1},
+{"q":"Ce trebuie făcut la verificarea zilnică înainte de utilizare?","o":["Doar alimentarea","Verificarea stivuitorului conform instrucțiunilor, raportarea defecțiunilor","Schimbarea anvelopelor","Spălarea stivuitorului"],"c":1},
+{"q":"Ce defecțiune este o defecțiune de siguranță?","o":["O zgârietură ușoară a lacului","Fisuri în piesele portante precum mâtul","Scaune murdare","Etichete decolorate"],"c":1},
+{"q":"Cine poate remedia defecțiunile de siguranță ale stivuitorului?","o":["Orice șofer","Numai persoane calificate (ex. tehnicieni)","Superiorul","Comitetul de întreprindere"],"c":1},
+{"q":"Ce trebuie făcut la final la depunerea sarcinii pe raft?","o":["Înclinarea mâtului înainte","Coborârea furcilor și plecarea","Oprirea motorului","Acționarea frânei de parcare"],"c":1}
+],"10":[
+{"q":"La ce interval trebuie verificate stivuitoarele?","o":["La fiecare 3 luni","La fiecare 6 luni","Cel mult la fiecare 12 luni","La fiecare 2 ani"],"c":2},
+{"q":"Ce trebuie să conțină raportul de verificare?","o":["Doar data","Data, rezultatul, numele inspectorului, defecțiunile","Doar numele inspectorului","Doar dacă a trecut sau nu"],"c":1},
+{"q":"Ce este în principiu necesar la utilizarea platformelor de lucru pe stivuitor?","o":["Orice stivuitor este potrivit","Stivuitor cu capacitate suficientă și platformă conformă","Doar o frânghie de siguranță","Un al doilea șofer"],"c":1},
+{"q":"Ce trebuie respectat la utilizarea dispozitivelor atașate?","o":["Orice dispozitiv se potrivește pe orice stivuitor","Dispozitivele atașate și stivuitorul trebuie să fie coordonate","Dispozitivele atașate măresc întotdeauna capacitatea","Fără reglementări speciale"],"c":1},
+{"q":"Când poate șoferul să-și părăsească locul cu platforma de lucru ridicată?","o":["Întotdeauna","Doar scurt","Niciodată","În pauze"],"c":2},
+{"q":"Ce trebuie respectat la transportul sarcinilor suspendate?","o":["Fără particularități","Utilizarea numai a stivuitoarelor potrivite, persoanele nu în calea de rulare","Mersul întotdeauna în marșarier","Ridicarea întotdeauna a sarcinii"],"c":1},
+{"q":"Ce este condiția pentru transportul persoanelor pe stivuitor?","o":["Întotdeauna permis","Reglementat în instrucțiunile de exploatare, locuri și dispozitive de reținere","Doar pe distanțe scurte","Doar superiorul poate merge"],"c":1},
+{"q":"Ce trebuie făcut cu furcile deteriorate?","o":["Continuarea mersului","Raportarea ca defecțiune de siguranță și neutilizarea","Repararea singur","Transportarea doar a sarcinilor ușoare"],"c":1},
+{"q":"Când trebuie aplicată placheta de verificare pe stivuitor?","o":["Imediat după verificare","Abia când toate defecțiunile sunt remediate","Înainte de verificare","Nu este necesar"],"c":1},
+{"q":"Ce trebuie cunoscut înainte de remorcarea remorcilor?","o":["Culoarea","Capacitatea maximă de remorcare","Anul fabricației","Producătorul"],"c":1}
+]};
+
 var params=new URLSearchParams(window.location.search);
 var regnr=params.get('regnr')||'';
 var lang=params.get('lang')||sessionStorage.getItem('lang')||'de';
 if(lang==='pl'){ORDNER='PL_BILDER';KAPITEL=KAPITEL_PL;QUIZ_DATA=QUIZ_DATA_PL;}
+if(lang==='ro'){ORDNER='RO_BILDER';KAPITEL=KAPITEL_RO;QUIZ_DATA=QUIZ_DATA_RO;}
 if(lang==='en') ORDNER='EN_BILDER';
 var T=TXT[lang]||TXT.de;
 
@@ -967,6 +1139,10 @@ function goBack(){
 
 prevBtn.textContent=T.prevBtnTxt;
 document.querySelector('.back-btn').textContent=T.backBtnTxt;
+document.getElementById('appTitle').textContent=T.appTitel;
+document.getElementById('appSubtitle').innerHTML=T.appSub;
+document.getElementById('ovBtn').textContent=T.ovBtnTxt;
+document.documentElement.lang=lang;
 loadProgress();
 updateProgBadge();
 render();
