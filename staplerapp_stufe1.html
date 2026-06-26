@@ -272,6 +272,77 @@ body::before{
 <script>
 var BASE='https://danieleckmeierausbildung1986.github.io/Ausbildung-Flurf-rderzeuge/';
 var ORDNER='STUFE1_BILDER';
+
+var TXT={
+de:{
+  weiter:'Weiter ›',willkommen:'Willkommen',kapitel:'Kapitel',von:'von',folie:'Folie',
+  kap:'Kap.',wissensfrage:'Wissensfrage',frage:'Frage',
+  allgSub:'Allgemeine Staplerfahrerausbildung &middot; DGUV 308-001',
+  welcomeTitel:'Willkommen zur Gabelstapler-Ausbildung',
+  welcomeSub:'Diese Schulung vermittelt alle theoretischen Grundlagen nach <strong>DGUV Grundsatz 308-001</strong> für das sichere Führen von Gabelstaplern.',
+  wg1Titel:'10 Kapitel',wg1Text:'Alle Themen der allgemeinen Ausbildung',
+  wg2Titel:'100+ Fragen',wg2Text:'Mind. 10 Quizfragen pro Kapitel',
+  wg3Titel:'Kontakt',wg3Text:'WhatsApp &amp; E-Mail bei Fragen',
+  wg4Titel:'Nachweis',wg4Text:'Jedes Kapitel wird dokumentiert',
+  startBtn:'Schulung starten ›',
+  richtig:'✓ Richtig!',falsch:'✗ Leider falsch. Richtig: ',
+  richtigMarkiert:'✓ Richtige Antwort markiert',
+  abschlussSub:'Sie haben alle Inhalte und Fragen dieses Kapitels durchgearbeitet.',
+  abschlussScore:'Quiz-Ergebnis: ',richtigLabel:' richtig (',
+  abschlussBtn:'Thema abschließen &amp; speichern',
+  abschlussBtnTxt:'Thema abschließen & speichern',
+  abschlussAbgeschlossen:'✓ Abgeschlossen',
+  wirdGespeichert:'Wird gespeichert...',gespeichert:'gespeichert.',
+  fehler:'⚠️ Fehler. Bitte erneut versuchen.',
+  ergebnisPass:'Herzlichen Glückwunsch! Schulung erfolgreich abgeschlossen.',
+  ergebnisFail:'Mindestpunktzahl 80% nicht erreicht. Bitte wiederholen.',
+  zurueck:'← Zur Startseite',wiederholen:'Schulung wiederholen',
+  abschluss:'Abschluss',diagramm:'Diagramm',kap8:'(Kap. 8)',
+  ovTitel:'Kapitelübersicht',ovWeiter:'Weiter lernen',
+  ovKap:'Kap. ',ovNochNicht:'Noch nicht gestartet',ovQuizFragen:' Quiz-Fragen',
+  kapitelAbgeschlossen:'Kapitel abgeschlossen',
+  pruefen:'Prüfen',loesung:'Lösung',ja:'Ja',nein:'Nein',
+  bitteWert:'Bitte Wert eingeben.',
+  gabelruecken:'← Gabelrücken',
+  lsaLabel:'Lastschwerpunktabstand in mm',lastLabel:'Last in kg',hubLabel:'Hub in mm',
+  richtigDiag:'✓ Richtig! ',falschDiag:'✗ Falsch. ',
+  kennlinieRichtig:'✓ Richtig! Kennlinie ',korrekt:'✗ Korrekt: ',vollbild:'Vollbild'
+},
+pl:{
+  weiter:'Dalej ›',willkommen:'Witamy',kapitel:'Rozdział',von:'z',folie:'Slajd',
+  kap:'Rozdz.',wissensfrage:'Pytanie kontrolne',frage:'Pytanie',
+  allgSub:'Ogólne szkolenie operatora wózka &middot; DGUV 308-001',
+  welcomeTitel:'Witamy w szkoleniu operatora wózka widłowego',
+  welcomeSub:'To szkolenie przekazuje wszystkie podstawy teoretyczne zgodnie z <strong>DGUV Grundsatz 308-001</strong> do bezpiecznego prowadzenia wózków widłowych.',
+  wg1Titel:'10 rozdziałów',wg1Text:'Wszystkie tematy szkolenia ogólnego',
+  wg2Titel:'100+ pytań',wg2Text:'Min. 10 pytań quizowych na rozdział',
+  wg3Titel:'Kontakt',wg3Text:'WhatsApp &amp; e-mail przy pytaniach',
+  wg4Titel:'Zaświadczenie',wg4Text:'Każdy rozdział jest dokumentowany',
+  startBtn:'Rozpocznij szkolenie ›',
+  richtig:'✓ Prawidłowo!',falsch:'✗ Niestety błędnie. Prawidłowo: ',
+  richtigMarkiert:'✓ Zaznaczono prawidłową odpowiedź',
+  abschlussSub:'Przerobiono wszystkie treści i pytania tego rozdziału.',
+  abschlussScore:'Wynik quizu: ',richtigLabel:' prawidłowo (',
+  abschlussBtn:'Zakończ temat i zapisz',
+  abschlussBtnTxt:'Zakończ temat i zapisz',
+  abschlussAbgeschlossen:'✓ Zakończono',
+  wirdGespeichert:'Zapisywanie...',gespeichert:'zapisano.',
+  fehler:'⚠️ Błąd. Proszę spróbować ponownie.',
+  ergebnisPass:'Gratulacje! Szkolenie ukończone pomyślnie.',
+  ergebnisFail:'Nie osiągnięto minimalnego wyniku 80%. Proszę powtórzyć.',
+  zurueck:'← Do strony startowej',wiederholen:'Powtórz szkolenie',
+  abschluss:'Zakończenie',diagramm:'Diagram',kap8:'(Rozdz. 8)',
+  ovTitel:'Przegląd rozdziałów',ovWeiter:'Kontynuuj naukę',
+  ovKap:'Rozdz. ',ovNochNicht:'Jeszcze nie rozpoczęto',ovQuizFragen:' Pytania quizowe',
+  kapitelAbgeschlossen:'rozdziałów ukończono',
+  pruefen:'Sprawdź',loesung:'Rozwiązanie',ja:'Tak',nein:'Nie',
+  bitteWert:'Proszę wprowadzić wartość.',
+  gabelruecken:'← Tylna ścianka wideł',
+  lsaLabel:'Odległość środka ciężkości ładunku w mm',lastLabel:'Ładunek w kg',hubLabel:'Skok w mm',
+  richtigDiag:'✓ Prawidłowo! ',falschDiag:'✗ Błędnie. ',
+  kennlinieRichtig:'✓ Prawidłowo! Krzywa ',korrekt:'✗ Prawidłowo: ',vollbild:'Pełny ekran'
+}
+};
 var TOTAL_FOLIEN=107;
 var WA_NR='4916096877039';
 var MAIL='DanielEckmeier@Ausbildung1986.onmicrosoft.com';
@@ -340,6 +411,137 @@ var DIAG_PAGES=[
 var KAPITEL=[{"nr":1,"titel":"Arbeitsunfall & Rechtsfolgen","folien_von":1,"folien_bis":13},{"nr":2,"titel":"Berufsgenossenschaft & Regelwerk","folien_von":14,"folien_bis":22},{"nr":3,"titel":"Voraussetzungen & Eignungskriterien","folien_von":23,"folien_bis":28},{"nr":4,"titel":"Unfallgeschehen","folien_von":29,"folien_bis":35},{"nr":5,"titel":"Lagern & Stapeln","folien_von":36,"folien_bis":44},{"nr":6,"titel":"Verkehrswege","folien_von":45,"folien_bis":56},{"nr":7,"titel":"Tragfähigkeit & Standsicherheit","folien_von":57,"folien_bis":68},{"nr":8,"titel":"Traglastdiagramm","folien_von":69,"folien_bis":88},{"nr":9,"titel":"Staplerbetrieb — Allgemeines","folien_von":89,"folien_bis":100},{"nr":10,"titel":"Staplerbetrieb — Sondereinsätze & Prüfungen","folien_von":101,"folien_bis":107}];
 var QUIZ_DATA={"1":[{"q":"Welche drei Voraussetzungen müssen für einen Arbeitsunfall erfüllt sein?","o":["Versicherte Person, versicherte Tätigkeit, körperliche Schädigung","Vorsatz, Schaden, Zeugen","Arbeitsvertrag, Verletzung, Arztbesuch","Fahrlässigkeit, Schaden, Meldung"],"c":0},{"q":"Wie viele Unfälle ereignen sich jährlich beim Umgang mit Flurförderzeugen in Deutschland?","o":["ca. 2.000","ca. 5.000","mehr als 20.000","mehr als 50.000"],"c":2},{"q":"Wie viele tödliche Staplerunfälle gibt es in Deutschland pro Jahr?","o":["ca. 5","ca. 23","ca. 50","ca. 100"],"c":1},{"q":"Was ist KEINE mögliche Rechtsfolge nach einem Arbeitsunfall?","o":["Strafrecht","Steuerrecht","Ordnungswidrigkeitenrecht","Arbeitsrecht"],"c":1},{"q":"Was kann die BG bei grob fahrlässig verursachten Unfällen tun?","o":["Nichts","Strafanzeige erstatten","Ihre Aufwendungen zurückfordern","Den Führerschein entziehen"],"c":2},{"q":"Welches Strafmaß droht bei strafrechtlichen Folgen eines Arbeitsunfalls?","o":["Nur Verwarnungsgeld","Freiheitsstrafe oder Geldstrafe","Nur Bußgeld","Fahrverbot"],"c":1},{"q":"Was ist Voraussetzung für ein Ordnungswidrigkeitenverfahren?","o":["Ein Vorsatz ist erforderlich","Verstoß gegen einen bußgeldbewährten Tatbestand","Eine Körperverletzung","Ein Zeuge muss vorhanden sein"],"c":1},{"q":"Welche arbeitsrechtliche Konsequenz ist die schwerste?","o":["Ermahnung","Abmahnung","Verwarnung","Kündigung"],"c":3},{"q":"Wann haftet der Unternehmer nach BGB für einen Arbeitsunfall?","o":["Immer","Nur bei vorsätzlich verursachten Unfällen","Nur bei Fahrlässigkeit","Nie"],"c":1},{"q":"Was ist KEIN Unfallschwerpunkt bei Staplern?","o":["Anfahrunfälle","Kippunfälle","Elektroschäden","Sturz von der Last"],"c":2}],"2":[{"q":"Wie heißt der aktuelle berufsgenossenschaftliche Grundsatz für Staplerfahrer?","o":["BGG 925","DGUV Grundsatz 308-001","DGUV Vorschrift 68","UVV Flurförderzeuge"],"c":1},{"q":"Was ist die Berufsgenossenschaft?","o":["Ein Berufsverband","Träger der gesetzlichen Unfallversicherung","Eine staatliche Behörde","Ein Bildungsträger"],"c":1},{"q":"Wie viele Ausbildungsstufen sieht der DGUV Grundsatz 308-001 vor?","o":["1","2","3","4"],"c":2},{"q":"Was ist Stufe 1 der Staplerausbildung?","o":["Betriebliche Ausbildung","Zusatzausbildung","Allgemeine Ausbildung","Prüfungsvorbereitung"],"c":2},{"q":"Was ist Stufe 3 der Staplerausbildung?","o":["Allgemeine Ausbildung","Zusatzausbildung","Betriebliche Ausbildung","Abschlussprüfung"],"c":2},{"q":"Was beinhaltet Stufe 2 der Staplerausbildung?","o":["Nur Theorieunterricht","Zusatzausbildung für spezielle FFZ","Betriebliche Einweisung","Erste-Hilfe-Kurs"],"c":1},{"q":"Was wird nach Abschluss der allgemeinen Ausbildung (Stufe 1) ausgestellt?","o":["Fahrerlaubnis","Zertifikat","Führerschein","Arbeitszeugnis"],"c":1},{"q":"Was verhütet die BG hauptsächlich?","o":["Diebstahl","Arbeitsunfälle und Berufskrankheiten","Feuer","Betriebsausfälle"],"c":1},{"q":"Welches Dokument regelt Ausbildung und Beauftragung von Staplerfahrern?","o":["StVZO","DGUV Grundsatz 308-001","Arbeitsstättenverordnung","BetrVG"],"c":1},{"q":"Was muss nach Abschluss der betrieblichen Ausbildung (Stufe 3) gemacht werden?","o":["Prüfung ablegen","Zertifikat ausstellen","Durchführung dokumentieren","Fahrausweis beantragen"],"c":2}],"3":[{"q":"Was ist das Mindestalter für das selbstständige Führen von Flurförderzeugen?","o":["16 Jahre","17 Jahre","18 Jahre","21 Jahre"],"c":2},{"q":"Wer erteilt die Beauftragung zum Führen von Flurförderzeugen?","o":["Der Ausbilder","Der Betriebsrat","Der Unternehmer","Die Berufsgenossenschaft"],"c":2},{"q":"In welcher Form muss die Beauftragung erteilt werden?","o":["Mündlich","Schriftlich","Per E-Mail reicht","Gar nicht notwendig"],"c":1},{"q":"Kann die Beauftragung auf andere Unternehmen übertragen werden?","o":["Ja, immer","Ja, mit BG-Genehmigung","Nein","Nur innerhalb der Branche"],"c":2},{"q":"Welche körperliche Eignung ist für Staplerfahrer NICHT gefordert?","o":["Ausreichende Sehschärfe","Hörvermögen","Überdurchschnittliche Körpergröße","Gute Reaktionsfähigkeit"],"c":2},{"q":"Wie wird die körperliche Eignung festgestellt?","o":["Durch einen Sehtest","Durch arbeitsmedizinische Vorsorgeuntersuchung G25","Durch den Ausbilder","Durch den Betriebsrat"],"c":1},{"q":"Was ist KEINE Voraussetzung für das Führen von Flurförderzeugen?","o":["Mindestalter 18 Jahre","Geeignet und ausgebildet","Mitglied in der Gewerkschaft","Schriftliche Beauftragung"],"c":2},{"q":"Was gehört zur geistigen Eignung eines Staplerfahrers?","o":["Überdurchschnittliche Intelligenz","Verständnis für technische und physikalische Zusammenhänge","Akademischer Abschluss","Sprachkenntnisse"],"c":1},{"q":"Wie kann die Beauftragung erteilt werden?","o":["Nur schriftlich per Brief","Durch einen innerbetrieblichen Fahrausweis","Durch Handschlag","Durch Eintrag im Personalausweis"],"c":1},{"q":"Was ist bei der charakterlichen Eignung besonders wichtig?","o":["Sportlichkeit","Verantwortungsbewusstsein und Zuverlässigkeit","Kreativität","Kommunikationsstärke"],"c":1}],"4":[{"q":"Bei welchem Anteil der tödlichen Staplerunfälle handelt es sich um Kippunfälle?","o":["mehr als 20%","mehr als 30%","mehr als 50%","mehr als 80%"],"c":2},{"q":"Was ist eine häufige Ursache für Anfahrunfälle?","o":["Zu schwere Last","Unachtsamkeit des Staplerfahrers","Falsches Schuhwerk","Zu langsames Fahren"],"c":1},{"q":"Was ist eine häufige Ursache für Kippunfälle?","o":["Zu langsames Fahren","Fahren mit angehobener Last","Zu leichte Last","Rückwärtsfahren"],"c":1},{"q":"Wie viele schwere Staplerunfälle durch Fallen und Kippen gibt es jährlich?","o":["ca. 20","ca. 100","ca. 200","ca. 500"],"c":2},{"q":"Was schützt am besten vor Kippunfällen?","o":["Fahren mit angehobener Last","Fahrerrückhalteeinrichtung anlegen und langsam fahren","Immer rückwärts fahren","Nur kleine Lasten transportieren"],"c":1},{"q":"Was passiert bei Kippunfällen häufig mit dem Fahrer?","o":["Er wird leicht verletzt","Er wird unter dem Stapler eingequetscht","Er springt rechtzeitig ab","Es passiert ihm nichts"],"c":1},{"q":"Warum sind Kippunfälle besonders gefährlich?","o":["Weil sie häufig sind","Weil sie oft mit schwerwiegenden Verletzungen verbunden sind","Weil sie teuer sind","Weil sie schwer zu dokumentieren sind"],"c":1},{"q":"Was ist bei mehr als 80% der tödlichen Kippunfälle besonders?","o":["Die Stapler waren überladen","Die Stapler waren unbeladen","Die Fahrer waren unerfahren","Es war dunkel"],"c":1},{"q":"Was versteht man unter Anfahrunfällen?","o":["Unfälle beim Anlassen des Motors","Unfälle bei denen der Stapler Personen oder Gegenstände anfährt","Unfälle beim Einparken","Unfälle beim Aufladen"],"c":1},{"q":"Welche Maßnahme hilft gegen Anfahrunfälle?","o":["Schneller fahren","Achtsamkeit und klare Verkehrsregeln im Betrieb","Lauter hupen","Rückspiegel abmontieren"],"c":1}],"5":[{"q":"Wie hoch darf eine Europalette max. belastet werden?","o":["500–800 kg","1000–1500 kg","2000–2500 kg","3000 kg"],"c":1},{"q":"Wie hoch darf eine Gitterboxpalette max. gestapelt werden?","o":["Dreifach","Vierfach","Fünffach","Sechsfach"],"c":2},{"q":"Ab welcher Hubhöhe ist ein Fahrerschutzdach vorgeschrieben?","o":["1,20 m","1,50 m","1,80 m","2,00 m"],"c":2},{"q":"Was muss bei Schäden an Regalen getan werden?","o":["Selbst reparieren","Schaden melden, erst nach Instandsetzung nutzen","Ignorieren","Mehr Gewicht darauflegen"],"c":1},{"q":"Wo dürfen Lasten NICHT abgestellt werden?","o":["Im Hochregallager","Vor Feuerlöscheinrichtungen","Auf Europaletten","In Lagerhallen"],"c":1},{"q":"Was muss bei der Lagerung in obersten Regalablagen vorhanden sein?","o":["Nichts Besonderes","Mindestens 0,5 m hohe Sicherungseinrichtung gegen Herabfallen","Ein Sicherheitsnetz","Ein Wächter"],"c":1},{"q":"Was ist beim Stapeln von Gitterboxen zu beachten?","o":["Beliebig stapeln","Max. Nutzlast 1000 kg, max. fünffach stapeln","Immer nass stapeln","Nur innen lagern"],"c":1},{"q":"Wann darf der Hubmast nach vorne geneigt werden?","o":["Immer beim Fahren","Nur zum Aufnehmen und Absetzen der Last","Nur beim Rückwärtsfahren","Nie"],"c":1},{"q":"Was ist bei nicht ordnungsgemäß gepackten Lasten zu tun?","o":["Trotzdem stapeln","Nicht stapeln und nicht auf höheren Stellen absetzen","Langsamer fahren","Einen Kollegen holen"],"c":1},{"q":"Wo müssen Verkehrswege immer freigehalten werden?","o":["Nur in der Nähe des Büros","Überall im Betrieb","Nur vor dem Ausgang","Nur in Schmalgängen"],"c":1}],"6":[{"q":"Wie groß ist der Randzuschlag bei Einbahnverkehr auf einer Seite?","o":["0,30 m","0,40 m","0,50 m","0,75 m"],"c":2},{"q":"Wie groß ist der Begegnungszuschlag bei Gegenverkehr?","o":["0,20 m","0,40 m","0,50 m","0,75 m"],"c":1},{"q":"Welche Mindest-Bodenbelastbarkeit muss ein Verkehrsweg haben?","o":["800 kg/m²","1200 kg/m²","1700 kg/m²","2000 kg/m²"],"c":2},{"q":"Was gilt bei Ladebrücken als ausreichende Breite?","o":["FFZ-Breite + 0,50 m","FFZ-Breite + 0,70 m","FFZ-Breite + 1,00 m","FFZ-Breite allein"],"c":1},{"q":"Was ist beim Einfahren in Schmalgänge zu beachten?","o":["Immer Vollgas","Erst einfahren wenn keine Fußgänger darin sind","Hupen und weiterfahren","Nichts Besonderes"],"c":1},{"q":"Wie groß ist der Sicherheitsabstand vor Toren und Türen?","o":["Mind. 0,5 m","Mind. 1 m","Mind. 2 m","Kein Abstand nötig"],"c":1},{"q":"Was erhöht den Randzuschlag bei Gehverkehr auf 0,75 m?","o":["Nur der Gegenverkehr","Die gleichzeitige Nutzung als Gehweg","Schwere Lasten","Schmalgänge"],"c":1},{"q":"Welche Maßnahme schützt in Schmalgängen vor Personengefährdung?","o":["Lautere Hupe","Lichtschranken, Zäune oder Sensoren am Stapler","Mehr Beleuchtung","Langsamere Fahrt"],"c":1},{"q":"Was muss bei Kreuzungen innerhalb von Verkehrswegen gelten?","o":["Kein Vorfahrtsrecht","Eindeutige Vorfahrtsregeln z.B. Rechts vor Links","Immer bremsen","Fahrzeuge haben immer Vorfahrt"],"c":1},{"q":"Welche Fahrerlaubnisklasse gilt für Stapler unter 25 km/h auf öffentlichen Straßen?","o":["Klasse B","Klasse C","Klasse L","Keine notwendig"],"c":2}],"7":[{"q":"Was ist die Kippachse des Staplers?","o":["Die Hinterachse","Die Vorderachse","Der Schwerpunkt","Das Gegengewicht"],"c":1},{"q":"Was passiert wenn der Gesamtschwerpunkt über die Vorderachse wandert?","o":["Der Stapler bremst","Der Stapler kippt nach vorne","Die Last fällt ab","Der Motor stoppt"],"c":1},{"q":"Beim unbeladenen Stapler befindet sich der Schwerpunkt...","o":["Weit von den Kippkanten entfernt","Nahe an den seitlichen Kippkanten","Hinter der Hinterachse","Über dem Hubmast"],"c":1},{"q":"Was beschreibt das Hebelgesetz beim Stapler?","o":["Kraft × Kraftarm = Last × Lastarm","Kraft × Last = Arm × Drehpunkt","Gewicht × Höhe = Energie","Last × Hub = Arbeit"],"c":0},{"q":"Wo muss die Last aufgenommen werden um den Lastarm klein zu halten?","o":["An den Gabelspitzen","In der Mitte der Zinken","Am Gabelrücken","Spielt keine Rolle"],"c":2},{"q":"Was passiert mit der Standsicherheit wenn die Last angehoben wird?","o":["Sie steigt","Sie bleibt gleich","Sie sinkt","Sie ist nicht messbar"],"c":2},{"q":"Was ist das Kippkantendreieck?","o":["Ein Warnschild","Das Standdreieck aus Vorderrädern und Hinterachsmittelpunkt","Eine Schutzvorrichtung","Die Form der Gabelzinken"],"c":1},{"q":"Was ist bei mehr als 80% der tödlichen Kippunfälle besonders?","o":["Stapler waren überladen","Stapler waren unbeladen","Es war Nacht","Fahrer waren neu"],"c":1},{"q":"Wie wirkt sich eine Verdoppelung der Fahrgeschwindigkeit auf die Fliehkraft aus?","o":["Verdoppelt sie","Verdreifacht sie","Vervierfacht sie","Keine Auswirkung"],"c":2},{"q":"Was ist beim Kurvenfahren mit dem Stapler besonders wichtig?","o":["Schnell fahren","Angepasste Geschwindigkeit und großer Kurvenradius","Immer hupen","Last anheben"],"c":1}],"8":[{"q":"Wovon hängt die tatsächliche Tragfähigkeit des Staplers ab?","o":["Nur vom Eigengewicht","Von Lastschwerpunktabstand und Hubhöhe","Vom Reifendruck","Vom Kraftstoff"],"c":1},{"q":"Was gibt die Nenntragfähigkeit an?","o":["Die maximale Hubhöhe","Die Tragfähigkeit bei genormter Hubhöhe und festgelegtem LSA","Das Eigengewicht des Staplers","Die Fahrgeschwindigkeit"],"c":1},{"q":"Was passiert mit der Tragfähigkeit wenn der Lastschwerpunktabstand größer wird?","o":["Sie steigt","Sie bleibt gleich","Sie sinkt","Sie verdoppelt sich"],"c":2},{"q":"Was passiert mit der Tragfähigkeit wenn die Hubhöhe steigt?","o":["Sie steigt","Sie bleibt gleich","Sie sinkt","Sie ist unabhängig davon"],"c":2},{"q":"Wo ist die tatsächliche Tragfähigkeit zu entnehmen?","o":["Im Reifenprofil","Im Traglastdiagramm","Im Fahrzeugbrief","Im Werkzeugkasten"],"c":1},{"q":"Was zeigt die X-Achse im einfachen Traglastdiagramm?","o":["Hubhöhe in mm","Lastschwerpunktabstand in mm","Eigengewicht in kg","Fahrgeschwindigkeit"],"c":1},{"q":"Was zeigt die Y-Achse im einfachen Traglastdiagramm?","o":["Hubhöhe in mm","Lastschwerpunktabstand in mm","Zulässige Last in kg","Reifendruck"],"c":2},{"q":"Welche Kennlinie ist zu wählen wenn in 5,20 m eingelagert werden soll?","o":["4250 mm","5250 mm","6150 mm","Keine"],"c":1},{"q":"Was bedeutet die Nenntragfähigkeit auf dem Fabrikschild?","o":["Die maximale Last bei jeder Hubhöhe","Die Last bei genormter Hubhöhe und festgelegtem LSA","Das Eigengewicht","Die Nutzlast des Anbaugeräts"],"c":1},{"q":"Darf eine Last von 1600 kg bei 900 mm Lastschwerpunktabstand gehoben werden (laut Beispieldiagramm)?","o":["Ja, immer","Nein, die Tragfähigkeit ist überschritten","Nur in geringer Höhe","Nur mit Gegengewicht"],"c":1}],"9":[{"q":"In welcher Stellung muss der Hubmast beim Verfahren von Lasten sein?","o":["Senkrecht","Nach vorne geneigt","Zurückgeneigt","Spielt keine Rolle"],"c":2},{"q":"Wie hoch darf die Last beim Verfahren max. bodenfrei angehoben sein?","o":["20 cm","30 cm","50 cm","80 cm"],"c":2},{"q":"Was ist beim Verlassen des Staplers ZUERST zu tun?","o":["Schlüssel abziehen","Gabelzinken absenken","Feststellbremse betätigen","Motor abstellen"],"c":2},{"q":"Wie muss die Last beim Befahren von Steigungen geführt werden?","o":["Talwärts","Bergseitig","Seitwärts","Spielt keine Rolle"],"c":1},{"q":"Was gilt als Faustformel für ausreichende Sicht in Fahrtrichtung?","o":["Max. 5 m verdeckt","Max. 10 m verdeckt","Max. 15 m verdeckt","Sicht muss immer frei sein"],"c":1},{"q":"Was ist beim Befahren von Aufzügen zu beachten?","o":["Immer mit Last einfahren","Vom Stapler absteigen und Feststellbremse betätigen","So schnell wie möglich","Stapler abstellen und zu Fuß gehen"],"c":1},{"q":"Was ist bei der täglichen Einsatzprüfung zu tun?","o":["Nur tanken","Stapler nach Betriebsanleitung prüfen, Mängel melden","Reifen wechseln","Stapler waschen"],"c":1},{"q":"Welcher Mangel ist ein Sicherheitsmangel?","o":["Leichter Kratzer im Lack","Risse an tragenden Teilen wie dem Hubmast","Verschmutzte Sitze","Verblasste Aufkleber"],"c":1},{"q":"Wer darf Sicherheitsmängel am Stapler beseitigen?","o":["Jeder Fahrer","Nur fachkundige Personen (z.B. Monteure)","Der Vorgesetzte","Der Betriebsrat"],"c":1},{"q":"Was muss beim Absetzen einer Last im Regal zuletzt getan werden?","o":["Hubmast nach vorne neigen","Gabelzinken absenken und wegfahren","Motor abstellen","Feststellbremse anziehen"],"c":1}],"10":[{"q":"In welchem Abstand müssen Stapler geprüft werden?","o":["Alle 3 Monate","Alle 6 Monate","Längstens alle 12 Monate","Alle 2 Jahre"],"c":2},{"q":"Was muss im Prüfnachweis enthalten sein?","o":["Nur das Datum","Datum, Ergebnis, Name des Prüfers, Mängelangaben","Nur der Name des Prüfers","Nur ob bestanden oder nicht"],"c":1},{"q":"Was ist beim Einsatz von Arbeitsbühnen am Stapler grundsätzlich erforderlich?","o":["Jeder Stapler ist geeignet","Ausreichend tragfähiger Stapler und vorschriftsmäßige Arbeitsbühne","Nur eine Sicherungsleine","Ein zweiter Fahrer"],"c":1},{"q":"Was ist beim Einsatz von Anbaugeräten zu beachten?","o":["Jedes Gerät passt auf jeden Stapler","Anbaugeräte und Stapler müssen aufeinander abgestimmt sein","Anbaugeräte erhöhen immer die Tragfähigkeit","Keine besonderen Vorschriften"],"c":1},{"q":"Wann darf der Fahrer seinen Platz bei hochgefahrener Arbeitsbühne verlassen?","o":["Immer","Nur kurz","Nie","Bei Pausen"],"c":2},{"q":"Was muss beim Transport hängender Lasten beachtet werden?","o":["Keine Besonderheiten","Nur geeignete Stapler verwenden, Personen nicht in Fahrspur","Immer rückwärts fahren","Last immer anheben"],"c":1},{"q":"Was ist Voraussetzung für die Mitnahme von Personen auf dem Stapler?","o":["Immer erlaubt","In Betriebsanweisung geregelt, Sitzplätze und Rückhalteeinrichtung","Nur auf kurzen Strecken","Nur der Vorgesetzte darf mitfahren"],"c":1},{"q":"Was muss bei beschädigten Gabelzinken getan werden?","o":["Weiterfahren","Als Sicherheitsmangel melden und nicht verwenden","Selbst reparieren","Nur leichte Lasten transportieren"],"c":1},{"q":"Wann sollte eine Prüfplakette am Stapler angebracht werden?","o":["Sofort nach der Prüfung","Erst wenn alle Mängel beseitigt sind","Vor der Prüfung","Gar nicht notwendig"],"c":1},{"q":"Was muss vor dem Verfahren von Anhängern bekannt sein?","o":["Die Farbe","Die zulässige Anhängelast","Das Baujahr","Der Hersteller"],"c":1}]};
 
+var KAPITEL_PL=[
+  {"nr":1,"titel":"Wypadek przy pracy i skutki prawne","folien_von":1,"folien_bis":13},
+  {"nr":2,"titel":"Kasa ubezpieczeń wypadkowych i przepisy","folien_von":14,"folien_bis":22},
+  {"nr":3,"titel":"Wymagania i kryteria kwalifikacyjne","folien_von":23,"folien_bis":28},
+  {"nr":4,"titel":"Zdarzenia wypadkowe","folien_von":29,"folien_bis":35},
+  {"nr":5,"titel":"Składowanie i sztaplowanie","folien_von":36,"folien_bis":44},
+  {"nr":6,"titel":"Drogi transportowe","folien_von":45,"folien_bis":56},
+  {"nr":7,"titel":"Nośność i stateczność","folien_von":57,"folien_bis":68},
+  {"nr":8,"titel":"Diagram nośności","folien_von":69,"folien_bis":88},
+  {"nr":9,"titel":"Eksploatacja wózka — podstawy","folien_von":89,"folien_bis":100},
+  {"nr":10,"titel":"Eksploatacja wózka — zastosowania specjalne i przeglądy","folien_von":101,"folien_bis":107}
+];
+var QUIZ_DATA_PL={"1":[
+{"q":"Jakie trzy warunki muszą być spełnione dla wypadku przy pracy?","o":["Osoba ubezpieczona, czynność ubezpieczona, uszkodzenie ciała","Umyślność, szkoda, świadkowie","Umowa o pracę, uraz, wizyta lekarska","Niedbalstwo, szkoda, zgłoszenie"],"c":0},
+{"q":"Ile wypadków rocznie zdarza się przy obsłudze wózków widłowych w Niemczech?","o":["ok. 2 000","ok. 5 000","ponad 20 000","ponad 50 000"],"c":2},
+{"q":"Ile śmiertelnych wypadków z wózkami widłowymi zdarza się rocznie w Niemczech?","o":["ok. 5","ok. 23","ok. 50","ok. 100"],"c":1},
+{"q":"Co NIE jest możliwą konsekwencją prawną wypadku przy pracy?","o":["Prawo karne","Prawo podatkowe","Prawo wykroczeniowe","Prawo pracy"],"c":1},
+{"q":"Co może zrobić BG w przypadku wypadku spowodowanego rażącym niedbalstwem?","o":["Nic","Złożyć doniesienie do prokuratury","żądać zwrotu poniesionych kosztów","Odebrać prawo jazdy"],"c":2},
+{"q":"Jaka kara grozi za karne konsekwencje wypadku przy pracy?","o":["Tylko mandat","Kara pozbawienia wolności lub grzywna","Tylko kara pieniężna","Zakaz jazdy"],"c":1},
+{"q":"Co jest warunkiem wszczęcia postępowania w sprawie wykroczenia?","o":["Wymagana jest umyślność","Naruszenie przepisu zagrożonego grzywną","Uszkodzenie ciała","Musi być świadek"],"c":1},
+{"q":"Jaka jest najpoważniejsza konsekwencja w prawie pracy?","o":["Upomnienie","Nagana","Ostrzeżenie","Rozwiązanie umowy o pracę"],"c":3},
+{"q":"Kiedy pracodawca odpowiada według BGB za wypadek przy pracy?","o":["Zawsze","Tylko przy wypadkach spowodowanych umyślnie","Tylko przy niedbalstwie","Nigdy"],"c":1},
+{"q":"Co NIE jest głównym rodzajem wypadków przy wózkach widłowych?","o":["Wypadki zderzeniowe","Wypadki wywrotne","Uszkodzenia elektryczne","Upadek z ładunku"],"c":2}
+],"2":[
+{"q":"Jak nazywa się aktualny przepis BG dotyczący kierowców wózków widłowych?","o":["BGG 925","DGUV Grundsatz 308-001","DGUV Vorschrift 68","UVV Flurförderzeuge"],"c":1},
+{"q":"Czym jest Berufsgenossenschaft?","o":["Stowarzyszeniem zawodowym","Instytucją ustawowego ubezpieczenia wypadkowego","Urzędem państwowym","Placówką szkoleniową"],"c":1},
+{"q":"Ile stopni szkolenia przewiduje DGUV Grundsatz 308-001?","o":["1","2","3","4"],"c":2},
+{"q":"Czym jest stopień 1 szkolenia na wózki widłowe?","o":["Szkolenie zakładowe","Szkolenie dodatkowe","Szkolenie ogólne","Przygotowanie do egzaminu"],"c":2},
+{"q":"Czym jest stopień 3 szkolenia na wózki widłowe?","o":["Szkolenie ogólne","Szkolenie dodatkowe","Szkolenie zakładowe","Egzamin końcowy"],"c":2},
+{"q":"Co obejmuje stopień 2 szkolenia na wózki widłowe?","o":["Tylko zajęcia teoretyczne","Szkolenie dodatkowe dla specjalnych WJN","Szkolenie zakładowe","Kurs pierwszej pomocy"],"c":1},
+{"q":"Co jest wystawiane po ukończeniu szkolenia ogólnego (stopień 1)?","o":["Prawo jazdy","Certyfikat","Świadectwo","Opinia pracownicza"],"c":1},
+{"q":"Czemu głównie służy BG?","o":["Zapobieganiu kradzieżom","Zapobieganiu wypadkom przy pracy i chorobom zawodowym","Ochronie przeciwpożarowej","Zapobieganiu przestojom"],"c":1},
+{"q":"Który dokument reguluje szkolenie i upoważnienie kierowców wózków widłowych?","o":["StVZO","DGUV Grundsatz 308-001","Rozporządzenie o miejscach pracy","BetrVG"],"c":1},
+{"q":"Co należy zrobić po ukończeniu szkolenia zakładowego (stopień 3)?","o":["Zdać egzamin","Wystawić certyfikat","Udokumentować przeprowadzenie","Złożyć wniosek o prawo jazdy"],"c":2}
+],"3":[
+{"q":"Jaki jest minimalny wiek do samodzielnego prowadzenia wózków widłowych?","o":["16 lat","17 lat","18 lat","21 lat"],"c":2},
+{"q":"Kto wydaje upoważnienie do prowadzenia wózków widłowych?","o":["Instruktor","Rada zakładowa","Przedsiębiorca","Berufsgenossenschaft"],"c":2},
+{"q":"W jakiej formie musi być wydane upoważnienie?","o":["Ustnie","Pisemnie","Wystarczy e-mail","Nie jest konieczne"],"c":1},
+{"q":"Czy upoważnienie może być przekazane innym przedsiębiorstwom?","o":["Tak, zawsze","Tak, za zgodą BG","Nie","Tylko w tej samej branży"],"c":2},
+{"q":"Jaka sprawność fizyczna NIE jest wymagana od kierowcy wózka widłowego?","o":["Odpowiednia ostrość wzroku","Zdolność słyszenia","Ponadprzeciętny wzrost","Dobra zdolność reakcji"],"c":2},
+{"q":"Jak stwierdza się sprawność fizyczną?","o":["Przez badanie wzroku","Przez profilaktyczne badanie lekarskie G25","Przez instruktora","Przez radę zakładową"],"c":1},
+{"q":"Co NIE jest warunkiem prowadzenia wózków widłowych?","o":["Wiek min. 18 lat","Odpowiedni i wyszkolony","Członkostwo w związku zawodowym","Pisemne upoważnienie"],"c":2},
+{"q":"Co należy do zdolności umysłowej kierowcy wózka widłowego?","o":["Ponadprzeciętna inteligencja","Rozumienie technicznych i fizycznych powiązań","Wykształcenie wyższe","Znajomość języków"],"c":1},
+{"q":"W jaki sposób może być wydane upoważnienie?","o":["Tylko pisemnie listownie","Przez zakładowy dokument uprawniający do jazdy","Przez uścisk dłoni","Przez wpis do dowodu osobistego"],"c":1},
+{"q":"Co jest szczególnie ważne przy kwalifikacjach charakterologicznych?","o":["Sprawność fizyczna","Poczucie odpowiedzialności i niezawodność","Kreatywność","Umiejętności komunikacyjne"],"c":1}
+],"4":[
+{"q":"Jaki odsetek śmiertelnych wypadków wózków widłowych to wywrotki?","o":["ponad 20%","ponad 30%","ponad 50%","ponad 80%"],"c":2},
+{"q":"Co jest częstą przyczyną wypadków zderzeniowych?","o":["Zbyt ciężki ładunek","Nieuwaga kierowcy wózka","Nieodpowiednie obuwie","Zbyt wolna jazda"],"c":1},
+{"q":"Co jest częstą przyczyną wypadków wywrotnych?","o":["Zbyt wolna jazda","Jazda z uniesionym ładunkiem","Zbyt lekki ładunek","Jazda wsteczna"],"c":1},
+{"q":"Ile ciężkich wypadków z wózkami widłowymi wskutek upadku i przewrócenia zdarza się rocznie?","o":["ok. 20","ok. 100","ok. 200","ok. 500"],"c":2},
+{"q":"Co najlepiej chroni przed wypadkami wywrotnymi?","o":["Jazda z uniesionym ładunkiem","Zapięcie pasa bezpieczeństwa i wolna jazda","Zawsze jeździć wsteczna","Transportować tylko lekkie ładunki"],"c":1},
+{"q":"Co często przytrafia się kierowcy przy wypadkach wywrotnych?","o":["Odnosi lekkie obrażenia","Zostaje przygnieciony przez wózek","Wyskakuje w porę","Nic mu się nie dzieje"],"c":1},
+{"q":"Dlaczego wypadki wywrotne są szczególnie niebezpieczne?","o":["Bo są częste","Bo często wiążą się z poważnymi obrażeniami","Bo są drogie","Bo trudno je udokumentować"],"c":1},
+{"q":"Co jest charakterystyczne dla ponad 80% śmiertelnych wypadków wywrotnych?","o":["Wózki były przeciążone","Wózki były nieobładowane","Kierowcy byli niedowśiadczeni","Była ciemność"],"c":1},
+{"q":"Co rozumie się przez wypadki zderzeniowe?","o":["Wypadki przy uruchamianiu silnika","Wypadki, w których wózek uderza w osoby lub przedmioty","Wypadki przy parkowaniu","Wypadki przy ładowaniu"],"c":1},
+{"q":"Jaki środek pomaga przeciwko wypadkom zderzeniowym?","o":["Szybsza jazda","Uważność i jasne przepisy ruchu w zakładzie","Głośniejsze trąbienie","Demontaż lusterek"],"c":1}
+],"5":[
+{"q":"Jak maksymalnie można obciążyć europalete?","o":["500–800 kg","1000–1500 kg","2000–2500 kg","3000 kg"],"c":1},
+{"q":"Jak wysoko można maksymalnie układać skrzynie siatkowe?","o":["Trójkrotnie","Czterokrotnie","Pięciokrotnie","Sześciokrotnie"],"c":2},
+{"q":"Od jakiej wysokości podnoszenia wymagany jest dach ochronny dla kierowcy?","o":["1,20 m","1,50 m","1,80 m","2,00 m"],"c":2},
+{"q":"Co należy zrobić w przypadku uszkodzenia regałów?","o":["Naprawić samodzielnie","Zgłosić uszkodzenie, używać dopiero po naprawie","Ignorować","Dołożyć więcej ciężaru"],"c":1},
+{"q":"Gdzie NIE wolno stawiać ładunków?","o":["W magazynie wysokiego składowania","Przed urządzeniami gaśniczymi","Na europaletach","W halach magazynowych"],"c":1},
+{"q":"Co musi być obecne przy składowaniu na najwyższych półkach regałów?","o":["Nic szczególnego","Zabezpieczenie przed upadkiem o wysokości min. 0,5 m","Siatka zabezpieczająca","Strażnik"],"c":1},
+{"q":"Co należy uwzględnić przy układaniu skrzyń siatkowych?","o":["Układać dowolnie","Maks. obciążenie 1000 kg, maks. pięciokrotnie układać","Zawsze na mokro układać","Tylko składować wewnątrz"],"c":1},
+{"q":"Kiedy wolno przechylać maszt widłowy do przodu?","o":["Zawsze podczas jazdy","Tylko przy pobieraniu i odkładaniu ładunku","Tylko przy jeździe wstecznej","Nigdy"],"c":1},
+{"q":"Co należy zrobić z ładunkami nieprawidłowo zapakowanymi?","o":["Mimo to układać w stos","Nie układać w stos i nie odkładać na wyższych miejscach","Jechać wolniej","Wezwać kolegę"],"c":1},
+{"q":"Gdzie należy zawsze utrzymywać drogi komunikacyjne wolnymi?","o":["Tylko w pobliżu biura","W całym zakładzie","Tylko przed wyjściem","Tylko w wąskich przejściach"],"c":1}
+],"6":[
+{"q":"Jak duży jest margines krawędziowy przy ruchu jednostronnym po jednej stronie?","o":["0,30 m","0,40 m","0,50 m","0,75 m"],"c":2},
+{"q":"Jak duży jest margines mijania przy ruchu w obu kierunkach?","o":["0,20 m","0,40 m","0,50 m","0,75 m"],"c":1},
+{"q":"Jaka minimalna nośność podłoża musi mieć droga komunikacyjna?","o":["800 kg/m²","1200 kg/m²","1700 kg/m²","2000 kg/m²"],"c":2},
+{"q":"Co uważa się za wystarczającą szerokość ramp załadunkowych?","o":["Szerokość WJN + 0,50 m","Szerokość WJN + 0,70 m","Szerokość WJN + 1,00 m","Sama szerokość WJN"],"c":1},
+{"q":"Co należy uwzględnić przy wjeżdżaniu do wąskich przejść?","o":["Zawsze pełny gaz","Wjechać dopiero gdy nie ma pieszych w środku","Trąbić i jechać dalej","Nic szczególnego"],"c":1},
+{"q":"Jak duży jest odstęp bezpieczeństwa przed bramami i drzwiami?","o":["Min. 0,5 m","Min. 1 m","Min. 2 m","Odstęp nie jest konieczny"],"c":1},
+{"q":"Co zwiększa margines krawędziowy przy ruchu pieszych do 0,75 m?","o":["Tylko ruch naprzeciwko","Jednoczesne użytkowanie jako chodnik","Ciężkie ładunki","Wąskie przejścia"],"c":1},
+{"q":"Jaki środek chroni w wąskich przejściach przed zagrożeniem dla osób?","o":["Głośniejszy sygnał","Bariery świetlne, ogrodzenia lub czujniki na wózku","Więcej oświetlenia","Wolniejsza jazda"],"c":1},
+{"q":"Co musi obowiązywać na skrzyżowaniach wewnątrz dróg komunikacyjnych?","o":["Brak pierwszeństwa","Jednoznaczne zasady pierwszeństwa, np. prawy strona przed lewą","Zawsze hamować","Pojazdy zawsze mają pierwszeństwo"],"c":1},
+{"q":"Jaka kategoria prawa jazdy obowiązuje dla wózków poniżej 25 km/h na drogach publicznych?","o":["Kategoria B","Kategoria C","Kategoria L","Żadna nie jest potrzebna"],"c":2}
+],"7":[
+{"q":"Czym jest oś wywrotna wózka widłowego?","o":["Tylna oś","Przednia oś","Punkt środkowy ciężkości","Przeciwciężar"],"c":1},
+{"q":"Co się dzieje gdy ogólny punkt ciężkości przesunie się za przednią oś?","o":["Wózek hamuje","Wózek wywraca się do przodu","Ładunek spada","Silnik wyłącza się"],"c":1},
+{"q":"W przypadku wózka bez ładunku punkt ciężkości znajdzie się...","o":["Daleko od krawędzi wywrotnych","Blisko bocznych krawędzi wywrotnych","Za tylną osią","Nad masztem"],"c":1},
+{"q":"Co opisuje zasada dźwigni przy wózku widłowym?","o":["Siła × ramię siły = Obciążenie × ramię obciążenia","Siła × Obciążenie = Ramię × Punkt obrotu","Ciężar × Wysokość = Energia","Obciążenie × Skok = Praca"],"c":0},
+{"q":"Gdzie należy pobierać ładunek aby utrzymać małe ramię obciążenia?","o":["Na końcach wideł","Na środku wideł","Przy tylnej ściance wideł","Nie ma znaczenia"],"c":2},
+{"q":"Co się dzieje ze stabilnością gdy ładunek jest podniesiony?","o":["ROŚnie","Pozostaje bez zmian","Maleje","Nie można jej zmierzyć"],"c":2},
+{"q":"Czym jest trójkąt krawędzi wywrotnych?","o":["Znak ostrzegawczy","Trójkąt stabilności z kół przednich i środka tylnej osi","Urządzenie zabezpieczające","Kształt wideł"],"c":1},
+{"q":"Co jest charakterystyczne dla ponad 80% śmiertelnych wypadków wywrotnych?","o":["Wózki były przeciążone","Wózki były nieobładowane","Była noc","Kierowcy byli nowi"],"c":1},
+{"q":"Jaki wpływ na siłę odśrodkową ma podwojenie prędkości jazdy?","o":["Podwaja ją","Potraja ją","Czterokrotnie zwiększa","Brak wpływu"],"c":2},
+{"q":"Co jest szczególnie ważne przy jeździe wózkiem po zakrętach?","o":["Szybka jazda","Dostosowana prędkość i duży promień łuku","Zawsze trąbić","Unosić ładunek"],"c":1}
+],"8":[
+{"q":"Od czego zależy rzeczywista nośność wózka widłowego?","o":["Tylko od masy własnej","Od odległości środka ciężkości ładunku i wysokości podnoszenia","Od ciśnienia w oponach","Od paliwa"],"c":1},
+{"q":"Co podaje nominalna nośność?","o":["Maksymalną wysokość podnoszenia","Nośność przy znormalizowanej wysokości podnoszenia i określonym LSA","Masę własną wózka","Prędkość jazdy"],"c":1},
+{"q":"Co się dzieje z nośnością gdy odległość środka ciężkości ładunku rośnie?","o":["ROŚnie","Pozostaje bez zmian","Maleje","Podwaja się"],"c":2},
+{"q":"Co się dzieje z nośnością gdy wysokość podnoszenia rośnie?","o":["ROŚnie","Pozostaje bez zmian","Maleje","Jest niezależna"],"c":2},
+{"q":"Skąd można odczytać rzeczywistą nośność?","o":["Z profilu opony","Z diagramu nośności","Z dokumentu rejestracyjnego","Ze skrzynki narzędziowej"],"c":1},
+{"q":"Co pokazuje oś X na prostym diagramie nośności?","o":["Wysokość podnoszenia w mm","Odległość środka ciężkości ładunku w mm","Masę własną w kg","Prędkość jazdy"],"c":1},
+{"q":"Co pokazuje oś Y na prostym diagramie nośności?","o":["Wysokość podnoszenia w mm","Odległość środka ciężkości ładunku w mm","Dopuszczalny ładunek w kg","Ciśnienie w oponach"],"c":2},
+{"q":"Którą krzywą należy wybrać przy składowaniu na wysokości 5,20 m?","o":["4250 mm","5250 mm","6150 mm","Żadną"],"c":1},
+{"q":"Co oznacza nominalna nośność na tabliczce znamionowej?","o":["Maksymalny ładunek przy każdej wysokości","Ładunek przy znormalizowanej wysokości i określonym LSA","Masę własną","Obciążenie osprzetu"],"c":1},
+{"q":"Czy ładunek 1600 kg przy 900 mm odległości środka ciężkości może być podniesiony (wg diagramu przykładowego)?","o":["Tak, zawsze","Nie, nośność jest przekroczona","Tylko na małej wysokości","Tylko z przeciwciężarem"],"c":1}
+],"9":[
+{"q":"W jakiej pozycji musi być maszt widłowy przy przewożeniu ładunków?","o":["Pionowo","Pochylony do przodu","Pochylony do tyłu","Nie ma znaczenia"],"c":2},
+{"q":"Na jaką max. wysokość może być uniesiony ładunek podczas jazdy?","o":["20 cm","30 cm","50 cm","80 cm"],"c":2},
+{"q":"Co należy zrobić NAJPIERW przy opuszczaniu wózka?","o":["Wyjąć kluczyk","Opuścić widły","Zahamować hamulec postojowy","Wyłączyć silnik"],"c":2},
+{"q":"Jak należy prowadzić ładunek przy jeździe pod górę?","o":["W dół stoku","Po stronie górnej","Bocznie","Nie ma znaczenia"],"c":1},
+{"q":"Jaka jest zasada dotycząca wystarczającej widoczności w kierunku jazdy?","o":["Maks. 5 m zasłonięte","Maks. 10 m zasłonięte","Maks. 15 m zasłonięte","Widoczność musi być zawsze wolna"],"c":1},
+{"q":"Co należy uwzględnić przy wjeżdżaniu do windy?","o":["Zawsze wjeżdżać z ładunkiem","Wysiąść z wózka i zahamować hamulec postojowy","Jak najszybciej","Zostawić wózek i iść pieszo"],"c":1},
+{"q":"Co należy zrobić przy codziennym przeglądzie przed użyciem?","o":["Tylko zatankować","Sprawdzić wózek zgodnie z instrukcją obsługi, zgłosić usterki","Wymienić opony","Umyć wózek"],"c":1},
+{"q":"Jaka usterka to usterka bezpieczeństwa?","o":["Lekkie zadrapanie lakieru","Pęknięcia w częściach nośnych jak maszt","Brudne siedzenia","Wyblakłe naklejki"],"c":1},
+{"q":"Kto może usuwać usterki bezpieczeństwa w wózku?","o":["Każdy kierowca","Tylko osoby kompetentne (np. monterzy)","Przełożony","Rada zakładowa"],"c":1},
+{"q":"Co należy zrobić na końcu przy odkładaniu ładunku na regał?","o":["Pochylić maszt do przodu","Opuścić widły i odjechać","Wyłączyć silnik","Zahamować hamulec postojowy"],"c":1}
+],"10":[
+{"q":"W jakim odstępie czasu należy przeprowadzać przeglądy wózków widłowych?","o":["Co 3 miesiące","Co 6 miesięcy","Najdalej co 12 miesięcy","Co 2 lata"],"c":2},
+{"q":"Co musi zawierać protokół z przeglądu?","o":["Tylko datę","Datę, wynik, imię kontrolera, usterki","Tylko imię kontrolera","Tylko czy przegląd zaliczony czy nie"],"c":1},
+{"q":"Co jest zasadniczo wymagane przy użyciu platform roboczych na wózku widłowym?","o":["Każdy wózek się nadaje","Odpowiednio nośny wózek i zgodna z przepisami platforma robocza","Tylko lina zabezpieczająca","Drugi kierowca"],"c":1},
+{"q":"Co należy uwzględnić przy użyciu osprzetu?","o":["Każde urządzenie pasuje do każdego wózka","Osprzet i wózek muszą być wzajemnie dopasowane","Osprzet zawsze zwiększa nośność","Brak szczególnych przepisów"],"c":1},
+{"q":"Kiedy kierowca może opuścić swoje miejsce przy uniesionej platformie roboczej?","o":["Zawsze","Tylko krótko","Nigdy","Podczas przerw"],"c":2},
+{"q":"Co należy uwzględnić przy transporcie wiszących ładunków?","o":["Brak szczególnych cech","Używać tylko odpowiednich wózków, osoby nie w torze jazdy","Zawsze jeździć wsteczna","Zawsze unosić ładunek"],"c":1},
+{"q":"Co jest warunkiem przewożenia osób na wózku?","o":["Zawsze dozwolone","Uregulowane w instrukcji obsługi, siedzenia i urządzenia zabezpieczające","Tylko na krótkich odcinkach","Tylko przełożony może jechać"],"c":1},
+{"q":"Co należy zrobić z uszkodzonymi widłami?","o":["Jechać dalej","Zgłosić jako usterkę bezpieczeństwa i nie używać","Naprawić samodzielnie","Transportować tylko lekkie ładunki"],"c":1},
+{"q":"Kiedy należy zamocować naklejkę z kontrolą na wózku?","o":["Od razu po przeglądzie","Dopiero gdy wszystkie usterki zostaną usunięte","Przed przeglądem","Nie jest konieczne"],"c":1},
+{"q":"Co należy znać przed przewożeniem przyczepu?","o":["Kolor","Dopuszczalną ładowność przyczepu","Rok produkcji","Producenta"],"c":1}
+]};
+
+var params=new URLSearchParams(window.location.search);
+var regnr=params.get('regnr')||'';
+var lang=params.get('lang')||sessionStorage.getItem('lang')||'de';
+if(lang==='pl'){ORDNER='PL_BILDER';KAPITEL=KAPITEL_PL;QUIZ_DATA=QUIZ_DATA_PL;}
+if(lang==='en') ORDNER='EN_BILDER';
+var T=TXT[lang]||TXT.de;
+
 // Steps aufbauen
 var STEPS=[];
 // Welcome
@@ -383,11 +585,6 @@ var score=0;
 var kapitelAbgeschlossen={};
 var kapitelStartZeit=Date.now();
 
-var params=new URLSearchParams(window.location.search);
-var regnr=params.get('regnr')||'';
-var lang=params.get('lang')||sessionStorage.getItem('lang')||'de';
-if(lang==='pl') ORDNER='PL_BILDER';
-if(lang==='en') ORDNER='EN_BILDER';
 
 var host=document.getElementById('host');
 var pbar=document.getElementById('pbar');
@@ -418,7 +615,7 @@ function loadProgress(){
 function updateProgBadge(){
   var b=document.getElementById('progBadge');if(!b)return;
   var n=Object.keys(kapitelAbgeschlossen).length;
-  b.textContent=n>0?n+' / '+KAPITEL.length+' Kapitel abgeschlossen':'';
+  b.textContent=n>0?n+' / '+KAPITEL.length+' '+T.kapitelAbgeschlossen:'';
 }
 
 /* ---- KAPITELÜBERSICHT ---- */
@@ -429,7 +626,7 @@ function openOv(){
   var pct=totalQ>0?Math.round(richtigQ/totalQ*100):0;
   var pbarPct=Math.round(totalAbg/KAPITEL.length*100);
   document.getElementById('ovSummaryText').innerHTML=
-    '<b>'+totalAbg+' / '+KAPITEL.length+'</b> Kapitel abgeschlossen'+(totalQ>0?' &middot; Ø '+pct+' % Quiz':'');
+    '<b>'+totalAbg+' / '+KAPITEL.length+'</b> '+T.kapitelAbgeschlossen+(totalQ>0?' &middot; Ø '+pct+' % Quiz':'');
   document.getElementById('ovPbar').style.width=pbarPct+'%';
   var html='';
   KAPITEL.forEach(function(k){
@@ -438,16 +635,18 @@ function openOv(){
     var inProg=!done&&sc.richtig>0;
     var icon=done?'&#10003;':(inProg?'&#9711;':'&#9675;');
     var cls=done?'ok':(inProg?'prog':'');
-    var scoreText=sc.gesamt>0?sc.richtig+'/'+sc.gesamt+' Quiz-Fragen '+(done?'&#10003;':''):'Noch nicht gestartet';
+    var scoreText=sc.gesamt>0?sc.richtig+'/'+sc.gesamt+T.ovQuizFragen+' '+(done?'&#10003;':''):T.ovNochNicht;
     html+='<div class="ov-chapter '+cls+'" onclick="jumpTo('+k.nr+')">'
       +'<div class="ov-ch-icon">'+icon+'</div>'
-      +'<div class="ov-ch-info"><div class="ov-ch-title">Kap. '+k.nr+': '+k.titel+'</div>'
+      +'<div class="ov-ch-info"><div class="ov-ch-title">'+T.ovKap+k.nr+': '+k.titel+'</div>'
       +'<div class="ov-ch-score">'+scoreText+'</div></div>'
       +'<div class="ov-ch-arr">&#8594;</div></div>';
   });
   document.getElementById('ovList').innerHTML=html;
   document.getElementById('ovOverlay').classList.add('active');
   document.getElementById('ovPanel').classList.add('active');
+  document.getElementById('ovTitle').textContent='📋 '+T.ovTitel;
+  document.getElementById('ovWeiterBtn').textContent='→ '+T.ovWeiter;
 }
 function closeOv(){
   document.getElementById('ovOverlay').classList.remove('active');
@@ -493,17 +692,17 @@ function drawDiag(svgId,type,hl,arrows){
   if(iS){
     svg.appendChild(mkEl('polygon',{points:sx(500)+','+sy(3000)+' '+sx(1000)+','+sy(500)+' '+sx(1000)+','+oy+' '+sx(500)+','+oy,fill:'rgba(29,158,117,.12)',stroke:'none'}));
     svg.appendChild(mkEl('line',{x1:sx(500),y1:sy(3000),x2:sx(1000),y2:sy(500),stroke:'var(--ink)','stroke-width':3}));
-    var gt=mkEl('text',{x:sx(560),y:sy(1800),'font-size':11,fill:'var(--muted)'});gt.textContent='← Gabelrücken';svg.appendChild(gt);
+    var gt=mkEl('text',{x:sx(560),y:sy(1800),'font-size':11,fill:'var(--muted)'});gt.textContent=T.gabelruecken;svg.appendChild(gt);
   }else{
     MULTI_LINES.forEach(function(L){
       var dim=hl.length>0&&hl.indexOf(L.hub)<0;
       svg.appendChild(mkEl('line',{x1:sx(L.a[0]),y1:sy(L.a[1]),x2:sx(L.b[0]),y2:sy(L.b[1]),stroke:L.color,'stroke-width':hl.indexOf(L.hub)>=0?L.w+1.5:L.w,opacity:dim?.2:1}));
       var lt=mkEl('text',{x:sx(L.b[0])+6,y:sy(L.b[1])+4,'font-size':10,'font-weight':'bold',fill:L.color,opacity:dim?.3:1});lt.textContent=L.hub;svg.appendChild(lt);
     });
-    var ht=mkEl('text',{x:sx(1000)+6,y:oy-h+2,'font-size':9,fill:'var(--muted)'});ht.textContent='Hub in mm';svg.appendChild(ht);
+    var ht=mkEl('text',{x:sx(1000)+6,y:oy-h+2,'font-size':9,fill:'var(--muted)'});ht.textContent=T.hubLabel;svg.appendChild(ht);
   }
-  var xl=mkEl('text',{x:ox+w/2,y:oy+26,'font-size':10,'text-anchor':'middle',fill:'var(--muted)'});xl.textContent='Lastschwerpunktabstand in mm';svg.appendChild(xl);
-  var yl=mkEl('text',{x:13,y:oy-h/2,'font-size':10,'text-anchor':'middle',fill:'var(--muted)',transform:'rotate(-90,13,'+(oy-h/2)+')'});yl.textContent='Last in kg';svg.appendChild(yl);
+  var xl=mkEl('text',{x:ox+w/2,y:oy+26,'font-size':10,'text-anchor':'middle',fill:'var(--muted)'});xl.textContent=T.lsaLabel;svg.appendChild(xl);
+  var yl=mkEl('text',{x:13,y:oy-h/2,'font-size':10,'text-anchor':'middle',fill:'var(--muted)',transform:'rotate(-90,13,'+(oy-h/2)+')'});yl.textContent=T.lastLabel;svg.appendChild(yl);
   arrows.forEach(function(arr){
     var ax=arr[0],ayv=arr[1],ds=_ds[svgId],col='#D85A30';
     svg.appendChild(mkEl('line',{x1:ds.sx(500),y1:ds.sy(ayv),x2:ds.sx(ax),y2:ds.sy(ayv),stroke:col,'stroke-width':2.5,'stroke-dasharray':'5,3'}));
@@ -522,14 +721,14 @@ function renderDiag(host,di){
       qHtml+='<div class="dq"><div class="dq-text">'+q.q+'</div>'+
         '<div class="dq-row">'+
         '<input class="dq-input" type="number" id="di'+di+'q'+qi+'" placeholder="'+q.unit+'" step="'+(q.unit==='mm'?50:100)+'">'+
-        '<button class="dqbtn info" onclick="chkDI('+di+','+qi+')">Prüfen</button>'+
-        '<button class="dqbtn" onclick="hintDI('+di+','+qi+')">Lösung</button>'+
+        '<button class="dqbtn info" onclick="chkDI('+di+','+qi+')">'+T.pruefen+'</button>'+
+        '<button class="dqbtn" onclick="hintDI('+di+','+qi+')">'+T.loesung+'</button>'+
         '</div><div class="dq-fb" id="dfb'+di+''+qi+'"></div></div>';
     }else if(q.type==='yn'){
       qHtml+='<div class="dq"><div class="dq-text">'+q.q+'</div>'+
         '<div class="dq-row">'+
-        '<button class="dqbtn info" onclick="ynDI('+di+','+qi+',\'ja\')">Ja</button>'+
-        '<button class="dqbtn info" onclick="ynDI('+di+','+qi+',\'nein\')">Nein</button>'+
+        '<button class="dqbtn info" onclick="ynDI('+di+','+qi+',\'ja\')">'+T.ja+'</button>'+
+        '<button class="dqbtn info" onclick="ynDI('+di+','+qi+',\'nein\')">'+T.nein+'</button>'+
         '</div><div class="dq-fb" id="dfb'+di+''+qi+'"></div></div>';
     }else if(q.type==='hub'){
       qHtml+='<div class="dq"><div class="dq-text">'+q.q+'</div>'+
@@ -549,10 +748,10 @@ function renderDiag(host,di){
 }
 
 function dFb(di,qi,ok,msg){var d=document.getElementById('dfb'+di+''+qi);if(!d)return;d.className='dq-fb '+(ok?'ok':'no');d.textContent=msg;}
-function chkDI(di,qi){var dp=DIAG_PAGES[di],q=dp.qs[qi],v=parseFloat(document.getElementById('di'+di+'q'+qi).value);if(isNaN(v)){dFb(di,qi,false,'Bitte Wert eingeben.');return;}var ok=q.check(v);drawDiag('dsvg',dp.svg,q.highlight?[q.highlight]:[],[q.arrow()]);dFb(di,qi,ok,ok?'✓ '+q.ans():'✗ '+q.ans());}
+function chkDI(di,qi){var dp=DIAG_PAGES[di],q=dp.qs[qi],v=parseFloat(document.getElementById('di'+di+'q'+qi).value);if(isNaN(v)){dFb(di,qi,false,T.bitteWert);return;}var ok=q.check(v);drawDiag('dsvg',dp.svg,q.highlight?[q.highlight]:[],[q.arrow()]);dFb(di,qi,ok,ok?'✓ '+q.ans():'✗ '+q.ans());}
 function hintDI(di,qi){var dp=DIAG_PAGES[di],q=dp.qs[qi];drawDiag('dsvg',dp.svg,q.highlight?[q.highlight]:[],[q.arrow()]);dFb(di,qi,true,'✓ '+q.ans());}
-function ynDI(di,qi,ans){var dp=DIAG_PAGES[di],q=dp.qs[qi],ok=ans===q.correct;drawDiag('dsvg',dp.svg,q.highlight?[q.highlight]:[],[q.arrow()]);dFb(di,qi,ok,ok?'✓ Richtig! '+q.explain():'✗ Falsch. '+q.explain());}
-function hubDI(di,qi,sel){var dp=DIAG_PAGES[di],q=dp.qs[qi],ok=sel===q.correct;drawDiag('dsvg',dp.svg,[q.highlight||q.correct],[]);dFb(di,qi,ok,ok?'✓ Richtig! Kennlinie '+sel+' mm.':'✗ Korrekt: '+q.correct+' mm.');}
+function ynDI(di,qi,ans){var dp=DIAG_PAGES[di],q=dp.qs[qi],ok=ans===q.correct;drawDiag('dsvg',dp.svg,q.highlight?[q.highlight]:[],[q.arrow()]);dFb(di,qi,ok,ok?T.richtigDiag+q.explain():T.falschDiag+q.explain());}
+function hubDI(di,qi,sel){var dp=DIAG_PAGES[di],q=dp.qs[qi],ok=sel===q.correct;drawDiag('dsvg',dp.svg,[q.highlight||q.correct],[]);dFb(di,qi,ok,ok?T.kennlinieRichtig+sel+' mm.':T.korrekt+q.correct+' mm.');}
 
 function quizScoreForKapitel(knr){
   var richtig=0,gesamt=0;
@@ -564,14 +763,14 @@ function render(){
   var s=STEPS[cur];
   pbar.style.width=(cur/(STEPS.length-1)*100)+'%';
   prevBtn.disabled=(cur===0);
-  nextBtn.textContent='Weiter ›';
+  nextBtn.textContent=T.weiter;
   nextBtn.disabled=false;
 
   if(s.type==='welcome'){
     prevBtn.onclick=function(){goBack();};
     host.innerHTML='<div class="welcome-box">'+
       '<div class="welcome-logo">🚜</div>'+
-      '<div class="welcome-titel">Willkommen zur Gabelstapler-Ausbildung</div>'+
+      '<div class="welcome-titel">'+T.welcomeTitel+'</div>'+
       '<div class="welcome-sub">Diese Schulung vermittelt alle theoretischen Grundlagen nach <strong>DGUV Grundsatz 308-001</strong> f&uuml;r das sichere F&uuml;hren von Gabelstaplern.</div>'+
       '<div class="welcome-grid">'+
         '<div class="wg"><div class="wg-icon">📋</div><div class="wg-titel">10 Kapitel</div><div class="wg-text">Alle Themen der allgemeinen Ausbildung</div></div>'+
@@ -579,9 +778,9 @@ function render(){
         '<div class="wg"><div class="wg-icon">💬</div><div class="wg-titel">Kontakt</div><div class="wg-text">WhatsApp & E-Mail bei Fragen</div></div>'+
         '<div class="wg"><div class="wg-icon">✅</div><div class="wg-titel">Nachweis</div><div class="wg-text">Jedes Kapitel wird dokumentiert</div></div>'+
       '</div>'+
-      '<button class="welcome-start" onclick="next()">Schulung starten ›</button>'+
+      '<button class="welcome-start" onclick="next()">'+T.startBtn+'</button>'+
       '</div>';
-    counter.textContent='Willkommen';
+    counter.textContent=T.willkommen;
     nextBtn.style.display='none';
   }
   else{
@@ -591,11 +790,11 @@ function render(){
 
   if(s.type==='kapitel'){
     host.innerHTML='<div class="kapitel-box">'+
-      '<div class="kapitel-nr">Kapitel '+s.nr+' von '+KAPITEL.length+'</div>'+
+      '<div class="kapitel-nr">'+T.kapitel+' '+s.nr+' '+T.von+' '+KAPITEL.length+'</div>'+
       '<div class="kapitel-titel">'+s.titel+'</div>'+
-      '<div class="kapitel-sub">Allgemeine Staplerfahrerausbildung &middot; DGUV 308-001</div>'+
+      '<div class="kapitel-sub">'+T.allgSub+'</div>'+
       '</div>';
-    counter.textContent='Kapitel '+s.nr;
+    counter.textContent=T.kapitel+' '+s.nr;
   }
   else if(s.type==='folie'){
     host.innerHTML='<div class="slidebox">'+
@@ -603,7 +802,7 @@ function render(){
       '<img src="'+ORDNER+'/Folie'+s.fn+'.PNG" alt="Folie '+s.fn+'">'+
       '<div class="nav-zone next" onclick="next()"><span>›</span></div>'+
       '</div>';
-    counter.textContent='Folie '+s.fn+' / '+TOTAL_FOLIEN;
+    counter.textContent=T.folie+' '+s.fn+' / '+TOTAL_FOLIEN;
   }
   else if(s.type==='video'){
     host.innerHTML='<div class="slidebox video-slide">'+
@@ -623,15 +822,15 @@ function render(){
     var qNr=s.qi+1;
     var qGes=QUIZ_DATA[s.kapitel_nr].length;
     host.innerHTML='<div class="quizbox">'+
-      '<div class="quiz-prog">Kapitel '+s.kapitel_nr+' &middot; '+s.kapitel_titel+'</div>'+
-      '<div class="quiz-badge">✏️ Wissensfrage '+qNr+' / '+qGes+'</div>'+
+      '<div class="quiz-prog">'+T.kapitel+' '+s.kapitel_nr+' &middot; '+s.kapitel_titel+'</div>'+
+      '<div class="quiz-badge">✏️ '+T.wissensfrage+' '+qNr+' / '+qGes+'</div>'+
       '<div class="quiz-q">'+s.q+'</div>'+
       '<div class="quiz-opts" id="opts">'+
         s.o.map(function(o,i){return'<button class="opt" id="opt-'+i+'" onclick="answer(&#39;'+key+'&#39;,'+i+','+s.c+')">'+o+'</button>';}).join('')+
       '</div>'+
       '<div class="quiz-fb" id="fb"></div>'+
       '</div>';
-    counter.textContent='Frage '+qNr+' / '+qGes+' (Kap. '+s.kapitel_nr+')';
+    counter.textContent=T.frage+' '+qNr+' / '+qGes+' ('+T.kap+' '+s.kapitel_nr+')';
     if(done){showAnswerState(key,s.c,s.o);nextBtn.disabled=false;}
     else{nextBtn.disabled=true;}
   }
@@ -641,20 +840,20 @@ function render(){
     var pct=sc.gesamt>0?Math.round(sc.richtig/sc.gesamt*100):0;
     host.innerHTML='<div class="abschluss-box">'+
       '<div class="abschluss-icon">📋</div>'+
-      '<div class="abschluss-titel">Kapitel '+s.kapitel_nr+': '+s.kapitel_titel+'</div>'+
-      '<div class="abschluss-sub">Sie haben alle Inhalte und Fragen dieses Kapitels durchgearbeitet.</div>'+
-      '<div class="abschluss-score">Quiz-Ergebnis: '+sc.richtig+' / '+sc.gesamt+' richtig ('+pct+' %)</div>'+
+      '<div class="abschluss-titel">'+T.kapitel+' '+s.kapitel_nr+': '+s.kapitel_titel+'</div>'+
+      '<div class="abschluss-sub">'+T.abschlussSub+'</div>'+
+      '<div class="abschluss-score">'+T.abschlussScore+sc.richtig+' / '+sc.gesamt+T.richtigLabel+pct+' %)</div>'+
       '<button class="abschluss-btn" id="aBtn" onclick="kapitelAbschliessen('+s.kapitel_nr+',&#39;'+s.kapitel_titel.replace(/'/g,'&#39;')+'&#39;)" '+
         (done?'disabled style="background:var(--ok)"':'')+'>'+(done?'✓ Abgeschlossen':'Thema abschlie&szlig;en &amp; speichern')+'</button>'+
-      '<div class="abschluss-status" id="aStat">'+(done?'Kapitel '+s.kapitel_nr+' wurde gespeichert.':'')+'</div>'+
+      '<div class="abschluss-status" id="aStat">'+(done?T.kapitel+' '+s.kapitel_nr+' '+T.gespeichert:'')+'</div>'+
       '</div>';
-    counter.textContent='Kapitel '+s.kapitel_nr+' / '+KAPITEL.length+' abschließen';
+    counter.textContent=T.kapitel+' '+s.kapitel_nr+' / '+KAPITEL.length;
     nextBtn.disabled=!done;
   }
   else if(s.type==='diag'){
     nextBtn.disabled=false;
     renderDiag(host,s.di);
-    counter.textContent='Diagramm '+(s.di+1)+' / '+DIAG_PAGES.length+' (Kap. 8)';
+    counter.textContent=T.diagramm+' '+(s.di+1)+' / '+DIAG_PAGES.length+' '+T.kap8;
   }
   else if(s.type==='ergebnis'){
     var total=0,richtig=0;
@@ -664,12 +863,12 @@ function render(){
     var pass=pct>=80;
     host.innerHTML='<div class="result">'+
       '<div class="ic '+(pass?'ok':'no')+'">'+(pass?'✓':'✗')+'</div>'+
-      '<h2>'+richtig+' / '+total+' richtig ('+pct+' %)</h2>'+
-      '<p>'+(pass?'Herzlichen Glückwunsch! Schulung erfolgreich abgeschlossen.':'Mindestpunktzahl 80% nicht erreicht. Bitte wiederholen.')+'</p>'+
+      '<h2>'+richtig+' / '+total+T.richtigLabel+pct+' %)</h2>'+
+      '<p>'+(pass?T.ergebnisPass:T.ergebnisFail)+'</p>'+
       '<button class="ctrl-btn" onclick="'+(pass?'goBack()':'restart()')+'">'+
-        (pass?'← Zur Startseite':'Schulung wiederholen')+'</button>'+
+        (pass?T.zurueck:T.wiederholen)+'</button>'+
       '</div>';
-    counter.textContent='Abschluss';
+    counter.textContent=T.abschluss;
     nextBtn.disabled=true;
     prevBtn.disabled=true;
   }
@@ -683,10 +882,10 @@ function answer(key,chosen,richtig){
   var s=STEPS[cur];
   if(chosen===richtig){
     if(!(key in answered))score++;
-    fb.className='quiz-fb ok';fb.textContent='✓ Richtig!';
+    fb.className='quiz-fb ok';fb.textContent=T.richtig;
   }else{
     document.getElementById('opt-'+chosen).classList.add('wrong');
-    fb.className='quiz-fb no';fb.textContent='✗ Leider falsch. Richtig: '+s.o[richtig];
+    fb.className='quiz-fb no';fb.textContent=T.falsch+s.o[richtig];
   }
   answered[key]=(chosen===richtig);
   nextBtn.disabled=false;
@@ -696,7 +895,7 @@ function showAnswerState(key,richtig,opts){
   document.querySelectorAll('.opt').forEach(function(b){b.disabled=true;});
   document.getElementById('opt-'+richtig).classList.add('correct');
   var fb=document.getElementById('fb');
-  if(answered[key]){fb.className='quiz-fb ok';fb.textContent='✓ Richtig!';}
+  if(answered[key]){fb.className='quiz-fb ok';fb.textContent=T.richtig;}
   else{fb.className='quiz-fb no';fb.textContent='✓ Richtige Antwort markiert';}
 }
 
@@ -704,7 +903,7 @@ function kapitelAbschliessen(knr,kname){
   var btn=document.getElementById('aBtn');
   var stat=document.getElementById('aStat');
   if(!btn||!stat)return;
-  btn.disabled=true;btn.textContent='Wird gespeichert...';
+  btn.disabled=true;btn.textContent=T.wirdGespeichert;
   var sc=quizScoreForKapitel(knr);
   var payload={
     regnr:regnr,kapitel_nr:knr,kapitel_name:kname,
@@ -717,15 +916,15 @@ function kapitelAbschliessen(knr,kname){
   };
   function onOK(){
     kapitelAbgeschlossen[knr]=true;kapitelStartZeit=Date.now();
-    btn.textContent='✓ Abgeschlossen';btn.style.background='var(--ok)';
-    stat.textContent='Kapitel '+knr+' gespeichert.';
+    btn.textContent=T.abschlussAbgeschlossen;btn.style.background='var(--ok)';
+    stat.textContent=T.kapitel+' '+knr+' '+T.gespeichert;
     nextBtn.disabled=false;
     saveProgress();
   }
   if(FLOW_URL==='DEIN_FLOW_URL_HIER'){onOK();return;}
   fetch(FLOW_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)})
     .then(onOK)
-    .catch(function(){btn.disabled=false;btn.textContent='Thema abschließen & speichern';stat.textContent='⚠️ Fehler. Bitte erneut versuchen.';stat.style.color='var(--no)';});
+    .catch(function(){btn.disabled=false;btn.textContent=T.abschlussBtnTxt;stat.textContent=T.fehler;stat.style.color='var(--no)';});
 }
 
 function next(){if(cur<STEPS.length-1){cur++;render();saveProgress();}}
@@ -755,7 +954,7 @@ render();
 <div class="ov-overlay" id="ovOverlay" onclick="closeOv()"></div>
 <div class="ov-panel" id="ovPanel">
   <div class="ov-head">
-    <span class="ov-head-title">&#128203; Kapitel&uuml;bersicht</span>
+    <span class="ov-head-title" id="ovTitle">&#128203; Kapitel&uuml;bersicht</span>
     <button class="ov-close" onclick="closeOv()">&#x2715;</button>
   </div>
   <div class="ov-summary" id="ovSummary">
@@ -764,7 +963,7 @@ render();
   </div>
   <div class="ov-list" id="ovList"></div>
   <div class="ov-foot">
-    <button class="ov-weiter" onclick="weiterLernen()">&#8594; Weiter lernen</button>
+    <button class="ov-weiter" id="ovWeiterBtn" onclick="weiterLernen()">&#8594; Weiter lernen</button>
   </div>
 </div>
 </body>
