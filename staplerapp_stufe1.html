@@ -396,6 +396,47 @@ ro:{
   waMsg:'Bună ziua, am o întrebare despre instruirea stivuitorului.\n\nSecțiunea curentă: {ctx}\n\nÎntrebarea mea: ',
   mailSubj:'Întrebare despre instruire – {ctx}',
   mailBody:'Bună ziua,\n\nam o întrebare despre instruirea stivuitorului.\n\nSecțiunea curentă: {ctx}\n\nÎntrebarea mea:\n'
+},
+sq:{
+  weiter:'Tutje ›',willkommen:'Mirë se vini',kapitel:'Kapitulli',von:'nga',folie:'Rrëshqitje',
+  kap:'Kap.',wissensfrage:'Pyetje kontrolluese',frage:'Pyetja',
+  allgSub:'Trajnim i përgjithëshëm operator stivuese · DGUV 308-001',
+  welcomeTitel:'Mirë se vini në trajnimin e operatorit të stivueses',
+  welcomeSub:'Ky trajnim transmeton të gjitha bazat teorike sipas <strong>DGUV Grundsatz 308-001</strong> për drejtimin e sigurt të stivueses.',
+  wg1Titel:'10 kapituj',wg1Text:'Të gjitha temat e trajnimit të përgjithëshm',
+  wg2Titel:'100+ pyetje',wg2Text:'Min. 10 pyetje quiz për kapitull',
+  wg3Titel:'Kontakt',wg3Text:'WhatsApp &amp; e-mail për pyetje',
+  wg4Titel:'Dëshmi',wg4Text:'Çdo kapitull dokumentohet',
+  startBtn:'Filloni trajnimin ›',
+  richtig:'✓ Saktë!',falsch:'✗ Fatk eqësisht gabim. Saktë: ',
+  richtigMarkiert:'✓ Shënuar përgjigja e saktë',
+  abschlussSub:'Keni kaluar të gjitha përm bajtjet dhe pyetjet e këtij kapitulli.',
+  abschlussScore:'Rezultati i quizit: ',richtigLabel:' saktë (',
+  abschlussBtn:'Përfundo temën &amp; ruaj',
+  abschlussBtnTxt:'Përfundo temën & ruaj',
+  abschlussAbgeschlossen:'✓ Përfunduar',
+  wirdGespeichert:'Duke u ruajtur...',gespeichert:'ruajtur.',
+  fehler:'⚠️ Gabim. Ju lutemi provoni përsëri.',
+  ergebnisPass:'Urime! Trajnimi u përfundua me sukses.',
+  ergebnisFail:'Rezultati minimal 80% nuk u arrit. Ju lutemi përsëriteni.',
+  zurueck:'← Në faqen kryesore',wiederholen:'Përsëritni trajnimin',
+  abschluss:'Përfundim',diagramm:'Diagram',kap8:'(Kap. 8)',
+  ovTitel:'Pasqyra e kapitujve',ovWeiter:'Vazhdoni mësimin',
+  ovKap:'Kap. ',ovNochNicht:'Nuk ka filluar ende',ovQuizFragen:' Pyetje quiz',
+  kapitelAbgeschlossen:'kapituj të përfunduar',
+  pruefen:'Kontrolloni',loesung:'Zgjidhje',ja:'Po',nein:'Jo',
+  bitteWert:'Ju lutemi vendosni një vlerë.',
+  gabelruecken:'← Shpina e kaçavirëve',
+  lsaLabel:'Distanca e qendrës së gravitetit të ngarkesës në mm',lastLabel:'Ngarkesa në kg',hubLabel:'Ngritja në mm',
+  richtigDiag:'✓ Saktë! ',falschDiag:'✗ Gabim. ',
+  kennlinieRichtig:'✓ Saktë! Kurbë ',korrekt:'✗ Saktë: ',vollbild:'Ekran i plotë',
+  prevBtnTxt:'‹ Kthehu',backBtnTxt:'← Kthehu në faqen kryesore',
+  appTitel:'Trajnimi i stivueses',
+  appSub:'Trajnim i përgjithëshm Niveli 1 &middot; DGUV Grundsatz 308-001',
+  ovBtnTxt:'☰ Kapitujt',
+  waMsg:'Pershendetje, kam një pyetje rreth trajnimit të stivueses.\n\nSeksioni aktual: {ctx}\n\nPyetja ime: ',
+  mailSubj:'Pyetje rreth trajnimit – {ctx}',
+  mailBody:'Pershendetje,\n\nkam një pyetje rreth trajnimit të stivueses.\n\nSeksioni aktual: {ctx}\n\nPyetja ime:\n'
 }
 };
 var TOTAL_FOLIEN=107;
@@ -714,11 +755,135 @@ var QUIZ_DATA_RO={"1":[
 {"q":"Ce trebuie cunoscut înainte de remorcarea remorcilor?","o":["Culoarea","Capacitatea maximă de remorcare","Anul fabricației","Producătorul"],"c":1}
 ]};
 
+var KAPITEL_SQ=[
+  {"nr":1,"titel":"Aksidenti i punës dhe pasojat juridike","folien_von":1,"folien_bis":13},
+  {"nr":2,"titel":"Shoqëria e sigurimeve dhe rregulloret","folien_von":14,"folien_bis":22},
+  {"nr":3,"titel":"Kërkesat dhe kriteret e aftësisë","folien_von":23,"folien_bis":28},
+  {"nr":4,"titel":"Ngjarjet e aksidenteve","folien_von":29,"folien_bis":35},
+  {"nr":5,"titel":"Magazinimi dhe grumbullimi","folien_von":36,"folien_bis":44},
+  {"nr":6,"titel":"Rrugët e trafikut","folien_von":45,"folien_bis":56},
+  {"nr":7,"titel":"Kapaciteti mbajtës dhe stabiliteti","folien_von":57,"folien_bis":68},
+  {"nr":8,"titel":"Diagrami i kapacitetit mbajtës","folien_von":69,"folien_bis":88},
+  {"nr":9,"titel":"Operimi i stivueses — Aspekte të përgjithëshme","folien_von":89,"folien_bis":100},
+  {"nr":10,"titel":"Operimi i stivueses — Përdorime speciale dhe kontrolle","folien_von":101,"folien_bis":107}
+];
+var QUIZ_DATA_SQ={"1":[
+{"q":"Cilat tre kushte duhet të plotësohen për një aksident pune?","o":["Person i siguruar, veprimtari e siguruar, dëmtim trupor","Qëllim, dëm, dëshmi tarë","Kontratë pune, lëndim, vizitë mjëkesore","Pakujdesi, dëm, raportim"],"c":0},
+{"q":"Sa aksidente ndodhin çdo vit në Gjermani gjatë punës me stivuese?","o":["rreth 2.000","rreth 5.000","mbi 20.000","mbi 50.000"],"c":2},
+{"q":"Sa aksidente fatale me stivuese ndodhin në Gjermani çdo vit?","o":["rreth 5","rreth 23","rreth 50","rreth 100"],"c":1},
+{"q":"Çfarë NUK është pasojë e mundshme juridike pas një aksidenti pune?","o":["E drejta penale","E drejta tatimore","E drejta kundërvajtëse","E drejta e punës"],"c":1},
+{"q":"Çfarë mund të bëjë BG-ja në rast aksidentesh të shkaktuara me pakujdesi të rëndë?","o":["Asgjë","Të paraqesë kallëzim penal","Të kërkojë rimbursimin e shpenzimeve","Të heqë lejen e drejtimit"],"c":2},
+{"q":"Çfarë dënimi rrezikohet nga pasojat penale të një aksidenti pune?","o":["Vetëm paralajmërim","Burgosje ose gjobë","Vetëm gjobë","Ndalim drejtimi"],"c":1},
+{"q":"Çfarë është kushti për një procedurë kundërvajtëse?","o":["Kërkohet qëllim","Shkelja e një norme të dënueshme me gjobë","Lëndim trupor","Duhet të ketë dëshmi tar"],"c":1},
+{"q":"Cila është pasoja më e rëndë e të drejtës së punës?","o":["Qortim","Vërejtje me shkrim","Paralajmërim","Shkarkimi nga puna"],"c":3},
+{"q":"Kur mban përgjegjësi punëdhënësi sipas BGB-së për një aksident pune?","o":["Gjithmonë","Vetëm për aksidente të shkaktuara me qëllim","Vetëm për pakujdesi","Asnjëherë"],"c":1},
+{"q":"Çfarë NUK është pikë e përqendrimit të aksidenteve me stivuese?","o":["Aksidente përplasje","Aksidente rrëzimi","Dëmtime elektrike","Rënie nga ngarkesa"],"c":2}
+],"2":[
+{"q":"Si quhet parimi aktual i sigurimeve profesionale për shoferët e stivueseve?","o":["BGG 925","DGUV Grundsatz 308-001","DGUV Vorschrift 68","UVV Flurförderzeuge"],"c":1},
+{"q":"Çfarë është Berufsgenossenschaft-i?","o":["Një shoqatë profesionale","Mbarts i sigurimit ligjor të aksidenteve","Një organ shtetëror","Një institucion arsimor"],"c":1},
+{"q":"Sa nivele trajnimi parashikon DGUV Grundsatz 308-001?","o":["1","2","3","4"],"c":2},
+{"q":"Çfarë është niveli 1 i trajnimit të stivueses?","o":["Trajnim në punë","Trajnim shtesë","Trajnim i përgjithëshm","Përgatitje për provim"],"c":2},
+{"q":"Çfarë është niveli 3 i trajnimit të stivueses?","o":["Trajnim i përgjithëshm","Trajnim shtesë","Trajnim në punë","Provim final"],"c":2},
+{"q":"Çfarë përfshin niveli 2 i trajnimit të stivueses?","o":["Vetëm teori","Trajnim shtesë për stivuese speciale","Instruksion në punë","Kurs i ndihmës së parë"],"c":1},
+{"q":"Çfarë lëshohet pas përfundimit të trajnimit të përgjithëshm (niveli 1)?","o":["Leje drejtimi","Certifikatë","Patentë","Referencë pune"],"c":1},
+{"q":"Çfarë parandalon kryesisht BG-ja?","o":["Vjedhjen","Aksidentet e punës dhe sëmundjet profesionale","Zjarrin","Ndërprejet e aktivitetit"],"c":1},
+{"q":"Cili dokument rregullon trajnimin dhe autorizimin e shoferëve të stivueseve?","o":["StVZO","DGUV Grundsatz 308-001","Rregullorja e vendeve të punës","BetrVG"],"c":1},
+{"q":"Çfarë duhet bërë pas përfundimit të trajnimit në punë (niveli 3)?","o":["Të japë provimin","Të lëshojë certifikatën","Të dokumentojë realizimin","Të kërkojë lejen e drejtimit"],"c":2}
+],"3":[
+{"q":"Cila është mosha minimale për drejtimin e pavarur të stivueseve?","o":["16 vjeç","17 vjeç","18 vjeç","21 vjeç"],"c":2},
+{"q":"Kush jep autorizimin për drejtimin e stivueseve?","o":["Instruktori","Këshilli i ndërmarrjes","Punëdhënësi","Berufsgenossenschaft-i"],"c":2},
+{"q":"Në çfarë forme duhet dhënë autorizimi?","o":["Me gojë","Me shkrim","Mjafton me e-mail","Nuk është i nevojshëm"],"c":1},
+{"q":"A mund të transferohet autorizimi tek ndërmarrje të tjera?","o":["Po, gjithmonë","Po, me miratimin e BG-së","Jo","Vetëm brenda sektorit"],"c":2},
+{"q":"Cila aftësi fizike NUK kërkohet nga operatori i stivueses?","o":["Shikim i mjaftushëm","Aftësi dëgjimi","Gjatësi mbi mesatare","Reagim i mirë"],"c":2},
+{"q":"Si përcaktohet aftësia fizike?","o":["Nëpërrmjet testit të shikimit","Nëpërrmjet ekzaminimit mjëkesor preventiv G25","Nga instruktori","Nga këshilli i ndërmarrjes"],"c":1},
+{"q":"Çfarë NUK është kusht për drejtimin e stivueseve?","o":["Mosha min. 18 vjeç","I aftë dhe i trajnuar","Anëtar i sindikatës","Autorizim me shkrim"],"c":2},
+{"q":"Çfarë i takon aftësisë mendore të operatorit të stivueses?","o":["Inteligjençë mbi mesatare","Kuptimi i lidhjeve teknike dhe fizike","Diplomë akademike","Njohuri gjuhësore"],"c":1},
+{"q":"Si mund të jepet autorizimi?","o":["Vetëm me shkrim nëpërrmjet letrës","Nëpërrmjet një leje drejtimi të brendshme","Me shtrëngim duarsh","Me regjistrim në letërnjoftim"],"c":1},
+{"q":"Çfarë është veçanërisht e rëndësishme për aftësinë karakteriale?","o":["Sportiviteti","Ndjenja e përgjegjësisë dhe besueshmëria","Kreativiteti","Aftësi komunikimi"],"c":1}
+],"4":[
+{"q":"Cila përqindje e aksidenteve fatale me stivuese janë rrëzime?","o":["mbi 20%","mbi 30%","mbi 50%","mbi 80%"],"c":2},
+{"q":"Çfarë është shkak i shpeshtë i aksidenteve të përplasjes?","o":["Ngarkesë shumë e rëndë","Pakujdesia e operatorit","Këpucë të papërshtatshme","Shpëtësi shumë e ulët"],"c":1},
+{"q":"Çfarë është shkak i shpeshtë i aksidenteve të rrëzimit?","o":["Shpëtësi shumë e ulët","Drejtimi me ngarkesën e ngritur","Ngarkesë shumë e lehtë","Drejtim prapa"],"c":1},
+{"q":"Sa aksidente të rënda me stivuese nga rënia dhe rrëzimi ndodhin çdo vit?","o":["rreth 20","rreth 100","rreth 200","rreth 500"],"c":2},
+{"q":"Çfarë mbron më mirë nga aksidentet e rrëzimit?","o":["Drejtimi me ngarkesën e ngritur","Vënia e rripit të sigur isë dhe shpëtësia e ulët","Gjithmonë drejtimi prapa","Transportimi vetëm i ngarkesave të lehta"],"c":1},
+{"q":"Çfarë i ndodh shpesh shoferit në aksidentet e rrëzimit?","o":["Lëndohet lehtë","Kapet nën stivuese","Hidhet në kohë","Nuk i ndodh asgjë"],"c":1},
+{"q":"Pse janë aksidentet e rrëzimit veçanërisht të rrezikshme?","o":["Sepse janë të shpeshta","Sepse shpesh shoqërohen me lëndime të rënda","Sepse janë të kushtueshme","Sepse janë të vështira për t'u dokumentuar"],"c":1},
+{"q":"Çfarë është karakteristike për mbi 80% të aksidenteve fatale nga rrëzimi?","o":["Stivueset ishin mbingarkuar","Stivueset nuk kishin ngarkesë","Shoferët ishin të papërvojë","Ishte errësirë"],"c":1},
+{"q":"Çfarë kuptohet me aksidente përplasje?","o":["Aksidente gjatë ndezjes së motorit","Aksidente ku stivuesja godet persona ose objekte","Aksidente gjatë parkimit","Aksidente gjatë ngarkimit"],"c":1},
+{"q":"Cila masë ndihmon kundër aksidenteve të përplasjes?","o":["Shpëtësi më e madhe","Kujdesi dhe rregullat e qarta të trafikut në ndërmarrje","Bori më e lartë","Heqja e pasqyrave"],"c":1}
+],"5":[
+{"q":"Sa mund të ngarkohet maksimalisht një europalëtë?","o":["500–800 kg","1000–1500 kg","2000–2500 kg","3000 kg"],"c":1},
+{"q":"Sa lart mund të grumbullohen maksimalisht kutitë rrjetë?","o":["Trefisht","Katërfisht","Pesëfisht","Gjashtëfisht"],"c":2},
+{"q":"Nga cila lartësi ngritjeje është i detyrueshëm një çati mbrojtëse për shoferin?","o":["1,20 m","1,50 m","1,80 m","2,00 m"],"c":2},
+{"q":"Çfarë duhet bërë në rast dëmtimi të rafteve?","o":["Riparoni vetë","Raportoni dëmin, përdorni pas riparimit","Injoroni","Shtoni më shumë peshë"],"c":1},
+{"q":"Ku NUK lejohet vendosja e ngarkesave?","o":["Në depot e larta","Para pajisjeve të shuarjes së zjarrit","Mbi europalëtë","Në magazina"],"c":1},
+{"q":"Çfarë duhet të ketë gjatë magazinimit në raftet e sipërme?","o":["Asgjë e veçantë","Pajisje sigur ie min. 0,5 m të lartë kundër rëni es","Rrjetë sigur ie","Roje"],"c":1},
+{"q":"Çfarë duhet respektuar gjatë grumbullimit të kutive rrjetë?","o":["Grumbulloni arbitrarisht","Ngarkesë max. 1000 kg, grumbullim max. pesëfisht","Gjithmonë grumbullim me laghështi","Ruajtje vetëm brenda"],"c":1},
+{"q":"Kur lejohet anuesja e direkut të ngritjes përpara?","o":["Gjithmonë gjatë drejtimit","Vetëm për ngritjen dhe vendosjen e ngarkesës","Vetëm gjatë drejtimit prapa","Asnjëherë"],"c":1},
+{"q":"Çfarë duhet bërë me ngarkesa të paketuara gabim?","o":["Grumbulloni sërish","Mos grumbulloni dhe mos vendosni në vende të larta","Ngasni më ngadalë","Thirrni një koleg"],"c":1},
+{"q":"Ku duhet mbajtur gjithmonë të lira rrugët e trafikut?","o":["Vetëm pranë zyrës","Kudo në ndërmarrje","Vetëm para daljes","Vetëm në kalimet e ngushta"],"c":1}
+],"6":[
+{"q":"Sa e madhe është shtesa anësore me trafik në një drejtim nga njëra anë?","o":["0,30 m","0,40 m","0,50 m","0,75 m"],"c":2},
+{"q":"Sa e madhe është shtesa e takimit me trafik në dy drejtime?","o":["0,20 m","0,40 m","0,50 m","0,75 m"],"c":1},
+{"q":"Cili është kapaciteti minimal i ngarkimit të dyshemesë të rrugëve të trafikut?","o":["800 kg/m²","1200 kg/m²","1700 kg/m²","2000 kg/m²"],"c":2},
+{"q":"Çfarë konsiderohet gjerësi e mjaftushëme për urat e ngarkimit?","o":["Gjerësia e stivueses + 0,50 m","Gjerësia e stivueses + 0,70 m","Gjerësia e stivueses + 1,00 m","Vetëm gjerësia e stivueses"],"c":1},
+{"q":"Çfarë duhet respektuar gjatë hyrjes në kalimet e ngushta?","o":["Gjithmonë me shpëtësi maksimale","Hyni vetëm kur nuk ka këmbësorë brenda","Bora dhe vazhdoni","Asgjë e veçantë"],"c":1},
+{"q":"Sa e madhe është distanca e sigur isë para portave dhe dyerve?","o":["Min. 0,5 m","Min. 1 m","Min. 2 m","Nuk nevojitet distancë"],"c":1},
+{"q":"Çfarë e rrit shtesën anësore në trafik këmbësorësh në 0,75 m?","o":["Vetëm trafiku në dy drejtime","Përdorimi i njëkohshëm si trotuar","Ngarkesa të rënda","Kalimet e ngushta"],"c":1},
+{"q":"Cila masë mbron në kalimet e ngushta nga rreziku për persona?","o":["Bori më e lartë","Barriera fotoelektrike, gardhe ose sensorë në stivuese","Ndriçim më i madh","Shpëtësi më e ulët"],"c":1},
+{"q":"Çfarë duhet të vlejë në kryqëzimet brenda rrugëve të trafikut?","o":["Asnjë e drejtë përparësie","Rregulla të qarta përparësie p.sh. e djathta para të majtës","Gjithmonë frenoni","Automjetet kanë gjithmonë përparësi"],"c":1},
+{"q":"Cila kategori leje drejtimi vlen për stivuese nën 25 km/h në rrugë publike?","o":["Kategoria B","Kategoria C","Kategoria L","Nuk nevojitet"],"c":2}
+],"7":[
+{"q":"Çfarë është boshti i rrëzimit të stivueses?","o":["Boshti i pasëm","Boshti i përparmë","Qendra e gravitetit","Kundërpesha"],"c":1},
+{"q":"Çfarë ndodh kur qendra e përgjith shme e gravitetit kalon përte j boshtit të përparmë?","o":["Stivuesja frenon","Stivuesja rrëzohet përpara","Ngarkesa bie","Motori ndalet"],"c":1},
+{"q":"Në stivuesen pa ngarkesë, qendra e gravitetit ndodhet...","o":["Larg nga skajet e rrëzimit","Afër skajeve anësore të rrëzimit","Pas boshtit të pasëm","Mbi direkun e ngritjes"],"c":1},
+{"q":"Çfarë përshkruan ligji i levave në stivuese?","o":["Forca × Krahu i forcës = Ngarkesa × Krahu i ngarkesës","Forca × Ngarkesa = Krahu × Pika e rrotullimit","Pesha × Lartësia = Energjia","Ngarkesa × Ngritja = Puna"],"c":0},
+{"q":"Ku duhet ngritur ngarkesa për të mbajtur të vogël krahun e ngarkesës?","o":["Në majtat e kaçavirëve","Në mes të kaçavirëve","Tek shpina e kaçavirëve","Nuk ka rëndësi"],"c":2},
+{"q":"Çfarë i ndodh stabilitetit kur ngarkesa ngrihet?","o":["Rritet","Mbetet i njëjtë","Ulet","Nuk mund të matet"],"c":2},
+{"q":"Çfarë është trekëndëshi i skajeve të rrëzimit?","o":["Një shenjë paralajmëruese","Trekëndëshi i stabilitetit nga rrotat e përparme dhe qendra e boshtit të pasëm","Një pajisje mbrojtëse","Forma e kaçavirëve"],"c":1},
+{"q":"Çfarë është karakteristike për mbi 80% të aksidenteve fatale nga rrëzimi?","o":["Stivueset ishin mbingarkuar","Stivueset nuk kishin ngarkesë","Ishte natë","Shoferët ishin të rinj"],"c":1},
+{"q":"Si ndikon dyfishimi i shpëtësisë në forcën centrifugale?","o":["E dyfishon","E trefishon","E katërfishon","Asnjë efekt"],"c":2},
+{"q":"Çfarë është veçanërisht e rëndësishme gjatë kthesave me stivuese?","o":["Shpëtësi e madhe","Shpëtësi e përshtatur dhe rreze e madhe kthese","Gjithmonë bora","Ngritja e ngarkesës"],"c":1}
+],"8":[
+{"q":"Nga çfarë varet kapaciteti aktual i ngritjes i stivueses?","o":["Vetëm nga masa vetjake","Nga distanca e qendrës së gravitetit dhe lartësia e ngritjes","Nga presioni i gomave","Nga karburanti"],"c":1},
+{"q":"Çfarë tregon kapaciteti nominal i ngritjes?","o":["Lartësia maksimale e ngritjes","Kapaciteti në lartësinë e standardizuar dhe LSA-në e caktuar","Masa vetjake e stivueses","Shpëtësia e drejtimit"],"c":1},
+{"q":"Çfarë ndodh me kapacitetin kur distanca e qendrës së gravitetit rritet?","o":["Rritet","Mbetet i njëjtë","Ulet","Dyfishohet"],"c":2},
+{"q":"Çfarë ndodh me kapacitetin kur lartësia e ngritjes rritet?","o":["Rritet","Mbetet i njëjtë","Ulet","Është i pavarur"],"c":2},
+{"q":"Nga ku mund të lexohet kapaciteti aktual i ngritjes?","o":["Nga profili i gomës","Nga diagrami i kapacitetit mbajtës","Nga librezë teknike","Nga kutia e veglave"],"c":1},
+{"q":"Çfarë tregon boshti X në diagramin e thjeshtë të kapacitetit mbajtës?","o":["Lartësia e ngritjes në mm","Distanca e qendrës së gravitetit në mm","Masa vetjake në kg","Shpëtësia e drejtimit"],"c":1},
+{"q":"Çfarë tregon boshti Y në diagramin e thjeshtë të kapacitetit mbajtës?","o":["Lartësia e ngritjes në mm","Distanca e qendrës së gravitetit në mm","Ngarkesa e lejuar në kg","Presioni i gomave"],"c":2},
+{"q":"Cila kurbë duhet zgjedhur për magazinim në 5,20 m?","o":["4250 mm","5250 mm","6150 mm","Asnjë"],"c":1},
+{"q":"Çfarë nënkupton kapaciteti nominal në pllakën e prodhuesit?","o":["Ngarkesa maksimale në çdo lartësi","Ngarkesa në lartësinë e standardizuar dhe LSA-në e caktuar","Masa vetjake","Ngarkesa e dobishme e pajisjes shtesë"],"c":1},
+{"q":"A mund të ngritet ngarkesa 1600 kg me 900 mm distancë të qendrës së gravitetit?","o":["Po, gjithmonë","Jo, kapaciteti i ngritjes është tejkaluar","Vetëm në lartësi të ulët","Vetëm me kundërpeshë"],"c":1}
+],"9":[
+{"q":"Në cilën pozicion duhet të jetë direku i ngritjes gjatë transportit të ngarkesave?","o":["Vertikal","I anuar përpara","I anuar prapa","Nuk ka rëndësi"],"c":2},
+{"q":"Sa lart mund të ngritet ngarkesa maksimalisht gjatë drejtimit?","o":["20 cm","30 cm","50 cm","80 cm"],"c":2},
+{"q":"Çfarë duhet bërë SË PARI gjatë largimit nga stivuesja?","o":["Hiqni çelësin","Ulni kaçavirët","Aktivizoni frenat e parkimit","Fikni motorin"],"c":2},
+{"q":"Si duhet drejtuar ngarkesa gjatë ngasjes në pjerrësi?","o":["Drejtimi tatëpjetë","Anës lartit","Anësore","Nuk ka rëndësi"],"c":1},
+{"q":"Cili është rregulli kryesor për pamje të mjaftushëme në drejtimin e lëvizjes?","o":["Max. 5 m të mbuluar","Max. 10 m të mbuluar","Max. 15 m të mbuluar","Pamja duhet gjithmonë të jetë e lirë"],"c":1},
+{"q":"Çfarë duhet respektuar gjatë hyrjes në ashensorë?","o":["Gjithmonë hyrja me ngarkesë","Zbritni nga stivuesja dhe aktivizoni frenat e parkimit","Sa më shpejt të jetë e mundur","Lini stivuesen dhe ecni"],"c":1},
+{"q":"Çfarë duhet bërë gjatë kontrollit ditor para përdorimit?","o":["Vetëm rimbushni","Kontrolloni stivuesen sipas manualit, raportoni defektet","Ndërroni gomat","Lani stivuesen"],"c":1},
+{"q":"Cili defekt është defekt sigur ie?","o":["Gërvishtje e lehtë e lakut","Plasaritje në pjesë mbajtëse si direku i ngritjes","Ulëse të ndotura","Etiketa të zbehjura"],"c":1},
+{"q":"Kush mund të riparojë defektet e sigur isë të stivueses?","o":["Çdo shofer","Vetëm persona të kualifikuar (p.sh. teknikë)","Eprori","Këshilli i ndërmarrjes"],"c":1},
+{"q":"Çfarë duhet bërë si i fundit gjatë vendosjes së ngarkesës në raft?","o":["Anoni direkun e ngritjes përpara","Ulni kaçavirët dhe largohuni","Fikni motorin","Tërhi qni frenat e parkimit"],"c":1}
+],"10":[
+{"q":"Në çfarë intervali duhet kontrolluar stivuesja?","o":["Çdo 3 muaj","Çdo 6 muaj","Maksimum çdo 12 muaj","Çdo 2 vjet"],"c":2},
+{"q":"Çfarë duhet të përmbajë raporti i kontrollit?","o":["Vetëm datën","Datën, rezultatin, emrin e inspektorit, defektet","Vetëm emrin e inspektorit","Vetëm nëse ka kaluar ose jo"],"c":1},
+{"q":"Çfarë nevojitet gjithsesi gjatë përdorimit të platformave të punës në stivuese?","o":["Çdo stivuese është e përshtatshme","Stivuese me kapacitet të mjaftushëm dhe platformë konform","Vetëm litar sigur ie","Një shofer i dytë"],"c":1},
+{"q":"Çfarë duhet respektuar gjatë përdorimit të pajisjeve shtesë?","o":["Çdo pajisje shkon me çdo stivuese","Pajisjet shtesë dhe stivuesja duhet të koordinohen","Pajisjet shtesë gjithmonë rrisin kapacitetin","Asnjë rregullore e veçantë"],"c":1},
+{"q":"Kur mund të largohet shoferi nga vendi i tij me platformën e punës të ngritur?","o":["Gjithmonë","Vetëm shkurtimisht","Asnjëherë","Gjatë pushimeve"],"c":2},
+{"q":"Çfarë duhet respektuar gjatë transportit të ngarkesave të varura?","o":["Asnjë veçanti","Përdorni vetëm stivuese të përshtatshme, personat jo në rrugën e lëvizjes","Gjithmonë drejtimi prapa","Gjithmonë ngritni ngarkesën"],"c":1},
+{"q":"Çfarë është kusht për transportin e personave në stivuese?","o":["Gjithmonë lejohet","E rregulluar në udhëzimet e punës, vende dhe pajisje mbajtëse","Vetëm në distanca të shkurtra","Vetëm eprori mund të udhëtojë"],"c":1},
+{"q":"Çfarë duhet bërë me kaçavirët e dëmtuar?","o":["Vazhdoni drejtimin","Raportoni si defekt sigur ie dhe mos i përdorni","Riparoni vetë","Transportoni vetëm ngarkesa të lehta"],"c":1},
+{"q":"Kur duhet ngjitur pllaka e kontrollit në stivuese?","o":["Menjëherë pas kontrollit","Vetëm kur të gjithë defektet janë riparuar","Para kontrollit","Nuk është e nevojshme"],"c":1},
+{"q":"Çfarë duhet njohur para transportit të rimorkiave?","o":["Ngjyra","Kapaciteti maksimal i rimorkimit","Viti i prodhimit","Prodhuesi"],"c":1}
+]};
 var params=new URLSearchParams(window.location.search);
 var regnr=params.get('regnr')||'';
 var lang=params.get('lang')||sessionStorage.getItem('lang')||'de';
 if(lang==='pl'){ORDNER='PL_BILDER';KAPITEL=KAPITEL_PL;QUIZ_DATA=QUIZ_DATA_PL;}
 if(lang==='ro'){ORDNER='RO_BILDER';KAPITEL=KAPITEL_RO;QUIZ_DATA=QUIZ_DATA_RO;}
+if(lang==='sq'){ORDNER='AL_BILDER';KAPITEL=KAPITEL_SQ;QUIZ_DATA=QUIZ_DATA_SQ;}
 if(lang==='en') ORDNER='EN_BILDER';
 var T=TXT[lang]||TXT.de;
 
