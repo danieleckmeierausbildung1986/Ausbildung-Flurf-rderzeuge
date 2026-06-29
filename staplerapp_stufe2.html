@@ -7,13 +7,10 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
 body{font-family:'Segoe UI',Arial,sans-serif;background:#f0f2f5;min-height:100vh;}
-.topbar{background:linear-gradient(135deg,#1a1a2e 0%,#16213e 100%);color:#fff;padding:12px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.3);}
+.topbar{background:linear-gradient(135deg,#1a1a2e 0%,#16213e 100%);color:#fff;padding:12px 20px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.3);}
 .topbar h1{font-size:1.1rem;font-weight:700;white-space:nowrap;}
 .topbar p{font-size:.75rem;opacity:.75;white-space:nowrap;}
 .top-left{display:flex;flex-direction:column;gap:2px;min-width:0;}
-.top-right{display:flex;gap:8px;flex-shrink:0;}
-.contact-btn{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);color:#fff;border-radius:8px;padding:6px 12px;font-size:.8rem;text-decoration:none;cursor:pointer;white-space:nowrap;transition:background .2s;}
-.contact-btn:hover{background:rgba(255,255,255,.22);}
 .prog-bar-wrap{width:100%;background:#e0e4ea;border-radius:4px;height:6px;margin:0 20px;}
 .prog-bar{height:6px;background:linear-gradient(90deg,#e63946,#c1121f);border-radius:4px;transition:width .4s;}
 .prog-label{font-size:.75rem;color:#555;white-space:nowrap;flex-shrink:0;}
@@ -37,20 +34,23 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:#f0f2f5;min-height:100vh
 .start-btn:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(230,57,70,.4);}
 
 /* Slide */
-.slide-wrap{flex:1;display:flex;flex-direction:column;align-items:center;padding:16px 20px 80px;}
+.slide-wrap{flex:1;display:flex;flex-direction:column;align-items:center;padding:16px 20px 120px;}
 .slide-img-box{width:100%;max-width:900px;background:#fff;border-radius:12px;box-shadow:0 2px 12px rgba(0,0,0,.1);overflow:hidden;margin-bottom:12px;}
 .slide-img-box img{width:100%;height:auto;display:block;}
-.slide-nav{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid #dde1e8;padding:12px 20px;display:flex;gap:10px;justify-content:center;box-shadow:0 -2px 8px rgba(0,0,0,.08);}
+.slide-nav{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid #dde1e8;padding:10px 20px 12px;display:flex;flex-direction:column;gap:8px;box-shadow:0 -2px 8px rgba(0,0,0,.08);}
+.nav-row{display:flex;gap:10px;justify-content:center;}
 .nav-btn{background:linear-gradient(135deg,#e63946,#c1121f);color:#fff;border:none;border-radius:8px;padding:10px 24px;font-size:.9rem;font-weight:600;cursor:pointer;transition:transform .15s;}
 .nav-btn:hover{transform:translateY(-1px);}
 .nav-btn.sec{background:#fff;color:#333;border:1px solid #ccc;}
 .nav-btn.sec:hover{background:#f5f5f5;}
-.contact-row{display:flex;gap:8px;position:fixed;bottom:56px;right:16px;}
-.contact-row a{background:#25d366;color:#fff;border-radius:50%;width:40px;height:40px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;text-decoration:none;box-shadow:0 2px 8px rgba(0,0,0,.2);}
-.contact-row a.mail{background:#0072c6;}
+.kontakt-bar{display:flex;gap:8px;}
+.kontakt-btn{display:flex;align-items:center;justify-content:center;gap:7px;padding:9px 16px;border:none;border-radius:10px;font-size:.85rem;font-weight:600;cursor:pointer;font-family:inherit;text-decoration:none;transition:opacity .15s;flex:1;}
+.kontakt-btn.wa{background:#25D366;color:#fff;}
+.kontakt-btn.mail{background:#0072C6;color:#fff;}
+.kontakt-btn:hover{opacity:.88;}
 
 /* Quiz */
-.quiz-wrap{flex:1;display:flex;flex-direction:column;align-items:center;padding:20px 20px 100px;}
+.quiz-wrap{flex:1;display:flex;flex-direction:column;align-items:center;padding:20px 20px 130px;}
 .quiz-card{width:100%;max-width:700px;background:#fff;border-radius:14px;box-shadow:0 2px 12px rgba(0,0,0,.09);padding:28px;}
 .quiz-label{font-size:.78rem;font-weight:700;color:#e63946;text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px;}
 .quiz-q{font-size:1.05rem;font-weight:700;color:#1a1a2e;line-height:1.4;margin-bottom:20px;}
@@ -88,10 +88,6 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:#f0f2f5;min-height:100vh
     <h1 id="appTitle">Gabelstapler Ausbildung</h1>
     <p id="appSubtitle">Stufe 2 – Sonderausbildung</p>
   </div>
-  <div class="top-right">
-    <a id="waBtn" class="contact-btn" href="#" target="_blank">💬 WhatsApp</a>
-    <a id="mailBtn" class="contact-btn" href="#">✉ E-Mail</a>
-  </div>
 </div>
 <div class="prog-row">
   <div class="prog-bar-wrap"><div class="prog-bar" id="progBar" style="width:0%"></div></div>
@@ -128,8 +124,14 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:#f0f2f5;min-height:100vh
     <div style="font-size:.8rem;color:#888;margin-top:4px;" id="slideLabel"></div>
   </div>
   <div class="slide-nav">
-    <button class="nav-btn sec" onclick="prev()" id="prevBtnEl"></button>
-    <button class="nav-btn" onclick="next()" id="nextBtnEl"></button>
+    <div class="nav-row">
+      <button class="nav-btn sec" onclick="prev()" id="prevBtnEl"></button>
+      <button class="nav-btn" onclick="next()" id="nextBtnEl"></button>
+    </div>
+    <div class="kontakt-bar">
+      <a class="kontakt-btn wa" id="waBtnF" href="#" target="_blank">💬 WhatsApp</a>
+      <a class="kontakt-btn mail" id="mailBtnF" href="#" target="_blank">✉️ E-Mail</a>
+    </div>
   </div>
 </div>
 
@@ -145,8 +147,14 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:#f0f2f5;min-height:100vh
     </div>
   </div>
   <div class="slide-nav">
-    <button class="nav-btn sec" onclick="prev()" id="prevBtnQuiz"></button>
-    <button class="nav-btn" onclick="next()" id="nextBtnQuiz" style="display:none"></button>
+    <div class="nav-row">
+      <button class="nav-btn sec" onclick="prev()" id="prevBtnQuiz"></button>
+      <button class="nav-btn" onclick="next()" id="nextBtnQuiz" style="display:none"></button>
+    </div>
+    <div class="kontakt-bar">
+      <a class="kontakt-btn wa" id="waBtnQ" href="#" target="_blank">💬 WhatsApp</a>
+      <a class="kontakt-btn mail" id="mailBtnQ" href="#" target="_blank">✉️ E-Mail</a>
+    </div>
   </div>
 </div>
 
@@ -371,12 +379,13 @@ function updateProg(){
 }
 
 function updateContact(){
-  var ctx=geratName+(idx<TOTAL?' · '+T.folie+' '+(idx+1):' · '+T.frage+' '+(idx-TOTAL+1));
   var waMsg=T.waMsg.replace('{gerat}',geratName);
   var mSubj=T.mailSubj.replace('{gerat}',geratName);
   var mBody=T.mailBody.replace('{gerat}',geratName);
-  document.getElementById('waBtn').href='https://wa.me/'+WA_NR+'?text='+encodeURIComponent(waMsg);
-  document.getElementById('mailBtn').href='mailto:'+MAIL+'?subject='+encodeURIComponent(mSubj)+'&body='+encodeURIComponent(mBody);
+  var waHref='https://wa.me/'+WA_NR+'?text='+encodeURIComponent(waMsg);
+  var mailHref='mailto:'+MAIL+'?subject='+encodeURIComponent(mSubj)+'&body='+encodeURIComponent(mBody);
+  ['waBtnF','waBtnQ'].forEach(function(id){var el=document.getElementById(id);if(el)el.href=waHref;});
+  ['mailBtnF','mailBtnQ'].forEach(function(id){var el=document.getElementById(id);if(el)el.href=mailHref;});
 }
 
 function showScreen(id){
