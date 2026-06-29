@@ -1,178 +1,236 @@
 <!DOCTYPE html>
-<html lang="ro">
+<html lang="de">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Gabelstapler Ausbildung – Stufe 2</title>
 <style>
-*{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:'Segoe UI',Arial,sans-serif;background:#f0f2f5;min-height:100vh;}
-.topbar{background:linear-gradient(135deg,#1a1a2e 0%,#16213e 100%);color:#fff;padding:12px 20px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.3);}
-.topbar h1{font-size:1.1rem;font-weight:700;white-space:nowrap;}
-.topbar p{font-size:.75rem;opacity:.75;white-space:nowrap;}
-.top-left{display:flex;flex-direction:column;gap:2px;min-width:0;}
-.prog-bar-wrap{width:100%;background:#e0e4ea;border-radius:4px;height:6px;margin:0 20px;}
-.prog-bar{height:6px;background:linear-gradient(90deg,#e63946,#c1121f);border-radius:4px;transition:width .4s;}
-.prog-label{font-size:.75rem;color:#555;white-space:nowrap;flex-shrink:0;}
-.prog-row{display:flex;align-items:center;gap:10px;padding:8px 20px 6px;background:#fff;border-bottom:1px solid #dde1e8;}
-
-.screen{display:none;min-height:calc(100vh - 56px);}
-.screen.active{display:flex;flex-direction:column;}
-
-/* Welcome */
-.welcome-wrap{max-width:700px;margin:40px auto;padding:0 20px;width:100%;}
-.welcome-card{background:#fff;border-radius:16px;box-shadow:0 4px 20px rgba(0,0,0,.08);overflow:hidden;}
-.welcome-header{background:linear-gradient(135deg,#1a1a2e,#16213e);color:#fff;padding:40px 32px;}
-.welcome-header h2{font-size:1.6rem;margin-bottom:8px;}
-.welcome-header p{opacity:.8;font-size:.95rem;line-height:1.5;}
-.welcome-body{padding:28px 32px;}
-.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px;}
-.info-card{background:#f8f9fb;border-radius:10px;padding:16px;border-left:4px solid #e63946;}
-.info-card h3{font-size:.9rem;font-weight:700;margin-bottom:4px;color:#1a1a2e;}
-.info-card p{font-size:.82rem;color:#666;}
-.start-btn{display:block;width:100%;background:linear-gradient(135deg,#e63946,#c1121f);color:#fff;border:none;border-radius:10px;padding:16px;font-size:1rem;font-weight:700;cursor:pointer;transition:transform .15s,box-shadow .15s;}
-.start-btn:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(230,57,70,.4);}
-
-/* Slide */
-.slide-wrap{flex:1;display:flex;flex-direction:column;align-items:center;padding:16px 20px 120px;}
-.slide-img-box{width:100%;max-width:900px;background:#fff;border-radius:12px;box-shadow:0 2px 12px rgba(0,0,0,.1);overflow:hidden;margin-bottom:12px;}
-.slide-img-box img{width:100%;height:auto;display:block;}
-.slide-nav{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid #dde1e8;padding:10px 20px 12px;display:flex;flex-direction:column;gap:8px;box-shadow:0 -2px 8px rgba(0,0,0,.08);}
-.nav-row{display:flex;gap:10px;justify-content:center;}
-.nav-btn{background:linear-gradient(135deg,#e63946,#c1121f);color:#fff;border:none;border-radius:8px;padding:10px 24px;font-size:.9rem;font-weight:600;cursor:pointer;transition:transform .15s;}
-.nav-btn:hover{transform:translateY(-1px);}
-.nav-btn.sec{background:#fff;color:#333;border:1px solid #ccc;}
-.nav-btn.sec:hover{background:#f5f5f5;}
-.kontakt-bar{display:flex;gap:8px;}
-.kontakt-btn{display:flex;align-items:center;justify-content:center;gap:7px;padding:9px 16px;border:none;border-radius:10px;font-size:.85rem;font-weight:600;cursor:pointer;font-family:inherit;text-decoration:none;transition:opacity .15s;flex:1;}
+:root{
+  --bg:#0d1f12;--green:#1a7a4a;--green-l:#2ea865;--green-d:#0d4a24;
+  --acc1:#1a3a6b;--acc2:#2e6cb0;
+  --navy:#16243f;--muted:#68788f;--line:#e3e8f0;--ink:#1a2330;
+  --shadow:0 8px 40px rgba(0,0,0,.25);
+  --ok:#1a9e6e;--okbg:#e8f7f2;--no:#c0392b;--nobg:#fdecea;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:"Segoe UI",system-ui,sans-serif;
+  min-height:100vh;background:var(--bg);
+  display:flex;flex-direction:column;align-items:center;padding:16px;
+}
+body::before{
+  content:'';position:fixed;inset:0;
+  background:
+    radial-gradient(ellipse 80% 60% at 20% 20%, rgba(26,122,74,.25) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 80% at 80% 80%, rgba(13,74,36,.3) 0%, transparent 60%);
+  pointer-events:none;z-index:0;
+}
+.wrap{position:relative;z-index:1;width:100%;max-width:1000px;display:flex;flex-direction:column;flex:1}
+/* TOPBAR */
+.topbar{display:flex;align-items:center;gap:14px;margin-bottom:12px;}
+.ti{width:46px;height:46px;border-radius:12px;flex-shrink:0;
+  background:linear-gradient(135deg,var(--acc1),var(--acc2));
+  display:flex;align-items:center;justify-content:center;font-size:22px;box-shadow:0 6px 20px rgba(0,0,0,.3);}
+.topbar h1{color:#fff;font-size:18px;font-weight:700;line-height:1.2}
+.topbar p{color:rgba(255,255,255,.45);font-size:12px}
+.prog-badge{font-size:11px;color:rgba(255,255,255,.55);margin-top:3px;min-height:14px;}
+/* STAGE */
+.stage{background:#fff;border-radius:18px;box-shadow:var(--shadow);overflow:hidden;
+  display:flex;flex-direction:column;width:100%;}
+.progress{height:5px;background:var(--line)}
+.progress-bar{height:100%;background:linear-gradient(90deg,var(--acc1),var(--acc2));transition:width .25s ease;width:0}
+/* SCREENS */
+.screen{display:none;}
+.screen.active{display:block;}
+/* WELCOME */
+.welcome-box{padding:40px 28px;text-align:center;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;gap:14px;background:linear-gradient(135deg,var(--green-d),var(--green-l));}
+.welcome-logo{font-size:60px;}
+.welcome-titel{font-size:26px;font-weight:800;color:#fff;line-height:1.3;}
+.welcome-sub{font-size:15px;color:rgba(255,255,255,.85);line-height:1.6;max-width:500px;}
+.welcome-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;width:100%;max-width:500px;}
+.wg{background:rgba(255,255,255,.15);border-radius:12px;padding:12px;text-align:left;}
+.wg-icon{font-size:20px;margin-bottom:4px;}
+.wg-titel{font-size:12px;font-weight:700;color:#fff;margin-bottom:2px;}
+.wg-text{font-size:11px;color:rgba(255,255,255,.75);}
+.welcome-start{padding:14px 36px;border:none;border-radius:12px;font-size:16px;font-weight:700;
+  cursor:pointer;font-family:inherit;background:#fff;color:var(--green-d);margin-top:6px;}
+/* FOLIENBOX */
+.slidebox{position:relative;background:#0d1a2e;display:flex;align-items:center;justify-content:center;
+  min-height:200px;}
+.slidebox img{width:100%;height:auto;display:block;max-height:65vh;object-fit:contain;}
+.nav-zone{position:absolute;top:0;bottom:0;width:30%;cursor:pointer;z-index:2;
+  display:flex;align-items:center;opacity:0;transition:opacity .15s}
+.nav-zone:hover{opacity:1}
+.nav-zone.prev{left:0;justify-content:flex-start;background:linear-gradient(90deg,rgba(0,0,0,.35),transparent)}
+.nav-zone.next{right:0;justify-content:flex-end;background:linear-gradient(270deg,rgba(0,0,0,.35),transparent)}
+.nav-zone span{color:#fff;font-size:30px;padding:0 14px;text-shadow:0 2px 8px rgba(0,0,0,.5)}
+.folie-label{font-size:12px;color:var(--muted);text-align:center;padding:6px 0 2px;}
+/* QUIZ */
+.quizbox{padding:28px;display:flex;flex-direction:column;}
+.quiz-badge{font-size:12px;font-weight:700;color:var(--acc2);text-transform:uppercase;letter-spacing:.6px;margin-bottom:12px;}
+.quiz-q{font-size:19px;font-weight:700;color:var(--navy);margin-bottom:20px;line-height:1.4;}
+.quiz-opts{display:flex;flex-direction:column;gap:10px;}
+.opt{text-align:left;padding:14px 18px;border:2px solid var(--line);border-radius:12px;
+  background:#fff;font-size:15px;color:var(--ink);cursor:pointer;font-family:inherit;transition:all .12s;}
+.opt:hover:not(:disabled){border-color:var(--acc2);background:#f0f7ff;}
+.opt:disabled{cursor:default;}
+.opt.correct{border-color:var(--ok)!important;background:var(--okbg)!important;color:var(--ok)!important;font-weight:700;}
+.opt.wrong{border-color:var(--no)!important;background:var(--nobg)!important;color:var(--no)!important;}
+.quiz-fb{margin-top:16px;font-size:15px;font-weight:700;min-height:24px;}
+.quiz-fb.ok{color:var(--ok)}.quiz-fb.no{color:var(--no)}
+.quiz-prog{font-size:12px;color:var(--muted);margin-bottom:6px;}
+/* ABSCHLUSS */
+.abschluss-box{padding:48px 28px;text-align:center;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:14px;}
+.abschluss-icon{font-size:50px;}
+.abschluss-titel{font-size:22px;font-weight:800;color:var(--navy);}
+.abschluss-sub{font-size:14px;color:var(--muted);max-width:400px;}
+.abschluss-score{background:var(--okbg);border:1px solid var(--ok);border-radius:12px;
+  padding:12px 20px;font-size:15px;color:#0d5c3a;font-weight:600;}
+.abschluss-btn{padding:14px 32px;border:none;border-radius:12px;font-size:16px;font-weight:700;
+  cursor:pointer;font-family:inherit;background:linear-gradient(135deg,var(--acc1),var(--acc2));color:#fff;transition:all .15s;}
+.abschluss-btn:hover{opacity:.9;}
+/* CONTROLS */
+.controls{display:flex;align-items:center;justify-content:space-between;
+  padding:14px 18px;background:#fff;border-top:1px solid var(--line);gap:12px;}
+.ctrl-btn{display:flex;align-items:center;gap:7px;padding:11px 20px;border:none;border-radius:11px;
+  background:linear-gradient(135deg,var(--acc1),var(--acc2));
+  color:#fff;font-size:14px;font-weight:700;cursor:pointer;transition:opacity .15s;font-family:inherit;}
+.ctrl-btn:hover{opacity:.9;}
+.ctrl-btn:disabled{opacity:.35;cursor:not-allowed;}
+.counter{font-size:13px;font-weight:700;color:var(--muted);text-align:center;line-height:1.4;}
+/* KONTAKT */
+.kontakt-bar{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;}
+.kontakt-btn{display:flex;align-items:center;gap:7px;padding:10px 18px;border:none;border-radius:10px;
+  font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;text-decoration:none;
+  transition:all .15s;flex:1;justify-content:center;}
 .kontakt-btn.wa{background:#25D366;color:#fff;}
 .kontakt-btn.mail{background:#0072C6;color:#fff;}
-.kontakt-btn:hover{opacity:.88;}
-
-/* Quiz */
-.quiz-wrap{flex:1;display:flex;flex-direction:column;align-items:center;padding:20px 20px 130px;}
-.quiz-card{width:100%;max-width:700px;background:#fff;border-radius:14px;box-shadow:0 2px 12px rgba(0,0,0,.09);padding:28px;}
-.quiz-label{font-size:.78rem;font-weight:700;color:#e63946;text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px;}
-.quiz-q{font-size:1.05rem;font-weight:700;color:#1a1a2e;line-height:1.4;margin-bottom:20px;}
-.quiz-opts{display:flex;flex-direction:column;gap:10px;}
-.quiz-opt{background:#f8f9fb;border:2px solid #e0e4ea;border-radius:10px;padding:12px 16px;cursor:pointer;font-size:.92rem;transition:all .15s;text-align:left;}
-.quiz-opt:hover:not([disabled]){border-color:#e63946;background:#fff5f5;}
-.quiz-opt.correct{border-color:#2dc653;background:#edfbf0;color:#166534;}
-.quiz-opt.wrong{border-color:#e63946;background:#fff0f0;color:#9b1c1c;}
-.quiz-feedback{margin-top:16px;padding:12px 16px;border-radius:8px;font-size:.9rem;font-weight:600;display:none;}
-.quiz-feedback.show{display:block;}
-.quiz-feedback.ok{background:#edfbf0;color:#166534;border:1px solid #bbf7d0;}
-.quiz-feedback.nok{background:#fff0f0;color:#9b1c1c;border:1px solid #fecaca;}
-.quiz-score{font-size:.85rem;color:#666;margin-top:12px;}
-
-/* Abschluss */
-.abschluss-wrap{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;}
-.abschluss-card{width:100%;max-width:600px;background:#fff;border-radius:16px;box-shadow:0 4px 20px rgba(0,0,0,.1);padding:40px;text-align:center;}
-.abschluss-icon{font-size:3rem;margin-bottom:16px;}
-.abschluss-card h2{font-size:1.5rem;font-weight:700;color:#1a1a2e;margin-bottom:8px;}
-.abschluss-card p{color:#555;font-size:.95rem;margin-bottom:20px;}
-.score-badge{display:inline-block;background:linear-gradient(135deg,#e63946,#c1121f);color:#fff;border-radius:50px;padding:8px 24px;font-size:1.1rem;font-weight:700;margin-bottom:24px;}
-.restart-btn{background:#1a1a2e;color:#fff;border:none;border-radius:8px;padding:12px 28px;font-size:.9rem;font-weight:600;cursor:pointer;margin-top:8px;}
-
+.back-btn{display:block;width:100%;padding:12px;border:2px solid rgba(255,255,255,.2);
+  border-radius:12px;background:rgba(255,255,255,.06);color:rgba(255,255,255,.8);
+  font-size:14px;font-weight:600;cursor:pointer;text-align:center;font-family:inherit;margin-top:8px;}
+.back-btn:hover{border-color:var(--green-l);color:#fff;background:rgba(255,255,255,.12);}
+/* RESPONSIVE */
+@media(max-width:900px){
+  .topbar h1{font-size:16px}
+  .quiz-q{font-size:17px}
+}
 @media(max-width:600px){
-.info-grid{grid-template-columns:1fr;}
-.welcome-header{padding:28px 20px;}
-.welcome-body{padding:20px;}
-.quiz-card{padding:20px;}
+  body{padding:6px 6px 10px}
+  .topbar{gap:8px;margin-bottom:8px}
+  .ti{width:36px;height:36px;font-size:17px;border-radius:9px}
+  .topbar h1{font-size:14px}
+  .topbar p{font-size:10px}
+  .stage{border-radius:12px}
+  .welcome-box{padding:22px 14px;gap:10px}
+  .welcome-logo{font-size:42px}
+  .welcome-titel{font-size:19px}
+  .welcome-sub{font-size:13px}
+  .welcome-grid{grid-template-columns:1fr}
+  .quizbox{padding:16px 14px}
+  .quiz-badge{font-size:11px}
+  .quiz-q{font-size:15px;margin-bottom:14px}
+  .opt{padding:11px 13px;font-size:14px}
+  .abschluss-box{padding:22px 14px;gap:10px}
+  .abschluss-icon{font-size:40px}
+  .abschluss-titel{font-size:18px}
+  .slidebox{min-height:180px}
+  .slidebox img{max-height:52vh}
+  .nav-zone{opacity:.35;width:22%}
+  .controls{padding:9px 10px;gap:8px}
+  .ctrl-btn{padding:10px 13px;font-size:13px}
+  .counter{font-size:12px}
+  .kontakt-bar{gap:6px;margin-top:8px}
+  .kontakt-btn{padding:9px 12px;font-size:13px}
+  .back-btn{padding:10px;font-size:13px;margin-top:6px}
+}
+@media(max-width:380px){
+  .topbar p{display:none}
+  .topbar h1{font-size:13px}
+  .quiz-q{font-size:14px}
+  .opt{font-size:13px}
+  .ctrl-btn{padding:9px 10px;font-size:12px}
 }
 </style>
 </head>
 <body>
-<div class="topbar">
-  <div class="top-left">
-    <h1 id="appTitle">Gabelstapler Ausbildung</h1>
-    <p id="appSubtitle">Stufe 2 – Sonderausbildung</p>
+<div class="wrap">
+  <div class="topbar">
+    <div class="ti">&#x1F3ED;</div>
+    <div>
+      <h1 id="appTitle">Gabelstapler Ausbildung</h1>
+      <p id="appSubtitle">Stufe 2 &ndash; Sonderausbildung</p>
+      <div class="prog-badge" id="progBadge"></div>
+    </div>
   </div>
-</div>
-<div class="prog-row">
-  <div class="prog-bar-wrap"><div class="prog-bar" id="progBar" style="width:0%"></div></div>
-  <div class="prog-label" id="progLabel">0 / 0</div>
-</div>
+  <div class="stage">
+    <div class="progress"><div class="progress-bar" id="pbar"></div></div>
 
-<!-- WELCOME -->
-<div class="screen active" id="screenWelcome">
-  <div class="welcome-wrap">
-    <div class="welcome-card">
-      <div class="welcome-header">
-        <h2 id="wTitel"></h2>
-        <p id="wSub"></p>
-      </div>
-      <div class="welcome-body">
-        <div class="info-grid">
-          <div class="info-card"><h3 id="wg1T"></h3><p id="wg1P"></p></div>
-          <div class="info-card"><h3 id="wg2T"></h3><p id="wg2P"></p></div>
-          <div class="info-card"><h3 id="wg3T"></h3><p id="wg3P"></p></div>
-          <div class="info-card"><h3 id="wg4T"></h3><p id="wg4P"></p></div>
+    <!-- WELCOME -->
+    <div class="screen active" id="screenWelcome">
+      <div class="welcome-box">
+        <div class="welcome-logo">&#x1F3ED;</div>
+        <div class="welcome-titel" id="wTitel"></div>
+        <div class="welcome-sub" id="wSub"></div>
+        <div class="welcome-grid">
+          <div class="wg"><div class="wg-icon">&#x1F4CB;</div><div class="wg-titel" id="wg1T"></div><div class="wg-text" id="wg1P"></div></div>
+          <div class="wg"><div class="wg-icon">&#x2753;</div><div class="wg-titel" id="wg2T"></div><div class="wg-text" id="wg2P"></div></div>
+          <div class="wg"><div class="wg-icon">&#x1F4AC;</div><div class="wg-titel" id="wg3T"></div><div class="wg-text" id="wg3P"></div></div>
+          <div class="wg"><div class="wg-icon">&#x1F4DC;</div><div class="wg-titel" id="wg4T"></div><div class="wg-text" id="wg4P"></div></div>
         </div>
-        <button class="start-btn" onclick="startApp()" id="startBtnEl"></button>
+        <button class="welcome-start" onclick="startApp()" id="startBtnEl"></button>
       </div>
     </div>
-  </div>
-</div>
 
-<!-- FOLIE -->
-<div class="screen" id="screenFolie">
-  <div class="slide-wrap">
-    <div class="slide-img-box">
-      <img id="slideImg" src="" alt="Folie">
+    <!-- FOLIE -->
+    <div class="screen" id="screenFolie">
+      <div class="slidebox">
+        <img id="slideImg" src="" alt="Folie">
+        <div class="nav-zone prev" onclick="prev()"><span>&#8249;</span></div>
+        <div class="nav-zone next" onclick="next()"><span>&#8250;</span></div>
+      </div>
+      <div class="folie-label" id="folieLabel"></div>
     </div>
-    <div style="font-size:.8rem;color:#888;margin-top:4px;" id="slideLabel"></div>
-  </div>
-  <div class="slide-nav">
-    <div class="nav-row">
-      <button class="nav-btn sec" onclick="prev()" id="prevBtnEl"></button>
-      <button class="nav-btn" onclick="next()" id="nextBtnEl"></button>
-    </div>
-    <div class="kontakt-bar">
-      <a class="kontakt-btn wa" id="waBtnF" href="#" target="_blank">💬 WhatsApp</a>
-      <a class="kontakt-btn mail" id="mailBtnF" href="#" target="_blank">✉️ E-Mail</a>
-    </div>
-  </div>
-</div>
 
-<!-- QUIZ -->
-<div class="screen" id="screenQuiz">
-  <div class="quiz-wrap">
-    <div class="quiz-card">
-      <div class="quiz-label" id="quizLabel"></div>
-      <div class="quiz-q" id="quizQ"></div>
-      <div class="quiz-opts" id="quizOpts"></div>
-      <div class="quiz-feedback" id="quizFeedback"></div>
-      <div class="quiz-score" id="quizScore"></div>
+    <!-- QUIZ -->
+    <div class="screen" id="screenQuiz">
+      <div class="quizbox">
+        <div class="quiz-prog" id="quizProg"></div>
+        <div class="quiz-badge" id="quizBadge"></div>
+        <div class="quiz-q" id="quizQ"></div>
+        <div class="quiz-opts" id="quizOpts"></div>
+        <div class="quiz-fb" id="quizFb"></div>
+      </div>
     </div>
-  </div>
-  <div class="slide-nav">
-    <div class="nav-row">
-      <button class="nav-btn sec" onclick="prev()" id="prevBtnQuiz"></button>
-      <button class="nav-btn" onclick="next()" id="nextBtnQuiz" style="display:none"></button>
-    </div>
-    <div class="kontakt-bar">
-      <a class="kontakt-btn wa" id="waBtnQ" href="#" target="_blank">💬 WhatsApp</a>
-      <a class="kontakt-btn mail" id="mailBtnQ" href="#" target="_blank">✉️ E-Mail</a>
-    </div>
-  </div>
-</div>
 
-<!-- ABSCHLUSS -->
-<div class="screen" id="screenAbschluss">
-  <div class="abschluss-wrap">
-    <div class="abschluss-card">
-      <div class="abschluss-icon" id="abschlussIcon"></div>
-      <h2 id="abschlussTitle"></h2>
-      <p id="abschlussSub"></p>
-      <div class="score-badge" id="abschlussScore"></div>
-      <br>
-      <button class="restart-btn" onclick="restart()" id="restartBtnEl"></button>
+    <!-- ABSCHLUSS -->
+    <div class="screen" id="screenAbschluss">
+      <div class="abschluss-box">
+        <div class="abschluss-icon" id="abschlussIcon"></div>
+        <div class="abschluss-titel" id="abschlussTitel"></div>
+        <div class="abschluss-sub" id="abschlussSub"></div>
+        <div class="abschluss-score" id="abschlussScore"></div>
+        <button class="abschluss-btn" onclick="restart()" id="restartBtnEl"></button>
+      </div>
+    </div>
+
+    <div class="controls" id="controls">
+      <button class="ctrl-btn" id="prevBtnEl" onclick="prev()">&#8249; <span id="prevTxt"></span></button>
+      <div class="counter" id="counter"></div>
+      <button class="ctrl-btn" id="nextBtnEl" onclick="next()"><span id="nextTxt"></span> &#8250;</button>
     </div>
   </div>
+
+  <div class="kontakt-bar">
+    <a class="kontakt-btn wa" id="waBtn" href="#" target="_blank">&#x1F4AC; WhatsApp</a>
+    <a class="kontakt-btn mail" id="mailBtn" href="#" target="_blank">&#x2709;&#xFE0F; E-Mail</a>
+  </div>
+  <button class="back-btn" id="backBtnEl" onclick="goBack()"></button>
 </div>
 
 <script>
+
 var params=new URLSearchParams(window.location.search);
 var lang=params.get('lang')||'ro';
 var gerat=params.get('gerat')||'schubmast';
@@ -452,37 +510,48 @@ var quizTimer=null;
 
 function totalSteps(){return TOTAL+QUIZ.length;}
 
+var BASE='https://danieleckmeierausbildung1986.github.io/Ausbildung-Flurf-rderzeuge/';
+var BACK_TXT={de:'← Zurück zur Geräteauswahl',ro:'← Înapoi la selecția aparatelor',pl:'← Powrót do wyboru urządzenia',sq:'← Kthehu te zgjedhja e pajisjes'};
+
+function goBack(){
+  var nr=new URLSearchParams(window.location.search).get('regnr');
+  window.location.href=BASE+'staplerapp_stufe2_auswahl.html'+(nr?'?regnr='+encodeURIComponent(nr):'');
+}
+
 function updateProg(){
-  var p=Math.round((idx/(totalSteps()-1))*100);
-  document.getElementById('progBar').style.width=p+'%';
-  document.getElementById('progLabel').textContent=(idx+1)+' '+T.von+' '+totalSteps();
+  var total=totalSteps();
+  var p=total>1?Math.round((idx/(total-1))*100):0;
+  document.getElementById('pbar').style.width=p+'%';
+  document.getElementById('progBadge').textContent=(idx+1)+' '+T.von+' '+total;
+  document.getElementById('counter').textContent=(idx+1)+' '+T.von+' '+total;
 }
 
 function updateContact(){
   var waMsg=T.waMsg.replace('{gerat}',geratName);
   var mSubj=T.mailSubj.replace('{gerat}',geratName);
   var mBody=T.mailBody.replace('{gerat}',geratName);
-  var waHref='https://wa.me/'+WA_NR+'?text='+encodeURIComponent(waMsg);
-  var mailHref='mailto:'+MAIL+'?subject='+encodeURIComponent(mSubj)+'&body='+encodeURIComponent(mBody);
-  ['waBtnF','waBtnQ'].forEach(function(id){var el=document.getElementById(id);if(el)el.href=waHref;});
-  ['mailBtnF','mailBtnQ'].forEach(function(id){var el=document.getElementById(id);if(el)el.href=mailHref;});
+  document.getElementById('waBtn').href='https://wa.me/'+WA_NR+'?text='+encodeURIComponent(waMsg);
+  document.getElementById('mailBtn').href='mailto:'+MAIL+'?subject='+encodeURIComponent(mSubj)+'&body='+encodeURIComponent(mBody);
 }
 
 function showScreen(id){
   document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active');});
   document.getElementById(id).classList.add('active');
+  var onWelcome=(id==='screenWelcome');
+  var onAbschluss=(id==='screenAbschluss');
+  document.getElementById('controls').style.display=(onWelcome||onAbschluss)?'none':'flex';
 }
 
 function render(){
   updateProg();
-  updateContact();
   if(idx<TOTAL){
     showScreen('screenFolie');
     document.getElementById('slideImg').src=ORDNER+'/Folie'+(idx+1)+'.PNG';
-    document.getElementById('slideLabel').textContent=T.folie+' '+(idx+1)+' '+T.von+' '+TOTAL;
-    document.getElementById('prevBtnEl').textContent=idx===0?'':T.zurueck;
-    document.getElementById('prevBtnEl').style.visibility=idx===0?'hidden':'visible';
-    document.getElementById('nextBtnEl').textContent=T.weiter;
+    document.getElementById('folieLabel').textContent=T.folie+' '+(idx+1)+' '+T.von+' '+TOTAL;
+    document.getElementById('prevBtnEl').disabled=(idx===0);
+    document.getElementById('prevTxt').textContent=T.zurueck;
+    document.getElementById('nextTxt').textContent=T.weiter;
+    document.getElementById('nextBtnEl').disabled=false;
   } else {
     var qi=idx-TOTAL;
     if(qi>=QUIZ.length){showAbschluss();return;}
@@ -493,27 +562,28 @@ function render(){
 
 function renderQuiz(qi){
   var q=QUIZ[qi];
-  document.getElementById('quizLabel').textContent=T.frage+' '+(qi+1)+' '+T.von+' '+QUIZ.length;
+  document.getElementById('quizBadge').textContent=T.frage+' '+(qi+1)+' '+T.von+' '+QUIZ.length;
+  document.getElementById('quizProg').textContent='';
   document.getElementById('quizQ').textContent=q.q;
-  var fb=document.getElementById('quizFeedback');
-  fb.className='quiz-feedback';
+  var fb=document.getElementById('quizFb');
+  fb.className='quiz-fb';
   fb.textContent='';
-  document.getElementById('quizScore').textContent='';
-  document.getElementById('nextBtnQuiz').style.display='none';
-  document.getElementById('prevBtnQuiz').textContent=T.zurueck;
+  document.getElementById('prevBtnEl').disabled=(idx===0);
+  document.getElementById('prevTxt').textContent=T.zurueck;
+  document.getElementById('nextBtnEl').disabled=(quizAnswered[qi]===undefined);
+  document.getElementById('nextTxt').textContent=T.weiter;
   var optsEl=document.getElementById('quizOpts');
   optsEl.innerHTML='';
   q.o.forEach(function(opt,i){
     var btn=document.createElement('button');
-    btn.className='quiz-opt';
+    btn.className='opt';
     btn.textContent=opt;
     if(quizAnswered[qi]!==undefined){
       btn.disabled=true;
       if(i===q.c)btn.classList.add('correct');
       if(quizAnswered[qi]===i&&i!==q.c)btn.classList.add('wrong');
-      document.getElementById('nextBtnQuiz').style.display='inline-block';
       var answered=quizAnswered[qi];
-      fb.className='quiz-feedback show '+(answered===q.c?'ok':'nok');
+      fb.className='quiz-fb '+(answered===q.c?'ok':'no');
       fb.textContent=answered===q.c?T.richtig:T.falsch+q.o[q.c];
     } else {
       btn.onclick=function(){answerQuiz(qi,i);};
@@ -550,12 +620,12 @@ function showAbschluss(){
   var pct=Math.round((quizCorrect/QUIZ.length)*100);
   var pass=pct>=80;
   document.getElementById('abschlussIcon').textContent=pass?'🎉':'📋';
-  document.getElementById('abschlussTitle').textContent=pass?T.abschlussPass:T.abschlussFail;
+  document.getElementById('abschlussTitel').textContent=pass?T.abschlussPass:T.abschlussFail;
   document.getElementById('abschlussSub').textContent=T.abschlussSub;
   document.getElementById('abschlussScore').textContent=T.ergebnis+quizCorrect+' / '+QUIZ.length+' ('+pct+'%)';
   document.getElementById('restartBtnEl').textContent=T.wiederholen;
-  document.getElementById('progBar').style.width='100%';
-  document.getElementById('progLabel').textContent=totalSteps()+' '+T.von+' '+totalSteps();
+  document.getElementById('pbar').style.width='100%';
+  document.getElementById('progBadge').textContent=totalSteps()+' '+T.von+' '+totalSteps();
 }
 
 /* ---- INIT ---- */
@@ -575,8 +645,11 @@ document.getElementById('wg3P').textContent=T.wg3P;
 document.getElementById('wg4T').textContent=T.wg4T;
 document.getElementById('wg4P').textContent=T.wg4P;
 document.getElementById('startBtnEl').textContent=T.startBtn;
+document.getElementById('backBtnEl').textContent=BACK_TXT[lang]||BACK_TXT.de;
+document.getElementById('controls').style.display='none';
 document.documentElement.lang=lang;
 updateContact();
+
 </script>
 </body>
 </html>
