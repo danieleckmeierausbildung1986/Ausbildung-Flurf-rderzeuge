@@ -261,10 +261,12 @@ var ANMELDUNG_URL = 'https://default8af25f9034bc4ef4aba22ab6f641d5.01.environmen
 
 // Kurs + Kursnummer per URL-Parameter vorauswählen
 var _urlKursnummer = '';
+var _urlKursSpId   = '';
 (function(){
   var params = new URLSearchParams(window.location.search);
   var kurs = params.get('kurs');
   _urlKursnummer = params.get('kursnummer') || '';
+  _urlKursSpId   = params.get('kurs_sp_id') || '';
   if(!kurs) return;
   var ck = document.getElementById('ck-' + kurs);
   if(!ck) return;
@@ -355,7 +357,8 @@ document.getElementById('anmeldungForm').addEventListener('submit', async functi
     training_gebucht:        training,
     schulung:                schulungen.join(', '),
     schulungstyp:            schulungstyp,
-    kursnummer:              _urlKursnummer
+    kursnummer:              _urlKursnummer,
+    kurs_sp_id:              _urlKursSpId
   };
 
   var btn = e.target.querySelector('.af-submit');

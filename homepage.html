@@ -726,13 +726,16 @@ async function ladeTermine(){
       var svg   = KURS_SVG[kid]   || '';
       gruppen[kid].forEach(function(t){
         var kursnummer = t.kursnummer || '';
+        var kursSpId   = t.kurs_sp_id  || '';
         var max        = t.max_teilnehmer ? parseInt(t.max_teilnehmer) : 0;
         var angemeldet = t.angemeldet    ? parseInt(t.angemeldet)     : 0;
         var voll       = max > 0 && angemeldet >= max;
         var freiText   = max > 0
           ? (voll ? '⛔ Ausgebucht' : '👤 '+angemeldet+' / '+max+' Plätze belegt')
           : '';
-        var buchLink   = 'anmeldung.html?kurs='+kid+(kursnummer?'&kursnummer='+encodeURIComponent(kursnummer):'');
+        var buchLink   = 'anmeldung.html?kurs='+kid
+          +(kursnummer?'&kursnummer='+encodeURIComponent(kursnummer):'')
+          +(kursSpId?'&kurs_sp_id='+encodeURIComponent(kursSpId):'');
 
         html += '<div class="termin-card">'
           +'<div class="termin-card-header">'
