@@ -101,14 +101,12 @@ body::before{
   <div class="card" id="mainCard">
     <div class="greeting">
       <div class="greeting-name" id="greetName">Willkommen</div>
-      <div class="greeting-sub">Bitte wählen Sie Ihr Gerät</div>
+      <div class="greeting-sub" id="greetSub">Bitte wählen Sie Ihr Gerät</div>
     </div>
     <div class="devices" id="deviceList"></div>
     <div class="footer-area">
-      <div class="not-booked-hint" id="hintText" style="display:none">
-        Nicht gebuchte Geräte sind ausgegraut.<br>Bitte Ausbilder kontaktieren.
-      </div>
-      <button class="back-btn" onclick="goBack()" style="margin-top:12px">← Zurück zur Modulauswahl</button>
+      <div class="not-booked-hint" id="hintText" style="display:none"></div>
+      <button class="back-btn" id="backBtn" onclick="goBack()" style="margin-top:12px">← Zurück zur Modulauswahl</button>
     </div>
   </div>
 </div>
@@ -116,42 +114,85 @@ body::before{
 <script>
 const BASE = 'https://danieleckmeierausbildung1986.github.io/Ausbildung-Flurf-rderzeuge/';
 
+const TXT = {
+  de: {
+    hallo: 'Hallo, ',
+    greetSub: 'Bitte wählen Sie Ihr Gerät',
+    backBtn: '← Zurück zur Modulauswahl',
+    hint: 'Nicht gebuchte Geräte sind ausgegraut.<br>Bitte Ausbilder kontaktieren.',
+    notBooked: 'Nicht gebucht'
+  },
+  ro: {
+    hallo: 'Bună, ',
+    greetSub: 'Vă rugăm să alegeți aparatul',
+    backBtn: '← Înapoi la selecția modulelor',
+    hint: 'Dispozitivele nerezervate sunt grizate.<br>Vă rugăm să contactați instructorul.',
+    notBooked: 'Nerezervat'
+  },
+  pl: {
+    hallo: 'Cześć, ',
+    greetSub: 'Proszę wybrać urządzenie',
+    backBtn: '← Wróć do wyboru modułów',
+    hint: 'Niezarezerwowane urządzenia są wyszarzone.<br>Proszę skontaktować się z instruktorem.',
+    notBooked: 'Niezarezerwowane'
+  },
+  sq: {
+    hallo: 'Përshëndetje, ',
+    greetSub: 'Ju lutem zgjidhni pajisjen tuaj',
+    backBtn: '← Kthehu te zgjedhja e moduleve',
+    hint: 'Pajisjet e parezervuara janë të çaktivizuara.<br>Ju lutem kontaktoni instruktorin.',
+    notBooked: 'I parezervuar'
+  }
+};
+
 const GERAETE = [
   {
     key: 'schubmast',
     cls: 'schub',
-    title: 'Schubmaststapler',
-    sub: '',
-    url: 'staplerapp_stufe2_schubmast.html',
+    gerat: 'schubmast',
+    title: {
+      de: 'Schubmaststapler',
+      ro: 'Stivuitor cu catarg retractabil',
+      pl: 'Wózek z wysuwanym masztem',
+      sq: 'Stivuese me katarge tërhequr'
+    },
     icon: `<svg viewBox="0 0 24 24"><path d="M20 8h-3V4H3c-1.1 0-2 .9-2 2v11h2c0 1.66 1.34 3 3 3s3-1.34 3-3h6c0 1.66 1.34 3 3 3s3-1.34 3-3h2v-5l-3-4zM6 18.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm13.5-9l1.96 2.5H17V9.5h2.5zm-1.5 9c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>`
   },
   {
     key: 'kommissionierer',
     cls: 'komm',
-    title: 'Kommissionierer',
-    sub: '',
-    url: 'staplerapp_stufe2_kommissionierer.html',
+    gerat: 'kommissionier',
+    title: {
+      de: 'Kommissionierer',
+      ro: 'Cărucior de comandă',
+      pl: 'Komisionierka',
+      sq: 'Stivuese komisioni'
+    },
     icon: `<svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 3c1.93 0 3.5 1.57 3.5 3.5S13.93 13 12 13s-3.5-1.57-3.5-3.5S10.07 6 12 6zm7 13H5v-.23c0-.62.28-1.2.76-1.58C7.47 15.82 9.64 15 12 15s4.53.82 6.24 2.19c.48.38.76.97.76 1.58V19z"/></svg>`
   },
   {
     key: 'schmalgang',
     cls: 'schmal',
-    title: 'Schmalgang-Stapler',
-    sub: '',
-    url: 'staplerapp_stufe2_schmalgang.html',
+    gerat: 'schmalgang',
+    title: {
+      de: 'Schmalgang-Stapler',
+      ro: 'Stivuitor pentru culoar îngust',
+      pl: 'Wózek do wąskich korytarzy',
+      sq: 'Stivuese koridor i ngushtë'
+    },
     icon: `<svg viewBox="0 0 24 24"><path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"/></svg>`
   }
 ];
 
-// Registriernummer aus URL lesen (Fallback, falls sessionStorage leer ist)
 function getRegnrFromUrl(){
   const params = new URLSearchParams(window.location.search);
   const nr = params.get('regnr');
   return (nr && /^\d{4}-\d{3,4}$/.test(nr)) ? nr : null;
 }
 
+var currentLang = 'de';
+
 function goBack(){
-  // Mit Registriernummer zurück, damit index.html per Auto-Login direkt die Modulauswahl zeigt
   const nr = getRegnrFromUrl();
   window.location.href = BASE + 'index.html' + (nr ? '?regnr=' + encodeURIComponent(nr) : '');
 }
@@ -159,8 +200,6 @@ function goBack(){
 function init(){
   const raw = sessionStorage.getItem('stufe2data');
 
-  // Kein sessionStorage? Dann zurück zur Startseite – aber mit Registriernummer aus der URL,
-  // damit man NICHT erneut eingeben muss (index.html meldet sich automatisch an).
   if(!raw){
     const nr = getRegnrFromUrl();
     window.location.href = BASE + 'index.html' + (nr ? '?regnr=' + encodeURIComponent(nr) : '');
@@ -168,8 +207,13 @@ function init(){
   }
 
   const data = JSON.parse(raw);
+  currentLang = data.lang || 'de';
+  const T = TXT[currentLang] || TXT.de;
+
   const name = (data.vorname || '') + ' ' + (data.nachname || '');
-  document.getElementById('greetName').textContent = 'Hallo, ' + name.trim() + '!';
+  document.getElementById('greetName').textContent = T.hallo + name.trim() + '!';
+  document.getElementById('greetSub').textContent = T.greetSub;
+  document.getElementById('backBtn').textContent = T.backBtn;
 
   const list = document.getElementById('deviceList');
   list.innerHTML = '';
@@ -179,13 +223,18 @@ function init(){
     const booked = data[g.key] === true || data[g.key] === 'True' || data[g.key] === 'Ja';
     if(!booked) hasDisabled = true;
 
+    const title = g.title[currentLang] || g.title.de;
+    const url = BASE + 'staplerapp_stufe2.html?gerat=' + encodeURIComponent(g.gerat)
+              + '&lang=' + encodeURIComponent(currentLang)
+              + '&regnr=' + encodeURIComponent(data.regnr || '');
+
     if(booked){
       list.innerHTML += `
-        <a class="device-btn ${g.cls}" href="${BASE}${g.url}?regnr=${encodeURIComponent(data.regnr)}">
+        <a class="device-btn ${g.cls}" href="${url}">
           <div class="dev-icon">${g.icon}</div>
           <div class="dev-info">
-            <div class="dev-title">${g.title}</div>
-            <div class="dev-sub">${g.sub}</div>
+            <div class="dev-title">${title}</div>
+            <div class="dev-sub"></div>
           </div>
           <div class="dev-arrow">→</div>
         </a>`;
@@ -194,8 +243,8 @@ function init(){
         <div class="device-btn disabled">
           <div class="dev-icon">${g.icon}</div>
           <div class="dev-info">
-            <div class="dev-title">${g.title}</div>
-            <div class="dev-sub">Nicht gebucht</div>
+            <div class="dev-title">${title}</div>
+            <div class="dev-sub">${T.notBooked}</div>
           </div>
           <div class="dev-arrow">🔒</div>
         </div>`;
@@ -203,7 +252,9 @@ function init(){
   });
 
   if(hasDisabled){
-    document.getElementById('hintText').style.display = 'block';
+    const hintEl = document.getElementById('hintText');
+    hintEl.innerHTML = T.hint;
+    hintEl.style.display = 'block';
   }
 }
 
