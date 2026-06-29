@@ -725,6 +725,15 @@ async function ladeTermine(){
       var bg    = KURS_BG[kid]    || '#1a7a4a';
       var svg   = KURS_SVG[kid]   || '';
       gruppen[kid].forEach(function(t){
+        var kursnummer = t.kursnummer || '';
+        var max        = t.max_teilnehmer ? parseInt(t.max_teilnehmer) : 0;
+        var angemeldet = t.angemeldet    ? parseInt(t.angemeldet)     : 0;
+        var voll       = max > 0 && angemeldet >= max;
+        var freiText   = max > 0
+          ? (voll ? '⛔ Ausgebucht' : '👤 '+angemeldet+' / '+max+' Plätze belegt')
+          : '';
+        var buchLink   = 'anmeldung.html?kurs='+kid+(kursnummer?'&kursnummer='+encodeURIComponent(kursnummer):'');
+
         html += '<div class="termin-card">'
           +'<div class="termin-card-header">'
           +'<div class="termin-icon" style="background:'+bg+'"><svg viewBox="0 0 24 24">'+svg+'</svg></div>'
@@ -733,7 +742,10 @@ async function ladeTermine(){
           +'<div class="termin-card-body">'
           +'<div class="termin-date">📅 '+formatDatum(t.von, t.bis)+'</div>'
           +(norm?'<span class="termin-tag tag-norm">'+norm+'</span>':'')
-          +'<a class="termin-book" href="anmeldung.html?kurs='+kid+'">Jetzt anmelden →</a>'
+          +(freiText?'<span style="font-size:12px;color:'+(voll?'#c0392b':'var(--muted)')+'">'+freiText+'</span>':'')
+          +(voll
+            ? '<span class="termin-book" style="background:var(--line);color:var(--muted);cursor:default">Ausgebucht</span>'
+            : '<a class="termin-book" href="'+buchLink+'">Jetzt anmelden →</a>')
           +'</div>'
           +'</div>';
       });

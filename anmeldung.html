@@ -259,10 +259,12 @@ footer{
 <script>
 var ANMELDUNG_URL = 'https://default8af25f9034bc4ef4aba22ab6f641d5.01.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/dbe5673986dd498bb2049e8a80220add/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=ogUKNB6jpCkEcxwY87bHLFJbIzrnQm5TPAwNTX4DYFQ';
 
-// Kurs per URL-Parameter vorauswählen (?kurs=stufe1 etc.)
+// Kurs + Kursnummer per URL-Parameter vorauswählen
+var _urlKursnummer = '';
 (function(){
   var params = new URLSearchParams(window.location.search);
   var kurs = params.get('kurs');
+  _urlKursnummer = params.get('kursnummer') || '';
   if(!kurs) return;
   var ck = document.getElementById('ck-' + kurs);
   if(!ck) return;
@@ -352,7 +354,8 @@ document.getElementById('anmeldungForm').addEventListener('submit', async functi
     lasi_schulungsform:      liform,
     training_gebucht:        training,
     schulung:                schulungen.join(', '),
-    schulungstyp:            schulungstyp
+    schulungstyp:            schulungstyp,
+    kursnummer:              _urlKursnummer
   };
 
   var btn = e.target.querySelector('.af-submit');
