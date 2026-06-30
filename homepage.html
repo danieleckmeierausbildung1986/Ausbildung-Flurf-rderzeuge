@@ -727,8 +727,8 @@ async function ladeTermine(){
       gruppen[kid].forEach(function(t){
         var kursnummer = t.kursnummer || '';
         var kursSpId   = t.kurs_sp_id  || '';
-        var max        = t.max_teilnehmer ? parseInt(t.max_teilnehmer) : 0;
-        var angemeldet = t.angemeldet    ? parseInt(t.angemeldet)     : 0;
+        var max        = t.MaxTeilnehmer ? parseInt(t.MaxTeilnehmer) : 0;
+        var angemeldet = t.angemeldet   ? parseInt(t.angemeldet)    : 0;
         var voll       = max > 0 && angemeldet >= max;
         var freiText   = max > 0
           ? (voll ? '⛔ Ausgebucht' : '👤 '+angemeldet+' / '+max+' Plätze belegt')
