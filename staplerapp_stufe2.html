@@ -299,8 +299,9 @@ sq:{
 var GERAET_DATA={
 schubmast:{
   folien:10,
+  folien_de:11,
   ordner_ro:'SCHUBMAST_RO_BILDER',
-  ordner_de:'SCHUBMAST_RO_BILDER',
+  ordner_de:'SCHUB_BILDER',
   ordner_pl:'SCHUBMAST_PL_BILDER',
   ordner_sq:'SCHUBMAST_AL_BILDER',
   name_de:'Schubmaststapler',
@@ -362,8 +363,9 @@ schubmast:{
 },
 kommissionier:{
   folien:10,
+  folien_de:11,
   ordner_ro:'KOMMISSIONIER_RO_BILDER',
-  ordner_de:'KOMMISSIONIER_RO_BILDER',
+  ordner_de:'KOMM_BILDER',
   ordner_pl:'KOMMISSIONIER_PL_BILDER',
   ordner_sq:'KOMMISSIONIER_AL_BILDER',
   name_de:'Kommissionierstapler',
@@ -425,8 +427,9 @@ kommissionier:{
 },
 schmalgang:{
   folien:11,
+  folien_de:12,
   ordner_ro:'SCHMALGANG_RO_BILDER',
-  ordner_de:'SCHMALGANG_RO_BILDER',
+  ordner_de:'SCHMAL_BILDER',
   ordner_pl:'SCHMALGANG_PL_BILDER',
   ordner_sq:'SCHMALGANG_AL_BILDER',
   name_de:'Schmalgangstapler',
@@ -495,9 +498,9 @@ schmalgang:{
 /* ---- APP LOGIK ---- */
 var T=TXT[lang]||TXT.ro;
 var G=GERAET_DATA[gerat]||GERAET_DATA.schubmast;
-var ORDNER=lang==='de'?(G.ordner_de||G.ordner_ro):(G['ordner_'+lang]||G.ordner_ro);
-var QUIZ=lang==='de'?(G.quiz_de||G.quiz_ro):(G['quiz_'+lang]||G.quiz_ro);
-var TOTAL=G.folien;
+var ORDNER=G['ordner_'+lang]||G.ordner_ro;
+var QUIZ=G['quiz_'+lang]||G.quiz_ro;
+var TOTAL=G['folien_'+lang]||G.folien;
 var nameKey='name_'+lang;
 var geratName=G[nameKey]||G.name_ro;
 
