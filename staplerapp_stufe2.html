@@ -523,7 +523,7 @@ var BACK_TXT={de:'← Zurück zur Geräteauswahl',ro:'← Înapoi la selecția a
   try{
     var s2=JSON.parse(raw);
     var maxAge=4*60*60*1000; // 4 hours
-    if(s2._ts && (Date.now()-s2._ts)>maxAge){ sessionStorage.removeItem('stufe2data'); window.location.replace(back); return; }
+    if(!s2._ts || (Date.now()-s2._ts)>maxAge){ sessionStorage.removeItem('stufe2data'); window.location.replace(back); return; }
     var key=gerat==='kommissionier'?'kommissionierer':gerat;
     if(s2[key]!==true) window.location.replace(back);
   }catch(e){ window.location.replace(back); }
