@@ -514,6 +514,20 @@ function totalSteps(){return TOTAL+QUIZ.length;}
 var BASE='https://danieleckmeierausbildung1986.github.io/Ausbildung-Flurf-rderzeuge/';
 var BACK_TXT={de:'← Zurück zur Geräteauswahl',ro:'← Înapoi la selecția aparatelor',pl:'← Powrót do wyboru urządzenia',sq:'← Kthehu te zgjedhja e pajisjes'};
 
+// Booking gate: redirect to auswahl if this device is not booked
+(function(){
+  var raw=sessionStorage.getItem('stufe2data');
+  if(!raw) return;
+  try{
+    var s2=JSON.parse(raw);
+    var key=gerat==='kommissionier'?'kommissionierer':gerat;
+    if(s2[key]!==true){
+      var nr=params.get('regnr');
+      window.location.replace(BASE+'staplerapp_stufe2_auswahl.html'+(nr?'?regnr='+encodeURIComponent(nr):''));
+    }
+  }catch(e){}
+})();
+
 function goBack(){
   var nr=new URLSearchParams(window.location.search).get('regnr');
   window.location.href=BASE+'staplerapp_stufe2_auswahl.html'+(nr?'?regnr='+encodeURIComponent(nr):'');
