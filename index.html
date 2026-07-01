@@ -144,7 +144,9 @@ body::before{
   </div>
 
   <div class="logo-area">
-    <img src="logo2.png" alt="ProDrive Akademie Niederbayern" style="width:220px;object-fit:contain;margin-bottom:16px;filter:drop-shadow(0 4px 16px rgba(0,0,0,.4))">
+    <div style="background:#fff;border-radius:16px;padding:14px 28px;display:inline-block;margin-bottom:16px;box-shadow:0 6px 28px rgba(0,0,0,.35)">
+      <img src="logo2.png" alt="ProDrive Akademie Niederbayern" style="width:210px;object-fit:contain;display:block">
+    </div>
     <div class="welcome-line" id="txt-welcome"></div>
     <p id="txt-sub"></p>
   </div>
@@ -309,7 +311,7 @@ function setLang(lang){
   const t = TRANSLATIONS[lang];
 
   // Statische Texte
-  document.getElementById('txt-title').textContent   = t.title;
+  document.title = t.title;
   document.getElementById('txt-welcome').textContent  = t.welcome;
   document.getElementById('txt-sub').textContent      = t.sub;
   document.getElementById('txt-intro').textContent    = t.intro;
