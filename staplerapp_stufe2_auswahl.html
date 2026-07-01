@@ -311,8 +311,7 @@ async function init(){
 
   renderDevices(data, T);
 
-  // Always show debug panel (temporary for diagnosis)
-  {
+  if(debugMode){
     const dbg = document.createElement('div');
     dbg.style.cssText='margin:12px 24px;padding:12px;background:#fffbe6;border:1px solid #f0c040;border-radius:10px;font-size:11px;font-family:monospace;color:#333;word-break:break-all;';
     dbg.innerHTML = '<strong>DEBUG</strong><br>' + debugLines.join('<br>');
