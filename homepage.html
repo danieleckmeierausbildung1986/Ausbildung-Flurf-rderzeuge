@@ -128,11 +128,12 @@ nav{
 .fi-praesenz{background:#fff3e0}
 .format-text h3{font-size:18px;font-weight:800;color:var(--navy);margin-bottom:8px}
 .format-text p{font-size:14px;color:var(--muted);line-height:1.6;margin-bottom:16px}
-.format-preis{font-size:28px;font-weight:800;color:var(--blue);margin-bottom:4px}
-.format-preis span{font-size:13px;font-weight:400;color:var(--muted)}
 .format-highlights{list-style:none;padding:0;margin:16px 0 0;border-top:1px solid var(--line);padding-top:16px;width:100%}
 .format-highlights li{font-size:13px;color:var(--muted);padding:4px 0;display:flex;align-items:center;gap:8px}
 .format-highlights li::before{content:'✓';color:var(--blue);font-weight:700;flex-shrink:0}
+.format-cta{margin-top:auto;padding-top:20px;width:100%}
+.btn-format{display:block;width:100%;text-align:center;padding:12px;border-radius:10px;font-size:14px;font-weight:700;background:var(--blue);color:#fff;text-decoration:none;transition:background .15s}
+.btn-format:hover{background:var(--blue-d)}
 @media(max-width:720px){.formate-grid{grid-template-columns:1fr}}
 
 /* SECTIONS */
@@ -426,7 +427,6 @@ footer a{color:rgba(255,255,255,.4);text-decoration:underline}
         <div class="format-text">
           <h3>Flex — E-Learning</h3>
           <p>Theorie flexibel online lernen — jederzeit, ortsunabhängig und in eigenem Tempo. Die praktische Prüfung findet anschließend vor Ort statt.</p>
-          <div class="format-preis">ab 239 € <span>pro Person (brutto)</span></div>
         </div>
         <ul class="format-highlights">
           <li>Selbstbestimmtes Lerntempo</li>
@@ -434,13 +434,13 @@ footer a{color:rgba(255,255,255,.4);text-decoration:underline}
           <li>Zugang 24/7 über App</li>
           <li>Günstigstes Format</li>
         </ul>
+        <div class="format-cta"><a class="btn-format" href="angebot.html">Angebot anfordern</a></div>
       </div>
       <div class="format-card">
         <div class="format-icon fi-online">🎥</div>
         <div class="format-text">
           <h3>Online-Schulung</h3>
           <p>Live-Unterricht per Video mit direktem Ausbilder-Kontakt. Interaktiv, termingebunden und ohne Anfahrtsweg.</p>
-          <div class="format-preis">ab 279 € <span>pro Person (brutto)</span></div>
         </div>
         <ul class="format-highlights">
           <li>Direkter Ausbilder-Kontakt</li>
@@ -448,13 +448,13 @@ footer a{color:rgba(255,255,255,.4);text-decoration:underline}
           <li>Kein Anfahrtsweg</li>
           <li>Fester Terminrahmen</li>
         </ul>
+        <div class="format-cta"><a class="btn-format" href="angebot.html">Angebot anfordern</a></div>
       </div>
       <div class="format-card">
         <div class="format-icon fi-praesenz">🏭</div>
         <div class="format-text">
           <h3>Präsenzschulung</h3>
           <p>Klassische Schulung vor Ort beim Kunden oder an einem vereinbarten Standort — Theorie und Praxis an einem Tag.</p>
-          <div class="format-preis">ab 319 € <span>pro Person (brutto)</span></div>
         </div>
         <ul class="format-highlights">
           <li>Alles an einem Tag</li>
@@ -462,6 +462,7 @@ footer a{color:rgba(255,255,255,.4);text-decoration:underline}
           <li>Persönliche Betreuung</li>
           <li>Gruppenrabatte möglich</li>
         </ul>
+        <div class="format-cta"><a class="btn-format" href="angebot.html">Angebot anfordern</a></div>
       </div>
     </div>
   </div>
