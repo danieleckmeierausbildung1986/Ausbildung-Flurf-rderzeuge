@@ -489,6 +489,7 @@ function showModules(data){
 }
 
 function goStufe2(data){
+  data._ts = Date.now();
   sessionStorage.setItem('stufe2data', JSON.stringify(data));
   window.location.href = BASE + 'staplerapp_stufe2_auswahl.html';
 }

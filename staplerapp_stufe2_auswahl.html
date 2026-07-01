@@ -199,14 +199,18 @@ function goBack(){
 
 function init(){
   const raw = sessionStorage.getItem('stufe2data');
+  const nr = getRegnrFromUrl();
+  const loginUrl = BASE + 'index.html' + (nr ? '?regnr=' + encodeURIComponent(nr) : '');
 
-  if(!raw){
-    const nr = getRegnrFromUrl();
-    window.location.href = BASE + 'index.html' + (nr ? '?regnr=' + encodeURIComponent(nr) : '');
-    return;
-  }
+  if(!raw){ window.location.href = loginUrl; return; }
 
   const data = JSON.parse(raw);
+  const maxAge = 4*60*60*1000; // 4 hours
+  if(data._ts && (Date.now()-data._ts) > maxAge){
+    sessionStorage.removeItem('stufe2data');
+    window.location.href = loginUrl;
+    return;
+  }
   currentLang = data.lang || 'de';
   const T = TXT[currentLang] || TXT.de;
 
