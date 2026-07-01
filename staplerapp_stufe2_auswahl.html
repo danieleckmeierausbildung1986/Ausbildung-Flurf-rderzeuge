@@ -280,6 +280,10 @@ async function init(){
      'Po përditëson statusin e rezervimit…') + '</div>';
 
   // Re-fetch fresh booking data every time the page loads
+  const debugMode = new URLSearchParams(window.location.search).get('debug') === '1';
+  let debugLines = ['Cached: schubmast='+data.schubmast+', komm='+data.kommissionierer+', schmal='+data.schmalgang];
+  let fetchErr = null;
+
   if(data.regnr){
     try{
       const res = await fetch(FLOW_URL, {
@@ -288,17 +292,31 @@ async function init(){
         body: JSON.stringify({ registrierungsnummer: data.regnr })
       });
       const fresh = await res.json();
+      debugLines.push('Flow zugang='+fresh.zugang);
+      // Handle both lowercase and capitalized field names from SharePoint
+      const sb = fresh.schubmast_gebucht       ?? fresh.Schubmast_gebucht;
+      const kb = fresh.kommissionierer_gebucht  ?? fresh.Kommissionierer_gebucht;
+      const sg = fresh.schmalgang_gebucht       ?? fresh.Schmalgang_gebucht;
+      debugLines.push('Flow raw: schubmast='+JSON.stringify(sb)+', komm='+JSON.stringify(kb)+', schmal='+JSON.stringify(sg));
       if(fresh && fresh.zugang === true){
-        data.schubmast       = isBooked(fresh.schubmast_gebucht);
-        data.kommissionierer = isBooked(fresh.kommissionierer_gebucht);
-        data.schmalgang      = isBooked(fresh.schmalgang_gebucht);
+        data.schubmast       = isBooked(sb);
+        data.kommissionierer = isBooked(kb);
+        data.schmalgang      = isBooked(sg);
         data._ts = Date.now();
         sessionStorage.setItem('stufe2data', JSON.stringify(data));
+        debugLines.push('Updated: schubmast='+data.schubmast+', komm='+data.kommissionierer+', schmal='+data.schmalgang);
       }
-    }catch(e){ /* network error – use cached data */ }
+    }catch(e){ fetchErr = String(e); debugLines.push('Fetch error: '+fetchErr); }
   }
 
   renderDevices(data, T);
+
+  if(debugMode){
+    const dbg = document.createElement('div');
+    dbg.style.cssText='margin:12px 24px;padding:12px;background:#fffbe6;border:1px solid #f0c040;border-radius:10px;font-size:11px;font-family:monospace;color:#333;word-break:break-all;';
+    dbg.innerHTML = '<strong>DEBUG</strong><br>' + debugLines.join('<br>');
+    document.getElementById('mainCard').appendChild(dbg);
+  }
 }
 
 init();
