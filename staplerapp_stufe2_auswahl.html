@@ -113,6 +113,7 @@ body::before{
 
 <script>
 const BASE = 'https://danieleckmeierausbildung1986.github.io/Ausbildung-Flurf-rderzeuge/';
+const FLOW_URL = 'https://default8af25f9034bc4ef4aba22ab6f641d5.01.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/7058b6c8090842748465472db6085773/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=nxepIsGToa5my_-oIW5ZR5c3CQLtufN5DwNvM-qG1G4';
 
 const TXT = {
   de: {
@@ -197,34 +198,17 @@ function goBack(){
   window.location.href = BASE + 'index.html' + (nr ? '?regnr=' + encodeURIComponent(nr) : '');
 }
 
-function init(){
-  const raw = sessionStorage.getItem('stufe2data');
-  const nr = getRegnrFromUrl();
-  const loginUrl = BASE + 'index.html' + (nr ? '?regnr=' + encodeURIComponent(nr) : '');
+function isBooked(val){
+  return val === true || val === 'Ja' || val === 'True';
+}
 
-  if(!raw){ window.location.href = loginUrl; return; }
-
-  const data = JSON.parse(raw);
-  const maxAge = 4*60*60*1000; // 4 hours
-  if(!data._ts || (Date.now()-data._ts) > maxAge){
-    sessionStorage.removeItem('stufe2data');
-    window.location.href = loginUrl;
-    return;
-  }
-  currentLang = data.lang || 'de';
-  const T = TXT[currentLang] || TXT.de;
-
-  const name = (data.vorname || '') + ' ' + (data.nachname || '');
-  document.getElementById('greetName').textContent = T.hallo + name.trim() + '!';
-  document.getElementById('greetSub').textContent = T.greetSub;
-  document.getElementById('backBtn').textContent = T.backBtn;
-
+function renderDevices(data, T){
   const list = document.getElementById('deviceList');
   list.innerHTML = '';
   let hasDisabled = false;
 
   GERAETE.forEach(g => {
-    const booked = data[g.key] === true || data[g.key] === 'True' || data[g.key] === 'Ja';
+    const booked = isBooked(data[g.key]);
     if(!booked) hasDisabled = true;
 
     const title = g.title[currentLang] || g.title.de;
@@ -260,6 +244,61 @@ function init(){
     hintEl.innerHTML = T.hint;
     hintEl.style.display = 'block';
   }
+}
+
+async function init(){
+  const raw = sessionStorage.getItem('stufe2data');
+  const nr = getRegnrFromUrl();
+  const loginUrl = BASE + 'index.html' + (nr ? '?regnr=' + encodeURIComponent(nr) : '');
+
+  if(!raw){ window.location.href = loginUrl; return; }
+
+  let data;
+  try{ data = JSON.parse(raw); } catch(e){ window.location.href = loginUrl; return; }
+
+  const maxAge = 4*60*60*1000;
+  if(!data._ts || (Date.now()-data._ts) > maxAge){
+    sessionStorage.removeItem('stufe2data');
+    window.location.href = loginUrl;
+    return;
+  }
+
+  currentLang = data.lang || 'de';
+  const T = TXT[currentLang] || TXT.de;
+
+  const name = (data.vorname || '') + ' ' + (data.nachname || '');
+  document.getElementById('greetName').textContent = T.hallo + name.trim() + '!';
+  document.getElementById('greetSub').textContent = T.greetSub;
+  document.getElementById('backBtn').textContent = T.backBtn;
+
+  // Show loading while refreshing booking data from server
+  document.getElementById('deviceList').innerHTML =
+    '<div style="text-align:center;padding:24px;color:var(--muted);font-size:13px">&#x21BB; ' +
+    (currentLang==='de'?'Buchungsstatus wird aktualisiert…':
+     currentLang==='ro'?'Se actualizează statutul rezervării…':
+     currentLang==='pl'?'Aktualizowanie statusu rezerwacji…':
+     'Po përditëson statusin e rezervimit…') + '</div>';
+
+  // Re-fetch fresh booking data every time the page loads
+  if(data.regnr){
+    try{
+      const res = await fetch(FLOW_URL, {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({ registrierungsnummer: data.regnr })
+      });
+      const fresh = await res.json();
+      if(fresh && fresh.zugang === true){
+        data.schubmast       = isBooked(fresh.schubmast_gebucht);
+        data.kommissionierer = isBooked(fresh.kommissionierer_gebucht);
+        data.schmalgang      = isBooked(fresh.schmalgang_gebucht);
+        data._ts = Date.now();
+        sessionStorage.setItem('stufe2data', JSON.stringify(data));
+      }
+    }catch(e){ /* network error – use cached data */ }
+  }
+
+  renderDevices(data, T);
 }
 
 init();
