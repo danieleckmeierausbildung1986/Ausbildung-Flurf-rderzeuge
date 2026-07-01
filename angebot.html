@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Angebot anfordern – ProDrive Akademie Niederbayern</title>
+<style>
+:root{
+  --blue:#1a4fa8;--blue-l:#2e75cc;--blue-d:#0d2d80;--blue-xl:#e8f0fb;
+  --navy:#16243f;--ink:#1a2330;--muted:#5a6a7a;--line:#e3e8f0;
+  --safety:#f07920;--white:#fff;--bg:#f7f9fb;
+  --shadow-sm:0 2px 8px rgba(0,0,0,.08);
+  --shadow-md:0 8px 32px rgba(0,0,0,.12);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"Segoe UI",system-ui,sans-serif;color:var(--ink);background:var(--bg);line-height:1.6}
+a{text-decoration:none;color:inherit}
+
+/* NAV */
+nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.95);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);padding:0 24px}
+.nav-inner{max-width:900px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:64px;gap:16px}
+.nav-logo{display:flex;align-items:center;gap:12px}
+.nav-logo-icon{width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,var(--blue),var(--blue-l));display:flex;align-items:center;justify-content:center}
+.nav-logo-icon svg{width:22px;height:22px;fill:#fff}
+.nav-brand{font-size:16px;font-weight:700;color:var(--navy);line-height:1.2}
+.nav-brand span{display:block;font-size:11px;font-weight:400;color:var(--muted)}
+.nav-back{font-size:14px;color:var(--muted);display:flex;align-items:center;gap:6px}
+.nav-back:hover{color:var(--blue)}
+
+/* HERO */
+.page-hero{background:linear-gradient(135deg,var(--navy),var(--blue-d));padding:40px 24px;text-align:center}
+.page-hero h1{font-size:clamp(22px,4vw,36px);font-weight:800;color:#fff;margin-bottom:8px}
+.page-hero p{font-size:15px;color:rgba(255,255,255,.75);max-width:500px;margin:0 auto}
+
+/* PROGRESS */
+.progress-wrap{background:#fff;border-bottom:1px solid var(--line);padding:20px 24px}
+.progress-inner{max-width:900px;margin:0 auto}
+.progress-steps{display:flex;align-items:center;gap:0}
+.step-item{display:flex;align-items:center;flex:1}
+.step-dot{
+  width:32px;height:32px;border-radius:50%;border:2px solid var(--line);
+  background:#fff;display:flex;align-items:center;justify-content:center;
+  font-size:13px;font-weight:700;color:var(--muted);flex-shrink:0;transition:all .3s;
+}
+.step-dot.active{background:var(--blue);border-color:var(--blue);color:#fff}
+.step-dot.done{background:var(--blue-xl);border-color:var(--blue);color:var(--blue)}
+.step-label{font-size:12px;color:var(--muted);margin-left:8px;white-space:nowrap}
+.step-label.active{color:var(--blue);font-weight:600}
+.step-line{flex:1;height:2px;background:var(--line);margin:0 8px;min-width:16px}
+.step-line.done{background:var(--blue)}
+@media(max-width:600px){.step-label{display:none}.step-line{min-width:8px}}
+
+/* MAIN */
+.main{max-width:900px;margin:0 auto;padding:32px 24px 80px}
+
+/* STEP CARD */
+.step-card{background:#fff;border-radius:18px;border:1px solid var(--line);box-shadow:var(--shadow-sm);padding:32px;margin-bottom:24px;display:none}
+.step-card.active{display:block}
+.step-title{font-size:20px;font-weight:800;color:var(--navy);margin-bottom:6px}
+.step-sub{font-size:14px;color:var(--muted);margin-bottom:28px}
+
+/* MODULE SELECTION */
+.module-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px}
+.module-item{
+  border:2px solid var(--line);border-radius:14px;padding:18px;cursor:pointer;
+  transition:all .2s;background:#fff;position:relative;
+}
+.module-item:hover{border-color:var(--blue-l);background:var(--blue-xl)}
+.module-item.selected{border-color:var(--blue);background:var(--blue-xl)}
+.module-item input{position:absolute;opacity:0;width:0;height:0}
+.module-check{
+  width:22px;height:22px;border-radius:6px;border:2px solid var(--line);
+  background:#fff;display:flex;align-items:center;justify-content:center;
+  margin-bottom:12px;transition:all .2s;
+}
+.module-item.selected .module-check{background:var(--blue);border-color:var(--blue);color:#fff}
+.module-icon{font-size:28px;margin-bottom:10px;display:block}
+.module-name{font-size:14px;font-weight:700;color:var(--navy)}
+.module-desc{font-size:12px;color:var(--muted);margin-top:4px;line-height:1.4}
+.module-tag{font-size:11px;font-weight:700;background:var(--safety);color:#fff;border-radius:4px;padding:2px 6px;display:inline-block;margin-top:6px}
+
+/* FORMAT SELECTION */
+.format-section{margin-bottom:28px}
+.format-section-title{font-size:15px;font-weight:700;color:var(--navy);margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.format-section-title span{font-size:13px;font-weight:400;color:var(--muted)}
+.format-options{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.format-opt{
+  border:2px solid var(--line);border-radius:12px;padding:16px;cursor:pointer;
+  text-align:center;transition:all .2s;background:#fff;
+}
+.format-opt:hover{border-color:var(--blue-l);background:var(--blue-xl)}
+.format-opt.selected{border-color:var(--blue);background:var(--blue-xl)}
+.format-opt input{display:none}
+.format-opt-icon{font-size:22px;margin-bottom:6px}
+.format-opt-name{font-size:13px;font-weight:700;color:var(--navy)}
+.format-opt-desc{font-size:11px;color:var(--muted);margin-top:3px;line-height:1.3}
+@media(max-width:500px){.format-options{grid-template-columns:1fr}}
+
+/* TEILNEHMER */
+.tn-wrap{display:flex;align-items:center;gap:16px;margin-top:8px}
+.tn-btn{
+  width:44px;height:44px;border-radius:10px;border:2px solid var(--line);
+  background:#fff;font-size:20px;font-weight:700;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;transition:all .15s;
+  color:var(--navy);
+}
+.tn-btn:hover{border-color:var(--blue);color:var(--blue)}
+.tn-num{font-size:32px;font-weight:800;color:var(--navy);min-width:48px;text-align:center}
+.tn-label{font-size:14px;color:var(--muted)}
+.tn-hint{margin-top:16px;background:var(--blue-xl);border-radius:10px;padding:12px 16px;font-size:13px;color:var(--blue-d)}
+
+/* KONTAKT */
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:560px){.form-grid{grid-template-columns:1fr}}
+.form-field{display:flex;flex-direction:column;gap:6px}
+.form-field.full{grid-column:1/-1}
+.form-field label{font-size:13px;font-weight:600;color:var(--navy)}
+.form-field input,.form-field textarea{
+  padding:12px 14px;border:1.5px solid var(--line);border-radius:10px;
+  font-size:14px;font-family:inherit;color:var(--ink);background:#fff;
+  transition:border-color .15s;
+}
+.form-field input:focus,.form-field textarea:focus{outline:none;border-color:var(--blue)}
+.form-field textarea{resize:vertical;min-height:80px}
+
+/* ZUSAMMENFASSUNG */
+.summary-block{background:var(--bg);border-radius:12px;padding:20px;margin-bottom:16px}
+.summary-label{font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
+.summary-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--line);font-size:14px}
+.summary-row:last-child{border-bottom:none}
+.summary-row-key{color:var(--muted)}
+.summary-row-val{font-weight:600;color:var(--navy)}
+.summary-format-tag{font-size:12px;padding:2px 8px;border-radius:20px;background:var(--blue-xl);color:var(--blue);font-weight:600}
+.info-box{background:#fff3e0;border-left:3px solid var(--safety);border-radius:0 10px 10px 0;padding:14px 16px;font-size:13px;color:var(--ink);margin-top:16px}
+
+/* NAVIGATION BUTTONS */
+.step-nav{display:flex;justify-content:space-between;align-items:center;margin-top:28px;gap:12px}
+.btn-back{padding:12px 24px;border-radius:10px;font-size:14px;font-weight:600;border:1.5px solid var(--line);background:#fff;color:var(--navy);cursor:pointer;transition:all .15s}
+.btn-back:hover{border-color:var(--navy);background:var(--bg)}
+.btn-next{padding:12px 28px;border-radius:10px;font-size:14px;font-weight:700;background:var(--blue);color:#fff;cursor:pointer;border:none;transition:all .15s;display:flex;align-items:center;gap:8px}
+.btn-next:hover{background:var(--blue-d);transform:translateY(-1px)}
+.btn-next:disabled{background:var(--muted);cursor:not-allowed;transform:none}
+.btn-submit{padding:14px 32px;border-radius:10px;font-size:15px;font-weight:700;background:var(--safety);color:#fff;cursor:pointer;border:none;transition:all .15s}
+.btn-submit:hover{background:#d4620a;transform:translateY(-1px)}
+
+/* SUCCESS */
+.success-card{background:#fff;border-radius:18px;border:1px solid var(--line);box-shadow:var(--shadow-sm);padding:48px 32px;text-align:center;display:none}
+.success-icon{font-size:56px;margin-bottom:20px}
+.success-title{font-size:24px;font-weight:800;color:var(--navy);margin-bottom:10px}
+.success-sub{font-size:15px;color:var(--muted);max-width:400px;margin:0 auto 28px}
+.btn-home{display:inline-block;padding:12px 28px;border-radius:10px;background:var(--blue);color:#fff;font-weight:700;font-size:14px}
+
+/* ERROR */
+.error-msg{font-size:13px;color:#c0392b;margin-top:6px;display:none}
+.field-error input,.field-error textarea{border-color:#c0392b}
+.field-error .error-msg{display:block}
+
+/* SPINNER */
+.spinner{display:inline-block;width:18px;height:18px;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a class="nav-logo" href="homepage.html">
+      <div class="nav-logo-icon">
+        <svg viewBox="0 0 24 24"><path d="M20 8h-3V4H3c-1.1 0-2 .9-2 2v11h2c0 1.66 1.34 3 3 3s3-1.34 3-3h6c0 1.66 1.34 3 3 3s3-1.34 3-3h2v-5l-3-4zM6 18.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm13.5-9l1.96 2.5H17V9.5h2.5zm-1.5 9c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>
+      </div>
+      <div class="nav-brand">ProDrive Akademie Niederbayern<span>Sicher geschult. Digital. Flexibel.</span></div>
+    </a>
+    <a class="nav-back" href="homepage.html">← Zurück zur Startseite</a>
+  </div>
+</nav>
+
+<div class="page-hero">
+  <h1>Angebot anfordern</h1>
+  <p>Stellen Sie Ihre Schulung individuell zusammen — wir schicken Ihnen ein Angebot direkt per E-Mail.</p>
+</div>
+
+<div class="progress-wrap">
+  <div class="progress-inner">
+    <div class="progress-steps" id="progressSteps">
+      <div class="step-item">
+        <div class="step-dot active" id="dot1">1</div>
+        <div class="step-label active" id="lbl1">Schulungen</div>
+      </div>
+      <div class="step-line" id="line1"></div>
+      <div class="step-item">
+        <div class="step-dot" id="dot2">2</div>
+        <div class="step-label" id="lbl2">Format</div>
+      </div>
+      <div class="step-line" id="line2"></div>
+      <div class="step-item">
+        <div class="step-dot" id="dot3">3</div>
+        <div class="step-label" id="lbl3">Teilnehmer</div>
+      </div>
+      <div class="step-line" id="line3"></div>
+      <div class="step-item">
+        <div class="step-dot" id="dot4">4</div>
+        <div class="step-label" id="lbl4">Kontakt</div>
+      </div>
+      <div class="step-line" id="line4"></div>
+      <div class="step-item">
+        <div class="step-dot" id="dot5">5</div>
+        <div class="step-label" id="lbl5">Übersicht</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="main">
+
+  <!-- SCHRITT 1: SCHULUNGEN -->
+  <div class="step-card active" id="step1">
+    <div class="step-title">Welche Schulungen benötigen Sie?</div>
+    <div class="step-sub">Wählen Sie alle gewünschten Schulungen aus — Mehrfachauswahl möglich.</div>
+    <div class="module-grid">
+
+      <div class="module-item" id="mod-stufe1" onclick="toggleModule('stufe1')">
+        <div class="module-check" id="chk-stufe1">✓</div>
+        <span class="module-icon">🏗️</span>
+        <div class="module-name">Stufe 1 — Allgemein</div>
+        <div class="module-desc">Grundausbildung für alle Flurförderzeuge nach DGUV 308-001</div>
+      </div>
+
+      <div class="module-item" id="mod-schubmast" onclick="toggleModule('schubmast')">
+        <div class="module-check" id="chk-schubmast"></div>
+        <span class="module-icon">📦</span>
+        <div class="module-name">Stufe 2 — Schubmast</div>
+        <div class="module-desc">Zusatzausbildung für Schubmaststapler</div>
+        <span class="module-tag">Stufe 2</span>
+      </div>
+
+      <div class="module-item" id="mod-kommissionierer" onclick="toggleModule('kommissionierer')">
+        <div class="module-check" id="chk-kommissionierer"></div>
+        <span class="module-icon">🔧</span>
+        <div class="module-name">Stufe 2 — Kommissionierer</div>
+        <div class="module-desc">Zusatzausbildung für Kommissionierstapler</div>
+        <span class="module-tag">Stufe 2</span>
+      </div>
+
+      <div class="module-item" id="mod-schmalgang" onclick="toggleModule('schmalgang')">
+        <div class="module-check" id="chk-schmalgang"></div>
+        <span class="module-icon">↔️</span>
+        <div class="module-name">Stufe 2 — Schmalgang</div>
+        <div class="module-desc">Zusatzausbildung für Schmalgangstapler</div>
+        <span class="module-tag">Stufe 2</span>
+      </div>
+
+      <div class="module-item" id="mod-lasi" onclick="toggleModule('lasi')">
+        <div class="module-check" id="chk-lasi"></div>
+        <span class="module-icon">🔒</span>
+        <div class="module-name">Ladungssicherung</div>
+        <div class="module-desc">Schulung nach VDI 2700 / DGUV</div>
+      </div>
+
+    </div>
+    <div class="step-nav">
+      <div></div>
+      <button class="btn-next" onclick="goStep(2)">Weiter <span>→</span></button>
+    </div>
+  </div>
+
+  <!-- SCHRITT 2: FORMAT -->
+  <div class="step-card" id="step2">
+    <div class="step-title">Wie soll die Theorie vermittelt werden?</div>
+    <div class="step-sub">Wählen Sie für jede Schulung das gewünschte Format. Die praktische Prüfung findet immer vor Ort statt.</div>
+    <div id="formatSections"></div>
+    <div class="step-nav">
+      <button class="btn-back" onclick="goStep(1)">← Zurück</button>
+      <button class="btn-next" onclick="goStep(3)">Weiter <span>→</span></button>
+    </div>
+  </div>
+
+  <!-- SCHRITT 3: TEILNEHMER -->
+  <div class="step-card" id="step3">
+    <div class="step-title">Wie viele Teilnehmer?</div>
+    <div class="step-sub">Geben Sie die Anzahl der Teilnehmer an. Bei Gruppen ab 5 Personen sprechen Sie uns gerne auf Gruppenkonditionen an.</div>
+    <div class="tn-wrap">
+      <button class="tn-btn" onclick="changetn(-1)">−</button>
+      <div class="tn-num" id="tnNum">1</div>
+      <button class="tn-btn" onclick="changetn(1)">+</button>
+      <div class="tn-label">Personen</div>
+    </div>
+    <div class="tn-hint" id="tnHint">Bei Gruppen ab 5 Personen sind Gruppenkonditionen möglich — wir berücksichtigen das in Ihrem Angebot.</div>
+    <div class="step-nav">
+      <button class="btn-back" onclick="goStep(2)">← Zurück</button>
+      <button class="btn-next" onclick="goStep(4)">Weiter <span>→</span></button>
+    </div>
+  </div>
+
+  <!-- SCHRITT 4: KONTAKT -->
+  <div class="step-card" id="step4">
+    <div class="step-title">Ihre Kontaktdaten</div>
+    <div class="step-sub">Das Angebot wird automatisch an Ihre E-Mail-Adresse geschickt.</div>
+    <div class="form-grid">
+      <div class="form-field" id="ff-vorname">
+        <label>Vorname *</label>
+        <input type="text" id="inp-vorname" placeholder="Max">
+        <div class="error-msg">Bitte geben Sie Ihren Vornamen ein.</div>
+      </div>
+      <div class="form-field" id="ff-nachname">
+        <label>Nachname *</label>
+        <input type="text" id="inp-nachname" placeholder="Mustermann">
+        <div class="error-msg">Bitte geben Sie Ihren Nachnamen ein.</div>
+      </div>
+      <div class="form-field full" id="ff-firma">
+        <label>Firma / Organisation *</label>
+        <input type="text" id="inp-firma" placeholder="Muster GmbH">
+        <div class="error-msg">Bitte geben Sie Ihren Firmennamen ein.</div>
+      </div>
+      <div class="form-field full" id="ff-email">
+        <label>E-Mail-Adresse *</label>
+        <input type="email" id="inp-email" placeholder="max.mustermann@firma.de">
+        <div class="error-msg">Bitte geben Sie eine gültige E-Mail-Adresse ein.</div>
+      </div>
+      <div class="form-field full">
+        <label>Telefonnummer (optional)</label>
+        <input type="tel" id="inp-tel" placeholder="+49 123 456789">
+      </div>
+      <div class="form-field full">
+        <label>Anmerkungen (optional)</label>
+        <textarea id="inp-notiz" placeholder="z.B. gewünschter Zeitraum, besondere Anforderungen…"></textarea>
+      </div>
+    </div>
+    <div class="step-nav">
+      <button class="btn-back" onclick="goStep(3)">← Zurück</button>
+      <button class="btn-next" onclick="goStep(5)">Weiter <span>→</span></button>
+    </div>
+  </div>
+
+  <!-- SCHRITT 5: ÜBERSICHT -->
+  <div class="step-card" id="step5">
+    <div class="step-title">Übersicht & Absenden</div>
+    <div class="step-sub">Bitte prüfen Sie Ihre Angaben. Nach dem Absenden erhalten Sie das Angebot per E-Mail.</div>
+
+    <div class="summary-block">
+      <div class="summary-label">Gewählte Schulungen</div>
+      <div id="sumModules"></div>
+    </div>
+
+    <div class="summary-block">
+      <div class="summary-label">Teilnehmer & Kontakt</div>
+      <div id="sumKontakt"></div>
+    </div>
+
+    <div class="info-box">
+      Nach dem Absenden erhalten Sie innerhalb von <strong>24 Stunden</strong> ein individuelles Angebot per E-Mail. Bei Fragen erreichen Sie uns jederzeit.
+    </div>
+
+    <div class="step-nav">
+      <button class="btn-back" onclick="goStep(4)">← Zurück</button>
+      <button class="btn-submit" id="btnSubmit" onclick="submitAngebot()">Angebot anfordern</button>
+    </div>
+  </div>
+
+  <!-- ERFOLG -->
+  <div class="success-card" id="successCard">
+    <div class="success-icon">✅</div>
+    <div class="success-title">Anfrage erfolgreich gesendet!</div>
+    <div class="success-sub">Ihr persönliches Angebot ist auf dem Weg zu Ihrer E-Mail-Adresse. Bitte prüfen Sie auch Ihren Spam-Ordner.</div>
+    <a class="btn-home" href="homepage.html">Zurück zur Startseite</a>
+  </div>
+
+</div>
+
+<script>
+// ── Preise (intern, nicht angezeigt) ──────────────────────────
+var PREISE = {
+  stufe1:        {flex:239, online:279, praesenz:319},
+  schubmast:     {flex:149, online:179, praesenz:199},
+  kommissionierer:{flex:149, online:179, praesenz:199},
+  schmalgang:    {flex:149, online:179, praesenz:199},
+  lasi:          {flex:129, online:159, praesenz:179}
+};
+
+var MODULE_NAMEN = {
+  stufe1:'Stufe 1 — Allgemein',
+  schubmast:'Stufe 2 — Schubmast',
+  kommissionierer:'Stufe 2 — Kommissionierer',
+  schmalgang:'Stufe 2 — Schmalgang',
+  lasi:'Ladungssicherung'
+};
+
+var FORMAT_NAMEN = {flex:'Flex (E-Learning)', online:'Online-Schulung', praesenz:'Präsenzschulung'};
+
+// ── State ──────────────────────────────────────────────────────
+var selected = {stufe1:true, schubmast:false, kommissionierer:false, schmalgang:false, lasi:false};
+var formats  = {stufe1:'flex', schubmast:'flex', kommissionierer:'flex', schmalgang:'flex', lasi:'flex'};
+var teilnehmer = 1;
+var currentStep = 1;
+
+// Power Automate Flow URL (hier eintragen wenn Flow fertig)
+var FLOW_URL = '';
+
+// ── Module ─────────────────────────────────────────────────────
+function toggleModule(id){
+  selected[id] = !selected[id];
+  var el = document.getElementById('mod-'+id);
+  var chk = document.getElementById('chk-'+id);
+  el.classList.toggle('selected', selected[id]);
+  chk.textContent = selected[id] ? '✓' : '';
+}
+
+// Init Stufe1 als vorausgewählt
+document.getElementById('mod-stufe1').classList.add('selected');
+document.getElementById('chk-stufe1').textContent = '✓';
+
+// ── Schritte ───────────────────────────────────────────────────
+function goStep(n){
+  if(n === 2){
+    var any = Object.values(selected).some(function(v){return v;});
+    if(!any){ alert('Bitte wählen Sie mindestens eine Schulung aus.'); return; }
+    buildFormatSections();
+  }
+  if(n === 5){
+    if(!validateKontakt()) return;
+    buildSummary();
+  }
+  document.getElementById('step'+currentStep).classList.remove('active');
+  currentStep = n;
+  document.getElementById('step'+n).classList.add('active');
+  updateProgress();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function updateProgress(){
+  for(var i=1;i<=5;i++){
+    var dot = document.getElementById('dot'+i);
+    var lbl = document.getElementById('lbl'+i);
+    dot.className = 'step-dot' + (i===currentStep?' active':(i<currentStep?' done':''));
+    lbl.className = 'step-label' + (i===currentStep?' active':'');
+    if(i<5){
+      var line = document.getElementById('line'+i);
+      line.className = 'step-line' + (i<currentStep?' done':'');
+    }
+  }
+}
+
+// ── Format Sektionen ───────────────────────────────────────────
+function buildFormatSections(){
+  var container = document.getElementById('formatSections');
+  container.innerHTML = '';
+  var order = ['stufe1','schubmast','kommissionierer','schmalgang','lasi'];
+  order.forEach(function(id){
+    if(!selected[id]) return;
+    var sec = document.createElement('div');
+    sec.className = 'format-section';
+    sec.innerHTML =
+      '<div class="format-section-title">'+MODULE_NAMEN[id]+' <span>— Wie soll die Theorie stattfinden?</span></div>'+
+      '<div class="format-options">'+
+        formatOpt(id,'flex','💻','Flex','E-Learning selbst absolvieren')+
+        formatOpt(id,'online','🎥','Online','Live-Unterricht per Video')+
+        formatOpt(id,'praesenz','🏭','Präsenz','Vor Ort beim Kunden')+
+      '</div>';
+    container.appendChild(sec);
+    selectFormat(id, formats[id]);
+  });
+}
+
+function formatOpt(modId, fmtId, icon, name, desc){
+  return '<div class="format-opt" id="fopt-'+modId+'-'+fmtId+'" onclick="selectFormat(\''+modId+'\',\''+fmtId+'\')">'+
+    '<div class="format-opt-icon">'+icon+'</div>'+
+    '<div class="format-opt-name">'+name+'</div>'+
+    '<div class="format-opt-desc">'+desc+'</div>'+
+  '</div>';
+}
+
+function selectFormat(modId, fmtId){
+  formats[modId] = fmtId;
+  ['flex','online','praesenz'].forEach(function(f){
+    var el = document.getElementById('fopt-'+modId+'-'+f);
+    if(el) el.classList.toggle('selected', f===fmtId);
+  });
+}
+
+// ── Teilnehmer ─────────────────────────────────────────────────
+function changetn(d){
+  teilnehmer = Math.max(1, Math.min(50, teilnehmer + d));
+  document.getElementById('tnNum').textContent = teilnehmer;
+  document.getElementById('tnHint').style.display = teilnehmer >= 5 ? 'block' : 'none';
+}
+document.getElementById('tnHint').style.display = 'none';
+
+// ── Validierung ────────────────────────────────────────────────
+function validateKontakt(){
+  var ok = true;
+  function check(id, ffId, cond){
+    var ff = document.getElementById(ffId);
+    ff.classList.toggle('field-error', !cond);
+    if(!cond) ok = false;
+  }
+  check('inp-vorname','ff-vorname', document.getElementById('inp-vorname').value.trim().length > 0);
+  check('inp-nachname','ff-nachname', document.getElementById('inp-nachname').value.trim().length > 0);
+  check('inp-firma','ff-firma', document.getElementById('inp-firma').value.trim().length > 0);
+  var email = document.getElementById('inp-email').value.trim();
+  check('inp-email','ff-email', /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email));
+  return ok;
+}
+
+// ── Zusammenfassung ────────────────────────────────────────────
+function buildSummary(){
+  var modHtml = '';
+  var order = ['stufe1','schubmast','kommissionierer','schmalgang','lasi'];
+  order.forEach(function(id){
+    if(!selected[id]) return;
+    modHtml += '<div class="summary-row">'+
+      '<span class="summary-row-key">'+MODULE_NAMEN[id]+'</span>'+
+      '<span class="summary-format-tag">'+FORMAT_NAMEN[formats[id]]+'</span>'+
+    '</div>';
+  });
+  document.getElementById('sumModules').innerHTML = modHtml;
+
+  var k = '<div class="summary-row"><span class="summary-row-key">Teilnehmer</span><span class="summary-row-val">'+teilnehmer+' Person'+(teilnehmer>1?'en':'')+'</span></div>'+
+    '<div class="summary-row"><span class="summary-row-key">Name</span><span class="summary-row-val">'+
+      document.getElementById('inp-vorname').value.trim()+' '+document.getElementById('inp-nachname').value.trim()+'</span></div>'+
+    '<div class="summary-row"><span class="summary-row-key">Firma</span><span class="summary-row-val">'+document.getElementById('inp-firma').value.trim()+'</span></div>'+
+    '<div class="summary-row"><span class="summary-row-key">E-Mail</span><span class="summary-row-val">'+document.getElementById('inp-email').value.trim()+'</span></div>';
+  document.getElementById('sumKontakt').innerHTML = k;
+}
+
+// ── Absenden ───────────────────────────────────────────────────
+function submitAngebot(){
+  var btn = document.getElementById('btnSubmit');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Wird gesendet…';
+
+  var payload = {
+    vorname:    document.getElementById('inp-vorname').value.trim(),
+    nachname:   document.getElementById('inp-nachname').value.trim(),
+    firma:      document.getElementById('inp-firma').value.trim(),
+    email:      document.getElementById('inp-email').value.trim(),
+    telefon:    document.getElementById('inp-tel').value.trim(),
+    notiz:      document.getElementById('inp-notiz').value.trim(),
+    teilnehmer: teilnehmer,
+    schulungen: buildSchulungenPayload()
+  };
+
+  if(!FLOW_URL){
+    // Flow URL noch nicht eingetragen — Erfolg simulieren
+    setTimeout(function(){
+      showSuccess();
+    }, 1200);
+    return;
+  }
+
+  fetch(FLOW_URL, {
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify(payload)
+  })
+  .then(function(){ showSuccess(); })
+  .catch(function(){
+    btn.disabled = false;
+    btn.innerHTML = 'Angebot anfordern';
+    alert('Fehler beim Senden. Bitte versuchen Sie es erneut oder schreiben Sie uns direkt eine E-Mail.');
+  });
+}
+
+function buildSchulungenPayload(){
+  var result = [];
+  var order = ['stufe1','schubmast','kommissionierer','schmalgang','lasi'];
+  order.forEach(function(id){
+    if(!selected[id]) return;
+    result.push({
+      modul:  id,
+      name:   MODULE_NAMEN[id],
+      format: formats[id],
+      formatName: FORMAT_NAMEN[formats[id]],
+      preisProPerson: PREISE[id][formats[id]]
+    });
+  });
+  return result;
+}
+
+function showSuccess(){
+  document.getElementById('step5').style.display = 'none';
+  document.getElementById('successCard').style.display = 'block';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+</script>
+</body>
+</html>
