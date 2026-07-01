@@ -6,9 +6,9 @@
 <title>Termin anfragen – ProDrive Akademie Niederbayern</title>
 <style>
 :root{
-  --green:#1a7a4a;--green-l:#2ea865;--green-d:#0d4a24;--green-xl:#e8f5ee;
+  --blue:#1a4fa8;--blue-l:#2e75cc;--blue-d:#0d2d80;--blue-xl:#e8f0fb;
   --navy:#16243f;--ink:#1a2330;--muted:#5a6a7a;--line:#e3e8f0;
-  --safety:#f5a623;--bg:#f7f9fb;
+  --safety:#f07920;--bg:#f7f9fb;
   --shadow-sm:0 2px 8px rgba(0,0,0,.08);
 }
 *{box-sizing:border-box;margin:0;padding:0}
@@ -23,7 +23,7 @@ nav{
 }
 .nav-inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:64px;gap:16px}
 .nav-logo{display:flex;align-items:center;gap:12px}
-.nav-logo-icon{width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,var(--green),#2ea865);display:flex;align-items:center;justify-content:center}
+.nav-logo-icon{width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,var(--blue),#2e75cc);display:flex;align-items:center;justify-content:center}
 .nav-logo-icon svg{width:22px;height:22px;fill:#fff}
 .nav-brand{font-size:16px;font-weight:700;color:var(--navy);line-height:1.2}
 .nav-brand span{display:block;font-size:11px;font-weight:400;color:var(--muted)}
@@ -31,7 +31,7 @@ nav{
 .nav-back:hover{color:var(--ink);border-color:var(--navy)}
 
 .page{max-width:760px;margin:0 auto;padding:48px 24px 80px}
-.page-label{font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--green);margin-bottom:10px}
+.page-label{font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--blue);margin-bottom:10px}
 .page-title{font-size:clamp(24px,4vw,34px);font-weight:800;color:var(--navy);margin-bottom:8px}
 .page-sub{font-size:15px;color:var(--muted);margin-bottom:36px;line-height:1.65}
 
@@ -43,20 +43,20 @@ nav{
 .field{display:flex;flex-direction:column;gap:6px}
 .field label{font-size:13px;font-weight:700;color:var(--navy)}
 .field input,.field textarea{padding:10px 14px;border-radius:10px;border:1.5px solid var(--line);font-size:14px;font-family:inherit;color:var(--ink);background:#fff;transition:border-color .15s}
-.field input:focus,.field textarea:focus{outline:none;border-color:var(--green)}
+.field input:focus,.field textarea:focus{outline:none;border-color:var(--blue)}
 .field textarea{resize:vertical;min-height:90px}
 
 /* Schulungsauswahl */
 .kurs-block{border:1.5px solid var(--line);border-radius:12px;padding:12px 16px;margin-bottom:10px;transition:border-color .2s,background .2s;cursor:pointer}
-.kurs-block.active{border-color:var(--green);background:var(--green-xl)}
+.kurs-block.active{border-color:var(--blue);background:var(--blue-xl)}
 .kurs-label{display:flex;align-items:center;gap:10px;font-size:14px;font-weight:600;cursor:pointer}
-.kurs-label input[type=checkbox]{width:17px;height:17px;accent-color:var(--green)}
+.kurs-label input[type=checkbox]{width:17px;height:17px;accent-color:var(--blue)}
 
 /* Kalender */
 .cal-wrap{user-select:none}
 .cal-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
 .cal-nav button{background:none;border:1.5px solid var(--line);border-radius:8px;width:34px;height:34px;cursor:pointer;font-size:16px;color:var(--navy);transition:all .15s}
-.cal-nav button:hover{border-color:var(--green);color:var(--green)}
+.cal-nav button:hover{border-color:var(--blue);color:var(--blue)}
 .cal-month{font-size:16px;font-weight:700;color:var(--navy)}
 .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
 .cal-dow{text-align:center;font-size:11px;font-weight:700;color:var(--muted);padding:4px 0;text-transform:uppercase}
@@ -65,8 +65,8 @@ nav{
   font-size:13px;font-weight:500;cursor:pointer;transition:all .15s;
   border:1.5px solid transparent;
 }
-.cal-day:hover:not(.cal-empty):not(.cal-past){background:var(--green-xl);color:var(--green-d)}
-.cal-day.selected{background:var(--green);color:#fff;font-weight:700;border-color:var(--green-d)}
+.cal-day:hover:not(.cal-empty):not(.cal-past){background:var(--blue-xl);color:var(--blue-d)}
+.cal-day.selected{background:var(--blue);color:#fff;font-weight:700;border-color:var(--blue-d)}
 .cal-day.cal-past{color:var(--line);cursor:default}
 .cal-day.cal-empty{cursor:default}
 .cal-day.cal-today{border-color:var(--safety)}
@@ -74,20 +74,20 @@ nav{
 .selected-dates{margin-top:16px;display:flex;flex-wrap:wrap;gap:8px;min-height:32px}
 .date-chip{
   display:inline-flex;align-items:center;gap:6px;
-  background:var(--green-xl);color:var(--green-d);border-radius:20px;
+  background:var(--blue-xl);color:var(--blue-d);border-radius:20px;
   padding:4px 12px;font-size:13px;font-weight:600;
 }
-.date-chip button{background:none;border:none;cursor:pointer;color:var(--green-d);font-size:15px;line-height:1;padding:0 0 1px 2px}
+.date-chip button{background:none;border:none;cursor:pointer;color:var(--blue-d);font-size:15px;line-height:1;padding:0 0 1px 2px}
 .cal-hint{font-size:12px;color:var(--muted);margin-top:8px}
 
 .divider{border:none;border-top:1px solid var(--line);margin:24px 0}
 
 .submit-btn{
   display:block;width:100%;padding:14px;border-radius:12px;
-  font-size:16px;font-weight:700;background:var(--green);color:#fff;
+  font-size:16px;font-weight:700;background:var(--blue);color:#fff;
   border:none;cursor:pointer;transition:all .15s;margin-top:8px;
 }
-.submit-btn:hover{background:var(--green-d)}
+.submit-btn:hover{background:var(--blue-d)}
 .submit-btn:disabled{opacity:.6;cursor:default}
 .error-msg{background:#fef2f2;border:1px solid #fecaca;color:#dc2626;border-radius:10px;padding:12px 16px;font-size:14px;margin-top:16px;display:none}
 
@@ -115,9 +115,9 @@ footer{text-align:center;padding:24px;font-size:13px;color:var(--muted);border-t
 
   <div id="success-msg" style="display:none;text-align:center;padding:48px 16px;background:#fff;border-radius:20px;border:1px solid var(--line)">
     <div style="font-size:48px;margin-bottom:16px">📅</div>
-    <div style="font-size:20px;font-weight:800;color:var(--green-d);margin-bottom:8px">Anfrage gesendet!</div>
+    <div style="font-size:20px;font-weight:800;color:var(--blue-d);margin-bottom:8px">Anfrage gesendet!</div>
     <div style="font-size:15px;color:var(--muted);margin-bottom:28px">Wir melden uns in Kürze bei Ihnen zur Terminbestätigung.</div>
-    <a href="homepage.html" style="display:inline-block;padding:12px 28px;background:var(--green);color:#fff;border-radius:12px;font-weight:700">Zurück zur Startseite</a>
+    <a href="homepage.html" style="display:inline-block;padding:12px 28px;background:var(--blue);color:#fff;border-radius:12px;font-weight:700">Zurück zur Startseite</a>
   </div>
 
   <form id="anfragForm" style="">
