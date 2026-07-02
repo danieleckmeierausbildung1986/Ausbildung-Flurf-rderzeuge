@@ -131,6 +131,15 @@ nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.95);backdrop-
 .summary-row-key{color:var(--muted)}
 .summary-row-val{font-weight:600;color:var(--navy)}
 .summary-format-tag{font-size:12px;padding:2px 8px;border-radius:20px;background:var(--blue-xl);color:var(--blue);font-weight:600}
+.sum-table{width:100%;border-collapse:collapse;font-size:13px;margin-bottom:12px}
+.sum-table th{text-align:left;font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--muted);padding:0 0 8px;border-bottom:2px solid var(--line)}
+.sum-table td{padding:8px 0;border-bottom:1px solid var(--line);vertical-align:middle}
+.sum-table td:nth-child(3),.sum-table td:nth-child(4){text-align:right;white-space:nowrap;font-weight:600;color:var(--navy)}
+.sum-table th:nth-child(3),.sum-table th:nth-child(4){text-align:right}
+.sum-totals{border-top:2px solid var(--line);padding-top:10px;margin-top:4px}
+.sum-tot-row{display:flex;justify-content:space-between;font-size:14px;padding:4px 0}
+.sum-tot-row.rabatt{color:#e65c00;font-weight:600}
+.sum-tot-row.gesamt{font-size:17px;font-weight:800;color:var(--navy);border-top:1px solid var(--line);padding-top:8px;margin-top:4px}
 .info-box{background:#fff3e0;border-left:3px solid var(--safety);border-radius:0 10px 10px 0;padding:14px 16px;font-size:13px;color:var(--ink);margin-top:16px}
 
 /* NAVIGATION BUTTONS */
@@ -281,7 +290,7 @@ nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.95);backdrop-
       <button class="tn-btn" onclick="changetn(1)">+</button>
       <div class="tn-label">Personen</div>
     </div>
-    <div class="tn-hint" id="tnHint">Bei Gruppen ab 5 Personen sind Gruppenkonditionen möglich — wir berücksichtigen das in Ihrem Angebot.</div>
+    <div class="tn-hint" id="tnHint">🎉 Gruppenrabatt: 5–9 Pers. = <strong>10%</strong> · 10–19 Pers. = <strong>15%</strong> · 20+ Pers. = <strong>20%</strong></div>
     <div class="step-nav">
       <button class="btn-back" onclick="goStep(2)">← Zurück</button>
       <button class="btn-next" onclick="goStep(4)">Weiter <span>→</span></button>
@@ -497,18 +506,51 @@ function validateKontakt(){
   return ok;
 }
 
+// ── Rabattlogik ────────────────────────────────────────────────
+function getRabatt(n){
+  if(n >= 20) return 20;
+  if(n >= 10) return 15;
+  if(n >= 5)  return 10;
+  return 0;
+}
+
 // ── Zusammenfassung ────────────────────────────────────────────
 function buildSummary(){
-  var modHtml = '';
   var order = ['stufe1','schubmast','kommissionierer','schmalgang','lasi'];
+  var netto = 0;
+
+  var rows = '';
   order.forEach(function(id){
     if(!selected[id]) return;
-    modHtml += '<div class="summary-row">'+
-      '<span class="summary-row-key">'+MODULE_NAMEN[id]+'</span>'+
-      '<span class="summary-format-tag">'+FORMAT_NAMEN[formats[id]]+'</span>'+
-    '</div>';
+    var preis = PREISE[id][formats[id]];
+    var zeile = preis * teilnehmer;
+    netto += zeile;
+    rows += '<tr>'+
+      '<td>'+MODULE_NAMEN[id]+'</td>'+
+      '<td><span class="summary-format-tag">'+FORMAT_NAMEN[formats[id]]+'</span></td>'+
+      '<td>'+preis+' €</td>'+
+      '<td>'+zeile+' €</td>'+
+    '</tr>';
   });
-  document.getElementById('sumModules').innerHTML = modHtml;
+
+  var rabattProzent = getRabatt(teilnehmer);
+  var rabattBetrag  = Math.round(netto * rabattProzent / 100);
+  var gesamt        = netto - rabattBetrag;
+
+  var totals = '<div class="sum-totals">'+
+    '<div class="sum-tot-row"><span>Zwischensumme ('+teilnehmer+' Pers.)</span><span>'+netto+' €</span></div>';
+  if(rabattProzent > 0){
+    totals += '<div class="sum-tot-row rabatt"><span>Gruppenrabatt '+rabattProzent+'%</span><span>−'+rabattBetrag+' €</span></div>';
+  }
+  totals += '<div class="sum-tot-row gesamt"><span>Gesamtpreis</span><span>'+gesamt+' €</span></div></div>';
+
+  document.getElementById('sumModules').innerHTML =
+    '<table class="sum-table"><thead><tr>'+
+    '<th>Schulung</th><th>Format</th><th>Preis/Pers.</th><th>Gesamt</th>'+
+    '</tr></thead><tbody>'+rows+'</tbody></table>'+totals;
+
+  // Für Payload speichern
+  window._pay = { netto:netto, rabattProzent:rabattProzent, rabattBetrag:rabattBetrag, gesamt:gesamt };
 
   var k = '<div class="summary-row"><span class="summary-row-key">Teilnehmer</span><span class="summary-row-val">'+teilnehmer+' Person'+(teilnehmer>1?'en':'')+'</span></div>'+
     '<div class="summary-row"><span class="summary-row-key">Name</span><span class="summary-row-val">'+
@@ -524,15 +566,28 @@ function submitAngebot(){
   btn.disabled = true;
   btn.innerHTML = '<span class="spinner"></span> Wird gesendet…';
 
+  var p = window._pay || {netto:0,rabattProzent:0,rabattBetrag:0,gesamt:0};
+  var now = new Date();
+  var ang = 'ANG-'+now.getFullYear()+
+    String(now.getMonth()+1).padStart(2,'0')+
+    String(now.getDate()).padStart(2,'0')+'-'+
+    String(now.getHours()).padStart(2,'0')+
+    String(now.getMinutes()).padStart(2,'0');
+
   var payload = {
-    vorname:    document.getElementById('inp-vorname').value.trim(),
-    nachname:   document.getElementById('inp-nachname').value.trim(),
-    firma:      document.getElementById('inp-firma').value.trim(),
-    email:      document.getElementById('inp-email').value.trim(),
-    telefon:    document.getElementById('inp-tel').value.trim(),
-    notiz:      document.getElementById('inp-notiz').value.trim(),
-    teilnehmer: teilnehmer,
-    schulungen: buildSchulungenPayload()
+    angebotNummer:  ang,
+    vorname:        document.getElementById('inp-vorname').value.trim(),
+    nachname:       document.getElementById('inp-nachname').value.trim(),
+    firma:          document.getElementById('inp-firma').value.trim(),
+    email:          document.getElementById('inp-email').value.trim(),
+    telefon:        document.getElementById('inp-tel').value.trim(),
+    notiz:          document.getElementById('inp-notiz').value.trim(),
+    teilnehmer:     teilnehmer,
+    gesamtNetto:    p.netto,
+    rabattProzent:  p.rabattProzent,
+    rabattBetrag:   p.rabattBetrag,
+    gesamtGesamt:   p.gesamt,
+    schulungen:     buildSchulungenPayload()
   };
 
   if(!FLOW_URL){
@@ -561,12 +616,14 @@ function buildSchulungenPayload(){
   var order = ['stufe1','schubmast','kommissionierer','schmalgang','lasi'];
   order.forEach(function(id){
     if(!selected[id]) return;
+    var preis = PREISE[id][formats[id]];
     result.push({
-      modul:  id,
-      name:   MODULE_NAMEN[id],
-      format: formats[id],
-      formatName: FORMAT_NAMEN[formats[id]],
-      preisProPerson: PREISE[id][formats[id]]
+      modul:          id,
+      name:           MODULE_NAMEN[id],
+      format:         formats[id],
+      formatName:     FORMAT_NAMEN[formats[id]],
+      preisProPerson: preis,
+      gesamtZeile:    preis * teilnehmer
     });
   });
   return result;
