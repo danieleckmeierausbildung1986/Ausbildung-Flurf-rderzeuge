@@ -168,7 +168,8 @@ nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.95);backdrop-
 .spinner{display:inline-block;width:18px;height:18px;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 </style>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
 </head>
 <body>
 
@@ -589,143 +590,127 @@ function fmtEuro(n){
   return Number(n).toLocaleString('de-DE',{minimumFractionDigits:2,maximumFractionDigits:2})+' €';
 }
 
-// ── PDF generieren ──────────────────────────────────────────────
+// ── PDF generieren (pdfmake – kein Canvas-Rendering) ────────────
 function generatePDF(data){
-  if(typeof html2pdf === 'undefined') return Promise.reject(new Error('html2pdf nicht geladen'));
+  if(typeof pdfMake === 'undefined') return Promise.reject(new Error('pdfMake nicht geladen'));
   return preloadImages().then(function(imgs){
     var logoB64 = imgs[0];
     var sigB64  = imgs[1];
-    // Wrapper mit overflow:hidden – el bleibt im Render-Tree aber unsichtbar
-    var wrapper = document.createElement('div');
-    wrapper.style.cssText = 'position:fixed;top:0;left:0;width:0;height:0;overflow:hidden;z-index:9999;';
-    var el = document.createElement('div');
-    el.style.cssText = 'width:794px;background:#fff;';
-    el.innerHTML = buildOfferHTML(data, logoB64, sigB64);
-    wrapper.appendChild(el);
-    document.body.appendChild(wrapper);
-    return html2pdf().set({
-      margin:[12,12,18,12],
-      filename:'angebot.pdf',
-      image:{type:'jpeg',quality:0.95},
-      html2canvas:{scale:1.5,useCORS:false,logging:false,allowTaint:true,imageTimeout:0,scrollX:0,scrollY:0},
-      jsPDF:{unit:'mm',format:'a4',orientation:'portrait'}
-    }).from(el).toPdf().output('datauristring').then(function(uri){
-      document.body.removeChild(wrapper);
-      return uri.split(',')[1];
-    }).catch(function(e){ try{document.body.removeChild(wrapper);}catch(x){} return Promise.reject(e); });
+    var now = new Date();
+    var gueltig = new Date(now.getTime()+30*24*3600*1000);
+
+    // Schulungen-Tabelle
+    var tableBody = [[
+      {text:'POS.', style:'th', alignment:'center'},
+      {text:'SCHULUNGSBEZEICHNUNG', style:'th'},
+      {text:'FORMAT', style:'th', alignment:'center'},
+      {text:'ANZ.', style:'th', alignment:'center'},
+      {text:'PREIS/PERS.', style:'th', alignment:'right'},
+      {text:'GESAMT', style:'th', alignment:'right'}
+    ]];
+    data.schulungen.forEach(function(s,i){
+      tableBody.push([
+        {text:(i+1).toString(), alignment:'center', fontSize:9},
+        {text:s.name, bold:true, fontSize:9},
+        {text:s.formatName, alignment:'center', fontSize:9},
+        {text:data.teilnehmer.toString(), alignment:'center', fontSize:9},
+        {text:fmtEuro(s.preisProPerson), alignment:'right', fontSize:9},
+        {text:fmtEuro(s.gesamtZeile), alignment:'right', bold:true, fontSize:9}
+      ]);
+    });
+
+    // Summen-Tabelle (separat, rechts ausgerichtet)
+    var totalsBody = [[
+      {text:'Zwischensumme (netto)', alignment:'right', fontSize:9, color:'#6b7280'},
+      {text:fmtEuro(data.gesamtNetto), alignment:'right', fontSize:9}
+    ]];
+    if(data.rabattProzent>0){
+      totalsBody.push([
+        {text:'Gruppenrabatt '+data.rabattProzent+'%', alignment:'right', fontSize:9, color:'#16a34a', bold:true},
+        {text:'- '+fmtEuro(data.rabattBetrag), alignment:'right', fontSize:9, color:'#16a34a', bold:true}
+      ]);
+    }
+    totalsBody.push([
+      {text:'Gesamtbetrag', alignment:'right', fontSize:11, bold:true, color:'#16243f', border:[false,true,false,false]},
+      {text:fmtEuro(data.gesamtGesamt), alignment:'right', fontSize:11, bold:true, color:'#16243f', border:[false,true,false,false]}
+    ]);
+
+    var notizBlock = data.notiz
+      ? [{text:[{text:'Anmerkungen: ', bold:true},{text:data.notiz}], fontSize:9, margin:[0,0,0,8]}]
+      : [];
+
+    var docDef = {
+      pageSize:'A4',
+      pageMargins:[40,40,40,55],
+      content:[
+        // Logo + Firmenkopf
+        {columns:[
+          {image:logoB64, width:110},
+          {alignment:'right', stack:[
+            {text:'ProDrive Akademie Niederbayern', bold:true, fontSize:13, color:'#16243f'},
+            {text:'Daniel Eckmeier', fontSize:9, color:'#6b7280'},
+            {text:'Am Schwimmbad 12 · 94436 Simbach', fontSize:9, color:'#6b7280'},
+            {text:'info@prodrive-akademie.de', fontSize:9, color:'#6b7280'}
+          ]}
+        ], margin:[0,0,0,6]},
+        // Trennlinie
+        {canvas:[{type:'line',x1:0,y1:5,x2:515,y2:5,lineWidth:2.5,lineColor:'#16243f'}], margin:[0,0,0,10]},
+        // Empfänger + Angebot-Infos
+        {columns:[
+          {width:'56%', stack:[
+            {text:'AN', fontSize:7, color:'#6b7280', margin:[0,0,0,5]},
+            {text:data.firma, bold:true, fontSize:11, color:'#16243f'},
+            {text:data.vorname+' '+data.nachname, fontSize:9.5, color:'#16243f'},
+            ...(data.telefon ? [{text:data.telefon, fontSize:9, color:'#16243f'}] : []),
+            {text:data.email, fontSize:9, color:'#2563eb'}
+          ]},
+          {width:'42%', margin:[10,0,0,0],
+            table:{widths:['auto','*'], body:[
+              [{text:'Angebot-Nr.:', bold:true, fontSize:9},{text:data.angebotNummer, fontSize:9, color:'#6b7280'}],
+              [{text:'Datum:', bold:true, fontSize:9},{text:fmtDate(now), fontSize:9, color:'#6b7280'}],
+              [{text:'Gültig bis:', bold:true, fontSize:9},{text:fmtDate(gueltig), fontSize:9, color:'#6b7280'}],
+              [{text:'Teilnehmer:', bold:true, fontSize:9},{text:data.teilnehmer+' Person'+(data.teilnehmer>1?'en':''), fontSize:9, color:'#6b7280'}]
+            ]}, layout:'noBorders'}
+        ], margin:[0,0,0,14]},
+        // Überschrift
+        {text:'ANGEBOT', fontSize:20, bold:true, color:'#16243f', margin:[0,0,0,5]},
+        {text:'Sehr geehrte Damen und Herren,', fontSize:10, color:'#16243f', margin:[0,0,0,3]},
+        {text:'wir freuen uns, Ihnen folgende Schulungsleistungen anbieten zu dürfen:', fontSize:10, color:'#6b7280', margin:[0,0,0,10]},
+        // Schulungen-Tabelle
+        {table:{headerRows:1, widths:[18,'*',80,22,54,58], body:tableBody},
+          layout:{
+            hLineWidth:function(i){return i===0?0:0.5;},
+            vLineWidth:function(){return 0;},
+            hLineColor:function(){return '#e5e7eb';},
+            fillColor:function(row){if(row===0)return '#16243f'; return row%2===0?'#f8faff':null;},
+            paddingLeft:function(){return 6;}, paddingRight:function(){return 6;},
+            paddingTop:function(){return 5;}, paddingBottom:function(){return 5;}
+          }, margin:[0,0,0,4]},
+        // Summen
+        {table:{widths:['*',115], body:totalsBody}, layout:'noBorders', margin:[0,0,0,14]},
+        // §19 + Konditionen
+        {text:'Gemäß §19 UStG wird keine Umsatzsteuer berechnet.', bold:true, fontSize:9.5, color:'#16243f', margin:[0,0,0,5]},
+        {text:'Alle Schulungen werden nach DGUV Grundsatz 308-001 bzw. VDI 2700 ff. durchgeführt. Die praktische Prüfung findet vor Ort beim Kunden statt. Der Praxistermin wird nach Auftragseingang individuell vereinbart.', fontSize:8, color:'#6b7280', italics:true, margin:[0,0,0,6]},
+        {text:[{text:'Konditionen: ', bold:true, fontSize:9},{text:'Zahlbar innerhalb von 14 Tagen nach Rechnungsstellung. Dieses Angebot ist 30 Tage gültig.', fontSize:9, color:'#6b7280'}], margin:[0,0,0,6]},
+        ...notizBlock,
+        {text:'Wir freuen uns auf eine erfolgreiche Zusammenarbeit. Bei Fragen stehen wir Ihnen jederzeit gerne zur Verfügung.', fontSize:10, color:'#16243f', margin:[0,0,0,14]},
+        // Unterschrift
+        {text:'Mit freundlichen Grüßen', fontSize:10, color:'#6b7280', margin:[0,0,0,5]},
+        {image:sigB64, width:90, margin:[0,0,0,2]},
+        {canvas:[{type:'line',x1:0,y1:0,x2:155,y2:0,lineWidth:1.5,lineColor:'#16243f'}], margin:[0,0,0,3]},
+        {text:'Daniel Eckmeier', bold:true, fontSize:10, color:'#16243f'},
+        {text:'Ausbilder & Inhaber · ProDrive Akademie Niederbayern', fontSize:8, color:'#6b7280', italics:true}
+      ],
+      styles:{th:{bold:true, fontSize:8, color:'#ffffff'}},
+      footer:function(){return {margin:[40,8,40,0], text:'ProDrive Akademie Niederbayern · Daniel Eckmeier · Am Schwimmbad 12, 94436 Simbach · DGUV 308-001 · VDI 2700', fontSize:7, color:'#9ca3af', alignment:'center'};}
+    };
+
+    return new Promise(function(resolve,reject){
+      try{
+        pdfMake.createPdf(docDef).getBase64(function(b64){ resolve(b64); });
+      }catch(e){ reject(e); }
+    });
   });
-}
-
-// ── Angebot HTML für PDF ────────────────────────────────────────
-function buildOfferHTML(data, logoUrl, sigUrl){
-  var now = new Date();
-  var gueltig = new Date(now.getTime()+30*24*3600*1000);
-  if(!logoUrl){ var base=window.location.href.substring(0,window.location.href.lastIndexOf('/')+1); logoUrl=base+'logo2.png'; sigUrl=base+'IMG_0416.PNG'; }
-
-  var schulRows = '';
-  data.schulungen.forEach(function(s,i){
-    var bg = i%2===1?'#f8faff':'#ffffff';
-    schulRows +=
-      '<tr style="background:'+bg+';">'+
-      '<td style="padding:7px 6px;text-align:center;font-size:9px;color:#16243f;">'+(i+1)+'</td>'+
-      '<td style="padding:7px 8px;font-size:9.5px;font-weight:600;color:#16243f;">'+s.name+'</td>'+
-      '<td style="padding:7px 6px;text-align:center;">'+
-        '<span style="background:#eef2ff;color:#1a4fa8;padding:2px 8px;border-radius:20px;font-size:8.5px;font-weight:600;">'+s.formatName+'</span>'+
-      '</td>'+
-      '<td style="padding:7px 6px;text-align:center;font-size:9.5px;color:#16243f;">'+data.teilnehmer+'</td>'+
-      '<td style="padding:7px 6px;text-align:right;font-size:9.5px;color:#16243f;">'+fmtEuro(s.preisProPerson)+'</td>'+
-      '<td style="padding:7px 8px;text-align:right;font-size:9.5px;font-weight:600;color:#16243f;">'+fmtEuro(s.gesamtZeile)+'</td>'+
-      '</tr>';
-  });
-
-  var totalRows =
-    '<tr style="background:#f8faff;">'+
-    '<td colspan="5" style="text-align:right;padding:6px 6px;font-size:9px;color:#6b7280;">Zwischensumme (netto)</td>'+
-    '<td style="text-align:right;padding:6px 8px;font-size:9.5px;color:#16243f;">'+fmtEuro(data.gesamtNetto)+'</td></tr>';
-  if(data.rabattProzent>0){
-    totalRows +=
-      '<tr style="background:#ecfdf5;">'+
-      '<td colspan="5" style="text-align:right;padding:6px 6px;font-size:9px;color:#16a34a;font-weight:600;">Gruppenrabatt '+data.rabattProzent+'%</td>'+
-      '<td style="text-align:right;padding:6px 8px;font-size:9.5px;color:#16a34a;font-weight:600;">−&nbsp;'+fmtEuro(data.rabattBetrag)+'</td></tr>';
-  }
-  totalRows +=
-    '<tr style="background:#eef2ff;">'+
-    '<td colspan="5" style="text-align:right;padding:8px 6px;font-size:11px;font-weight:700;color:#16243f;">Gesamtbetrag</td>'+
-    '<td style="text-align:right;padding:8px 8px;font-size:11px;font-weight:800;color:#16243f;">'+fmtEuro(data.gesamtGesamt)+'</td></tr>';
-
-  var notizBlock = data.notiz
-    ? '<div style="font-size:9px;color:#16243f;margin-bottom:8px;padding:8px 12px;background:#f8faff;border-left:3px solid #2563eb;border-radius:0 6px 6px 0;"><strong>Anmerkungen:</strong> '+data.notiz+'</div>'
-    : '';
-
-  return '<style>*{box-sizing:border-box;margin:0;padding:0;}table{border-collapse:collapse;width:100%;}</style>'+
-    '<div style="width:750px;padding:20px 24px;font-family:Arial,Helvetica,sans-serif;font-size:10px;color:#1a2330;">'+
-
-    // Header
-    '<table style="margin-bottom:14px;"><tr>'+
-    '<td style="width:55%;vertical-align:middle;"><img src="'+logoUrl+'" style="height:58px;object-fit:contain;"></td>'+
-    '<td style="width:45%;text-align:right;vertical-align:top;font-size:9px;color:#6b7280;line-height:1.9;">'+
-    '<div style="font-size:13px;font-weight:700;color:#16243f;">ProDrive Akademie Niederbayern</div>'+
-    'Daniel Eckmeier<br>Am Schwimmbad 12 · 94436 Simbach<br>info@prodrive-akademie.de</td>'+
-    '</tr></table>'+
-
-    // Divider
-    '<div style="border-top:3px solid #16243f;margin-bottom:14px;"></div>'+
-
-    // Customer + Info box
-    '<table style="margin-bottom:22px;"><tr>'+
-    '<td style="width:58%;vertical-align:top;font-size:9.5px;line-height:1.9;color:#16243f;">'+
-    '<div style="font-size:7.5px;color:#6b7280;letter-spacing:1px;text-transform:uppercase;margin-bottom:5px;">AN</div>'+
-    '<div style="font-weight:700;font-size:11px;">'+data.firma+'</div>'+
-    '<div>'+data.vorname+' '+data.nachname+'</div>'+
-    (data.telefon?'<div>'+data.telefon+'</div>':'')+
-    '<div style="color:#2563eb;">'+data.email+'</div></td>'+
-    '<td style="width:40%;vertical-align:top;background:#eef2ff;padding:10px 14px;border-radius:8px;font-size:9px;line-height:2.1;">'+
-    '<div><span style="font-weight:700;color:#16243f;">Angebot-Nr.:</span> <span style="color:#6b7280;">'+data.angebotNummer+'</span></div>'+
-    '<div><span style="font-weight:700;color:#16243f;">Datum:</span> <span style="color:#6b7280;">'+fmtDate(now)+'</span></div>'+
-    '<div><span style="font-weight:700;color:#16243f;">Gültig bis:</span> <span style="color:#6b7280;">'+fmtDate(gueltig)+'</span></div>'+
-    '<div><span style="font-weight:700;color:#16243f;">Teilnehmer:</span> <span style="color:#6b7280;">'+data.teilnehmer+' Person'+(data.teilnehmer>1?'en':'')+'</span></div>'+
-    '</td></tr></table>'+
-
-    // Heading
-    '<div style="font-size:20px;font-weight:800;color:#16243f;margin-bottom:6px;letter-spacing:1px;">ANGEBOT</div>'+
-    '<div style="font-size:10px;color:#16243f;margin-bottom:4px;">Sehr geehrte Damen und Herren,</div>'+
-    '<div style="font-size:10px;color:#6b7280;margin-bottom:16px;">wir freuen uns, Ihnen folgende Schulungsleistungen anbieten zu dürfen:</div>'+
-
-    // Schulungen table
-    '<table style="font-size:9.5px;margin-bottom:4px;border-radius:8px;overflow:hidden;">'+
-    '<thead><tr style="background:#16243f;color:#fff;">'+
-    '<th style="padding:8px 6px;text-align:center;font-size:8px;letter-spacing:.5px;width:5%;">POS.</th>'+
-    '<th style="padding:8px 8px;text-align:left;font-size:8px;letter-spacing:.5px;width:33%;">SCHULUNGSBEZEICHNUNG</th>'+
-    '<th style="padding:8px 6px;text-align:center;font-size:8px;letter-spacing:.5px;width:22%;">FORMAT</th>'+
-    '<th style="padding:8px 6px;text-align:center;font-size:8px;letter-spacing:.5px;width:8%;">ANZ.</th>'+
-    '<th style="padding:8px 6px;text-align:right;font-size:8px;letter-spacing:.5px;width:16%;">PREIS/PERS.</th>'+
-    '<th style="padding:8px 8px;text-align:right;font-size:8px;letter-spacing:.5px;width:16%;">GESAMT</th>'+
-    '</tr></thead><tbody>'+schulRows+totalRows+'</tbody></table>'+
-
-    // §19 + closing
-    '<div style="margin-top:22px;">'+
-    '<div style="font-size:9.5px;font-weight:700;color:#16243f;margin-bottom:6px;">Gemäß §19 UStG wird keine Umsatzsteuer berechnet.</div>'+
-    '<div style="font-size:8.5px;color:#6b7280;font-style:italic;margin-bottom:8px;line-height:1.6;">Alle Schulungen werden nach DGUV Grundsatz 308-001 bzw. VDI 2700 ff. durchgeführt. Die praktische Prüfung findet vor Ort beim Kunden statt. Der Praxistermin wird nach Auftragseingang individuell vereinbart.</div>'+
-    '<div style="font-size:9.5px;margin-bottom:8px;"><strong>Konditionen:</strong> <span style="color:#6b7280;">Zahlbar innerhalb von 14 Tagen nach Rechnungsstellung. Dieses Angebot ist 30 Tage gültig.</span></div>'+
-    notizBlock+
-    '<div style="font-size:10px;color:#16243f;margin-bottom:20px;">Wir freuen uns auf eine erfolgreiche Zusammenarbeit. Bei Fragen stehen wir Ihnen jederzeit gerne zur Verfügung.</div>'+
-    '</div>'+
-
-    // Signature
-    '<div>'+
-    '<div style="font-size:10px;color:#6b7280;margin-bottom:6px;">Mit freundlichen Grüßen</div>'+
-    '<img src="'+sigUrl+'" style="height:65px;object-fit:contain;display:block;margin-bottom:4px;">'+
-    '<div style="border-top:2px solid #16243f;padding-top:5px;display:inline-block;min-width:160px;">'+
-    '<div style="font-size:10px;font-weight:700;color:#16243f;">Daniel Eckmeier</div>'+
-    '<div style="font-size:8.5px;color:#6b7280;font-style:italic;">Ausbilder &amp; Inhaber · ProDrive Akademie Niederbayern</div>'+
-    '</div></div>'+
-
-    // Page footer
-    '<div style="margin-top:24px;padding-top:6px;border-top:1px solid #c7d2fe;text-align:center;font-size:7.5px;color:#9ca3af;">'+
-    'ProDrive Akademie Niederbayern · Daniel Eckmeier · Am Schwimmbad 12, 94436 Simbach · DGUV 308-001 · VDI 2700'+
-    '</div>'+
-
-    '</div>';
 }
 
 // ── Absenden ───────────────────────────────────────────────────
