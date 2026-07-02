@@ -87,6 +87,8 @@ nav{
 .af-sub-checks{display:flex;flex-wrap:wrap;gap:10px}
 .af-sub-check{display:flex;align-items:center;gap:7px;font-size:13px;cursor:pointer}
 .af-sub-check input{accent-color:var(--blue)}
+.af-subkurse.geraet-fehler{border-top-color:#fca5a5;background:#fff1f1;border-radius:0 0 8px 8px;padding:10px 12px}
+.af-geraet-hint{display:none;margin-top:8px;font-size:12px;font-weight:700;color:#dc2626;background:#fef2f2;border:1px solid #fecaca;border-radius:6px;padding:7px 10px}
 
 .af-error{
   background:#fef2f2;border:1px solid #fecaca;color:#dc2626;
@@ -206,12 +208,13 @@ footer{
           </select>
         </div>
         <div class="af-subkurse" id="stufe2-typen">
-          <div class="af-subkurse-title">Fahrzeugtypen (Mehrfachauswahl)</div>
+          <div class="af-subkurse-title">Fahrzeugtypen <span style="color:#dc2626">*</span> (mind. 1 auswählen)</div>
           <div class="af-sub-checks">
             <label class="af-sub-check"><input type="checkbox" id="ck-schubmast"> Schubmaststapler</label>
             <label class="af-sub-check"><input type="checkbox" id="ck-komm"> Kommissionierer</label>
             <label class="af-sub-check"><input type="checkbox" id="ck-schmal"> Schmalgangstapler</label>
           </div>
+          <div class="af-geraet-hint" id="stufe2-geraet-hint">&#9888; Bitte mindestens einen Fahrzeugtyp auswählen!</div>
         </div>
       </div>
 
@@ -286,8 +289,25 @@ var _urlKursSpId   = '';
 document.getElementById('ck-training').addEventListener('change',function(){
   document.getElementById('block-training').classList.toggle('active',this.checked);
 });
+function validateStufe2(){
+  var stufe2 = document.getElementById('ck-stufe2').checked;
+  var typenDiv = document.getElementById('stufe2-typen');
+  var hint = document.getElementById('stufe2-geraet-hint');
+  if(!stufe2){ hint.style.display='none'; typenDiv.classList.remove('geraet-fehler'); return true; }
+  var ok = document.getElementById('ck-schubmast').checked ||
+           document.getElementById('ck-komm').checked ||
+           document.getElementById('ck-schmal').checked;
+  hint.style.display = ok ? 'none' : 'block';
+  typenDiv.classList.toggle('geraet-fehler', !ok);
+  return ok;
+}
 document.getElementById('ck-stufe2').addEventListener('change',function(){
   document.getElementById('stufe2-typen').style.display = this.checked ? 'block' : 'none';
+  if(this.checked) validateStufe2();
+  else validateStufe2();
+});
+['ck-schubmast','ck-komm','ck-schmal'].forEach(function(id){
+  document.getElementById(id).addEventListener('change', validateStufe2);
 });
 
 function weitererTeilnehmer(){
@@ -328,15 +348,11 @@ document.getElementById('anmeldungForm').addEventListener('submit', async functi
     return;
   }
 
-  if(stufe2){
-    var schubmast = document.getElementById('ck-schubmast').checked;
-    var komm      = document.getElementById('ck-komm').checked;
-    var schmal    = document.getElementById('ck-schmal').checked;
-    if(!schubmast && !komm && !schmal){
-      errEl.textContent = 'Bitte wählen Sie bei Stufe 2 mindestens einen Fahrzeugtyp aus (Schubmaststapler, Kommissionierer oder Schmalgangstapler).';
-      errEl.style.display = 'block';
-      return;
-    }
+  if(stufe2 && !validateStufe2()){
+    errEl.textContent = 'Bitte wählen Sie bei Stufe 2 mindestens einen Fahrzeugtyp aus (Schubmaststapler, Kommissionierer oder Schmalgangstapler).';
+    errEl.style.display = 'block';
+    document.getElementById('stufe2-typen').scrollIntoView({behavior:'smooth', block:'center'});
+    return;
   }
 
   var schulungen = [];
