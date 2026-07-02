@@ -421,6 +421,12 @@ function goStep(n){
   if(n === 2){
     var any = Object.values(selected).some(function(v){return v;});
     if(!any){ alert('Bitte wählen Sie mindestens eine Schulung aus.'); return; }
+    var hatGabelstapler = selected.stufe1 || selected.schubmast || selected.kommissionierer || selected.schmalgang;
+    var hatGeraet = selected.schubmast || selected.kommissionierer || selected.schmalgang;
+    if(hatGabelstapler && !hatGeraet){
+      alert('Bitte wählen Sie mindestens ein Stufe-2-Gerät aus:\nSchubmast, Kommissionierer oder Schmalgang.');
+      return;
+    }
     buildFormatSections();
   }
   if(n === 5){
