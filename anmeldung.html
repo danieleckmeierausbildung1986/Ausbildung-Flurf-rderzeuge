@@ -328,6 +328,17 @@ document.getElementById('anmeldungForm').addEventListener('submit', async functi
     return;
   }
 
+  if(stufe2){
+    var schubmast = document.getElementById('ck-schubmast').checked;
+    var komm      = document.getElementById('ck-komm').checked;
+    var schmal    = document.getElementById('ck-schmal').checked;
+    if(!schubmast && !komm && !schmal){
+      errEl.textContent = 'Bitte wählen Sie bei Stufe 2 mindestens einen Fahrzeugtyp aus (Schubmaststapler, Kommissionierer oder Schmalgangstapler).';
+      errEl.style.display = 'block';
+      return;
+    }
+  }
+
   var schulungen = [];
   if(stufe1)   schulungen.push('Ausbildung Flurförderzeuge Stufe 1');
   if(stufe2)   schulungen.push('Zusatzausbildung Stufe 2');
