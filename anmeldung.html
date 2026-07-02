@@ -275,7 +275,10 @@ var _urlKursSpId   = '';
   var sel = document.getElementById('sel-' + kurs);
   if(sel) sel.disabled = false;
   document.getElementById('block-' + kurs).classList.add('active');
-  if(kurs === 'stufe2') document.getElementById('stufe2-typen').style.display = 'block';
+  if(kurs === 'stufe2'){
+    document.getElementById('stufe2-typen').style.display = 'block';
+    validateStufe2();
+  }
   document.getElementById('block-' + kurs).scrollIntoView({behavior:'smooth', block:'center'});
 })();
 
