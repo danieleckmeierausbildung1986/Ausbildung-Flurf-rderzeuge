@@ -572,6 +572,9 @@ function fmtEuro(n){
 // ── PDF generieren ──────────────────────────────────────────────
 function generatePDF(data){
   return new Promise(function(resolve, reject){
+    if(typeof html2pdf === 'undefined'){
+      reject(new Error('html2pdf nicht geladen')); return;
+    }
     var el = document.createElement('div');
     el.style.cssText = 'position:absolute;left:-9999px;top:0;width:794px;';
     el.innerHTML = buildOfferHTML(data);
@@ -580,9 +583,9 @@ function generatePDF(data){
       margin:[12,12,18,12],
       filename:'angebot.pdf',
       image:{type:'jpeg',quality:0.97},
-      html2canvas:{scale:2,useCORS:true,logging:false},
+      html2canvas:{scale:2,useCORS:true,logging:false,allowTaint:false},
       jsPDF:{unit:'mm',format:'a4',orientation:'portrait'}
-    }).from(el).outputPdf('datauristring').then(function(uri){
+    }).from(el).toPdf().output('datauristring').then(function(uri){
       document.body.removeChild(el);
       resolve(uri.split(',')[1]);
     }).catch(function(e){ document.body.removeChild(el); reject(e); });
