@@ -134,10 +134,11 @@ body{
         <div class="num-field">
           <input type="text" id="regnr" placeholder="2026-001" autocomplete="off">
         </div>
+        <div class="err-box" id="loginErrBox"></div>
       </div>
       <div class="nav-row">
         <span class="step-count"></span>
-        <button class="nav-btn next" onclick="startWelcome()">Weiter &rarr;</button>
+        <button class="nav-btn next" id="loginNextBtn" onclick="startWelcome()">Weiter &rarr;</button>
       </div>
     </div>
 
@@ -201,8 +202,9 @@ body{
 
 <script>
 var PRUEFUNG_STUFE1_URL = 'HIER_POWER_AUTOMATE_URL_EINFUEGEN';
+var ZUGANGSPRUEFUNG_URL = 'https://default8af25f9034bc4ef4aba22ab6f641d5.01.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/7058b6c8090842748465472db6085773/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=nxepIsGToa5my_-oIW5ZR5c3CQLtufN5DwNvM-qG1G4';
 
-var FRAGEN = [
+var FRAGEN_DE = [
 {num:2, text:"Wer darf ein Flurförderzeug mit Fahrersitz oder Fahrerstand führen?", opts:["Jeder, der einen Führerschein für Kraftfahrzeuge besitzt","Jeder Betriebsangehörige","Nur geeignete, ausgebildete Mitarbeiter/innen, die ihre Befähigung nachgewiesen haben, mindestens 18 Jahre alt sind und vom Unternehmen schriftlich beauftragt wurden."], correct:2},
 {num:3, text:"Wer ist für die unfallsichere Beladung des Flurförderzeugs bzw. Anhängers verantwortlich?", opts:["Derjenige, der die Last zusammengestellt hat.","Der Meister.","Der Fahrer."], correct:2},
 {num:4, text:"Wie darf der Stapler gewichtsmäßig belastet werden?", opts:["Nach freiem Ermessen des Fahrers.","Nach Anforderung des Vorgesetzten.","Nach Angaben des Herstellers z.B. Typenschild und Traglastdiagramm."], correct:2},
@@ -245,6 +247,144 @@ var FRAGEN = [
 {num:41, text:"Eine gleichmäßig beladene würfelförmige Kiste ist 1,50 m hoch, 1,50 m breit und 1,50 m tief. Sie wiegt 1600 kg. Darf diese Kiste mit dem Gabelstapler transportiert werden?", image:"Traglastdiagram.png", opts:["Ja","Nein"], correct:0}
 ];
 
+var FRAGEN_PL = [
+{num:2, text:"Kto może prowadzić wózek widłowy z siedzeniem lub stanowiskiem kierowcy?", opts:["Każdy, kto posiada prawo jazdy na pojazdy silnikowe","Każdy pracownik zakładu","Tylko odpowiedni, przeszkoleni pracownicy, którzy wykazali swoje kwalifikacje, mają co najmniej 18 lat i zostali pisemnie upoważnieni przez przedsiębiorstwo."], correct:2},
+{num:3, text:"Kto odpowiada za bezpieczne załadowanie wózka widłowego lub przyczepy?", opts:["Osoba, która przygotowała ładunek.","Mistrz (brygadzista).","Kierowca."], correct:2},
+{num:4, text:"Jak wolno obciążać wózek widłowy pod względem masy?", opts:["Według swobodnego uznania kierowcy.","Według wymagań przełożonego.","Według danych producenta, np. tabliczki znamionowej i wykresu udźwigu."], correct:2},
+{num:5, text:"Od którego miejsca mierzy się środek ciężkości ładunku?", opts:["od osi przedniej.","od osi środkowej masztu.","od powierzchni oparcia ładunku na grzbiecie wideł."], correct:2},
+{num:6, text:"Jak zjeżdża się załadowanym wózkiem widłowym po pochyłości (np. rampie) w dół?", opts:["Tyłem z podniesionym ładunkiem.","Tyłem z opuszczonym ładunkiem (ładunek od strony wzniesienia).","Przodem z opuszczonym ładunkiem."], correct:1},
+{num:7, text:"Kiedy wymagany jest dach ochronny kierowcy dla wózków widłowych z siedzeniem lub stanowiskiem kierowcy?", opts:["Na wolnym placu składowym","Gdy ładunek, który mógłby spaść na kierowcę, jest podnoszony lub odkładany na wysokości większej niż 1,80 m nad podłożem.","Zasadniczo nie jest wymagany."], correct:1},
+{num:8, text:"Kiedy konieczna jest krata ochronna ładunku?", opts:["Zawsze wtedy, gdy wymagany jest również dach ochronny kierowcy.","Przy transporcie drobnych elementów, które mogą spaść na kierowcę.","Zasadniczo nie jest konieczna."], correct:1},
+{num:9, text:"Kiedy wolno przekroczyć maksymalne dopuszczalne obciążenie wózka widłowego?", opts:["Przy pilnych i nagłych pracach załadunkowych lub transportowych.","W ogóle nie wolno.","Tylko na krótko."], correct:1},
+{num:10, text:"Którymi drogami transportowymi wolno poruszać się wózkami widłowymi?", opts:["Wszystkimi drogami transportowymi, na których nie ma przeszkód.","Tylko tymi, które zostały wyznaczone przez przedsiębiorcę lub jego pełnomocnika w instrukcji eksploatacji.","Tylko tymi, które mają co najmniej 1,50 m szerokości."], correct:1},
+{num:11, text:"Na co należy zwrócić uwagę przy pokrywach i wykopach oraz przy wjeździe na rampy, stropy itd.?", opts:["Głębokość wykopu lub wysokość rampy.","Nośność","Wielkość pokrywy"], correct:1},
+{num:12, text:"Czy wózki widłowe i ich osprzęt podlegają okresowym kontrolom?", opts:["Nie, ponieważ kierowca musi codziennie przed rozpoczęciem pracy sprawdzać wózek widłowy i osprzęt pod kątem widocznych usterek.","Tak, w odstępach co najmniej rocznych przez osobę kompetentną (rzeczoznawcę).","Tylko w przypadku awarii."], correct:1},
+{num:13, text:"Dlaczego kluczyk musi zostać wyjęty ze stacyjki po opuszczeniu wózka widłowego?", opts:["Aby kluczyk nie mógł zostać skradziony.","Aby wykluczyć użycie przez osoby nieuprawnione.","Aby przez zwarcie nie doszło do uszkodzenia wózka widłowego."], correct:1},
+{num:14, text:"Kiedy zgodnie z instrukcją eksploatacji dodatkowe osoby mogą jechać na wózku widłowym?", opts:["Gdy wózek widłowy ma udźwig większy niż 2,5 t.","Gdy dostępne jest specjalne miejsce siedzące lub stojące oraz uchwyt.","Gdy jest wystarczająco dużo miejsca."], correct:1},
+{num:15, text:"Elektryk chce wymienić uszkodzoną świetlówkę na wysokości 2,50 m. Ponieważ nie miał pod ręką drabiny, poprosił kierowcę wózka widłowego, aby podniósł go w pustej skrzyni, żeby mógł szybko wymienić świetlówkę. Co musi zrobić kierowca wózka widłowego?", opts:["Odmówić lub użyć zgodnego z przepisami podestu roboczego.","Zapytać mistrza.","Podnieść elektryka na jego własną odpowiedzialność."], correct:0},
+{num:16, text:"Czy wózki widłowe mogą poruszać pojazdami szynowymi?", opts:["Tak, jeśli dostępne są do tego wymagane urządzenia, np. haki ślizgowe.","Tylko gdy kierownik zakładu wyda takie polecenie.","Tak, jeśli dostępna jest druga osoba z klinami hamującymi."], correct:0},
+{num:17, text:"Jakie zadanie ma kierowca codziennie przed rozpoczęciem pracy?", opts:["Sprawdzić wózek widłowy pod kątem widocznych usterek.","Umyć wózek widłowy.","Zająć się pierwszym zleceniem."], correct:0},
+{num:18, text:"Kierowca wózka widłowego idzie na przerwę obiadową. Na co musi zwrócić uwagę opuszczając wózek widłowy?", opts:["Zaciągnąć hamulec postojowy, ustawić osprzęt do podnoszenia w najniższej pozycji, pochylić końce wideł w dół, wyłączyć silnik napędowy i zabezpieczyć wózek widłowy przed użyciem przez osoby nieuprawnione.","Wyłączyć silnik napędowy i wyjąć kluczyk.","Zaciągnąć hamulec postojowy."], correct:0},
+{num:19, text:"Co przedstawia wykres udźwigu?", opts:["Tylko udźwig wózka widłowego.","Maksymalną prędkość wózka widłowego.","Ładunek, który przy danym środku ciężkości ładunku wolno jeszcze podnieść wózkiem widłowym."], correct:2},
+{num:20, text:"Na co należy zwrócić uwagę przy parkowaniu wózków widłowych z napędem gazowym (LPG) w pomieszczeniach?", opts:["Nie trzeba przestrzegać żadnych przepisów.","Parkowanie w pomieszczeniach magazynowych jest niedozwolone.","Pomieszczenia muszą znajdować się na poziomie gruntu i być wystarczająco wentylowane; w pobliżu miejsca postoju nie mogą znajdować się otwory prowadzące do niżej położonych pomieszczeń."], correct:2},
+{num:21, text:"Skąd kierowca wózka widłowego wie, jakim obciążeniem może obciążyć swój wózek?", opts:["Gdy tylne koła unoszą się nad podłożem, granica obciążenia została osiągnięta.","Szacuje maksymalne obciążenie na podstawie własnego doświadczenia.","Na podstawie danych na tabliczce znamionowej i wykresie udźwigu."], correct:2},
+{num:22, text:"Dlaczego podczas jazdy wózkiem widłowym ładunek musi być transportowany w możliwie najniższej pozycji?", opts:["Ze względu na zwrotność.","Ze względu na oszczędność energii napędowej wózka widłowego.","Ze względu na stateczność wózka widłowego."], correct:2},
+{num:23, text:"Jak musi być zabezpieczona ciężarówka przed stoczeniem się, zanim będzie mogła zostać załadowana wózkiem widłowym przy rampie załadunkowej?", opts:["Włączenie najniższego biegu.","Zaciągnięcie hamulca postojowego i włączenie najniższego biegu.","Zaciągnięcie hamulca postojowego i użycie klinów pod koła."], correct:2},
+{num:24, text:"Dlaczego dla wózka widłowego wymagany jest specjalny kluczyk?", opts:["Aby wózek widłowy nie mógł zostać pomylony.","Aby wózek widłowy mógł zostać zabezpieczony przed użyciem przez osoby nieuprawnione po jego opuszczeniu."], correct:1},
+{num:25, text:"Czy wózki widłowe mogą być transportowane windą między piętrami?", opts:["Tak, ale tylko wózki elektryczne.","Tak, jeśli winda ma wystarczający udźwig.","Nie."], correct:1},
+{num:26, text:"Kiedy wolno pochylić maszt podnoszący wózka widłowego do przodu?", opts:["Podczas jazdy.","Tylko przy podnoszeniu i odkładaniu ładunku.","Podczas podnoszenia ładunku."], correct:1},
+{num:27, text:"Czy kierowca może opuścić wózek widłowy przy podniesionym podeście roboczym?", opts:["Tak, jeśli wyjął kluczyk.","Nie.","Tak, jeśli hamulec postojowy jest zaciągnięty."], correct:1},
+{num:28, text:"Na co należy szczególnie zwrócić uwagę przy składowaniu na dużych wysokościach?", opts:["Na to, aby maszt podnoszący był pochylony do tyłu, aby nic nie mogło spaść.","Na ograniczenie udźwigu.","Nie jest wymagana szczególna ostrożność."], correct:1},
+{num:29, text:"Czy kierowca może zawracać wózkiem widłowym na pochyłości (wzniesieniu)?", opts:["Tak, ale musi podnieść widły.","Nie.","Musi się upewnić, że nie przeszkadza żadnemu pracownikowi."], correct:1},
+{num:30, text:"Czy wózkiem widłowym wolno poruszać się po drogach publicznych?", opts:["Tak, jeśli kierowca dobrze zna drogi.","Tak, z zezwoleniem wyjątkowym i przy spełnieniu specjalnych warunków.","W ogóle nie."], correct:1},
+{num:31, text:"Kiedy kierowca wózka widłowego musi używać zamontowanego urządzenia przytrzymującego?", opts:["Tylko podczas jazdy po terenie zakładu.","Tylko przy dłuższych trasach.","Przy każdej jeździe."], correct:2},
+{num:32, text:"Kto zgodnie z zasadą BG (dawniej BGG 925 / DGUV Grundsatz 308-001) może szkolić nowych kierowców wózków widłowych?", opts:["Każdy specjalista ds. bezpieczeństwa pracy.","Tylko Berufsgenossenschaft (instytucja ubezpieczenia wypadkowego).","Osoby, które mają co najmniej 24 lata, posiadają wymagane kwalifikacje zawodowe i merytoryczne oraz mogą wykazać ukończenie kursu dla instruktorów kierowców wózków widłowych."], correct:2},
+{num:33, text:"Kiedy istnieje zwiększone niebezpieczeństwo przewrócenia wózka widłowego?", opts:["Wózki widłowe są tak skonstruowane, że niebezpieczeństwo przewrócenia jest wykluczone.","Podczas jazdy z luźno ułożonym towarem.","Zwiększone niebezpieczeństwo przewrócenia istnieje podczas jazdy z podniesionym ładunkiem, podczas jazdy na zakrętach i podczas hamowania."], correct:2},
+{num:34, text:"Jakie konsekwencje może mieć dla kierowcy rażąco niedbałe zachowanie przy obsłudze wózków widłowych na terenie zakładu?", opts:["3 punkty w rejestrze kierowców (Flensburg).","Mandat od policji.","Kary pieniężne od Berufsgenossenschaft oraz konsekwencje cywilnoprawne lub karne."], correct:2},
+{num:35, text:"Dlaczego kierowca prowadząc wózek widłowy musi nosić dobrze dopasowane obuwie?", opts:["Aby być bardziej ruchliwym podczas prac transportowych.","Aby uniknąć zsunięcia się z pedałów obsługowych.","Aby nie poślizgnąć się na plamach oleju."], correct:1},
+{num:36, text:"Kto może przeprowadzać wymagane przez przepisy BHP (UVV) okresowe kontrole wózków widłowych?", opts:["Kierowca wózka widłowego z wystarczającą praktyką jazdy.","Dowolny warsztat samochodowy.","Osoba kompetentna (rzeczoznawca) z wystarczającą wiedzą i doświadczeniem, która potrafi ocenić stan wózka widłowego pod względem bezpieczeństwa pracy."], correct:2},
+{num:37, text:"Jak zachowuje się kierowca, gdy stwierdzi usterkę wózka widłowego, która zagraża bezpieczeństwu?", opts:["Próbuje sam usunąć usterkę.","Jeździ do końca pracy, a następnie zgłasza usterkę przełożonemu.","Wyłącza urządzenie, wyjmuje kluczyk zapłonu i zgłasza usterkę przełożonemu."], correct:2},
+{num:38, text:"Jakie ładunki wolno przewozić wózkiem widłowym?", opts:["Każdy ładunek o masie do maksymalnego dopuszczalnego obciążenia wózka widłowego.","Tylko takie ładunki, które nie mogą się przesunąć ani spaść, przy których nie zostaje przekroczony udźwig wózka i przy których zapewniona jest wystarczająca widoczność drogi dla kierowcy.","Tylko ładunki oznaczone do transportu."], correct:1},
+{num:39, text:"Ile najwyżej może ważyć paleta, której środek ciężkości znajduje się w odległości 600 mm od pionowej części wideł? (podać w kg, według wykresu udźwigu)", type:"number", image:"Traglastdiagram.png", correct:2000, tolerance:100},
+{num:40, text:"Ładunek o masie 1400 kg ma zostać załadowany na ciężarówkę. Środek ciężkości znajduje się na 1000 mm. Czy wolno przewieźć ten ładunek wózkiem widłowym?", image:"Traglastdiagram.png", opts:["Tak","Nie"], correct:1},
+{num:41, text:"Równomiernie załadowana skrzynia w kształcie sześcianu ma 1,50 m wysokości, 1,50 m szerokości i 1,50 m głębokości. Waży 1600 kg. Czy tę skrzynię wolno przewieźć wózkiem widłowym?", image:"Traglastdiagram.png", opts:["Tak","Nie"], correct:0}
+];
+
+var TXT = {
+  de: {
+    pageTitle: "Theorieprüfung Stufe 1 – ProDrive Akademie Niederbayern",
+    topbarSub: "Theorieprüfung Stufe 1 · DGUV Grundsatz 308-001",
+    anmeldung: "Anmeldung",
+    regnrFrage: "Bitte geben Sie Ihre Registrierungsnummer ein.",
+    weiter: "Weiter →",
+    pruefeLaeuft: "Prüfe…",
+    fehlLeer: "Bitte Registrierungsnummer eingeben.",
+    fehlNichtGefunden: "Registrierungsnummer nicht gefunden.",
+    fehlKeineFreigabe: "Für diese Prüfung liegt noch keine Freigabe durch Ihren Ausbilder vor. Bitte sprechen Sie sich mit ihm ab, bevor Sie die Prüfung starten.",
+    fehlVerbindung: "Verbindung fehlgeschlagen. Bitte versuchen Sie es erneut.",
+    welcomeTitel: "Theorieprüfung Stufe 1",
+    welcomeSub: "Diese Prüfung deckt alle theoretischen Grundlagen nach <b>DGUV Grundsatz 308-001</b> für das sichere Führen von Gabelstaplern ab. Beantworten Sie alle Fragen sorgfältig — die Prüfung kann nur einmal durchgeführt werden.",
+    statFragen: "Fragen", statZeit: "Zeitlimit", statBestehen: "zum Bestehen",
+    pruefungStarten: "Prüfung starten ›",
+    frageVon: function(n,g){ return 'Frage ' + n + ' von ' + g; },
+    zurueck: "← Zurück",
+    antwortKg: "Ihre Antwort (in kg)",
+    fehlAntwort: "Bitte beantworten Sie die Frage, bevor Sie fortfahren.",
+    vorAbsenden: "Vor dem Absenden",
+    eigenLabel: "Eigenständigkeitserklärung:",
+    eigenText: "Hiermit bestätige ich, dass ich die vorstehende Theorieprüfung zur Ausbildung für Flurförderzeuge selbstständig und ohne Verwendung nicht zugelassener Hilfsmittel abgelegt habe.",
+    dsgvoLabel: "Datenschutzerklärung:",
+    dsgvoText: "Mit der Teilnahme an dieser Prüfung erkläre ich mich einverstanden, dass meine personenbezogenen Daten (Name, Geburtsdatum, Prüfungsergebnisse) zum Zweck des Qualifikationsnachweises digital verarbeitet werden. Gemäß den Vorgaben der DGUV Vorschrift 68 und DGUV Grundsatz 308-001 ist der Ausbilder verpflichtet, die Prüfungsunterlagen als Nachweis der Befähigung für einen Zeitraum von 10 Jahren revisionssicher zu archivieren. Eine Weitergabe an Dritte erfolgt ausschließlich im Rahmen gesetzlicher Nachweispflichten gegenüber Berufsgenossenschaften oder Behörden.",
+    absenden: "Prüfung abschicken",
+    fehlErklaerungen: "Bitte bestätigen Sie beide Erklärungen, bevor Sie die Prüfung abschicken.",
+    bestanden: "Bestanden!",
+    nichtBestanden: "Leider nicht bestanden",
+    scoreText: function(r,g){ return r + ' von ' + g + ' Fragen richtig beantwortet (mindestens 32 erforderlich).'; },
+    hintPass: "Ihr Ergebnis wurde übermittelt. Sie erhalten Ihr Prüfungsprotokoll in Kürze per E-Mail.",
+    hintFail: "Ihr Ergebnis wurde übermittelt. Bitte wenden Sie sich an Ihren Ausbilder, um einen Termin für die Nachprüfung zu vereinbaren."
+  },
+  pl: {
+    pageTitle: "Egzamin teoretyczny Stopień 1 – ProDrive Akademie Niederbayern",
+    topbarSub: "Egzamin teoretyczny Stopień 1 · DGUV Grundsatz 308-001",
+    anmeldung: "Logowanie",
+    regnrFrage: "Proszę podać swój numer rejestracyjny.",
+    weiter: "Dalej →",
+    pruefeLaeuft: "Sprawdzam…",
+    fehlLeer: "Proszę podać numer rejestracyjny.",
+    fehlNichtGefunden: "Nie znaleziono numeru rejestracyjnego.",
+    fehlKeineFreigabe: "Ten egzamin nie został jeszcze zatwierdzony przez Twojego instruktora. Proszę skontaktować się z nim przed rozpoczęciem egzaminu.",
+    fehlVerbindung: "Połączenie nie powiodło się. Spróbuj ponownie.",
+    welcomeTitel: "Egzamin teoretyczny Stopień 1",
+    welcomeSub: "Ten egzamin obejmuje wszystkie podstawy teoretyczne zgodnie z <b>DGUV Grundsatz 308-001</b> dotyczące bezpiecznej obsługi wózków widłowych. Proszę odpowiedzieć na wszystkie pytania starannie — egzamin można przeprowadzić tylko raz.",
+    statFragen: "Pytań", statZeit: "Limit czasu", statBestehen: "do zdania",
+    pruefungStarten: "Rozpocznij egzamin ›",
+    frageVon: function(n,g){ return 'Pytanie ' + n + ' z ' + g; },
+    zurueck: "← Wstecz",
+    antwortKg: "Twoja odpowiedź (w kg)",
+    fehlAntwort: "Proszę odpowiedzieć na pytanie, zanim przejdziesz dalej.",
+    vorAbsenden: "Przed wysłaniem",
+    eigenLabel: "Oświadczenie o samodzielności:",
+    eigenText: "Niniejszym potwierdzam, że powyższy egzamin teoretyczny w ramach szkolenia na wózki widłowe zdałem/zdałam samodzielnie i bez użycia niedozwolonych pomocy.",
+    dsgvoLabel: "Oświadczenie o ochronie danych:",
+    dsgvoText: "Uczestnicząc w tym egzaminie, wyrażam zgodę na cyfrowe przetwarzanie moich danych osobowych (imię i nazwisko, data urodzenia, wyniki egzaminu) w celu udokumentowania kwalifikacji. Zgodnie z wymogami DGUV Vorschrift 68 oraz DGUV Grundsatz 308-001 instruktor jest zobowiązany do archiwizowania dokumentacji egzaminacyjnej jako dowodu kwalifikacji przez okres 10 lat w sposób zgodny z wymogami rewizyjnymi. Przekazanie danych osobom trzecim następuje wyłącznie w ramach ustawowych obowiązków dokumentacyjnych wobec Berufsgenossenschaft lub organów urzędowych.",
+    absenden: "Wyślij egzamin",
+    fehlErklaerungen: "Proszę potwierdzić oba oświadczenia przed wysłaniem egzaminu.",
+    bestanden: "Zdany!",
+    nichtBestanden: "Niestety nie zdany",
+    scoreText: function(r,g){ return r + ' z ' + g + ' pytań odpowiedziano poprawnie (wymagane co najmniej 32).'; },
+    hintPass: "Twój wynik został przesłany. Wkrótce otrzymasz protokół egzaminu e-mailem.",
+    hintFail: "Twój wynik został przesłany. Proszę skontaktować się z instruktorem, aby umówić termin egzaminu poprawkowego."
+  }
+};
+
+var urlParams = new URLSearchParams(window.location.search);
+var lang = urlParams.get('lang') || sessionStorage.getItem('lang') || 'de';
+if(lang !== 'pl') lang = 'de';
+var FRAGEN = (lang === 'pl') ? FRAGEN_PL : FRAGEN_DE;
+var T = TXT[lang];
+document.documentElement.lang = lang;
+
+function applyStaticText(){
+  document.title = T.pageTitle;
+  document.querySelector('.topbar p').textContent = T.topbarSub;
+  document.querySelector('#loginScreen .q-num').textContent = T.anmeldung;
+  document.querySelector('#loginScreen .q-text').textContent = T.regnrFrage;
+  document.getElementById('loginNextBtn').innerHTML = T.weiter;
+  document.querySelector('.welcome-titel').textContent = T.welcomeTitel;
+  document.querySelector('.welcome-sub').innerHTML = T.welcomeSub;
+  var wg = document.querySelectorAll('.wg span');
+  wg[0].textContent = T.statFragen; wg[1].textContent = T.statZeit; wg[2].textContent = T.statBestehen;
+  document.querySelector('.start-btn').innerHTML = T.pruefungStarten;
+  document.getElementById('backBtn').innerHTML = T.zurueck;
+  document.getElementById('nextBtn').innerHTML = T.weiter;
+  document.querySelector('.final-title').textContent = T.vorAbsenden;
+  var consentPs = document.querySelectorAll('.consent p');
+  consentPs[0].innerHTML = '<b>' + T.eigenLabel + '</b> ' + T.eigenText;
+  consentPs[1].innerHTML = '<b>' + T.dsgvoLabel + '</b> ' + T.dsgvoText;
+  document.getElementById('submitBtn').textContent = T.absenden;
+}
+applyStaticText();
+
 var cur = 0;
 var answers = {};
 var regnr = '';
@@ -252,11 +392,42 @@ var timeLeft = 45*60;
 var timerHandle = null;
 var startTime = null;
 
-function startWelcome(){
+async function startWelcome(){
   regnr = document.getElementById('regnr').value.trim();
-  if(!regnr){ alert('Bitte Registrierungsnummer eingeben.'); return; }
-  document.getElementById('loginScreen').style.display = 'none';
-  document.getElementById('welcomeScreen').style.display = 'block';
+  var errBox = document.getElementById('loginErrBox');
+  var btn = document.getElementById('loginNextBtn');
+  errBox.style.display = 'none';
+
+  if(!regnr){ errBox.textContent = T.fehlLeer; errBox.style.display = 'block'; return; }
+
+  btn.disabled = true;
+  btn.textContent = T.pruefeLaeuft;
+  try {
+    var res = await fetch(ZUGANGSPRUEFUNG_URL, {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ registrierungsnummer: regnr })
+    });
+    var data = await res.json();
+    var freigegeben = data.pruefung_stufe1_freigegeben === true || data.pruefung_stufe1_freigegeben === 'Ja' || data.pruefung_stufe1_freigegeben === 'True';
+
+    if(!(data && data.zugang === true)){
+      errBox.textContent = data.grund || T.fehlNichtGefunden;
+      errBox.style.display = 'block';
+    } else if(!freigegeben){
+      errBox.textContent = T.fehlKeineFreigabe;
+      errBox.style.display = 'block';
+    } else {
+      document.getElementById('loginScreen').style.display = 'none';
+      document.getElementById('welcomeScreen').style.display = 'block';
+    }
+  } catch(e){
+    errBox.textContent = T.fehlVerbindung;
+    errBox.style.display = 'block';
+  } finally {
+    btn.disabled = false;
+    btn.textContent = T.weiter;
+  }
 }
 
 function startPruefung(){
@@ -283,7 +454,7 @@ function tick(){
 
 function renderQuestion(){
   var f = FRAGEN[cur];
-  document.getElementById('qLabel').textContent = 'Frage ' + (cur+1) + ' von ' + FRAGEN.length;
+  document.getElementById('qLabel').textContent = T.frageVon(cur+1, FRAGEN.length);
   document.getElementById('qText').textContent = f.text;
   document.getElementById('stepCount').textContent = (cur+1) + ' / ' + FRAGEN.length;
   document.getElementById('pbar').style.width = ((cur)/FRAGEN.length*100) + '%';
@@ -300,7 +471,7 @@ function renderQuestion(){
   if(f.type === 'number'){
     var wrap = document.createElement('div');
     wrap.className = 'num-field';
-    wrap.innerHTML = '<label>Ihre Antwort (in kg)</label><input type="number" id="numAnswer" inputmode="numeric">';
+    wrap.innerHTML = '<label>' + T.antwortKg + '</label><input type="number" id="numAnswer" inputmode="numeric">';
     host.appendChild(wrap);
     var inp = wrap.querySelector('input');
     if(answers[f.num] !== undefined) inp.value = answers[f.num];
@@ -333,7 +504,7 @@ function goBack(){
 function goNext(){
   var f = FRAGEN[cur];
   if(answers[f.num] === undefined || answers[f.num] === ''){
-    alert('Bitte beantworten Sie die Frage, bevor Sie fortfahren.');
+    alert(T.fehlAntwort);
     return;
   }
   if(cur < FRAGEN.length - 1){
@@ -377,7 +548,7 @@ function submitPruefung(auto){
   var eigen = document.getElementById('ck-eigen').checked;
   var dsgvo = document.getElementById('ck-dsgvo').checked;
   if(!auto && (!eigen || !dsgvo)){
-    document.getElementById('errBox').textContent = 'Bitte bestätigen Sie beide Erklärungen, bevor Sie die Prüfung abschicken.';
+    document.getElementById('errBox').textContent = T.fehlErklaerungen;
     document.getElementById('errBox').style.display = 'block';
     return;
   }
@@ -417,12 +588,10 @@ function zeigeErgebnis(bestanden, richtig, gesamt){
   document.getElementById('resultScreen').style.display = 'block';
   document.getElementById('resIcon').textContent = bestanden ? '✅' : '❌';
   var t = document.getElementById('resTitle');
-  t.textContent = bestanden ? 'Bestanden!' : 'Leider nicht bestanden';
+  t.textContent = bestanden ? T.bestanden : T.nichtBestanden;
   t.className = 'result-title ' + (bestanden ? 'pass' : 'fail');
-  document.getElementById('resScore').textContent = richtig + ' von ' + gesamt + ' Fragen richtig beantwortet (mindestens 32 erforderlich).';
-  document.getElementById('resHint').textContent = bestanden
-    ? 'Ihr Ergebnis wurde übermittelt. Sie erhalten Ihr Prüfungsprotokoll in Kürze per E-Mail.'
-    : 'Ihr Ergebnis wurde übermittelt. Bitte wenden Sie sich an Ihren Ausbilder, um einen Termin für die Nachprüfung zu vereinbaren.';
+  document.getElementById('resScore').textContent = T.scoreText(richtig, gesamt);
+  document.getElementById('resHint').textContent = bestanden ? T.hintPass : T.hintFail;
 }
 </script>
 </body>
