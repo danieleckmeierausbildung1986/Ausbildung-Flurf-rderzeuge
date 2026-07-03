@@ -138,6 +138,15 @@ nav{
 
 /* SECTIONS */
 .section{padding:80px 24px}
+
+/* Logo-Wasserzeichen im Hintergrund */
+.wasserzeichen{position:relative;overflow:hidden}
+.wasserzeichen::before{
+  content:'';position:absolute;inset:0;
+  background:url('logo_wasserzeichen.png') center/min(640px,85%) no-repeat;
+  opacity:.05;pointer-events:none;
+}
+.wasserzeichen > *{position:relative;z-index:1}
 .section-inner{max-width:1100px;margin:0 auto}
 .section-label{
   font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;
@@ -468,7 +477,7 @@ footer a{color:rgba(255,255,255,.4);text-decoration:underline}
 </section>
 
 <!-- SCHULUNGEN -->
-<section class="section" id="kurse">
+<section class="section wasserzeichen" id="kurse">
   <div class="section-inner">
     <div class="section-label">Unser Angebot</div>
     <h2 class="section-title">Alle Schulungsmodule</h2>
@@ -565,7 +574,7 @@ footer a{color:rgba(255,255,255,.4);text-decoration:underline}
 </section>
 
 <!-- TERMINE -->
-<section class="termine-section" id="termine">
+<section class="termine-section wasserzeichen" id="termine">
   <div class="termine-inner">
     <div class="section-label">Schulungskalender</div>
     <h2 class="section-title">Nächste Termine</h2>
