@@ -176,7 +176,7 @@ nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.95);backdrop-
 <nav>
   <div class="nav-inner">
     <a class="nav-logo" href="homepage.html">
-      <img src="logo_startseite.jpg" alt="ProDrive Akademie Niederbayern" style="height:80px;object-fit:contain">
+      <img src="logo_nav.jpg" alt="ProDrive Akademie Niederbayern" style="height:80px;object-fit:contain">
     </a>
     <a class="nav-back" href="homepage.html">← Zurück zur Startseite</a>
   </div>
@@ -583,7 +583,7 @@ function loadB64(url){
 function preloadImages(){
   var base = window.location.href.substring(0,window.location.href.lastIndexOf('/')+1);
   return Promise.all([
-    loadB64(base+'logo_startseite.jpg'),
+    loadB64(base+'logo_nav.jpg'),
     loadB64(base+'IMG_0416.PNG')
   ]);
 }
