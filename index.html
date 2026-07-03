@@ -104,6 +104,17 @@ body::after{
 }
 .tab-btn.active{background:var(--green);color:#fff}
 .tab-btn:not(.active):hover{background:#f1f4f8;color:var(--ink)}
+.exam-tile{
+  display:block;border-radius:14px;overflow:hidden;border:1.5px solid var(--line);
+  position:relative;transition:all .15s;
+}
+.exam-tile img{display:block;width:100%;height:auto}
+a.exam-tile:hover{border-color:var(--green);transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.12)}
+.exam-tile.disabled{cursor:default;opacity:.85}
+.exam-tile-badge{
+  position:absolute;top:10px;right:10px;background:rgba(22,36,63,.85);color:#fff;
+  font-size:11px;font-weight:700;padding:5px 12px;border-radius:20px;letter-spacing:.3px;
+}
 .modules{padding:20px 24px 24px;display:flex;flex-direction:column;gap:12px}
 .module-btn{
   display:flex;align-items:center;gap:16px;
@@ -462,18 +473,17 @@ function showModules(data){
     const s1Freigegeben = data.pruefung_stufe1_freigegeben === true || data.pruefung_stufe1_freigegeben === 'Ja' || data.pruefung_stufe1_freigegeben === 'True';
     if(s1Freigegeben){
       examList.innerHTML += `
-        <a class="module-btn stufe1" href="${BASE}pruefung_stufe1.html?regnr=${encodeURIComponent(currentRegnr)}${langParam}">
-          <div class="mod-icon">
-            <svg viewBox="0 0 24 24"><path d="M9 11H7v2h2v-2zm4 0h-2v2h2v-2zm4 0h-2v2h2v-2zm2-7h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V9h14v11z"/></svg>
-          </div>
-          <div class="mod-info">
-            <div class="mod-title">Theorieprüfung Stufe 1</div>
-            <div class="mod-sub">40 Fragen &middot; 45 Minuten</div>
-          </div>
-          <div class="mod-arrow">→</div>
+        <a class="exam-tile" href="${BASE}pruefung_stufe1.html?regnr=${encodeURIComponent(currentRegnr)}${langParam}">
+          <img src="${BASE}logo_pruefung_stufe1.png" alt="Theorieprüfung Stufe 1">
         </a>`;
-      examCount++;
+    } else {
+      examList.innerHTML += `
+        <div class="exam-tile disabled">
+          <img src="${BASE}logo_pruefung_stufe1.png" alt="Theorieprüfung Stufe 1" style="filter:grayscale(1) brightness(1.15)">
+          <span class="exam-tile-badge">Noch nicht freigegeben</span>
+        </div>`;
     }
+    examCount++;
   }
 
   if(data.stufe2 && s2form === 'elearning'){
@@ -498,6 +508,13 @@ function showModules(data){
         <div class="mod-arrow">→</div>
       </button>`;
     count++;
+
+    examList.innerHTML += `
+      <div class="exam-tile disabled">
+        <img src="${BASE}logo_pruefung_stufe2.jpg" alt="Theorieprüfung Stufe 2" style="filter:grayscale(1) brightness(1.15)">
+        <span class="exam-tile-badge">Demnächst verfügbar</span>
+      </div>`;
+    examCount++;
   }
 
   if(data.lasi && lform === 'elearning'){
@@ -513,6 +530,13 @@ function showModules(data){
         <div class="mod-arrow">→</div>
       </a>`;
     count++;
+
+    examList.innerHTML += `
+      <div class="exam-tile disabled">
+        <img src="${BASE}logo_pruefung_lasi.jpg" alt="Theorieprüfung Ladungssicherung" style="filter:grayscale(1) brightness(1.15)">
+        <span class="exam-tile-badge">Demnächst verfügbar</span>
+      </div>`;
+    examCount++;
   }
 
   if(count === 0){
