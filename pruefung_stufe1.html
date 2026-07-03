@@ -40,7 +40,8 @@ body{
 
 .welcome-box{padding:44px 30px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:14px;
   background:linear-gradient(135deg,var(--green-d),var(--green-l))}
-.welcome-box svg{width:64px;height:64px;fill:#fff}
+.welcome-logo-tile{display:inline-block;background:#fff;border-radius:16px;padding:10px 18px;box-shadow:0 6px 20px rgba(0,0,0,.25)}
+.welcome-logo-tile img{display:block;width:100%;max-width:280px;height:auto}
 .welcome-titel{font-size:24px;font-weight:800;color:#fff}
 .welcome-sub{font-size:14.5px;color:rgba(255,255,255,.88);line-height:1.6;max-width:520px}
 .welcome-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;width:100%;max-width:480px;margin-top:6px}
@@ -62,6 +63,7 @@ body{
 .opt:hover{border-color:var(--green-l)}
 .opt.sel{border-color:var(--green);background:#eef4fc}
 .opt input{margin-top:2px;accent-color:var(--green);flex-shrink:0;width:17px;height:17px}
+.q-image{display:block;max-width:100%;border:1.5px solid var(--line);border-radius:12px;margin-bottom:18px}
 .num-field{margin-bottom:4px}
 .num-field label{display:block;font-size:12.5px;font-weight:700;color:var(--navy);margin-bottom:8px}
 .num-field input{
@@ -142,7 +144,7 @@ body{
     <!-- WELCOME -->
     <div id="welcomeScreen" style="display:none">
       <div class="welcome-box">
-        <svg viewBox="0 0 24 24"><path fill-rule="evenodd" d="M6.5 4C5.67 4 5 4.67 5 5.5V10H4.5C3.67 10 3 10.67 3 11.5V16h.6a3.6 3.6 0 0 1 7 0h.9a3.6 3.6 0 0 1 3.5-2.9V11.3c0-.72-.58-1.3-1.3-1.3h-.9L11.4 5a1.5 1.5 0 0 0-1.4-1H6.5zm.7 1.8h2.3l1.5 4.2H7.2V5.8z"/><circle cx="7.1" cy="17.6" r="2.4"/><circle cx="14.6" cy="17.6" r="2.4"/><path d="M16.6 2.5c-.44 0-.8.36-.8.8v10.5c0 .44.36.8.8.8h.2c.44 0 .8-.36.8-.8V3.3c0-.44-.36-.8-.8-.8h-.2z"/><path d="M15.8 14.2h6.7c.44 0 .8.36.8.8v.2c0 .44-.36.8-.8.8h-6.7v-1.8z"/></svg>
+        <span class="welcome-logo-tile"><img src="logo_pruefung_stufe1.png" alt="Theorieprüfung Stufe 1"></span>
         <div class="welcome-titel">Theorieprüfung Stufe 1</div>
         <div class="welcome-sub">Diese Prüfung deckt alle theoretischen Grundlagen nach <b>DGUV Grundsatz 308-001</b> für das sichere Führen von Gabelstaplern ab. Beantworten Sie alle Fragen sorgfältig — die Prüfung kann nur einmal durchgeführt werden.</div>
         <div class="welcome-grid">
@@ -238,9 +240,9 @@ var FRAGEN = [
 {num:36, text:"Durch wen dürfen die nach der UVV vorgeschriebenen wiederkehrenden Prüfungen von Flurförderzeugen vorgenommen werden?", opts:["Durch den Staplerfahrer mit ausreichender Fahrpraxis.","Durch jede Kfz-Werkstatt.","Durch einen Sachkundigen mit ausreichenden Kenntnissen und Erfahrungen, der den arbeitssicheren Zustand eines Flurförderzeuges beurteilen kann."], correct:2},
 {num:37, text:"Wie verhält sich der Fahrer, wenn er einen Defekt an seinem Gabelstapler feststellt, durch den die Sicherheit beeinträchtigt ist?", opts:["Er versucht den Schaden selbst zu beseitigen.","Er fährt bis Arbeitsende und meldet dann den Defekt seinem Vorgesetzten.","Er setzt sein Gerät still, zieht den Zündschlüssel ab und meldet den Defekt seinem Vorgesetzten."], correct:2},
 {num:38, text:"Welche Lasten dürfen mit einem Gabelstapler befördert werden?", opts:["Jede Last, mit einem Gewicht bis zur höchstzulässigen Belastung des Gabelstaplers.","Nur solche Lasten, die sich nicht verschieben oder herabfallen können, bei denen die Tragfähigkeit des Staplers nicht überschritten wird und bei denen eine ausreichende Sicht des Fahrers auf die Fahrbahn gewährleistet wird.","Nur Lasten, die zum Transport gekennzeichnet sind."], correct:1},
-{num:39, text:"Wie schwer darf eine Palette höchstens sein, deren Schwerpunkt 600 mm vom senkrechten Teil der Gabel entfernt ist? (Angabe in kg, laut Traglastdiagramm)", type:"number", correct:2000, tolerance:100},
-{num:40, text:"Eine Last von 1400 kg ist auf einen LKW zu verladen. Der Schwerpunkt liegt bei 1000 mm. Darf die Last mit dem Gabelstapler transportiert werden?", opts:["Ja","Nein"], correct:1},
-{num:41, text:"Eine gleichmäßig beladene würfelförmige Kiste ist 1,50 m hoch, 1,50 m breit und 1,50 m tief. Sie wiegt 1600 kg. Darf diese Kiste mit dem Gabelstapler transportiert werden?", opts:["Ja","Nein"], correct:0}
+{num:39, text:"Wie schwer darf eine Palette höchstens sein, deren Schwerpunkt 600 mm vom senkrechten Teil der Gabel entfernt ist? (Angabe in kg, laut Traglastdiagramm)", type:"number", image:"Traglastdiagram.png", correct:2000, tolerance:100},
+{num:40, text:"Eine Last von 1400 kg ist auf einen LKW zu verladen. Der Schwerpunkt liegt bei 1000 mm. Darf die Last mit dem Gabelstapler transportiert werden?", image:"Traglastdiagram.png", opts:["Ja","Nein"], correct:1},
+{num:41, text:"Eine gleichmäßig beladene würfelförmige Kiste ist 1,50 m hoch, 1,50 m breit und 1,50 m tief. Sie wiegt 1600 kg. Darf diese Kiste mit dem Gabelstapler transportiert werden?", image:"Traglastdiagram.png", opts:["Ja","Nein"], correct:0}
 ];
 
 var cur = 0;
@@ -289,6 +291,12 @@ function renderQuestion(){
 
   var host = document.getElementById('qOpts');
   host.innerHTML = '';
+  if(f.image){
+    var img = document.createElement('img');
+    img.src = f.image;
+    img.className = 'q-image';
+    host.appendChild(img);
+  }
   if(f.type === 'number'){
     var wrap = document.createElement('div');
     wrap.className = 'num-field';
