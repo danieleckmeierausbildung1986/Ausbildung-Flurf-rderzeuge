@@ -195,12 +195,14 @@ body{
         <div class="result-title" id="resTitle"></div>
         <div class="result-score" id="resScore"></div>
         <div class="result-hint" id="resHint"></div>
+        <button class="start-btn" id="resBackBtn" style="margin-top:24px" onclick="zurueckZurStartseite()">← Zurück zur Startseite</button>
       </div>
     </div>
   </div>
 </div>
 
 <script>
+var BASE = 'https://danieleckmeierausbildung1986.github.io/Ausbildung-Flurf-rderzeuge/';
 var PRUEFUNG_STUFE1_URL = 'https://default8af25f9034bc4ef4aba22ab6f641d5.01.environment.api.powerplatform.com:443/powerautomate/automations/direct/cu/25/workflows/6ad00a902bbc4a4dadf7eb89f7e91273/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=w7L6_PdZD1atjRXm0-I81ULrB9b5YNyOrtGzgQ4dHaU';
 var ZUGANGSPRUEFUNG_URL = 'https://default8af25f9034bc4ef4aba22ab6f641d5.01.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/7058b6c8090842748465472db6085773/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=nxepIsGToa5my_-oIW5ZR5c3CQLtufN5DwNvM-qG1G4';
 
@@ -321,7 +323,8 @@ var TXT = {
     nichtBestanden: "Leider nicht bestanden",
     scoreText: function(r,g){ return r + ' von ' + g + ' Fragen richtig beantwortet (mindestens 32 erforderlich).'; },
     hintPass: "Ihr Ergebnis wurde übermittelt. Sie erhalten Ihr Prüfungsprotokoll in Kürze per E-Mail.",
-    hintFail: "Ihr Ergebnis wurde übermittelt. Bitte wenden Sie sich an Ihren Ausbilder, um einen Termin für die Nachprüfung zu vereinbaren."
+    hintFail: "Ihr Ergebnis wurde übermittelt. Bitte wenden Sie sich an Ihren Ausbilder, um einen Termin für die Nachprüfung zu vereinbaren.",
+    zurueckStart: "← Zurück zur Startseite"
   },
   pl: {
     pageTitle: "Egzamin teoretyczny Stopień 1 – ProDrive Akademie Niederbayern",
@@ -353,7 +356,8 @@ var TXT = {
     nichtBestanden: "Niestety nie zdany",
     scoreText: function(r,g){ return r + ' z ' + g + ' pytań odpowiedziano poprawnie (wymagane co najmniej 32).'; },
     hintPass: "Twój wynik został przesłany. Wkrótce otrzymasz protokół egzaminu e-mailem.",
-    hintFail: "Twój wynik został przesłany. Proszę skontaktować się z instruktorem, aby umówić termin egzaminu poprawkowego."
+    hintFail: "Twój wynik został przesłany. Proszę skontaktować się z instruktorem, aby umówić termin egzaminu poprawkowego.",
+    zurueckStart: "← Powrót do strony głównej"
   }
 };
 
@@ -382,6 +386,7 @@ function applyStaticText(){
   consentPs[0].innerHTML = '<b>' + T.eigenLabel + '</b> ' + T.eigenText;
   consentPs[1].innerHTML = '<b>' + T.dsgvoLabel + '</b> ' + T.dsgvoText;
   document.getElementById('submitBtn').textContent = T.absenden;
+  document.getElementById('resBackBtn').innerHTML = T.zurueckStart;
 }
 applyStaticText();
 
@@ -501,6 +506,13 @@ function goBack(){
   if(cur === 0) return;
   cur--;
   renderQuestion();
+}
+
+function zurueckZurStartseite(){
+  var params = [];
+  if(regnr) params.push('regnr=' + encodeURIComponent(regnr));
+  if(lang && lang !== 'de') params.push('lang=' + encodeURIComponent(lang));
+  window.location.href = BASE + 'index.html' + (params.length ? '?' + params.join('&') : '');
 }
 
 function goNext(){
