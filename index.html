@@ -468,7 +468,7 @@ function showModules(data){
       </a>`;
     count++;
 
-    const s1Freigegeben = data.pruefung_stufe1_freigegeben === true || data.pruefung_stufe1_freigegeben === 'Ja' || data.pruefung_stufe1_freigegeben === 'True';
+    const s1Freigegeben = data.pruefung_stufe1_freigegeben === true || data.pruefung_stufe1_freigegeben === 'True' || getSF(data.pruefung_stufe1_freigegeben) === 'ja';
     if(s1Freigegeben){
       examList.innerHTML += `
         <a class="exam-tile" href="${BASE}pruefung_stufe1.html?regnr=${encodeURIComponent(currentRegnr)}${langParam}">
