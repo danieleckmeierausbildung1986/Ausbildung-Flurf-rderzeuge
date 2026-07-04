@@ -442,6 +442,11 @@ function showModules(data){
   let count = 0;
   let examCount = 0;
   const langParam = '&lang=' + currentLang;
+  const logoLangs = ['pl','ro'];
+  function logoImg(base, ext){
+    const suffix = logoLangs.includes(currentLang) ? '_' + currentLang : '';
+    return base + suffix + '.' + ext;
+  }
 
   function getSF(val){
     if(!val) return '';
@@ -459,7 +464,7 @@ function showModules(data){
   if(data.stufe1 && s1form === 'elearning'){
     list.innerHTML += `
       <a class="exam-tile" href="${BASE}staplerapp_stufe1.html?regnr=${encodeURIComponent(currentRegnr)}${langParam}">
-        <img src="${BASE}logo_ausbildung_stufe1.jpg" alt="${t.mod.stufe1.title}">
+        <img src="${BASE}${logoImg('logo_ausbildung_stufe1','jpg')}" alt="${t.mod.stufe1.title}">
       </a>`;
     count++;
 
@@ -467,12 +472,12 @@ function showModules(data){
     if(s1Freigegeben){
       examList.innerHTML += `
         <a class="exam-tile" href="${BASE}pruefung_stufe1.html?regnr=${encodeURIComponent(currentRegnr)}${langParam}">
-          <img src="${BASE}logo_pruefung_stufe1.png" alt="Theorieprüfung Stufe 1">
+          <img src="${BASE}${logoImg('logo_pruefung_stufe1','png')}" alt="Theorieprüfung Stufe 1">
         </a>`;
     } else {
       examList.innerHTML += `
         <div class="exam-tile disabled">
-          <img src="${BASE}logo_pruefung_stufe1.png" alt="Theorieprüfung Stufe 1" style="filter:grayscale(1) brightness(1.15)">
+          <img src="${BASE}${logoImg('logo_pruefung_stufe1','png')}" alt="Theorieprüfung Stufe 1" style="filter:grayscale(1) brightness(1.15)">
           <span class="exam-tile-badge">Noch nicht freigegeben</span>
         </div>`;
     }
@@ -491,13 +496,13 @@ function showModules(data){
     };
     list.innerHTML += `
       <div class="exam-tile" style="cursor:pointer" onclick='goStufe2(${JSON.stringify(s2data)})'>
-        <img src="${BASE}logo_ausbildung_stufe2.jpg" alt="${t.mod.stufe2.title}">
+        <img src="${BASE}${logoImg('logo_ausbildung_stufe2','jpg')}" alt="${t.mod.stufe2.title}">
       </div>`;
     count++;
 
     examList.innerHTML += `
       <div class="exam-tile disabled">
-        <img src="${BASE}logo_pruefung_stufe2.jpg" alt="Theorieprüfung Stufe 2" style="filter:grayscale(1) brightness(1.15)">
+        <img src="${BASE}${logoImg('logo_pruefung_stufe2','jpg')}" alt="Theorieprüfung Stufe 2" style="filter:grayscale(1) brightness(1.15)">
         <span class="exam-tile-badge">Demnächst verfügbar</span>
       </div>`;
     examCount++;
@@ -506,13 +511,13 @@ function showModules(data){
   if(data.lasi && lform === 'elearning'){
     list.innerHTML += `
       <a class="exam-tile" href="${BASE}staplerapp_lasi_1.html?regnr=${encodeURIComponent(currentRegnr)}${langParam}">
-        <img src="${BASE}logo_ausbildung_lasi.jpg" alt="${t.mod.lasi.title}">
+        <img src="${BASE}${logoImg('logo_ausbildung_lasi','jpg')}" alt="${t.mod.lasi.title}">
       </a>`;
     count++;
 
     examList.innerHTML += `
       <div class="exam-tile disabled">
-        <img src="${BASE}logo_pruefung_lasi.jpg" alt="Theorieprüfung Ladungssicherung" style="filter:grayscale(1) brightness(1.15)">
+        <img src="${BASE}${logoImg('logo_pruefung_lasi','jpg')}" alt="Theorieprüfung Ladungssicherung" style="filter:grayscale(1) brightness(1.15)">
         <span class="exam-tile-badge">Demnächst verfügbar</span>
       </div>`;
     examCount++;
