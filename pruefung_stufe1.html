@@ -409,7 +409,9 @@ async function startWelcome(){
       body: JSON.stringify({ registrierungsnummer: regnr })
     });
     var data = await res.json();
-    var freigegeben = data.pruefung_stufe1_freigegeben === true || data.pruefung_stufe1_freigegeben === 'Ja' || data.pruefung_stufe1_freigegeben === 'True';
+    var fVal = data.pruefung_stufe1_freigegeben;
+    if(fVal && typeof fVal === 'object') fVal = fVal.Value;
+    var freigegeben = fVal === true || fVal === 'Ja' || fVal === 'True';
 
     if(!(data && data.zugang === true)){
       errBox.textContent = data.grund || T.fehlNichtGefunden;
