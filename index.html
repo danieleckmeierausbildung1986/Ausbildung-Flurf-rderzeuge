@@ -29,7 +29,7 @@ body::before{
 }
 body::after{
   content:'';position:fixed;inset:0;
-  background:url('logo_elearning_transparent2.png') center/min(760px,95%) no-repeat;
+  background:url('logos/logo_elearning_transparent2.png') center/min(760px,95%) no-repeat;
   opacity:.16;pointer-events:none;z-index:0;
 }
 .container{position:relative;z-index:1;width:100%;max-width:480px;}
@@ -445,7 +445,7 @@ function showModules(data){
   const logoLangs = ['pl','ro','sq'];
   function logoImg(base, ext){
     const suffix = logoLangs.includes(currentLang) ? '_' + currentLang : '';
-    return base + suffix + '.' + ext;
+    return 'logos/' + base + suffix + '.' + ext;
   }
 
   function getSF(val){
