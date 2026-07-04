@@ -303,6 +303,7 @@ var TXT = {
     fehlLeer: "Bitte Registrierungsnummer eingeben.",
     fehlNichtGefunden: "Registrierungsnummer nicht gefunden.",
     fehlKeineFreigabe: "Für diese Prüfung liegt noch keine Freigabe durch Ihren Ausbilder vor. Bitte sprechen Sie sich mit ihm ab, bevor Sie die Prüfung starten.",
+    fehlBereitsBestanden: "Sie haben diese Prüfung bereits bestanden. Ein erneutes Ablegen ist nicht möglich.",
     fehlVerbindung: "Verbindung fehlgeschlagen. Bitte versuchen Sie es erneut.",
     welcomeTitel: "Theorieprüfung Stufe 1",
     welcomeSub: "Diese Prüfung deckt alle theoretischen Grundlagen nach <b>DGUV Grundsatz 308-001</b> für das sichere Führen von Gabelstaplern ab. Beantworten Sie alle Fragen sorgfältig — die Prüfung kann nur einmal durchgeführt werden.",
@@ -336,6 +337,7 @@ var TXT = {
     fehlLeer: "Proszę podać numer rejestracyjny.",
     fehlNichtGefunden: "Nie znaleziono numeru rejestracyjnego.",
     fehlKeineFreigabe: "Ten egzamin nie został jeszcze zatwierdzony przez Twojego instruktora. Proszę skontaktować się z nim przed rozpoczęciem egzaminu.",
+    fehlBereitsBestanden: "Zdałeś już ten egzamin. Ponowne przystąpienie nie jest możliwe.",
     fehlVerbindung: "Połączenie nie powiodło się. Spróbuj ponownie.",
     welcomeTitel: "Egzamin teoretyczny Stopień 1",
     welcomeSub: "Ten egzamin obejmuje wszystkie podstawy teoretyczne zgodnie z <b>DGUV Grundsatz 308-001</b> dotyczące bezpiecznej obsługi wózków widłowych. Proszę odpowiedzieć na wszystkie pytania starannie — egzamin można przeprowadzić tylko raz.",
@@ -418,8 +420,15 @@ async function startWelcome(){
     if(fVal && typeof fVal === 'object') fVal = fVal.Value;
     var freigegeben = fVal === true || fVal === 'Ja' || fVal === 'True';
 
+    var sVal = data.status_theorie;
+    if(sVal && typeof sVal === 'object') sVal = sVal.Value;
+    var bereitsBestanden = sVal === 'Bestanden';
+
     if(!(data && data.zugang === true)){
       errBox.textContent = data.grund || T.fehlNichtGefunden;
+      errBox.style.display = 'block';
+    } else if(bereitsBestanden){
+      errBox.textContent = T.fehlBereitsBestanden;
       errBox.style.display = 'block';
     } else if(!freigegeben){
       errBox.textContent = T.fehlKeineFreigabe;
