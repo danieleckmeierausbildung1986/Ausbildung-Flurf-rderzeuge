@@ -544,23 +544,32 @@ function goNext(){
   });
 });
 
+function escapeHtml(str){
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
 function auswerten(){
   var richtig = 0;
   var antwortenText = {};
+  var antwortenHtml = '';
   FRAGEN.forEach(function(f){
     var a = answers[f.num];
     var korrekt;
+    var antwortAnzeige;
     if(f.type === 'number'){
       var num = parseFloat(a);
       korrekt = !isNaN(num) && Math.abs(num - f.correct) <= f.tolerance;
       antwortenText[f.num] = a;
+      antwortAnzeige = (a === undefined || a === '') ? '—' : String(a);
     } else {
       korrekt = (a === f.correct);
       antwortenText[f.num] = f.opts[a];
+      antwortAnzeige = (a === undefined) ? '—' : f.opts[a];
     }
     if(korrekt) richtig++;
+    antwortenHtml += '<tr><td>Frage ' + f.num + '</td><td>' + escapeHtml(antwortAnzeige) + '</td><td class="' + (korrekt ? 'io' : 'nio') + '">' + (korrekt ? 'I.O.' : 'n.i.O.') + '</td></tr>';
   });
-  return {richtig: richtig, gesamt: FRAGEN.length, antworten: antwortenText};
+  return {richtig: richtig, gesamt: FRAGEN.length, antworten: antwortenText, antwortenHtml: antwortenHtml};
 }
 
 function submitPruefung(auto){
@@ -581,6 +590,7 @@ function submitPruefung(auto){
     regnr: regnr,
     kurs: 'stufe1',
     antworten: ergebnis.antworten,
+    antworten_html: ergebnis.antwortenHtml,
     richtige_antworten: ergebnis.richtig,
     gesamt_fragen: ergebnis.gesamt,
     bestanden: bestanden,
