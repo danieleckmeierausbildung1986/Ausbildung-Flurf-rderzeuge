@@ -130,9 +130,18 @@ body{
     <div id="loginScreen">
       <div class="q-body">
         <div class="q-num">Anmeldung</div>
-        <div class="q-text">Bitte geben Sie Ihre Registrierungsnummer ein.</div>
+        <div class="q-text">Bitte geben Sie Ihre Registrierungsnummer sowie Vor- und Nachnamen ein.</div>
         <div class="num-field">
+          <label>Registrierungsnummer</label>
           <input type="text" id="regnr" placeholder="2026-001" autocomplete="off">
+        </div>
+        <div class="num-field">
+          <label>Vorname</label>
+          <input type="text" id="vorname" placeholder="Max" autocomplete="off">
+        </div>
+        <div class="num-field">
+          <label>Nachname</label>
+          <input type="text" id="nachname" placeholder="Mustermann" autocomplete="off">
         </div>
         <div class="err-box" id="loginErrBox"></div>
       </div>
@@ -301,6 +310,7 @@ var TXT = {
     weiter: "Weiter →",
     pruefeLaeuft: "Prüfe…",
     fehlLeer: "Bitte Registrierungsnummer eingeben.",
+    fehlLeerName: "Bitte Vor- und Nachnamen eingeben.",
     fehlNichtGefunden: "Registrierungsnummer nicht gefunden.",
     fehlKeineFreigabe: "Für diese Prüfung liegt noch keine Freigabe durch Ihren Ausbilder vor. Bitte sprechen Sie sich mit ihm ab, bevor Sie die Prüfung starten.",
     fehlBereitsBestanden: "Diese Prüfung ist für Sie geschlossen und kann nicht erneut abgelegt werden. Bei Fragen wenden Sie sich bitte an Ihren Ausbilder.",
@@ -335,6 +345,7 @@ var TXT = {
     weiter: "Dalej →",
     pruefeLaeuft: "Sprawdzam…",
     fehlLeer: "Proszę podać numer rejestracyjny.",
+    fehlLeerName: "Proszę podać imię i nazwisko.",
     fehlNichtGefunden: "Nie znaleziono numeru rejestracyjnego.",
     fehlKeineFreigabe: "Ten egzamin nie został jeszcze zatwierdzony przez Twojego instruktora. Proszę skontaktować się z nim przed rozpoczęciem egzaminu.",
     fehlBereitsBestanden: "Ten egzamin jest dla Ciebie zamknięty i nie można go ponownie zdawać. W razie pytań skontaktuj się ze swoim instruktorem.",
@@ -399,13 +410,19 @@ var timeLeft = 45*60;
 var timerHandle = null;
 var startTime = null;
 
+var vorname = '';
+var nachname = '';
+
 async function startWelcome(){
   regnr = document.getElementById('regnr').value.trim();
+  vorname = document.getElementById('vorname').value.trim();
+  nachname = document.getElementById('nachname').value.trim();
   var errBox = document.getElementById('loginErrBox');
   var btn = document.getElementById('loginNextBtn');
   errBox.style.display = 'none';
 
   if(!regnr){ errBox.textContent = T.fehlLeer; errBox.style.display = 'block'; return; }
+  if(!vorname || !nachname){ errBox.textContent = T.fehlLeerName; errBox.style.display = 'block'; return; }
 
   btn.disabled = true;
   btn.textContent = T.pruefeLaeuft;
@@ -413,7 +430,7 @@ async function startWelcome(){
     var res = await fetch(ZUGANGSPRUEFUNG_URL, {
       method: 'POST',
       headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({ registrierungsnummer: regnr })
+      body: JSON.stringify({ registrierungsnummer: regnr, vorname: vorname, nachname: nachname })
     });
     var data = await res.json();
     var fVal = data.pruefung_stufe1_freigegeben;
