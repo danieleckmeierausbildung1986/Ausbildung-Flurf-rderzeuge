@@ -246,6 +246,9 @@ body::before{
 </style>
 </head>
 <body>
+<div id="zugangsCheckOverlay" style="position:fixed;inset:0;background:#0d1f12;z-index:9999;display:flex;align-items:center;justify-content:center;color:#fff;font-family:'Segoe UI',system-ui,sans-serif;text-align:center;padding:24px;">
+  <div id="zugangsCheckContent">Zugang wird gepr&uuml;ft&hellip;</div>
+</div>
 <div class="wrap">
   <div class="topbar">
     <div class="ti"><img src="logos/logo_icon.png" alt="ProDrive Akademie"></div>
@@ -880,6 +883,25 @@ var QUIZ_DATA_SQ={"1":[
 var params=new URLSearchParams(window.location.search);
 var regnr=params.get('regnr')||'';
 var lang=params.get('lang')||sessionStorage.getItem('lang')||'de';
+
+var ZUGANGSPRUEFUNG_URL = 'https://default8af25f9034bc4ef4aba22ab6f641d5.01.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/7058b6c8090842748465472db6085773/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=nxepIsGToa5my_-oIW5ZR5c3CQLtufN5DwNvM-qG1G4';
+(function(){
+  var overlay = document.getElementById('zugangsCheckOverlay');
+  var content = document.getElementById('zugangsCheckContent');
+  if(!regnr){ overlay.style.display='none'; return; }
+  fetch(ZUGANGSPRUEFUNG_URL, {
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({ registrierungsnummer: regnr })
+  }).then(function(res){ return res.json(); }).then(function(data){
+    var fVal = data.pruefung_stufe1_freigegeben;
+    if(fVal && typeof fVal === 'object') fVal = fVal.Value;
+    if(fVal === 'Geschlossen'){
+      content.innerHTML = '<div style="max-width:420px"><div style="font-size:40px;margin-bottom:12px">&#x1F512;</div><div style="font-size:18px;font-weight:700;margin-bottom:8px">Schulung abgeschlossen</div><div style="font-size:14px;color:rgba(255,255,255,.75);line-height:1.6;margin-bottom:20px">Sie haben die Pr&uuml;fung zu diesem Kurs bereits bestanden. Der Zugriff auf die Schulungsinhalte ist daher nicht mehr m&ouml;glich.</div><button onclick="window.location.href=\'index.html' + (regnr?'?regnr='+encodeURIComponent(regnr):'') + '\'" style="padding:12px 28px;border:none;border-radius:12px;background:#fff;color:#0d4a24;font-weight:700;font-size:14px;cursor:pointer;font-family:inherit">&larr; Zur&uuml;ck zur Startseite</button></div>';
+    } else {
+      overlay.style.display = 'none';
+    }
+  }).catch(function(){ overlay.style.display = 'none'; });
+})();
 if(lang==='pl'){ORDNER='PL_BILDER';KAPITEL=KAPITEL_PL;QUIZ_DATA=QUIZ_DATA_PL;}
 if(lang==='ro'){ORDNER='RO_BILDER';KAPITEL=KAPITEL_RO;QUIZ_DATA=QUIZ_DATA_RO;}
 if(lang==='sq'){ORDNER='AL_BILDER';KAPITEL=KAPITEL_SQ;QUIZ_DATA=QUIZ_DATA_SQ;}

@@ -155,6 +155,9 @@ body::before{
 </style>
 </head>
 <body>
+<div id="zugangsCheckOverlay" style="position:fixed;inset:0;background:#0d1f12;z-index:9999;display:flex;align-items:center;justify-content:center;color:#fff;font-family:'Segoe UI',system-ui,sans-serif;text-align:center;padding:24px;">
+  <div id="zugangsCheckContent">Zugang wird gepr&uuml;ft&hellip;</div>
+</div>
 <div class="wrap">
   <div class="topbar">
     <div class="ti">&#x1F3ED;</div>
@@ -234,6 +237,29 @@ var lang=params.get('lang')||'ro';
 var gerat=params.get('gerat')||'schubmast';
 var WA_NR='4916096877039';
 var MAIL='DanielEckmeier@Ausbildung1986.onmicrosoft.com';
+
+var ZUGANGSPRUEFUNG_URL = 'https://default8af25f9034bc4ef4aba22ab6f641d5.01.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/7058b6c8090842748465472db6085773/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=nxepIsGToa5my_-oIW5ZR5c3CQLtufN5DwNvM-qG1G4';
+(function(){
+  var overlay = document.getElementById('zugangsCheckOverlay');
+  var content = document.getElementById('zugangsCheckContent');
+  var nr = params.get('regnr');
+  if(!nr){ overlay.style.display='none'; return; }
+  var freigabeKey = gerat === 'kommissionier' ? 'pruefung_kommissionierer_freigegeben'
+    : gerat === 'schmalgang' ? 'pruefung_schmalgang_freigegeben'
+    : 'pruefung_schubmast_freigegeben';
+  fetch(ZUGANGSPRUEFUNG_URL, {
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({ registrierungsnummer: nr })
+  }).then(function(res){ return res.json(); }).then(function(data){
+    var fVal = data[freigabeKey];
+    if(fVal && typeof fVal === 'object') fVal = fVal.Value;
+    if(fVal === 'Geschlossen'){
+      content.innerHTML = '<div style="max-width:420px"><div style="font-size:40px;margin-bottom:12px">&#x1F512;</div><div style="font-size:18px;font-weight:700;margin-bottom:8px">Schulung abgeschlossen</div><div style="font-size:14px;color:rgba(255,255,255,.75);line-height:1.6;margin-bottom:20px">Sie haben die Pr&uuml;fung zu diesem Kurs bereits bestanden. Der Zugriff auf die Schulungsinhalte ist daher nicht mehr m&ouml;glich.</div><button onclick="window.location.href=\'index.html' + (nr?'?regnr='+encodeURIComponent(nr):'') + '\'" style="padding:12px 28px;border:none;border-radius:12px;background:#fff;color:#0d4a24;font-weight:700;font-size:14px;cursor:pointer;font-family:inherit">&larr; Zur&uuml;ck zur Startseite</button></div>';
+    } else {
+      overlay.style.display = 'none';
+    }
+  }).catch(function(){ overlay.style.display = 'none'; });
+})();
 
 /* ---- TEXTE ---- */
 var TXT={
