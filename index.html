@@ -545,7 +545,10 @@ function showModules(data){
       lang:            currentLang,
       schubmast:       data.schubmast_gebucht       === true || data.schubmast_gebucht       === 'Ja' || data.schubmast_gebucht       === 'True',
       kommissionierer: data.kommissionierer_gebucht === true || data.kommissionierer_gebucht === 'Ja' || data.kommissionierer_gebucht === 'True',
-      schmalgang:      data.schmalgang_gebucht       === true || data.schmalgang_gebucht       === 'Ja' || data.schmalgang_gebucht       === 'True'
+      schmalgang:      data.schmalgang_gebucht       === true || data.schmalgang_gebucht       === 'Ja' || data.schmalgang_gebucht       === 'True',
+      schubmastGeschlossen:       getSF(data.pruefung_schubmast_freigegeben) === 'geschlossen',
+      kommissiererGeschlossen:    getSF(data.pruefung_kommissionierer_freigegeben) === 'geschlossen',
+      schmalgangGeschlossen:      getSF(data.pruefung_schmalgang_freigegeben) === 'geschlossen'
     };
     const s2AllAbgeschlossen =
       (!s2data.schubmast       || getSF(data.pruefung_schubmast_freigegeben) === 'geschlossen') &&
@@ -566,10 +569,18 @@ function showModules(data){
     }
     count++;
 
-    examList.innerHTML += `
-      <div class="exam-tile" style="cursor:pointer" onclick='goPruefungStufe2(${JSON.stringify(s2data)})'>
-        <img src="${BASE}${logoImg('logo_pruefung_stufe2','jpg')}" alt="Theorieprüfung Stufe 2">
-      </div>`;
+    if(s2AllAbgeschlossen){
+      examList.innerHTML += `
+        <div class="exam-tile disabled">
+          <img src="${BASE}${logoImg('logo_pruefung_stufe2','jpg')}" alt="Theorieprüfung Stufe 2" style="filter:grayscale(1) brightness(1.15)">
+          <span class="exam-tile-badge">Bereits bestanden</span>
+        </div>`;
+    } else {
+      examList.innerHTML += `
+        <div class="exam-tile" style="cursor:pointer" onclick='goPruefungStufe2(${JSON.stringify(s2data)})'>
+          <img src="${BASE}${logoImg('logo_pruefung_stufe2','jpg')}" alt="Theorieprüfung Stufe 2">
+        </div>`;
+    }
     examCount++;
   }
 
