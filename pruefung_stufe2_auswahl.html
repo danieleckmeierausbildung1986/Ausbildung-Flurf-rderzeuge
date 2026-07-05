@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Theorieprüfung Stufe 2 – Geräteauswahl</title>
+<style>
+:root{
+  --bg:#140d2e;--green-d:#2d1b6b;--green:#5b3db0;--green-l:#7c5cd6;
+  --navy:#16243f;--muted:#68788f;--line:#e3e8f0;--ink:#1a2330;
+  --shadow:0 8px 40px rgba(0,0,0,.25);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:"Segoe UI",system-ui,sans-serif;
+  min-height:100vh;background:var(--bg);
+  display:flex;align-items:center;justify-content:center;padding:20px;
+}
+body::before{
+  content:'';position:fixed;inset:0;
+  background:
+    radial-gradient(ellipse 80% 60% at 20% 20%, rgba(91,61,176,.3) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 80% at 80% 80%, rgba(45,27,107,.35) 0%, transparent 60%);
+  pointer-events:none;z-index:0;
+}
+.container{position:relative;z-index:1;width:100%;max-width:480px;}
+.logo-area{text-align:center;margin-bottom:32px;animation:fadeDown .5s ease both}
+.logo-icon{
+  width:72px;height:72px;border-radius:18px;
+  background:linear-gradient(135deg,var(--green-d),var(--green-l));
+  display:flex;align-items:center;justify-content:center;
+  margin:0 auto 16px;box-shadow:0 8px 32px rgba(45,27,107,.4);
+}
+.logo-icon svg{width:38px;height:38px;fill:#fff}
+.logo-area h1{color:#fff;font-size:22px;font-weight:700;margin-bottom:4px}
+.logo-area p{color:rgba(255,255,255,.45);font-size:13px}
+.card{
+  background:#fff;border-radius:20px;
+  box-shadow:var(--shadow);overflow:hidden;
+  animation:fadeUp .5s ease .1s both;
+}
+.greeting{text-align:center;padding:24px 24px 16px;border-bottom:1px solid var(--line);}
+.greeting-name{font-size:20px;font-weight:700;color:var(--navy);margin-bottom:4px}
+.greeting-sub{font-size:13px;color:var(--muted)}
+.devices{padding:20px 24px 8px;display:flex;flex-direction:column;gap:12px}
+.device-btn{
+  display:flex;align-items:center;gap:16px;
+  padding:16px 18px;border-radius:14px;border:none;
+  cursor:pointer;text-align:left;transition:all .15s;
+  text-decoration:none;width:100%;color:#fff;
+}
+.device-btn.schub{background:linear-gradient(135deg,#1a3a6b,#2e6cb0);}
+.device-btn.komm{background:linear-gradient(135deg,#2d1b6b,#5b3db0);}
+.device-btn.schmal{background:linear-gradient(135deg,#1a5a3a,#2ea865);}
+.device-btn:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.2)}
+.device-btn.disabled{
+  background:linear-gradient(135deg,#aaa,#ccc);
+  cursor:not-allowed;opacity:.5;
+}
+.device-btn.disabled:hover{transform:none;box-shadow:none}
+.dev-icon{
+  width:46px;height:46px;border-radius:12px;
+  background:rgba(255,255,255,.2);
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+.dev-icon svg{width:24px;height:24px;fill:#fff}
+.dev-info{flex:1}
+.dev-title{font-size:15px;font-weight:700;margin-bottom:2px}
+.dev-sub{font-size:12px;opacity:.7}
+.dev-arrow{font-size:18px;opacity:.7;flex-shrink:0}
+.no-devices{
+  text-align:center;padding:28px 20px;color:var(--muted);font-size:14px;line-height:1.6
+}
+.back-btn{
+  display:block;width:100%;padding:11px;border:2px solid var(--line);
+  border-radius:12px;background:#fff;color:var(--muted);
+  font-size:14px;font-weight:600;cursor:pointer;
+  transition:all .15s;text-align:center;
+}
+.back-btn:hover{border-color:var(--green);color:var(--green)}
+.footer-area{padding:12px 24px 24px;}
+.not-booked-hint{
+  font-size:11px;color:var(--muted);
+  text-align:center;margin-top:14px;
+}
+@keyframes fadeDown{from{opacity:0;transform:translateY(-12px)}to{opacity:1;transform:none}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="logo-area">
+    <div class="logo-icon">
+      <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+    </div>
+    <h1>Theorieprüfung Stufe 2</h1>
+    <p>DGUV Grundsatz 308-001</p>
+  </div>
+
+  <div class="card" id="mainCard">
+    <div class="greeting">
+      <div class="greeting-name" id="greetName">Willkommen</div>
+      <div class="greeting-sub">Bitte wählen Sie das Gerät, für das Sie die Theorieprüfung ablegen möchten</div>
+    </div>
+    <div class="devices" id="deviceList"></div>
+    <div class="footer-area">
+      <div class="not-booked-hint" id="hintText" style="display:none">Nicht gebuchte Geräte sind ausgegraut.<br>Bitte Ausbilder kontaktieren.</div>
+      <button class="back-btn" onclick="goBack()" style="margin-top:12px">← Zurück zur Modulauswahl</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const BASE = 'https://danieleckmeierausbildung1986.github.io/Ausbildung-Flurf-rderzeuge/';
+
+const GERAETE = [
+  {
+    key: 'schubmast',
+    cls: 'schub',
+    title: 'Schubmaststapler',
+    icon: `<svg viewBox="0 0 24 24"><path d="M20 8h-3V4H3c-1.1 0-2 .9-2 2v11h2c0 1.66 1.34 3 3 3s3-1.34 3-3h6c0 1.66 1.34 3 3 3s3-1.34 3-3h2v-5l-3-4zM6 18.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm13.5-9l1.96 2.5H17V9.5h2.5zm-1.5 9c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>`
+  },
+  {
+    key: 'kommissionierer',
+    cls: 'komm',
+    title: 'Kommissionierstapler',
+    icon: `<svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 3c1.93 0 3.5 1.57 3.5 3.5S13.93 13 12 13s-3.5-1.57-3.5-3.5S10.07 6 12 6zm7 13H5v-.23c0-.62.28-1.2.76-1.58C7.47 15.82 9.64 15 12 15s4.53.82 6.24 2.19c.48.38.76.97.76 1.58V19z"/></svg>`
+  },
+  {
+    key: 'schmalgang',
+    cls: 'schmal',
+    title: 'Schmalgangstapler',
+    icon: `<svg viewBox="0 0 24 24"><path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"/></svg>`
+  }
+];
+
+function getRegnrFromUrl(){
+  const params = new URLSearchParams(window.location.search);
+  const nr = params.get('regnr');
+  return (nr && /^\d{4}-\d{3,4}$/.test(nr)) ? nr : null;
+}
+
+function goBack(){
+  const nr = getRegnrFromUrl();
+  window.location.href = BASE + 'index.html' + (nr ? '?regnr=' + encodeURIComponent(nr) : '');
+}
+
+function isBooked(val){
+  return val === true || val === 'Ja' || val === 'True';
+}
+
+function renderDevices(data){
+  const list = document.getElementById('deviceList');
+  list.innerHTML = '';
+  let hasDisabled = false;
+  let hasBooked = false;
+
+  GERAETE.forEach(g => {
+    const booked = isBooked(data[g.key]);
+    if(booked) hasBooked = true; else hasDisabled = true;
+
+    const url = BASE + 'pruefung_stufe2.html?geraet=' + encodeURIComponent(g.key);
+
+    if(booked){
+      list.innerHTML += `
+        <a class="device-btn ${g.cls}" href="${url}">
+          <div class="dev-icon">${g.icon}</div>
+          <div class="dev-info">
+            <div class="dev-title">${g.title}</div>
+          </div>
+          <div class="dev-arrow">→</div>
+        </a>`;
+    } else {
+      list.innerHTML += `
+        <div class="device-btn disabled">
+          <div class="dev-icon">${g.icon}</div>
+          <div class="dev-info">
+            <div class="dev-title">${g.title}</div>
+            <div class="dev-sub">Nicht gebucht</div>
+          </div>
+          <div class="dev-arrow">🔒</div>
+        </div>`;
+    }
+  });
+
+  if(hasDisabled){
+    document.getElementById('hintText').style.display = 'block';
+  }
+
+  if(!hasBooked){
+    list.innerHTML = '<div class="no-devices">Für Sie ist aktuell keine Stufe-2-Prüfung gebucht. Bitte wenden Sie sich an Ihren Ausbilder.</div>';
+  }
+}
+
+function init(){
+  const raw = sessionStorage.getItem('pruefungstufe2data');
+  const nr = getRegnrFromUrl();
+  const loginUrl = BASE + 'index.html' + (nr ? '?regnr=' + encodeURIComponent(nr) : '');
+
+  if(!raw){ window.location.href = loginUrl; return; }
+
+  let data;
+  try{ data = JSON.parse(raw); } catch(e){ window.location.href = loginUrl; return; }
+
+  const maxAge = 4*60*60*1000;
+  if(!data._ts || (Date.now()-data._ts) > maxAge){
+    sessionStorage.removeItem('pruefungstufe2data');
+    window.location.href = loginUrl;
+    return;
+  }
+
+  const name = (data.vorname || '') + ' ' + (data.nachname || '');
+  document.getElementById('greetName').textContent = 'Hallo, ' + name.trim() + '!';
+
+  renderDevices(data);
+}
+
+init();
+</script>
+</body>
+</html>
