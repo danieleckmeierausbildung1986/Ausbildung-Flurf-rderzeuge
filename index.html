@@ -177,6 +177,16 @@ a.exam-tile:hover{border-color:var(--green);transform:translateY(-2px);box-shado
       <div class="lf">
         <label id="txt-label"></label>
         <input type="text" id="regnr" placeholder="2025-001" autocomplete="off"
+          onkeydown="if(event.key==='Enter')document.getElementById('vorname').focus()">
+      </div>
+      <div class="lf">
+        <label id="txt-label-vorname"></label>
+        <input type="text" id="vorname" placeholder="Max" autocomplete="off"
+          onkeydown="if(event.key==='Enter')document.getElementById('nachname').focus()">
+      </div>
+      <div class="lf">
+        <label id="txt-label-nachname"></label>
+        <input type="text" id="nachname" placeholder="Mustermann" autocomplete="off"
           onkeydown="if(event.key==='Enter')doLogin()">
       </div>
       <button class="login-btn" id="loginBtn" onclick="doLogin()"></button>
@@ -211,16 +221,19 @@ const TRANSLATIONS = {
     title:        'ProDrive Akademie Niederbayern',
     welcome:      'Schön, dass Sie da sind!',
     sub:          'Ihre Ausbildung rund um Flurförderzeuge und Ladungssicherung – nach DGUV 308-001 & VDI 2700.',
-    intro:        'Bitte melden Sie sich mit Ihrer Registriernummer an.',
+    intro:        'Bitte melden Sie sich mit Ihrer Registriernummer, Vor- und Nachnamen an.',
     label:        'Registriernummer',
+    labelVorname: 'Vorname',
+    labelNachname: 'Nachname',
     loginBtn:     'Anmelden →',
     hint:         'Format: 2025-001 – erhalten Sie von Ihrem Ausbilder',
     choose:       'Bitte wählen Sie Ihre Schulung',
     back:         '← Zurück zur Anmeldung',
     noModules:    'Für diese Registriernummer sind keine E-Learning-Module gebucht.<br>Bitte wenden Sie sich an Ihren Ausbilder.',
     errEmpty:     'Bitte Registriernummer eingeben.',
+    errEmptyName: 'Bitte Vor- und Nachnamen eingeben.',
     errFormat:    'Ungültig. Format: 2025-001',
-    errNotFound:  'Nummer nicht gefunden. Bitte Ausbilder kontaktieren.',
+    errNotFound:  'Registriernummer, Vor- oder Nachname stimmen nicht überein. Bitte Ausbilder kontaktieren.',
     errConn:      'Verbindungsfehler. Bitte erneut versuchen.',
     hallo:        'Hallo, ',
     mod: {
@@ -233,16 +246,19 @@ const TRANSLATIONS = {
     title:        'ProDrive Akademie Niederbayern',
     welcome:      'Great to have you here!',
     sub:          'Your training on industrial trucks and load securing – acc. to DGUV 308-001 & VDI 2700.',
-    intro:        'Please log in with your registration number.',
+    intro:        'Please log in with your registration number, first and last name.',
     label:        'Registration Number',
+    labelVorname: 'First name',
+    labelNachname: 'Last name',
     loginBtn:     'Log in →',
     hint:         'Format: 2025-001 – provided by your instructor',
     choose:       'Please select your training module',
     back:         '← Back to login',
     noModules:    'No e-learning modules are booked for this registration number.<br>Please contact your instructor.',
     errEmpty:     'Please enter your registration number.',
+    errEmptyName: 'Please enter your first and last name.',
     errFormat:    'Invalid format. Example: 2025-001',
-    errNotFound:  'Number not found. Please contact your instructor.',
+    errNotFound:  'Registration number, first or last name do not match. Please contact your instructor.',
     errConn:      'Connection error. Please try again.',
     hallo:        'Hello, ',
     mod: {
@@ -255,16 +271,19 @@ const TRANSLATIONS = {
     title:        'Witamy na platformie e-learningowej',
     welcome:      'Cieszymy się, że jesteś!',
     sub:          'Szkolenie z wózków jezdniowych i mocowania ładunków – zgodnie z DGUV 308-001 i VDI 2700.',
-    intro:        'Proszę zalogować się numerem rejestracyjnym.',
+    intro:        'Proszę zalogować się numerem rejestracyjnym, imieniem i nazwiskiem.',
     label:        'Numer rejestracyjny',
+    labelVorname: 'Imię',
+    labelNachname: 'Nazwisko',
     loginBtn:     'Zaloguj →',
     hint:         'Format: 2025-001 – podany przez instruktora',
     choose:       'Proszę wybrać moduł szkoleniowy',
     back:         '← Powrót do logowania',
     noModules:    'Dla tego numeru rejestracyjnego nie są zarezerwowane żadne moduły e-learning.<br>Proszę skontaktować się z instruktorem.',
     errEmpty:     'Proszę podać numer rejestracyjny.',
+    errEmptyName: 'Proszę podać imię i nazwisko.',
     errFormat:    'Nieprawidłowy format. Przykład: 2025-001',
-    errNotFound:  'Numer nie znaleziony. Proszę skontaktować się z instruktorem.',
+    errNotFound:  'Numer rejestracyjny, imię lub nazwisko nie pasują. Proszę skontaktować się z instruktorem.',
     errConn:      'Błąd połączenia. Proszę spróbować ponownie.',
     hallo:        'Cześć, ',
     mod: {
@@ -277,16 +296,19 @@ const TRANSLATIONS = {
     title:        'Bun venit pe platforma e-learning',
     welcome:      'Ne bucurăm că ești aici!',
     sub:          'Instruire pentru stivuitoare și securizarea sarcinii – conform DGUV 308-001 și VDI 2700.',
-    intro:        'Vă rugăm să vă autentificați cu numărul de înregistrare.',
+    intro:        'Vă rugăm să vă autentificați cu numărul de înregistrare, prenumele și numele.',
     label:        'Număr de înregistrare',
+    labelVorname: 'Prenume',
+    labelNachname: 'Nume',
     loginBtn:     'Autentificare →',
     hint:         'Format: 2025-001 – furnizat de instructor',
     choose:       'Vă rugăm selectați modulul de instruire',
     back:         '← Înapoi la autentificare',
     noModules:    'Pentru acest număr de înregistrare nu sunt rezervate module e-learning.<br>Vă rugăm contactați instructorul.',
     errEmpty:     'Vă rugăm introduceți numărul de înregistrare.',
+    errEmptyName: 'Vă rugăm introduceți prenumele și numele.',
     errFormat:    'Format invalid. Exemplu: 2025-001',
-    errNotFound:  'Număr negăsit. Vă rugăm contactați instructorul.',
+    errNotFound:  'Numărul de înregistrare, prenumele sau numele nu se potrivesc. Vă rugăm contactați instructorul.',
     errConn:      'Eroare de conexiune. Vă rugăm încercați din nou.',
     hallo:        'Bună, ',
     mod: {
@@ -299,16 +321,19 @@ const TRANSLATIONS = {
     title:        'Mirë se vini në platformën e-learning',
     welcome:      'Gëzohemi që jeni këtu!',
     sub:          'Trajnim për karikues industrialë dhe sigurimin e ngarkesës – sipas DGUV 308-001 dhe VDI 2700.',
-    intro:        'Ju lutemi hyni me numrin tuaj të regjistrimit.',
+    intro:        'Ju lutemi hyni me numrin e regjistrimit, emrin dhe mbiemrin tuaj.',
     label:        'Numri i regjistrimit',
+    labelVorname: 'Emri',
+    labelNachname: 'Mbiemri',
     loginBtn:     'Hyrje →',
     hint:         'Format: 2025-001 – dhënë nga instruktori',
     choose:       'Ju lutemi zgjidhni modulin e trajnimit',
     back:         '← Kthehu te hyrja',
     noModules:    'Për këtë numër regjistrimi nuk janë rezervuar module e-learning.<br>Ju lutemi kontaktoni instruktorin.',
     errEmpty:     'Ju lutemi vendosni numrin e regjistrimit.',
+    errEmptyName: 'Ju lutemi vendosni emrin dhe mbiemrin.',
     errFormat:    'Format i pavlefshëm. Shembull: 2025-001',
-    errNotFound:  'Numri nuk u gjet. Ju lutemi kontaktoni instruktorin.',
+    errNotFound:  'Numri i regjistrimit, emri ose mbiemri nuk përputhen. Ju lutemi kontaktoni instruktorin.',
     errConn:      'Gabim lidhjeje. Ju lutemi provoni përsëri.',
     hallo:        'Përshëndetje, ',
     mod: {
@@ -341,6 +366,8 @@ function setLang(lang){
   document.getElementById('txt-sub').textContent      = t.sub;
   document.getElementById('txt-intro').textContent    = t.intro;
   document.getElementById('txt-label').textContent    = t.label;
+  document.getElementById('txt-label-vorname').textContent   = t.labelVorname;
+  document.getElementById('txt-label-nachname').textContent  = t.labelNachname;
   document.getElementById('loginBtn').textContent     = t.loginBtn;
   document.getElementById('txt-hint').textContent     = t.hint;
   document.getElementById('txt-choose').textContent   = t.choose;
@@ -369,18 +396,21 @@ const FLOW_URL = 'https://default8af25f9034bc4ef4aba22ab6f641d5.01.environment.a
 const BASE = 'https://danieleckmeierausbildung1986.github.io/Ausbildung-Flurf-rderzeuge/';
 
 async function doLogin(){
-  const val  = document.getElementById('regnr').value.trim();
+  const val      = document.getElementById('regnr').value.trim();
+  const vorname  = document.getElementById('vorname').value.trim();
+  const nachname = document.getElementById('nachname').value.trim();
   const errEl = document.getElementById('lerr');
   const t    = TRANSLATIONS[currentLang];
   errEl.textContent = '';
 
   if(!val){ errEl.textContent = t.errEmpty; return; }
   if(!/^\d{4}-\d{3,4}$/.test(val)){ errEl.textContent = t.errFormat; return; }
+  if(!vorname || !nachname){ errEl.textContent = t.errEmptyName; return; }
 
-  await pruefeUndZeige(val, false);
+  await pruefeUndZeige(val, vorname, nachname, false);
 }
 
-async function pruefeUndZeige(val, silent){
+async function pruefeUndZeige(val, vorname, nachname, silent){
   const errEl = document.getElementById('lerr');
   const btn   = document.getElementById('loginBtn');
   const t     = TRANSLATIONS[currentLang];
@@ -391,13 +421,16 @@ async function pruefeUndZeige(val, silent){
     const res  = await fetch(FLOW_URL, {
       method:'POST',
       headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({ registrierungsnummer: val })
+      body: JSON.stringify({ registrierungsnummer: val, vorname: vorname, nachname: nachname })
     });
     const data = await res.json();
 
     if(data && data.zugang === true){
       currentRegnr = val;
       currentData  = data;
+      sessionStorage.setItem('authRegnr', val);
+      sessionStorage.setItem('authVorname', vorname);
+      sessionStorage.setItem('authNachname', nachname);
       showModules(data);
     } else if(!silent){
       errEl.textContent = data.grund || t.errNotFound;
@@ -410,7 +443,9 @@ async function pruefeUndZeige(val, silent){
   }
 }
 
-// Auto-Login per URL-Parameter
+// Auto-Login: nur wenn diese Registriernummer bereits in dieser Sitzung
+// mit Vor-/Nachname erfolgreich angemeldet wurde (verhindert reines
+// Erraten der Registriernummer über die URL).
 (function(){
   const params = new URLSearchParams(window.location.search);
 
@@ -420,9 +455,17 @@ async function pruefeUndZeige(val, silent){
   setLang(urlLang || storedLang || 'de');
 
   const nr = params.get('regnr');
+  const authRegnr = sessionStorage.getItem('authRegnr');
+  const authVorname = sessionStorage.getItem('authVorname');
+  const authNachname = sessionStorage.getItem('authNachname');
+
   if(nr && /^\d{4}-\d{3,4}$/.test(nr)){
     document.getElementById('regnr').value = nr;
-    pruefeUndZeige(nr, true);
+    if(authRegnr === nr && authVorname && authNachname){
+      document.getElementById('vorname').value = authVorname;
+      document.getElementById('nachname').value = authNachname;
+      pruefeUndZeige(nr, authVorname, authNachname, true);
+    }
   }
 })();
 

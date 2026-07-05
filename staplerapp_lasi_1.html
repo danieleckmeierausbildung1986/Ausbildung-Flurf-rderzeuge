@@ -276,6 +276,16 @@ button{font-family:inherit;cursor:pointer}
       <div class="lf">
         <label>Registriernummer</label>
         <input type="text" id="regnr" placeholder="2025-001" autocomplete="off"
+          onkeydown="if(event.key==='Enter')document.getElementById('vorname').focus()">
+      </div>
+      <div class="lf">
+        <label>Vorname</label>
+        <input type="text" id="vorname" placeholder="Max" autocomplete="off"
+          onkeydown="if(event.key==='Enter')document.getElementById('nachname').focus()">
+      </div>
+      <div class="lf">
+        <label>Nachname</label>
+        <input type="text" id="nachname" placeholder="Mustermann" autocomplete="off"
           onkeydown="if(event.key==='Enter')doLogin()">
       </div>
       <button class="lbtn" onclick="doLogin()">Anmelden →</button>
@@ -509,28 +519,36 @@ let cur = 0, quizState = {}, regnr = '';
 /* ── LOGIN ── */
 function doLogin(){
   const val = document.getElementById('regnr').value.trim();
+  const vorname = document.getElementById('vorname').value.trim();
+  const nachname = document.getElementById('nachname').value.trim();
   const errEl = document.getElementById('lerr');
   errEl.textContent = '';
   if(!val){errEl.textContent='Bitte Registriernummer eingeben.';return;}
   if(!/^\d{4}-\d{3,4}$/.test(val)){errEl.textContent='Ungültig. Format: 2025-001';return;}
-  startApp(val);
+  if(!vorname || !nachname){errEl.textContent='Bitte Vor- und Nachnamen eingeben.';return;}
+  startApp(val, vorname, nachname);
 }
 
-async function startApp(nr){
+async function startApp(nr, vorname, nachname){
   regnr = nr;
   const overlay = document.getElementById('zugangsCheckOverlay');
   const content = document.getElementById('zugangsCheckContent');
   overlay.style.display = 'flex';
+  const backBtnHtml = '<button onclick="window.location.href=\'' + PORTAL_URL + '?regnr=' + encodeURIComponent(nr) + '\'" style="padding:12px 28px;border:none;border-radius:12px;background:#fff;color:#0d2b1a;font-weight:700;font-size:14px;cursor:pointer;font-family:inherit">&larr; Zur&uuml;ck zur Startseite</button>';
   try {
     const res = await fetch(ZUGANGSPRUEFUNG_URL, {
       method: 'POST', headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({ registrierungsnummer: nr })
+      body: JSON.stringify({ registrierungsnummer: nr, vorname: vorname, nachname: nachname })
     });
     const data = await res.json();
+    if(!(data && data.zugang === true)){
+      content.innerHTML = '<div style="max-width:420px"><div style="font-size:40px;margin-bottom:12px">&#x1F512;</div><div style="font-size:18px;font-weight:700;margin-bottom:8px">Zugriff nicht m&ouml;glich</div><div style="font-size:14px;color:rgba(255,255,255,.75);line-height:1.6;margin-bottom:20px">Registriernummer, Vor- oder Nachname stimmen nicht &uuml;berein. Bitte pr&uuml;fen Sie Ihre Eingaben oder wenden Sie sich an Ihren Ausbilder.</div>' + backBtnHtml + '</div>';
+      return;
+    }
     let fVal = data.pruefung_lasi_freigegeben;
     if(fVal && typeof fVal === 'object') fVal = fVal.Value;
     if(fVal === 'Geschlossen'){
-      content.innerHTML = '<div style="max-width:420px"><div style="font-size:40px;margin-bottom:12px">&#x1F512;</div><div style="font-size:18px;font-weight:700;margin-bottom:8px">Schulung abgeschlossen</div><div style="font-size:14px;color:rgba(255,255,255,.75);line-height:1.6;margin-bottom:20px">Sie haben die Pr&uuml;fung zu diesem Kurs bereits bestanden. Der Zugriff auf die Schulungsinhalte ist daher nicht mehr m&ouml;glich.</div><button onclick="window.location.href=\'' + PORTAL_URL + '?regnr=' + encodeURIComponent(nr) + '\'" style="padding:12px 28px;border:none;border-radius:12px;background:#fff;color:#0d2b1a;font-weight:700;font-size:14px;cursor:pointer;font-family:inherit">&larr; Zur&uuml;ck zur Startseite</button></div>';
+      content.innerHTML = '<div style="max-width:420px"><div style="font-size:40px;margin-bottom:12px">&#x1F512;</div><div style="font-size:18px;font-weight:700;margin-bottom:8px">Schulung abgeschlossen</div><div style="font-size:14px;color:rgba(255,255,255,.75);line-height:1.6;margin-bottom:20px">Sie haben die Pr&uuml;fung zu diesem Kurs bereits bestanden. Der Zugriff auf die Schulungsinhalte ist daher nicht mehr m&ouml;glich.</div>' + backBtnHtml + '</div>';
       return;
     }
   } catch(e){}
@@ -1226,11 +1244,22 @@ function closeSidebar(){
 buildSteps();
 buildSidebar();
 
-// Auto-Login per URL-Parameter
+// Auto-Login: nur wenn diese Registriernummer bereits in dieser Sitzung
+// mit Vor-/Nachname erfolgreich angemeldet wurde.
 (function(){
   const params=new URLSearchParams(window.location.search);
   const nr=params.get('regnr');
-  if(nr&&/^\d{4}-\d{3,4}$/.test(nr)) startApp(nr);
+  const authRegnr = sessionStorage.getItem('authRegnr');
+  const authVorname = sessionStorage.getItem('authVorname');
+  const authNachname = sessionStorage.getItem('authNachname');
+  if(nr && /^\d{4}-\d{3,4}$/.test(nr)){
+    document.getElementById('regnr').value = nr;
+    if(authRegnr === nr && authVorname && authNachname){
+      document.getElementById('vorname').value = authVorname;
+      document.getElementById('nachname').value = authNachname;
+      startApp(nr, authVorname, authNachname);
+    }
+  }
 })();
 </script>
 </body>

@@ -889,14 +889,21 @@ var ZUGANGSPRUEFUNG_URL = 'https://default8af25f9034bc4ef4aba22ab6f641d5.01.envi
   var overlay = document.getElementById('zugangsCheckOverlay');
   var content = document.getElementById('zugangsCheckContent');
   if(!regnr){ overlay.style.display='none'; return; }
+  var authVorname = sessionStorage.getItem('authVorname');
+  var authNachname = sessionStorage.getItem('authNachname');
   fetch(ZUGANGSPRUEFUNG_URL, {
     method:'POST', headers:{'Content-Type':'application/json'},
-    body: JSON.stringify({ registrierungsnummer: regnr })
+    body: JSON.stringify({ registrierungsnummer: regnr, vorname: authVorname, nachname: authNachname })
   }).then(function(res){ return res.json(); }).then(function(data){
+    var backBtn = '<button onclick="window.location.href=\'index.html' + (regnr?'?regnr='+encodeURIComponent(regnr):'') + '\'" style="padding:12px 28px;border:none;border-radius:12px;background:#fff;color:#0d4a24;font-weight:700;font-size:14px;cursor:pointer;font-family:inherit">&larr; Zur&uuml;ck zur Startseite</button>';
+    if(!(data && data.zugang === true)){
+      content.innerHTML = '<div style="max-width:420px"><div style="font-size:40px;margin-bottom:12px">&#x1F512;</div><div style="font-size:18px;font-weight:700;margin-bottom:8px">Zugriff nicht m&ouml;glich</div><div style="font-size:14px;color:rgba(255,255,255,.75);line-height:1.6;margin-bottom:20px">Bitte melden Sie sich zuerst auf der Startseite mit Ihrer Registriernummer, Vor- und Nachnamen an.</div>' + backBtn + '</div>';
+      return;
+    }
     var fVal = data.pruefung_stufe1_freigegeben;
     if(fVal && typeof fVal === 'object') fVal = fVal.Value;
     if(fVal === 'Geschlossen'){
-      content.innerHTML = '<div style="max-width:420px"><div style="font-size:40px;margin-bottom:12px">&#x1F512;</div><div style="font-size:18px;font-weight:700;margin-bottom:8px">Schulung abgeschlossen</div><div style="font-size:14px;color:rgba(255,255,255,.75);line-height:1.6;margin-bottom:20px">Sie haben die Pr&uuml;fung zu diesem Kurs bereits bestanden. Der Zugriff auf die Schulungsinhalte ist daher nicht mehr m&ouml;glich.</div><button onclick="window.location.href=\'index.html' + (regnr?'?regnr='+encodeURIComponent(regnr):'') + '\'" style="padding:12px 28px;border:none;border-radius:12px;background:#fff;color:#0d4a24;font-weight:700;font-size:14px;cursor:pointer;font-family:inherit">&larr; Zur&uuml;ck zur Startseite</button></div>';
+      content.innerHTML = '<div style="max-width:420px"><div style="font-size:40px;margin-bottom:12px">&#x1F512;</div><div style="font-size:18px;font-weight:700;margin-bottom:8px">Schulung abgeschlossen</div><div style="font-size:14px;color:rgba(255,255,255,.75);line-height:1.6;margin-bottom:20px">Sie haben die Pr&uuml;fung zu diesem Kurs bereits bestanden. Der Zugriff auf die Schulungsinhalte ist daher nicht mehr m&ouml;glich.</div>' + backBtn + '</div>';
     } else {
       overlay.style.display = 'none';
     }
