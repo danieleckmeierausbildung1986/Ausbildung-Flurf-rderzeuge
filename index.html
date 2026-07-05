@@ -501,9 +501,8 @@ function showModules(data){
     count++;
 
     examList.innerHTML += `
-      <div class="exam-tile disabled">
-        <img src="${BASE}${logoImg('logo_pruefung_stufe2','jpg')}" alt="Theorieprüfung Stufe 2" style="filter:grayscale(1) brightness(1.15)">
-        <span class="exam-tile-badge">Demnächst verfügbar</span>
+      <div class="exam-tile" style="cursor:pointer" onclick='goPruefungStufe2(${JSON.stringify(s2data)})'>
+        <img src="${BASE}${logoImg('logo_pruefung_stufe2','jpg')}" alt="Theorieprüfung Stufe 2">
       </div>`;
     examCount++;
   }
@@ -542,6 +541,12 @@ function goStufe2(data){
   data._ts = Date.now();
   sessionStorage.setItem('stufe2data', JSON.stringify(data));
   window.location.href = BASE + 'staplerapp_stufe2_auswahl.html';
+}
+
+function goPruefungStufe2(data){
+  data._ts = Date.now();
+  sessionStorage.setItem('pruefungstufe2data', JSON.stringify(data));
+  window.location.href = BASE + 'pruefung_stufe2_auswahl.html';
 }
 </script>
 </body>
