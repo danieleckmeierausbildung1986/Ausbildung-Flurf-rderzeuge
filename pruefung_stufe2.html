@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Theorieprüfung Stufe 2 – ProDrive Akademie Niederbayern</title>
+<style>
+:root{
+  --green-d:#2d1b6b;--green:#5b3db0;--green-l:#7c5cd6;
+  --acc1:#2d1b6b;--acc2:#5b3db0;
+  --navy:#16243f;--line:#e3e8f0;--muted:#5a6a7a;--ink:#1a2330;
+  --danger:#dc2626;--danger-bg:#fef2f2;
+  --shadow:0 8px 40px rgba(0,0,0,.25);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:"Segoe UI",system-ui,sans-serif;
+  min-height:100vh;background:#0d0a1f;
+  background-image:radial-gradient(ellipse 80% 60% at 20% 10%, rgba(91,61,176,.28) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 80% at 90% 90%, rgba(45,27,107,.32) 0%, transparent 60%);
+  display:flex;justify-content:center;padding:24px 16px 60px;
+}
+.wrap{width:100%;max-width:820px}
+.topbar{display:flex;align-items:center;gap:14px;margin-bottom:14px}
+.ti{width:46px;height:46px;border-radius:12px;flex-shrink:0;
+  background:#fff;padding:5px;
+  display:flex;align-items:center;justify-content:center;box-shadow:0 6px 20px rgba(0,0,0,.3)}
+.ti img{width:100%;height:100%;object-fit:contain}
+.topbar h1{color:#fff;font-size:18px;font-weight:700;line-height:1.2}
+.topbar p{color:rgba(255,255,255,.5);font-size:12px}
+.timer{
+  margin-left:auto;background:rgba(255,255,255,.08);border:1.5px solid rgba(255,255,255,.15);
+  border-radius:10px;padding:8px 16px;color:#fff;font-weight:700;font-size:16px;
+  font-variant-numeric:tabular-nums;flex-shrink:0;
+}
+.timer.urgent{background:var(--danger-bg);border-color:var(--danger);color:var(--danger)}
+
+.stage{background:#fff;border-radius:18px;box-shadow:var(--shadow);overflow:hidden}
+.progress{height:5px;background:var(--line)}
+.progress-bar{height:100%;background:linear-gradient(90deg,var(--acc1),var(--acc2));transition:width .25s ease;width:0}
+
+.welcome-box{padding:44px 30px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:14px;
+  background:linear-gradient(135deg,var(--green-d),var(--green-l))}
+.welcome-logo-tile{display:inline-block;background:#fff;border-radius:16px;padding:10px 18px;box-shadow:0 6px 20px rgba(0,0,0,.25)}
+.welcome-logo-tile img{display:block;width:100%;max-width:280px;height:auto}
+.welcome-titel{font-size:24px;font-weight:800;color:#fff}
+.welcome-sub{font-size:14.5px;color:rgba(255,255,255,.88);line-height:1.6;max-width:520px}
+.welcome-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;width:100%;max-width:480px;margin-top:6px}
+.wg{background:rgba(255,255,255,.15);border-radius:12px;padding:12px 8px}
+.wg b{display:block;font-size:20px;color:#fff}
+.wg span{font-size:11.5px;color:rgba(255,255,255,.8)}
+.start-btn{margin-top:10px;background:#fff;color:var(--green-d);font-weight:700;font-size:15px;
+  border:none;border-radius:12px;padding:14px 34px;cursor:pointer;transition:transform .15s}
+.start-btn:hover{transform:translateY(-2px)}
+
+.q-body{padding:30px 30px 26px}
+.q-num{font-size:12px;font-weight:700;letter-spacing:.5px;color:var(--green);text-transform:uppercase;margin-bottom:8px}
+.q-text{font-size:17px;font-weight:700;color:var(--navy);line-height:1.5;margin-bottom:22px}
+.opts{display:flex;flex-direction:column;gap:10px}
+.opt{
+  display:flex;align-items:flex-start;gap:12px;border:1.5px solid var(--line);border-radius:12px;
+  padding:13px 16px;cursor:pointer;transition:all .15s;font-size:14.5px;color:var(--ink);line-height:1.5;
+}
+.opt:hover{border-color:var(--green-l)}
+.opt.sel{border-color:var(--green);background:#f2effc}
+.opt input{margin-top:2px;accent-color:var(--green);flex-shrink:0;width:17px;height:17px}
+.q-image{display:block;max-width:100%;border:1.5px solid var(--line);border-radius:12px;margin-bottom:18px}
+.num-field{margin-bottom:4px}
+.num-field label{display:block;font-size:12.5px;font-weight:700;color:var(--navy);margin-bottom:8px}
+.num-field input{
+  width:100%;max-width:220px;padding:13px 16px;border:1.5px solid var(--line);border-radius:12px;
+  font-size:16px;color:var(--ink)
+}
+.num-field input:focus{outline:none;border-color:var(--green)}
+
+.nav-row{display:flex;justify-content:space-between;align-items:center;padding:18px 30px;border-top:1px solid var(--line)}
+.nav-btn{border:none;border-radius:10px;padding:11px 22px;font-size:14px;font-weight:700;cursor:pointer;transition:all .15s}
+.nav-btn.back{background:#fff;border:1.5px solid var(--line);color:var(--muted)}
+.nav-btn.back:hover{border-color:var(--navy);color:var(--navy)}
+.nav-btn.back:disabled{opacity:.4;cursor:default}
+.nav-btn.next{background:var(--green);color:#fff}
+.nav-btn.next:hover{background:var(--green-d)}
+.nav-btn.next:disabled{opacity:.5;cursor:default}
+.step-count{font-size:13px;color:var(--muted);font-weight:600}
+
+.final-box{padding:30px}
+.final-title{font-size:18px;font-weight:800;color:var(--navy);margin-bottom:16px}
+.consent{border:1.5px solid var(--line);border-radius:12px;padding:16px 18px;margin-bottom:14px;display:flex;gap:12px}
+.consent input{margin-top:3px;accent-color:var(--green);width:18px;height:18px;flex-shrink:0}
+.consent p{font-size:13px;color:var(--ink);line-height:1.55}
+.consent b{color:var(--navy)}
+.submit-btn{
+  display:block;width:100%;padding:15px;border:none;border-radius:12px;background:var(--green);
+  color:#fff;font-size:16px;font-weight:700;cursor:pointer;transition:background .15s;margin-top:6px
+}
+.submit-btn:hover{background:var(--green-d)}
+.submit-btn:disabled{opacity:.5;cursor:default}
+.err-box{background:var(--danger-bg);border:1px solid #fecaca;color:var(--danger);border-radius:10px;
+  padding:12px 16px;font-size:13.5px;margin-top:14px;display:none}
+
+.result-box{padding:50px 30px;text-align:center}
+.result-icon{font-size:56px;margin-bottom:14px}
+.result-title{font-size:24px;font-weight:800;margin-bottom:8px}
+.result-title.pass{color:#15803d}
+.result-title.fail{color:var(--danger)}
+.result-score{font-size:16px;color:var(--muted);margin-bottom:24px}
+.result-hint{font-size:13.5px;color:var(--muted);max-width:420px;margin:0 auto;line-height:1.6}
+
+@media(max-width:640px){
+  .welcome-grid{grid-template-columns:1fr 1fr}
+  .q-body{padding:22px 18px}
+  .nav-row{padding:14px 18px}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="topbar">
+    <div class="ti"><img src="logos/logo_icon.png" alt="ProDrive Akademie"></div>
+    <div>
+      <h1>ProDrive Akademie Niederbayern</h1>
+      <p id="topbarSub">Theorieprüfung Stufe 2 · DGUV Grundsatz 308-001</p>
+    </div>
+    <div class="timer" id="timerBox" style="display:none">40:00</div>
+  </div>
+
+  <div class="stage">
+    <div class="progress" id="progressWrap" style="display:none"><div class="progress-bar" id="pbar"></div></div>
+
+    <!-- LOGIN -->
+    <div id="loginScreen">
+      <div class="q-body">
+        <div class="q-num">Anmeldung</div>
+        <div class="q-text">Bitte geben Sie Ihre Registrierungsnummer ein.</div>
+        <div class="num-field">
+          <input type="text" id="regnr" placeholder="2026-001" autocomplete="off">
+        </div>
+        <div class="err-box" id="loginErrBox"></div>
+      </div>
+      <div class="nav-row">
+        <span class="step-count"></span>
+        <button class="nav-btn next" id="loginNextBtn" onclick="startWelcome()">Weiter &rarr;</button>
+      </div>
+    </div>
+
+    <!-- WELCOME -->
+    <div id="welcomeScreen" style="display:none">
+      <div class="welcome-box">
+        <span class="welcome-logo-tile"><img id="welcomeLogo" src="logos/logo_pruefung_stufe2.jpg" alt="Theorieprüfung Stufe 2"></span>
+        <div class="welcome-titel" id="welcomeTitel">Theorieprüfung Stufe 2</div>
+        <div class="welcome-sub" id="welcomeSub">Diese Prüfung deckt die theoretischen Grundlagen nach <b>DGUV Grundsatz 308-001</b> für Ihr Gerät ab. Beantworten Sie alle Fragen sorgfältig — die Prüfung kann nur einmal durchgeführt werden.</div>
+        <div class="welcome-grid">
+          <div class="wg"><b id="statFragenN">33</b><span>Fragen</span></div>
+          <div class="wg"><b>40 Min.</b><span>Zeitlimit</span></div>
+          <div class="wg"><b id="statBestehenN">27/33</b><span>zum Bestehen</span></div>
+        </div>
+        <button class="start-btn" onclick="startPruefung()">Prüfung starten &rsaquo;</button>
+      </div>
+    </div>
+
+    <!-- FRAGE -->
+    <div id="questionScreen" style="display:none">
+      <div class="q-body">
+        <div class="q-num" id="qLabel"></div>
+        <div class="q-text" id="qText"></div>
+        <div id="qOpts"></div>
+      </div>
+      <div class="nav-row">
+        <button class="nav-btn back" id="backBtn" onclick="goBack()">&larr; Zurück</button>
+        <span class="step-count" id="stepCount"></span>
+        <button class="nav-btn next" id="nextBtn" onclick="goNext()">Weiter &rarr;</button>
+      </div>
+    </div>
+
+    <!-- ABSCHLUSS -->
+    <div id="finalScreen" style="display:none">
+      <div class="final-box">
+        <div class="final-title">Vor dem Absenden</div>
+        <label class="consent">
+          <input type="checkbox" id="ck-eigen">
+          <p><b>Eigenständigkeitserklärung:</b> Hiermit bestätige ich, dass ich die vorstehende Theorieprüfung zur Ausbildung für Flurförderzeuge selbstständig und ohne Verwendung nicht zugelassener Hilfsmittel abgelegt habe.</p>
+        </label>
+        <label class="consent">
+          <input type="checkbox" id="ck-dsgvo">
+          <p><b>Datenschutzerklärung:</b> Mit der Teilnahme an dieser Prüfung erkläre ich mich einverstanden, dass meine personenbezogenen Daten (Name, Geburtsdatum, Prüfungsergebnisse) zum Zweck des Qualifikationsnachweises digital verarbeitet werden. Gemäß den Vorgaben der DGUV Vorschrift 68 und DGUV Grundsatz 308-001 ist der Ausbilder verpflichtet, die Prüfungsunterlagen als Nachweis der Befähigung für einen Zeitraum von 10 Jahren revisionssicher zu archivieren. Eine Weitergabe an Dritte erfolgt ausschließlich im Rahmen gesetzlicher Nachweispflichten gegenüber Berufsgenossenschaften oder Behörden.</p>
+        </label>
+        <button class="submit-btn" id="submitBtn" onclick="submitPruefung(false)" disabled>Prüfung abschicken</button>
+        <div class="err-box" id="errBox"></div>
+      </div>
+    </div>
+
+    <!-- ERGEBNIS -->
+    <div id="resultScreen" style="display:none">
+      <div class="result-box">
+        <div class="result-icon" id="resIcon"></div>
+        <div class="result-title" id="resTitle"></div>
+        <div class="result-score" id="resScore"></div>
+        <div class="result-hint" id="resHint"></div>
+        <button class="start-btn" id="resBackBtn" style="margin-top:24px" onclick="zurueckZurStartseite()">← Zurück zur Startseite</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+var BASE = 'https://danieleckmeierausbildung1986.github.io/Ausbildung-Flurf-rderzeuge/';
+var PRUEFUNG_STUFE2_URL = 'PLATZHALTER_FLOW_URL';
+var ZUGANGSPRUEFUNG_URL = 'https://default8af25f9034bc4ef4aba22ab6f641d5.01.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/7058b6c8090842748465472db6085773/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=nxepIsGToa5my_-oIW5ZR5c3CQLtufN5DwNvM-qG1G4';
+
+var PASS_QUOTE = 0.8; // 80% zum Bestehen
+
+var GERAETE = {
+  schubmast: {
+    label: 'Schubmaststapler',
+    freigabeFeld: 'pruefung_schubmast_freigegeben',
+    logo: 'logos/logo_pruefung_stufe2.jpg',
+    fragen: [
+      {num:1, text:"Wie alt muss ein Staplerfahrer mindestens sein, um ein Flurförderzeug alleine führen zu dürfen?", opts:["16 Jahre","18 Jahre","21 Jahre"], correct:1},
+      {num:2, text:"Welche Voraussetzung muss erfüllt sein, um ein Flurförderzeug führen zu dürfen?", opts:["Keine Voraussetzung erforderlich","Geistige und körperliche Eignung","Nur ein gültiger Führerschein Klasse B"], correct:1},
+      {num:3, text:"Wann liegt ein Arbeitsunfall vor?", opts:["Wenn eine versicherte Person bei einer versicherten Tätigkeit körperlich geschädigt wird","Wenn eine versicherte Person bei einer nicht versicherten Tätigkeit geschädigt wird","Wenn eine nicht versicherte Person beteiligt ist"], correct:0},
+      {num:4, text:"Wer darf ein Flurförderzeug mit Fahrersitz führen?", opts:["Jeder Betriebsangehörige","Jeder mit Pkw-Führerschein","Nur geeignete, ausgebildete Mitarbeiter, mindestens 18 Jahre, mit schriftlichem Fahrauftrag"], correct:2},
+      {num:5, text:"Wer ist für die unfallsichere Beladung des Flurförderzeugs verantwortlich?", opts:["Der Meister","Der Fahrer","Derjenige, der die Last zusammengestellt hat"], correct:1},
+      {num:6, text:"Wer führt die jährliche technische Prüfung am Stapler durch?", opts:["Der Staplerfahrer selbst","Der Facility-Mitarbeiter","Der Monteur oder Werkstattmeister der Vertragswerkstatt"], correct:2},
+      {num:7, text:"Warum reicht die Stufe-1-Ausbildung für den Schubmaststapler nicht aus?", opts:["Weil Stufe 1 nur für Elektrostapler gilt","Weil laut DGUV 308-001 eine gerätetypspezifische Zusatzausbildung zwingend vorgeschrieben ist","Weil der Schubmaststapler kein Flurförderzeug ist"], correct:1},
+      {num:8, text:"Wann darf der Arbeitgeber den schriftlichen Fahrauftrag für den Schubmaststapler erteilen?", opts:["Sofort nach der Stufe-1-Ausbildung","Erst nach erfolgreicher Absolvierung der Stufe 2","Fahren ist auch ohne Fahrauftrag erlaubt"], correct:1},
+      {num:9, text:"Was ist die konstruktive Besonderheit des Schubmaststaplers?", opts:["Der Mast fährt zur Lastaufnahme nach vorne aus und wird für die Fahrt vollständig zurückgezogen","Der Mast ist fest verbaut und bewegt sich nie","Die Gabelzinken drehen sich um 360°"], correct:0},
+      {num:10, text:"Wie schmal können Arbeitsgänge beim Einsatz eines Schubmaststaplers sein?", opts:["ab ca. 4,5 m","ab ca. 2,5 m","ab ca. 1 m"], correct:1},
+      {num:11, text:"Was benötige ich, um einen Schubmaststapler fahren zu dürfen?", opts:["Nur den Staplerschein","Staplerschein, Fahrauftrag und G25","Nur eine mündliche Erlaubnis des Vorgesetzten"], correct:1},
+      {num:12, text:"Wo befindet sich die Last beim Schubmaststapler während des Transports?", opts:["Vor der Vorderachse, außerhalb der Radbasis","Innerhalb der Radbasis","Hinter dem Fahrer"], correct:1},
+      {num:13, text:"Was passiert beim Ausfahren des Mastes mit dem Schwerpunkt?", opts:["Er bleibt unverändert","Er wandert extrem nach vorne","Er wandert nach hinten"], correct:1},
+      {num:14, text:"Wie lautet die goldene Regel zum Umgang mit dem Mast?", opts:["Der Mast darf beim Fahren beliebig ausgefahren sein","Niemals mit ausgefahrenem Mast fahren oder lenken","Der Mast darf nur beim Rückwärtsfahren ausgefahren sein"], correct:1},
+      {num:15, text:"Wie sollte eine Last beim Fahren mit dem Schubmaststapler transportiert werden?", opts:["Hoch angehoben und mit ausgefahrenem Mast","Bodennah und mit eingezogenem Mast","Die Höhe spielt keine Rolle"], correct:1},
+      {num:16, text:"Wie verhält sich das Heck des Schubmaststaplers beim Lenken?", opts:["Es bewegt sich kaum","Es schwenkt extrem schnell und weit aus","Es bewegt sich nur bei über 20 km/h"], correct:1},
+      {num:17, text:"Was ist beim Bremsverhalten des Schubmaststaplers zu beachten?", opts:["Es unterscheidet sich nicht vom Frontstapler","Lastradbremsen greifen anders, oft sind auch Räder unter den Radarmen aktiv, Bremswege verändern sich bei Nässe/Glätte","Der Schubmaststapler hat keine Bremsen"], correct:1},
+      {num:18, text:"Ersetzt das Kamerasystem an den Gabelzinken den eigenen Blick des Fahrers?", opts:["Ja, vollständig","Nein, der Fahrer bleibt für sein Handeln verantwortlich und muss zusätzlich mit bloßem Auge kontrollieren","Nur bei Dunkelheit"], correct:1},
+      {num:19, text:"Was passiert mit dem Mast in großen Hubhöhen von 8–13 m?", opts:["Er bleibt vollkommen starr","Er biegt sich physikalisch bzw. schwingt, Abwarten ist Pflicht","Er verkürzt sich automatisch"], correct:1},
+      {num:20, text:"Darf bei schwingendem Mast ein- oder ausgelagert werden?", opts:["Ja, wenn man vorsichtig ist","Nein, niemals","Nur bei Lasten unter 500 kg"], correct:1},
+      {num:21, text:"Eine würfelförmige Kiste (1,20 m × 1,20 m), Schwerpunkt in der Mitte, wiegt 2001 kg. Darf sie laut Traglastdiagramm transportiert werden?", image:"STUFE2_BILDER/traglast_schubmast.png", opts:["Ja","Nein"], correct:1},
+      {num:22, text:"Bei 11.500 mm Einlagerhöhe: Wie viel darf die Last laut Traglastdiagramm maximal wiegen? (Angabe in kg)", type:"number", image:"STUFE2_BILDER/traglast_schubmast.png", correct:1250, tolerance:0},
+      {num:23, text:"Bei 9.000 mm Höhe und 600 mm Lastschwerpunktabstand: Wie schwer darf die Last maximal sein? (Angabe in kg)", type:"number", image:"STUFE2_BILDER/traglast_schubmast.png", correct:1820, tolerance:0},
+      {num:24, text:"Der Lastschwerpunkt liegt 600 mm vom Gabelrücken entfernt. Wie schwer darf die Last maximal sein? (Angabe in kg)", type:"number", image:"STUFE2_BILDER/traglast_schubmast.png", correct:2000, tolerance:0},
+      {num:25, text:"Wie viel Gewicht darf laut Typenschild maximal in ein Regalfeld gestellt werden? (Angabe in kg)", type:"number", correct:15000, tolerance:0},
+      {num:26, text:"Welche Gefahr geht im Regalgang von den Radarmen aus?", opts:["Quetschgefahr durch Überfahren von Hindernissen oder Hängenbleiben an Regalstützen","Stromschlaggefahr","Rutschgefahr durch Öl auf den Radarmen"], correct:0},
+      {num:27, text:"Ist im Hochregallagerbereich das Tragen eines Schutzhelms Pflicht?", opts:["Nein, nur bei Bauarbeiten","Ja","Nur für Besucher"], correct:1},
+      {num:28, text:"Welche Bodenbeschaffenheit benötigt der Schubmaststapler?", opts:["Beliebiger Boden ist ausreichend","Extrem ebene und saubere Böden","Nur Böden mit starkem Gefälle"], correct:1},
+      {num:29, text:"Was gehört zur täglichen Sichtprüfung vor Fahrtantritt?", opts:["Nur der Reifendruck","U.a. Hydraulik, Beleuchtung, Gabelzinken, Bereifung, Hubketten, Risse am Mast, Ausschubmechanismus","Nur die Hupe"], correct:1},
+      {num:30, text:"Was gehört zur täglichen Funktionsprüfung?", opts:["Nur die Beleuchtung","U.a. Personenschutzeinrichtung (Bluespot), Gabelzinkenausschub, Feststell- und Betriebsbremse","Nur der Ölstand"], correct:1},
+      {num:31, text:"Das Regal ist beschädigt. Wie gehst du vor?", opts:["Du sagst es niemandem","Du informierst deinen Vorgesetzten und deine Kollegen und sperrst den Bereich","Du reparierst den Schaden selbst"], correct:1},
+      {num:32, text:"Wie näherst du dich Kreuzungen und unübersichtlichen Stellen in der Halle?", opts:["Mit überhöhter Geschwindigkeit","Mit besonderer Vorsicht und angepasster Geschwindigkeit","Hupend, ohne das Tempo zu ändern"], correct:1},
+      {num:33, text:"Was ist beim Durchfahren des Hallentors zu beachten?", opts:["Man darf grundsätzlich nicht durchfahren","Vorsichtig fahren und auf die Höhe des Staplers achten","Es spielt keine Rolle, wie hoch der Stapler ist"], correct:1}
+    ]
+  },
+  kommissionierer: {
+    label: 'Kommissionierstapler',
+    freigabeFeld: 'pruefung_kommissionierer_freigegeben',
+    logo: 'logos/logo_pruefung_stufe2.jpg',
+    fragen: [
+      {num:1, text:"Wie alt muss ein Staplerfahrer mindestens sein, um ein Flurförderzeug alleine führen zu dürfen?", opts:["16 Jahre","18 Jahre","21 Jahre"], correct:1},
+      {num:2, text:"Welche Voraussetzung muss erfüllt sein, um ein Flurförderzeug führen zu dürfen?", opts:["Keine Voraussetzung erforderlich","Geistige und körperliche Eignung","Nur ein gültiger Führerschein Klasse B"], correct:1},
+      {num:3, text:"Wann liegt ein Arbeitsunfall vor?", opts:["Wenn eine versicherte Person bei einer versicherten Tätigkeit körperlich geschädigt wird","Wenn eine versicherte Person bei einer nicht versicherten Tätigkeit geschädigt wird","Wenn eine nicht versicherte Person beteiligt ist"], correct:0},
+      {num:4, text:"Wer darf ein Flurförderzeug mit Fahrersitz führen?", opts:["Jeder Betriebsangehörige","Jeder mit Pkw-Führerschein","Nur geeignete, ausgebildete Mitarbeiter, mindestens 18 Jahre, mit schriftlichem Fahrauftrag"], correct:2},
+      {num:5, text:"Wer ist für die unfallsichere Beladung des Flurförderzeugs verantwortlich?", opts:["Der Meister","Der Fahrer","Derjenige, der die Last zusammengestellt hat"], correct:1},
+      {num:6, text:"Wer führt die jährliche technische Prüfung am Stapler durch?", opts:["Der Staplerfahrer selbst","Der Facility-Mitarbeiter","Der Monteur oder Werkstattmeister der Vertragswerkstatt"], correct:2},
+      {num:7, text:"Warum reicht die Stufe-1-Ausbildung beim Kommissionierer nicht aus?", opts:["Weil Kommissionierer keine Flurförderzeuge sind","Bei Vertikal-Kommissionierern verlässt der Fahrer den sicheren Boden und fährt mit der Plattform in die Höhe – das erzeugt andere Gefährdungen","Weil Kommissionierer nur im Freien eingesetzt werden"], correct:1},
+      {num:8, text:"Wann darf der Arbeitgeber den schriftlichen Fahrauftrag für den Kommissionierer erteilen?", opts:["Sofort nach der Stufe-1-Ausbildung","Erst nach erfolgreicher Absolvierung der Stufe 2","Fahren ist auch ohne Fahrauftrag erlaubt"], correct:1},
+      {num:9, text:"Was unterscheidet Horizontal- von Vertikal-Kommissionierern?", opts:["Es gibt keinen Unterschied","Horizontal: der Fahrer bleibt auf dem Boden (Bodenebene/1. Regalebene); Vertikal: die Plattform fährt mit dem Hubgerüst hoch, der Fahrer greift direkt aus dem Regal","Horizontal-Geräte dürfen nur draußen eingesetzt werden"], correct:1},
+      {num:10, text:"Wann ist bei Vertikal-Kommissionierern die PSA gegen Absturz Pflicht?", opts:["Immer, auch bei geschlossener Umwehrung","Sobald die Umwehrung in der Höhe geöffnet wird, z.B. zum Greifen ins Regal","Nur bei Lasten über 500 kg"], correct:1},
+      {num:11, text:"Wie lautet die goldene Regel zur PSA gegen Absturz?", opts:["PSA ist optional und Geschmackssache","Immer zuerst die PSA anlegen, bevor die Umwehrung in der Höhe geöffnet wird – nie ungesichert hinauslehnen","PSA ist nur bei Regenwetter nötig"], correct:1},
+      {num:12, text:"Was ist vor jedem Arbeitsbeginn bei der PSA gegen Absturz zu prüfen?", opts:["Nichts, PSA hält unbegrenzt", "Sicht- und Funktionsprüfung von Gurt und Anschlagmittel; beschädigte oder abgelaufene PSA darf nicht verwendet werden","Nur die Farbe des Gurtes"], correct:1},
+      {num:13, text:"Welche Gefahr besteht beim Kommissionieren in der Höhe besonders für Gliedmaßen?", opts:["Es besteht keine besondere Gefahr","Quetschgefahr zwischen Fahrkorb und Regal – Hände und Füße müssen immer innerhalb der Kabinenkontur bleiben","Nur Erfrierungsgefahr im Winter"], correct:1},
+      {num:14, text:"Was ist zu tun, wenn der Kommissionierer in der Höhe einen Defekt hat?", opts:["Sofort selbst aus der Kabine springen","Ruhe bewahren und Kollegen alarmieren – meist senkt eine zweite Person die Plattform über den Notablass von unten ab","Warten, bis sich die Batterie von selbst wieder auflädt"], correct:1},
+      {num:15, text:"Wie sollte bei einer vollgepackten Palette gefahren werden?", opts:["Vorwärts, das ist immer sicherer","Rückwärts, für eine bessere Sicht","Mit geschlossenen Augen, da die Kamera ausreicht"], correct:1},
+      {num:16, text:"Wann sollte die Batterie eines Kommissionierers vollständig geladen werden?", opts:["Nach Feierabend, wenn Zeit ist","Vor Schichtbeginn","Nur einmal im Monat"], correct:1},
+      {num:17, text:"Dürfen Personenschutzeinrichtungen überbrückt oder deaktiviert werden?", opts:["Ja, wenn es schneller geht","Nein, niemals","Nur mit mündlicher Erlaubnis des Vorgesetzten"], correct:1},
+      {num:18, text:"Last 1000 kg, Lastschwerpunktabstand 400 mm: Wie hoch darf diese maximal angehoben werden? (Angabe in mm)", type:"number", correct:2755, tolerance:0},
+      {num:19, text:"Last 700 kg, Lastschwerpunktabstand 500 mm: Wie hoch darf diese maximal angehoben werden? (Angabe in mm)", type:"number", correct:3580, tolerance:0},
+      {num:20, text:"Einlagerhöhe 3170 mm, Lastschwerpunktabstand 600 mm: Wie schwer darf die Last maximal sein? (Angabe in kg)", type:"number", correct:625, tolerance:0},
+      {num:21, text:"Einlagerhöhe 4395 mm, Lastschwerpunktabstand 400 mm: Wie schwer darf die Last maximal sein? (Angabe in kg)", type:"number", correct:750, tolerance:0},
+      {num:22, text:"Wie viel Gewicht darf laut Typenschild maximal in ein Regalfeld gestellt werden? (Angabe in kg)", type:"number", correct:15000, tolerance:0},
+      {num:23, text:"Worauf muss beim Ein- und Auslagern im Hochregallager geachtet werden?", opts:["Nur auf die Regalfarbe","Auf Sprinkleranlagen, Regalpfosten und Tiefenauflagen","Auf Staub im obersten Regalfach"], correct:1},
+      {num:24, text:"Wann muss der Stapler auf seine Funktion geprüft werden?", opts:["Nie, das erledigt der Kundendienst","Vor Fahrtantritt","Einmal in der Woche"], correct:1},
+      {num:25, text:"Was muss ich beim Anfahrschutz am Regal beachten?", opts:["Der Anfahrschutz hat nur optische Funktion","Der Anfahrschutz darf vom FFz nicht berührt werden","Das Vorderrad muss den Anfahrschutz berühren, nur so steht der Stapler gerade"], correct:1},
+      {num:26, text:"Wozu dient das Schutzgitter beim Hochregal?", opts:["Als Ablage für Gabelzinken","Als Durchfallschutz von Gegenständen","Als Stabilisator für das Regal"], correct:1},
+      {num:27, text:"Ab wann ist ein Schutzgitter lastaufnahmefähig?", opts:["Wenn es bereits mehrfach als tragendes Gitter genutzt wurde","Wenn es ein verstärktes Lastschutzgitter aufweist","Wenn eine Stahlstütze das Fach abstützt"], correct:1},
+      {num:28, text:"Das Regal ist beschädigt. Wie gehst du vor?", opts:["Du sagst es niemandem","Du informierst deinen Vorgesetzten und deine Kollegen","Du lagerst die Ware aus und reparierst den Schaden selbst"], correct:1},
+      {num:29, text:"Was wird bei der Sichtprüfung geprüft?", opts:["Nur der Ölstand","U.a. Hydraulikschläuche, Rahmen, Bereifung","Nur Lenkung und Hupe"], correct:1},
+      {num:30, text:"Darf beim Kommissionieren aus dem Fahrzeug herausgegriffen werden?", opts:["Ja, jederzeit","Ja, auch während der Fahrt","Nur bei still stehendem Fahrzeug"], correct:2},
+      {num:31, text:"Wie verhält man sich beim Begegnen von Gegenverkehr?", opts:["Schnell vorbeifahren","Mit ausreichendem Abstand und angepasster Geschwindigkeit","Gegenverkehr grundsätzlich vermeiden"], correct:1},
+      {num:32, text:"Wie näherst du dich Kreuzungen und unübersichtlichen Stellen in der Halle?", opts:["Mit überhöhter Geschwindigkeit","Mit besonderer Vorsicht und angepasster Geschwindigkeit","Hupend, ohne das Tempo zu ändern"], correct:1},
+      {num:33, text:"Was ist beim Durchfahren des Hallentors zu beachten?", opts:["Man darf grundsätzlich nicht durchfahren","Vorsichtig fahren und auf die Höhe des Staplers achten","Es spielt keine Rolle, wie hoch der Stapler ist"], correct:1}
+    ]
+  },
+  schmalgang: {
+    label: 'Schmalgangstapler',
+    freigabeFeld: 'pruefung_schmalgang_freigegeben',
+    logo: 'logos/logo_pruefung_stufe2.jpg',
+    fragen: [
+      {num:1, text:"Wie alt muss ein Staplerfahrer mindestens sein, um ein Flurförderzeug alleine führen zu dürfen?", opts:["16 Jahre","18 Jahre","21 Jahre"], correct:1},
+      {num:2, text:"Welche Voraussetzung muss erfüllt sein, um ein Flurförderzeug führen zu dürfen?", opts:["Keine Voraussetzung erforderlich","Geistige und körperliche Eignung","Nur ein gültiger Führerschein Klasse B"], correct:1},
+      {num:3, text:"Wann liegt ein Arbeitsunfall vor?", opts:["Wenn eine versicherte Person bei einer versicherten Tätigkeit körperlich geschädigt wird","Wenn eine versicherte Person bei einer nicht versicherten Tätigkeit geschädigt wird","Wenn eine nicht versicherte Person beteiligt ist"], correct:0},
+      {num:4, text:"Wer darf ein Flurförderzeug mit Fahrersitz führen?", opts:["Jeder Betriebsangehörige","Jeder mit Pkw-Führerschein","Nur geeignete, ausgebildete Mitarbeiter, mindestens 18 Jahre, mit schriftlichem Fahrauftrag"], correct:2},
+      {num:5, text:"Wer ist für die unfallsichere Beladung des Flurförderzeugs verantwortlich?", opts:["Der Meister","Der Fahrer","Derjenige, der die Last zusammengestellt hat"], correct:1},
+      {num:6, text:"Wer führt die jährliche technische Prüfung am Stapler durch?", opts:["Der Staplerfahrer selbst","Der Facility-Mitarbeiter","Der Monteur oder Werkstattmeister der Vertragswerkstatt"], correct:2},
+      {num:7, text:"Was ist die Besonderheit des Schmalgangs?", opts:["Der Gang ist besonders breit angelegt","Der Gang ist kaum breiter als das Gerät selbst – ein Wenden im Gang ist physikalisch unmöglich","Ein- und Ausfahrt ist an beliebiger Stelle möglich"], correct:1},
+      {num:8, text:"Wie wird der Schmalgangstapler im Gang gesteuert?", opts:["Der Fahrer lenkt frei wie gewohnt","Durch Zwangsführung (mechanisch über Schienen oder induktiv über Suchdraht) – die Lenkung ist während der Führung gesperrt","Per Fernsteuerung von außen"], correct:1},
+      {num:9, text:"Was gilt trotz automatischer Zwangsführungstechnik?", opts:["Der Mensch muss nichts mehr beachten","Der Mensch steht über der Technik und ist für sein Tun verantwortlich","Je mehr die Technik übernimmt, desto schneller darf gefahren werden"], correct:1},
+      {num:10, text:"Was ist beim Einfahren in den Schmalgang zu beachten?", opts:["Schnell einfahren, um Zeit zu sparen","Langsam annähern, Fahrzeug exakt ausrichten und abwarten, bis die Zwangsführung eingekoppelt hat","Die Ausrichtung spielt keine Rolle"], correct:1},
+      {num:11, text:"Darf ohne aktive Zwangsführung in den Schmalgang eingefahren werden?", opts:["Ja, wenn man vorsichtig ist","Nein, niemals – Beschädigung von Gerät und Regal droht","Nur bei niedriger Geschwindigkeit"], correct:1},
+      {num:12, text:"Was passiert, wenn der Laserscanner eine Person im Gang erkennt?", opts:["Nichts, das Gerät fährt normal weiter","Das Gerät stoppt automatisch sofort","Es ertönt nur ein Warnton, ohne dass sich etwas ändert"], correct:1},
+      {num:13, text:"Was bedeutet die Bauart „Man-Up“?", opts:["Der Fahrer bleibt immer unten","Der Fahrer fährt mit der Kabine zur Last hoch","Nur die Gabel bewegt sich, ohne dass die Kabine mitfährt"], correct:1},
+      {num:14, text:"Wann ist bei Man-Up-Geräten die PSA gegen Absturz Pflicht?", opts:["Immer, auch bei geschlossener Umwehrung","Sobald die Umwehrung in der Höhe geöffnet wird","Grundsätzlich nie erforderlich"], correct:1},
+      {num:15, text:"Wie lautet die goldene Regel zur PSA gegen Absturz?", opts:["PSA ist nur bei Regen Pflicht","Geschlossene Umwehrung schützt bereits – PSA vor dem Öffnen der Umwehrung anlegen, nie ungesichert hinauslehnen","PSA ersetzt die Umwehrung vollständig"], correct:1},
+      {num:16, text:"Was ist bei einem technischen Defekt in 12–18 m Höhe zu tun?", opts:["Sofort selbst abspringen","Ruhe bewahren; erster Weg: Notablass von unten durch eine zweite Person, sonst Selbstrettung durch Abseilen","Warten, bis der Strom von selbst zurückkommt"], correct:1},
+      {num:17, text:"Wie oft muss die Abseilübung mindestens durchgeführt werden?", opts:["Nie, das ist nur Theorie","Mindestens jährlich","Nur einmal bei der Einstellung"], correct:1},
+      {num:18, text:"Warum sind Bodenunebenheiten im Schmalganglager besonders gefährlich?", opts:["Sie sind unproblematisch","Kleinste Neigungen verstärken sich durch die extreme Hubhöhe stark – in 15 m Höhe werden Millimeter zu Zentimetern","Sie betreffen nur den Reifenverschleiß"], correct:1},
+      {num:19, text:"Was muss vor jedem Einsatz am Traglastdiagramm geprüft werden?", opts:["Nichts, das ist nur Dekoration","Die maximale Tragfähigkeit je nach Hubhöhe und Lastschwerpunktabstand","Nur das Baujahr des Geräts"], correct:1},
+      {num:20, text:"Eine würfelförmige Kiste (1,40 m × 1,40 m), Schwerpunkt in der Mitte, wiegt 1350 kg. Darf sie laut Diagramm transportiert werden?", image:"STUFE2_BILDER/traglast_schmalgang.png", opts:["Ja","Nein"], correct:1},
+      {num:21, text:"Bei 6530 mm Einlagerhöhe und einem Lastschwerpunktabstand von 620 mm: Wie schwer darf die Last maximal sein? (Angabe in kg)", type:"number", image:"STUFE2_BILDER/traglast_schmalgang.png", correct:1500, tolerance:0},
+      {num:22, text:"Bei 6530 mm Einlagerhöhe: Wie schwer darf eine Last mit demselben Lastschwerpunktabstand von 620 mm maximal sein? (Angabe in kg)", type:"number", image:"STUFE2_BILDER/traglast_schmalgang.png", correct:1500, tolerance:0},
+      {num:23, text:"Der Lastschwerpunkt liegt 700 mm vom Gabelrücken entfernt: Wie schwer darf die Last bei 6530 mm Höhe maximal sein? (Angabe in kg)", type:"number", image:"STUFE2_BILDER/traglast_schmalgang.png", correct:1280, tolerance:0},
+      {num:24, text:"Wie viel Gewicht darf laut Typenschild maximal in ein Regalfeld gestellt werden? (Angabe in kg)", type:"number", correct:15000, tolerance:0},
+      {num:25, text:"Welche Gefahr geht von Führungsrollen und Radarmen im Regalgang aus?", opts:["Es besteht keine besondere Gefahr","Sie können an Regalstützen hängenbleiben – der Boden muss vor Einfahrt auf Hindernisse geprüft werden","Nur Lärmbelästigung"], correct:1},
+      {num:26, text:"Ist im Hochregallagerbereich das Tragen eines Schutzhelms Pflicht?", opts:["Nein, nur bei Bauarbeiten","Ja","Nur für Besucher"], correct:1},
+      {num:27, text:"Welche Bodenbeschaffenheit benötigt der Schmalgangstapler?", opts:["Beliebiger Boden ist ausreichend","Extrem ebene Böden","Nur Böden mit starkem Gefälle"], correct:1},
+      {num:28, text:"Ist das Betreten des Gangs während des Betriebs für Unbefugte erlaubt?", opts:["Ja, kurz ist okay","Nein, absolute Sperrung – den Personenschutz-Scanner zu deaktivieren ist lebensgefährlich und strafbar","Nur mit Warnweste"], correct:1},
+      {num:29, text:"Was ist nach dem Anhalten in großer Höhe bei Mastschwingungen zu tun?", opts:["Sofort einlagern, um Zeit zu sparen","Vollständige Beruhigung abwarten – niemals in schwingendem Zustand einlagern","Die Schwingungen einfach ignorieren"], correct:1},
+      {num:30, text:"Was gehört zur täglichen Sichtprüfung vor Fahrtantritt?", opts:["Nur der Ölstand","U.a. Hydraulik, Führungsrollen, Gabelzinken, Bereifung, Notablass-Ventil","Nur die Hupe"], correct:1},
+      {num:31, text:"Was gehört zur täglichen Funktionsprüfung?", opts:["Nur die Beleuchtung","U.a. Zwangsführung einkoppeln testen, Feststell- und Betriebsbremse, Personenschutz-Scanner","Nur der Ölstand"], correct:1},
+      {num:32, text:"Wie viele Rettungswege gibt es bei einer Störung in der Höhe, und welche?", opts:["Nur einen","Zwei: Notablass von unten durch eine zweite Person, sonst Selbstrettung durch Abseilen","Keinen, man wartet auf die Feuerwehr"], correct:1},
+      {num:33, text:"Was gilt für das Verhältnis zwischen Umwehrung und PSA gegen Absturz?", opts:["PSA hat immer Vorrang vor der Umwehrung","Kollektiver Schutz (Umwehrung) hat Vorrang vor persönlicher Schutzausrüstung (ArbSchG §4)","Beides ist völlig gleichrangig"], correct:1}
+    ]
+  }
+};
+
+var TXT = {
+  fehlLeer: "Bitte Registrierungsnummer eingeben.",
+  fehlNichtGefunden: "Registrierungsnummer nicht gefunden.",
+  fehlKeineFreigabe: "Für diese Prüfung liegt noch keine Freigabe durch Ihren Ausbilder vor. Bitte sprechen Sie sich mit ihm ab, bevor Sie die Prüfung starten.",
+  fehlBereitsBestanden: "Diese Prüfung ist für Sie geschlossen und kann nicht erneut abgelegt werden. Bei Fragen wenden Sie sich bitte an Ihren Ausbilder.",
+  fehlVerbindung: "Verbindung fehlgeschlagen. Bitte versuchen Sie es erneut.",
+  fehlAntwort: "Bitte beantworten Sie die Frage, bevor Sie fortfahren.",
+  fehlErklaerungen: "Bitte bestätigen Sie beide Erklärungen, bevor Sie die Prüfung abschicken.",
+  bestanden: "Bestanden!",
+  nichtBestanden: "Leider nicht bestanden",
+  hintPass: "Ihr Ergebnis wurde übermittelt. Sie erhalten Ihr Prüfungsprotokoll in Kürze per E-Mail.",
+  hintFail: "Ihr Ergebnis wurde übermittelt. Bitte wenden Sie sich an Ihren Ausbilder, um einen Termin für die Nachprüfung zu vereinbaren."
+};
+
+var urlParams = new URLSearchParams(window.location.search);
+var geraet = urlParams.get('geraet') || '';
+var G = GERAETE[geraet];
+var FRAGEN = G ? G.fragen : [];
+var PASS_SCORE = Math.ceil(FRAGEN.length * PASS_QUOTE);
+
+if(G){
+  document.title = 'Theorieprüfung Stufe 2 – ' + G.label + ' – ProDrive Akademie Niederbayern';
+  document.getElementById('topbarSub').textContent = 'Theorieprüfung Stufe 2 · ' + G.label + ' · DGUV Grundsatz 308-001';
+  document.getElementById('welcomeTitel').textContent = 'Theorieprüfung ' + G.label;
+  document.getElementById('welcomeLogo').src = G.logo;
+  document.getElementById('statFragenN').textContent = FRAGEN.length;
+  document.getElementById('statBestehenN').textContent = PASS_SCORE + '/' + FRAGEN.length;
+} else {
+  document.getElementById('loginScreen').innerHTML = '<div class="q-body"><div class="q-num">Fehler</div><div class="q-text">Kein gültiges Gerät angegeben. Bitte rufen Sie diese Seite über den Link auf der E-Learning-Startseite auf.</div></div>';
+}
+
+var cur = 0;
+var answers = {};
+var regnr = '';
+var timeLeft = 40*60;
+var timerHandle = null;
+var startTime = null;
+
+async function startWelcome(){
+  regnr = document.getElementById('regnr').value.trim();
+  var errBox = document.getElementById('loginErrBox');
+  var btn = document.getElementById('loginNextBtn');
+  errBox.style.display = 'none';
+
+  if(!regnr){ errBox.textContent = TXT.fehlLeer; errBox.style.display = 'block'; return; }
+
+  btn.disabled = true;
+  btn.textContent = 'Prüfe…';
+  try {
+    var res = await fetch(ZUGANGSPRUEFUNG_URL, {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ registrierungsnummer: regnr })
+    });
+    var data = await res.json();
+    var fVal = data[G.freigabeFeld];
+    if(fVal && typeof fVal === 'object') fVal = fVal.Value;
+    var freigegeben = fVal === true || fVal === 'Ja' || fVal === 'True';
+    var geschlossen = fVal === 'Geschlossen';
+
+    if(!(data && data.zugang === true)){
+      errBox.textContent = data.grund || TXT.fehlNichtGefunden;
+      errBox.style.display = 'block';
+    } else if(geschlossen){
+      errBox.textContent = TXT.fehlBereitsBestanden;
+      errBox.style.display = 'block';
+    } else if(!freigegeben){
+      errBox.textContent = TXT.fehlKeineFreigabe;
+      errBox.style.display = 'block';
+    } else {
+      document.getElementById('loginScreen').style.display = 'none';
+      document.getElementById('welcomeScreen').style.display = 'block';
+    }
+  } catch(e){
+    errBox.textContent = TXT.fehlVerbindung;
+    errBox.style.display = 'block';
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Weiter →';
+  }
+}
+
+function startPruefung(){
+  document.getElementById('welcomeScreen').style.display = 'none';
+  document.getElementById('questionScreen').style.display = 'block';
+  document.getElementById('progressWrap').style.display = 'block';
+  document.getElementById('timerBox').style.display = 'block';
+  startTime = Date.now();
+  renderQuestion();
+  timerHandle = setInterval(tick, 1000);
+}
+
+function tick(){
+  timeLeft--;
+  var m = Math.floor(timeLeft/60), s = timeLeft%60;
+  var box = document.getElementById('timerBox');
+  box.textContent = m + ':' + (s<10?'0':'') + s;
+  if(timeLeft <= 300) box.classList.add('urgent');
+  if(timeLeft <= 0){
+    clearInterval(timerHandle);
+    submitPruefung(true);
+  }
+}
+
+function renderQuestion(){
+  var f = FRAGEN[cur];
+  document.getElementById('qLabel').textContent = 'Frage ' + (cur+1) + ' von ' + FRAGEN.length;
+  document.getElementById('qText').textContent = f.text;
+  document.getElementById('stepCount').textContent = (cur+1) + ' / ' + FRAGEN.length;
+  document.getElementById('pbar').style.width = ((cur)/FRAGEN.length*100) + '%';
+  document.getElementById('backBtn').disabled = (cur === 0);
+
+  var host = document.getElementById('qOpts');
+  host.innerHTML = '';
+  if(f.image){
+    var img = document.createElement('img');
+    img.src = f.image;
+    img.className = 'q-image';
+    host.appendChild(img);
+  }
+  if(f.type === 'number'){
+    var wrap = document.createElement('div');
+    wrap.className = 'num-field';
+    wrap.innerHTML = '<label>Ihre Antwort</label><input type="number" id="numAnswer" inputmode="numeric">';
+    host.appendChild(wrap);
+    var inp = wrap.querySelector('input');
+    if(answers[f.num] !== undefined) inp.value = answers[f.num];
+    inp.addEventListener('input', function(){ answers[f.num] = this.value; });
+  } else {
+    var opts = document.createElement('div');
+    opts.className = 'opts';
+    f.opts.forEach(function(txt, i){
+      var lbl = document.createElement('label');
+      lbl.className = 'opt' + (answers[f.num] === i ? ' sel' : '');
+      lbl.innerHTML = '<input type="radio" name="qopt" ' + (answers[f.num] === i ? 'checked' : '') + '><span>' + txt + '</span>';
+      lbl.addEventListener('click', function(){
+        answers[f.num] = i;
+        Array.prototype.forEach.call(opts.querySelectorAll('.opt'), function(o){ o.classList.remove('sel'); });
+        lbl.classList.add('sel');
+        lbl.querySelector('input').checked = true;
+      });
+      opts.appendChild(lbl);
+    });
+    host.appendChild(opts);
+  }
+}
+
+function goBack(){
+  if(cur === 0) return;
+  cur--;
+  renderQuestion();
+}
+
+function zurueckZurStartseite(){
+  var params = [];
+  if(regnr) params.push('regnr=' + encodeURIComponent(regnr));
+  window.location.href = BASE + 'index.html' + (params.length ? '?' + params.join('&') : '');
+}
+
+function goNext(){
+  var f = FRAGEN[cur];
+  if(answers[f.num] === undefined || answers[f.num] === ''){
+    alert(TXT.fehlAntwort);
+    return;
+  }
+  if(cur < FRAGEN.length - 1){
+    cur++;
+    renderQuestion();
+  } else {
+    document.getElementById('pbar').style.width = '100%';
+    document.getElementById('questionScreen').style.display = 'none';
+    document.getElementById('finalScreen').style.display = 'block';
+  }
+}
+
+['ck-eigen','ck-dsgvo'].forEach(function(id){
+  document.getElementById(id).addEventListener('change', function(){
+    var ok = document.getElementById('ck-eigen').checked && document.getElementById('ck-dsgvo').checked;
+    document.getElementById('submitBtn').disabled = !ok;
+  });
+});
+
+function escapeHtml(str){
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function auswerten(){
+  var richtig = 0;
+  var antwortenText = {};
+  var antwortenHtml = '';
+  FRAGEN.forEach(function(f){
+    var a = answers[f.num];
+    var korrekt;
+    var antwortAnzeige;
+    if(f.type === 'number'){
+      var num = parseFloat(a);
+      korrekt = !isNaN(num) && Math.abs(num - f.correct) <= (f.tolerance || 0);
+      antwortenText[f.num] = a;
+      antwortAnzeige = (a === undefined || a === '') ? '—' : String(a);
+    } else {
+      korrekt = (a === f.correct);
+      antwortenText[f.num] = f.opts[a];
+      antwortAnzeige = (a === undefined) ? '—' : f.opts[a];
+    }
+    if(korrekt) richtig++;
+    antwortenHtml += '<tr><td>Frage ' + f.num + '</td><td>' + escapeHtml(antwortAnzeige) + '</td><td class="' + (korrekt ? 'io' : 'nio') + '">' + (korrekt ? 'I.O.' : 'n.i.O.') + '</td></tr>';
+  });
+  return {richtig: richtig, gesamt: FRAGEN.length, antworten: antwortenText, antwortenHtml: antwortenHtml};
+}
+
+function submitPruefung(auto){
+  clearInterval(timerHandle);
+  var eigen = document.getElementById('ck-eigen').checked;
+  var dsgvo = document.getElementById('ck-dsgvo').checked;
+  if(!auto && (!eigen || !dsgvo)){
+    document.getElementById('errBox').textContent = TXT.fehlErklaerungen;
+    document.getElementById('errBox').style.display = 'block';
+    return;
+  }
+
+  var ergebnis = auswerten();
+  var bestanden = ergebnis.richtig >= PASS_SCORE;
+  var dauer = Math.round((Date.now() - startTime)/1000);
+
+  var payload = {
+    regnr: regnr,
+    kurs: 'stufe2',
+    geraet: geraet,
+    antworten: ergebnis.antworten,
+    antworten_html: ergebnis.antwortenHtml,
+    richtige_antworten: ergebnis.richtig,
+    gesamt_fragen: ergebnis.gesamt,
+    bestanden: bestanden,
+    eigenstaendigkeitserklaerung: eigen,
+    datenschutzerklaerung: dsgvo,
+    dauer_sekunden: dauer,
+    automatisch_abgesendet: !!auto
+  };
+
+  document.getElementById('finalScreen').style.display = 'none';
+  document.getElementById('questionScreen').style.display = 'none';
+  document.getElementById('progressWrap').style.display = 'none';
+  document.getElementById('timerBox').style.display = 'none';
+
+  fetch(PRUEFUNG_STUFE2_URL, {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify(payload)
+  }).catch(function(){}).finally(function(){
+    zeigeErgebnis(bestanden, ergebnis.richtig, ergebnis.gesamt);
+  });
+}
+
+function zeigeErgebnis(bestanden, richtig, gesamt){
+  document.getElementById('resultScreen').style.display = 'block';
+  document.getElementById('resIcon').textContent = bestanden ? '✅' : '❌';
+  var t = document.getElementById('resTitle');
+  t.textContent = bestanden ? TXT.bestanden : TXT.nichtBestanden;
+  t.className = 'result-title ' + (bestanden ? 'pass' : 'fail');
+  document.getElementById('resScore').textContent = richtig + ' von ' + gesamt + ' Fragen richtig beantwortet (mindestens ' + PASS_SCORE + ' erforderlich).';
+  document.getElementById('resHint').textContent = bestanden ? TXT.hintPass : TXT.hintFail;
+}
+</script>
+</body>
+</html>
