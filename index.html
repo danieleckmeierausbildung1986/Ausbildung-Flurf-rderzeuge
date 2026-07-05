@@ -514,11 +514,19 @@ function showModules(data){
       </a>`;
     count++;
 
-    examList.innerHTML += `
-      <div class="exam-tile disabled">
-        <img src="${BASE}${logoImg('logo_pruefung_lasi','jpg')}" alt="Theorieprüfung Ladungssicherung" style="filter:grayscale(1) brightness(1.15)">
-        <span class="exam-tile-badge">Demnächst verfügbar</span>
-      </div>`;
+    const lasiFreigegeben = data.pruefung_lasi_freigegeben === true || data.pruefung_lasi_freigegeben === 'True' || getSF(data.pruefung_lasi_freigegeben) === 'ja';
+    if(lasiFreigegeben){
+      examList.innerHTML += `
+        <a class="exam-tile" href="${BASE}pruefung_lasi.html?regnr=${encodeURIComponent(currentRegnr)}${langParam}">
+          <img src="${BASE}${logoImg('logo_pruefung_lasi','jpg')}" alt="Theorieprüfung Ladungssicherung">
+        </a>`;
+    } else {
+      examList.innerHTML += `
+        <div class="exam-tile disabled">
+          <img src="${BASE}${logoImg('logo_pruefung_lasi','jpg')}" alt="Theorieprüfung Ladungssicherung" style="filter:grayscale(1) brightness(1.15)">
+          <span class="exam-tile-badge">Noch nicht freigegeben</span>
+        </div>`;
+    }
     examCount++;
   }
 
