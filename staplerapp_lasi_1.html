@@ -258,6 +258,10 @@ button{font-family:inherit;cursor:pointer}
 </head>
 <body>
 
+<div id="zugangsCheckOverlay" style="display:none;position:fixed;inset:0;background:#0d2b1a;z-index:9999;align-items:center;justify-content:center;color:#fff;font-family:'Segoe UI',system-ui,sans-serif;text-align:center;padding:24px;">
+  <div id="zugangsCheckContent">Zugang wird gepr&uuml;ft&hellip;</div>
+</div>
+
 <!-- LOGIN -->
 <div id="login">
   <div class="lcard">
@@ -311,6 +315,7 @@ button{font-family:inherit;cursor:pointer}
 <script>
 const IMG_BASE = 'https://danieleckmeierausbildung1986.github.io/Ausbildung-Flurf-rderzeuge/LASI_BILDER/';
 const PORTAL_URL = 'https://danieleckmeierausbildung1986.github.io/Ausbildung-Flurf-rderzeuge/';
+const ZUGANGSPRUEFUNG_URL = 'https://default8af25f9034bc4ef4aba22ab6f641d5.01.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/7058b6c8090842748465472db6085773/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=nxepIsGToa5my_-oIW5ZR5c3CQLtufN5DwNvM-qG1G4';
 const WA_NR = '4916096877039';
 const MAIL = 'danieleckmeier@ausbildung1986.onmicrosoft.com';
 
@@ -511,8 +516,25 @@ function doLogin(){
   startApp(val);
 }
 
-function startApp(nr){
+async function startApp(nr){
   regnr = nr;
+  const overlay = document.getElementById('zugangsCheckOverlay');
+  const content = document.getElementById('zugangsCheckContent');
+  overlay.style.display = 'flex';
+  try {
+    const res = await fetch(ZUGANGSPRUEFUNG_URL, {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ registrierungsnummer: nr })
+    });
+    const data = await res.json();
+    let fVal = data.pruefung_lasi_freigegeben;
+    if(fVal && typeof fVal === 'object') fVal = fVal.Value;
+    if(fVal === 'Geschlossen'){
+      content.innerHTML = '<div style="max-width:420px"><div style="font-size:40px;margin-bottom:12px">&#x1F512;</div><div style="font-size:18px;font-weight:700;margin-bottom:8px">Schulung abgeschlossen</div><div style="font-size:14px;color:rgba(255,255,255,.75);line-height:1.6;margin-bottom:20px">Sie haben die Pr&uuml;fung zu diesem Kurs bereits bestanden. Der Zugriff auf die Schulungsinhalte ist daher nicht mehr m&ouml;glich.</div><button onclick="window.location.href=\'' + PORTAL_URL + '?regnr=' + encodeURIComponent(nr) + '\'" style="padding:12px 28px;border:none;border-radius:12px;background:#fff;color:#0d2b1a;font-weight:700;font-size:14px;cursor:pointer;font-family:inherit">&larr; Zur&uuml;ck zur Startseite</button></div>';
+      return;
+    }
+  } catch(e){}
+  overlay.style.display = 'none';
   document.getElementById('login').classList.add('hidden');
   document.getElementById('app').classList.remove('hidden');
   document.getElementById('topbar-who').textContent = nr;
