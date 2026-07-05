@@ -478,6 +478,7 @@ function showModules(data){
     count++;
 
     const s1Freigegeben = data.pruefung_stufe1_freigegeben === true || data.pruefung_stufe1_freigegeben === 'True' || getSF(data.pruefung_stufe1_freigegeben) === 'ja';
+    const s1Geschlossen = getSF(data.pruefung_stufe1_freigegeben) === 'geschlossen';
     if(s1Freigegeben){
       examList.innerHTML += `
         <a class="exam-tile" href="${BASE}pruefung_stufe1.html?regnr=${encodeURIComponent(currentRegnr)}${langParam}">
@@ -487,7 +488,7 @@ function showModules(data){
       examList.innerHTML += `
         <div class="exam-tile disabled">
           <img src="${BASE}${logoImg('logo_pruefung_stufe1','png')}" alt="Theorieprüfung Stufe 1" style="filter:grayscale(1) brightness(1.15)">
-          <span class="exam-tile-badge">Noch nicht freigegeben</span>
+          <span class="exam-tile-badge">${s1Geschlossen ? 'Bereits bestanden' : 'Noch nicht freigegeben'}</span>
         </div>`;
     }
     examCount++;
@@ -546,6 +547,7 @@ function showModules(data){
     count++;
 
     const lasiFreigegeben = data.pruefung_lasi_freigegeben === true || data.pruefung_lasi_freigegeben === 'True' || getSF(data.pruefung_lasi_freigegeben) === 'ja';
+    const lasiGeschlossen = getSF(data.pruefung_lasi_freigegeben) === 'geschlossen';
     if(lasiFreigegeben){
       examList.innerHTML += `
         <a class="exam-tile" href="${BASE}pruefung_lasi.html?regnr=${encodeURIComponent(currentRegnr)}${langParam}">
@@ -555,7 +557,7 @@ function showModules(data){
       examList.innerHTML += `
         <div class="exam-tile disabled">
           <img src="${BASE}${logoImg('logo_pruefung_lasi','jpg')}" alt="Theorieprüfung Ladungssicherung" style="filter:grayscale(1) brightness(1.15)">
-          <span class="exam-tile-badge">Noch nicht freigegeben</span>
+          <span class="exam-tile-badge">${lasiGeschlossen ? 'Bereits bestanden' : 'Noch nicht freigegeben'}</span>
         </div>`;
     }
     examCount++;
