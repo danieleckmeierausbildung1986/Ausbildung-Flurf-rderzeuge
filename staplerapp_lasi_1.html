@@ -326,6 +326,7 @@ button{font-family:inherit;cursor:pointer}
 const IMG_BASE = 'https://danieleckmeierausbildung1986.github.io/Ausbildung-Flurf-rderzeuge/LASI_BILDER/';
 const PORTAL_URL = 'https://danieleckmeierausbildung1986.github.io/Ausbildung-Flurf-rderzeuge/';
 const ZUGANGSPRUEFUNG_URL = 'https://default8af25f9034bc4ef4aba22ab6f641d5.01.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/7058b6c8090842748465472db6085773/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=nxepIsGToa5my_-oIW5ZR5c3CQLtufN5DwNvM-qG1G4';
+const LERNFORTSCHRITT_URL = 'https://default8af25f9034bc4ef4aba22ab6f641d5.01.environment.api.powerplatform.com:443/powerautomate/automations/direct/cu/02/workflows/84eeed409f3147b88317c0471bed6b97/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=zoIb4wZafLlKK50-Oz66Q25ickLybhFPw7V79aeFMhQ';
 const WA_NR = '4916096877039';
 const MAIL = 'danieleckmeier@ausbildung1986.onmicrosoft.com';
 
@@ -515,6 +516,7 @@ function buildSteps(){
 }
 
 let cur = 0, quizState = {}, regnr = '';
+let kapitelAbgeschlossen = {}, kapitelStartZeit = {};
 
 /* ── LOGIN ── */
 function doLogin(){
@@ -674,6 +676,7 @@ function renderWelcome(host){
 
 function renderChapter(host,ki){
   const k=KAPITEL[ki];
+  if(!kapitelStartZeit[ki])kapitelStartZeit[ki]=Date.now();
   host.innerHTML=`<div class="chapter-intro">
     <div class="ci-num">Kapitel ${ki+1} von ${KAPITEL.length}</div>
     <h2>${k.title}</h2>
@@ -723,11 +726,14 @@ function renderQuiz(host,ki){
   if(qs.qi>=k.quiz.length){
     const pct=Math.round(qs.score/k.quiz.length*100);
     const pass=pct>=70;
+    const done=!!kapitelAbgeschlossen[ki];
     host.innerHTML=`<div class="quiz-card"><div class="quiz-result">
       <div class="qr-icon ${pass?'ok':'no'}">${pass?'✓':'✗'}</div>
       <div class="qr-score">${qs.score} / ${k.quiz.length} richtig</div>
       <p style="color:var(--muted);margin-bottom:20px">${pass?'Gut gemacht! Weiter zum nächsten Kapitel.':'Bitte das Kapitel wiederholen.'}</p>
-      ${pass?`<button class="btn" onclick="goStep(${cur+1})">Weiter →</button>`
+      ${pass?`<button class="btn" id="aBtn" onclick="kapitelAbschliessen(${ki})" ${done?'disabled style="background:var(--ok)"':''}>${done?'✓ Abgeschlossen':'Thema abschließen &amp; speichern'}</button>
+             <div class="abschluss-status" id="aStat" style="margin-top:10px;font-size:13px;color:var(--muted)">${done?'Kapitel '+(ki+1)+' gespeichert.':''}</div>
+             <button class="btn" style="margin-top:10px;background:var(--muted)" onclick="goStep(${cur+1})" ${done?'':'disabled'} id="weiterBtn">Weiter →</button>`
              :`<button class="btn" onclick="resetQuiz(${ki})">Wiederholen</button>`}
     </div></div>`;
     document.getElementById('foot').innerHTML='';
@@ -765,6 +771,37 @@ function resetQuiz(ki){
   quizState[ki]={qi:0,score:0};
   const chIdx=STEPS.findIndex(s=>s.type==='chapter'&&s.ki===ki);
   goStep(chIdx);
+}
+
+function kapitelAbschliessen(ki){
+  const btn=document.getElementById('aBtn');
+  const stat=document.getElementById('aStat');
+  const weiterBtn=document.getElementById('weiterBtn');
+  if(!btn||!stat)return;
+  const k=KAPITEL[ki];
+  const qs=quizState[ki];
+  btn.disabled=true;btn.textContent='Wird gespeichert…';
+  const payload={
+    regnr:regnr,
+    kapitel_nr:ki+1,
+    kapitel_name:k.title,
+    datum_uhrzeit:new Date().toISOString(),
+    quiz_richtig:qs.score,
+    quiz_gesamt:k.quiz.length,
+    quiz_prozent:Math.round(qs.score/k.quiz.length*100),
+    bestanden:true,
+    lernzeit_sekunden:Math.round((Date.now()-(kapitelStartZeit[ki]||Date.now()))/1000),
+    gesamt_kapitel_abgeschlossen:Object.keys(kapitelAbgeschlossen).length+1
+  };
+  function onOK(){
+    kapitelAbgeschlossen[ki]=true;
+    btn.textContent='✓ Abgeschlossen';btn.style.background='var(--ok)';
+    stat.textContent='Kapitel '+(ki+1)+' gespeichert.';
+    if(weiterBtn)weiterBtn.disabled=false;
+  }
+  fetch(LERNFORTSCHRITT_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)})
+    .then(onOK)
+    .catch(()=>{btn.disabled=false;btn.textContent='Thema abschließen & speichern';stat.textContent='Fehler beim Speichern. Bitte erneut versuchen.';stat.style.color='var(--no)';});
 }
 
 /* ── MODUL: Beladespiel ── */
