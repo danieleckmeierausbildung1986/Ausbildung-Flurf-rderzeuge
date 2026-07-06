@@ -218,6 +218,8 @@
           document.getElementById('regnr').value = '';
         } else if (data.error === 'not_found') {
           showStatus('error', 'Registrierungsnummer nicht gefunden. Bitte prüfen.');
+        } else if (data.error === 'no_active_course') {
+          showStatus('error', 'Für diesen Schulungstyp läuft heute kein Kurs. Bitte Ausbilder kontaktieren.');
         } else {
           showStatus('error', 'Fehler beim Check-in. Bitte erneut versuchen.');
         }
