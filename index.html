@@ -236,6 +236,9 @@ const TRANSLATIONS = {
     errNotFound:  'Registriernummer, Vor- oder Nachname stimmen nicht überein. Bitte Ausbilder kontaktieren.',
     errConn:      'Verbindungsfehler. Bitte erneut versuchen.',
     hallo:        'Hallo, ',
+    badgeAbgeschlossen: 'Abgeschlossen ✓',
+    badgeBereitsBestanden: 'Bereits bestanden',
+    badgeNochNichtFreigegeben: 'Noch nicht freigegeben',
     mod: {
       stufe1:     { title: 'Stapler Stufe 1',    sub: 'DGUV Grundsatz 308-001' },
       stufe2:     { title: 'Stapler Stufe 2',    sub: 'DGUV Grundsatz 308-001' },
@@ -261,6 +264,9 @@ const TRANSLATIONS = {
     errNotFound:  'Registration number, first or last name do not match. Please contact your instructor.',
     errConn:      'Connection error. Please try again.',
     hallo:        'Hello, ',
+    badgeAbgeschlossen: 'Completed ✓',
+    badgeBereitsBestanden: 'Already passed',
+    badgeNochNichtFreigegeben: 'Not yet approved',
     mod: {
       stufe1:     { title: 'Forklift Level 1',   sub: 'DGUV Principle 308-001' },
       stufe2:     { title: 'Forklift Level 2',   sub: 'DGUV Principle 308-001' },
@@ -286,6 +292,9 @@ const TRANSLATIONS = {
     errNotFound:  'Numer rejestracyjny, imię lub nazwisko nie pasują. Proszę skontaktować się z instruktorem.',
     errConn:      'Błąd połączenia. Proszę spróbować ponownie.',
     hallo:        'Cześć, ',
+    badgeAbgeschlossen: 'Ukończono ✓',
+    badgeBereitsBestanden: 'Już zdane',
+    badgeNochNichtFreigegeben: 'Jeszcze niezatwierdzone',
     mod: {
       stufe1:     { title: 'Wózek widłowy – poziom 1', sub: 'DGUV Zasada 308-001' },
       stufe2:     { title: 'Wózek widłowy – poziom 2', sub: 'DGUV Zasada 308-001' },
@@ -311,6 +320,9 @@ const TRANSLATIONS = {
     errNotFound:  'Numărul de înregistrare, prenumele sau numele nu se potrivesc. Vă rugăm contactați instructorul.',
     errConn:      'Eroare de conexiune. Vă rugăm încercați din nou.',
     hallo:        'Bună, ',
+    badgeAbgeschlossen: 'Finalizat ✓',
+    badgeBereitsBestanden: 'Deja promovat',
+    badgeNochNichtFreigegeben: 'Neaprobat încă',
     mod: {
       stufe1:     { title: 'Stivuitor – nivelul 1', sub: 'Principiu DGUV 308-001' },
       stufe2:     { title: 'Stivuitor – nivelul 2', sub: 'Principiu DGUV 308-001' },
@@ -336,6 +348,9 @@ const TRANSLATIONS = {
     errNotFound:  'Numri i regjistrimit, emri ose mbiemri nuk përputhen. Ju lutemi kontaktoni instruktorin.',
     errConn:      'Gabim lidhjeje. Ju lutemi provoni përsëri.',
     hallo:        'Përshëndetje, ',
+    badgeAbgeschlossen: 'Përfunduar ✓',
+    badgeBereitsBestanden: 'Kaluar tashmë',
+    badgeNochNichtFreigegeben: 'Ende pa miratuar',
     mod: {
       stufe1:     { title: 'Ngarkues – niveli 1', sub: 'Parimi DGUV 308-001' },
       stufe2:     { title: 'Ngarkues – niveli 2', sub: 'Parimi DGUV 308-001' },
@@ -510,7 +525,7 @@ function showModules(data){
       list.innerHTML += `
         <div class="exam-tile disabled">
           <img src="${BASE}${logoImg('logo_ausbildung_stufe1','jpg')}" alt="${t.mod.stufe1.title}" style="filter:grayscale(1) brightness(1.15)">
-          <span class="exam-tile-badge">Abgeschlossen ✓</span>
+          <span class="exam-tile-badge">${t.badgeAbgeschlossen}</span>
         </div>`;
     } else {
       list.innerHTML += `
@@ -531,7 +546,7 @@ function showModules(data){
       examList.innerHTML += `
         <div class="exam-tile disabled">
           <img src="${BASE}${logoImg('logo_pruefung_stufe1','png')}" alt="Theorieprüfung Stufe 1" style="filter:grayscale(1) brightness(1.15)">
-          <span class="exam-tile-badge">${s1Geschlossen ? 'Bereits bestanden' : 'Noch nicht freigegeben'}</span>
+          <span class="exam-tile-badge">${s1Geschlossen ? t.badgeBereitsBestanden : t.badgeNochNichtFreigegeben}</span>
         </div>`;
     }
     examCount++;
@@ -559,7 +574,7 @@ function showModules(data){
       list.innerHTML += `
         <div class="exam-tile disabled">
           <img src="${BASE}${logoImg('logo_ausbildung_stufe2','jpg')}" alt="${t.mod.stufe2.title}" style="filter:grayscale(1) brightness(1.15)">
-          <span class="exam-tile-badge">Abgeschlossen ✓</span>
+          <span class="exam-tile-badge">${t.badgeAbgeschlossen}</span>
         </div>`;
     } else {
       list.innerHTML += `
@@ -573,7 +588,7 @@ function showModules(data){
       examList.innerHTML += `
         <div class="exam-tile disabled">
           <img src="${BASE}${logoImg('logo_pruefung_stufe2','jpg')}" alt="Theorieprüfung Stufe 2" style="filter:grayscale(1) brightness(1.15)">
-          <span class="exam-tile-badge">Bereits bestanden</span>
+          <span class="exam-tile-badge">${t.badgeBereitsBestanden}</span>
         </div>`;
     } else {
       examList.innerHTML += `
@@ -590,7 +605,7 @@ function showModules(data){
       list.innerHTML += `
         <div class="exam-tile disabled">
           <img src="${BASE}${logoImg('logo_ausbildung_lasi','jpg')}" alt="${t.mod.lasi.title}" style="filter:grayscale(1) brightness(1.15)">
-          <span class="exam-tile-badge">Abgeschlossen ✓</span>
+          <span class="exam-tile-badge">${t.badgeAbgeschlossen}</span>
         </div>`;
     } else {
       list.innerHTML += `
@@ -611,7 +626,7 @@ function showModules(data){
       examList.innerHTML += `
         <div class="exam-tile disabled">
           <img src="${BASE}${logoImg('logo_pruefung_lasi','jpg')}" alt="Theorieprüfung Ladungssicherung" style="filter:grayscale(1) brightness(1.15)">
-          <span class="exam-tile-badge">${lasiGeschlossen ? 'Bereits bestanden' : 'Noch nicht freigegeben'}</span>
+          <span class="exam-tile-badge">${lasiGeschlossen ? t.badgeBereitsBestanden : t.badgeNochNichtFreigegeben}</span>
         </div>`;
     }
     examCount++;
