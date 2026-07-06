@@ -46,10 +46,39 @@ body{
   .section{border:none;background:#fff}
   .no-print{display:none}
 }
+.gate-overlay{
+  position:fixed;inset:0;background:var(--bg);z-index:999;
+  display:flex;align-items:center;justify-content:center;padding:24px;
+}
+.gate-card{
+  background:var(--card);border:1px solid var(--line);border-radius:14px;
+  padding:32px 28px;width:100%;max-width:360px;text-align:center;
+}
+.gate-card .eyebrow{font-size:11px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--gold);margin-bottom:10px}
+.gate-card h1{font-size:20px;font-weight:700;color:#fff;margin-bottom:20px}
+.gate-card input{
+  width:100%;padding:12px 14px;border:1px solid var(--line);border-radius:8px;
+  background:var(--bg);color:var(--ink);font-size:15px;margin-bottom:14px;text-align:center;
+}
+.gate-card input:focus{outline:none;border-color:var(--gold)}
+.gate-card button{
+  width:100%;padding:12px;border:none;border-radius:8px;background:var(--gold);
+  color:var(--bg);font-weight:700;font-size:14px;cursor:pointer;font-family:inherit;
+}
+.gate-card .err{color:#d94c4c;font-size:13px;margin-top:12px;min-height:16px}
 </style>
 </head>
 <body>
-<div class="wrap">
+<div class="gate-overlay" id="gateOverlay">
+  <div class="gate-card">
+    <div class="eyebrow">ProDrive Akademie Niederbayern</div>
+    <h1>Trainer-Bereich</h1>
+    <input type="password" id="gatePw" placeholder="Passwort" autocomplete="off" onkeydown="if(event.key==='Enter')checkGate()">
+    <button onclick="checkGate()">Zugang</button>
+    <div class="err" id="gateErr"></div>
+  </div>
+</div>
+<div class="wrap" id="content" style="display:none">
   <div class="header no-print">
     <div class="eyebrow">ProDrive Akademie Niederbayern</div>
     <h1>Trainer-Bereich</h1>
@@ -92,5 +121,29 @@ body{
     <div class="coming-soon">Hier entsteht eine schnelle Möglichkeit, Prüfungsfreigaben zu erteilen, ohne SharePoint direkt zu öffnen.</div>
   </div>
 </div>
+
+<script>
+var TRAINER_PW = 'Demo-001';
+
+function unlock(){
+  document.getElementById('gateOverlay').style.display = 'none';
+  document.getElementById('content').style.display = 'block';
+}
+
+function checkGate(){
+  var val = document.getElementById('gatePw').value;
+  var err = document.getElementById('gateErr');
+  if(val === TRAINER_PW){
+    sessionStorage.setItem('trainerAccess', '1');
+    unlock();
+  } else {
+    err.textContent = 'Falsches Passwort.';
+  }
+}
+
+if(sessionStorage.getItem('trainerAccess') === '1'){
+  unlock();
+}
+</script>
 </body>
 </html>
