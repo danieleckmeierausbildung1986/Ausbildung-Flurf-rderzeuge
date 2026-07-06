@@ -41,6 +41,16 @@ body{
   border:1px dashed var(--line);border-radius:12px;padding:20px;text-align:center;
   color:var(--muted);font-size:13px;
 }
+.qr-picker{display:flex;gap:12px;flex-wrap:wrap}
+.qr-picker-btn{
+  flex:1;min-width:140px;padding:16px;border-radius:10px;border:1px solid var(--line);
+  background:#0d1b2a;color:var(--ink);font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;
+  transition:all .15s;
+}
+.qr-picker-btn:hover{border-color:var(--gold);color:var(--gold)}
+.qr-display{text-align:center;padding:20px 0}
+.qr-display img{width:100%;max-width:320px;height:auto;border-radius:10px;background:#fff;padding:12px;margin-bottom:14px}
+.qr-display .label{font-size:18px;font-weight:700;color:var(--gold);margin-bottom:14px}
 @media print{
   body{background:#fff;color:#000;padding:0}
   .section{border:none;background:#fff}
@@ -86,31 +96,19 @@ body{
 
   <div class="section">
     <h2>📷 QR-Checkin</h2>
-    <p class="desc">QR-Codes zum Aushängen bzw. Anzeigen bei Präsenz-/Online-Schulungen. Teilnehmer scannen den passenden Code und checken sich mit ihrer Registriernummer selbst ein.</p>
-    <div class="qr-grid">
-      <div class="qr-card">
-        <img src="trainer/qr_stufe1.png" alt="QR-Code Stufe 1 Check-in">
-        <div class="label">Stufe 1</div>
-        <div class="qr-actions">
-          <a href="trainer/qr_stufe1.png" download>Herunterladen</a>
-          <a href="checkin.html?typ=Stufe%201" target="_blank">Seite öffnen</a>
-        </div>
-      </div>
-      <div class="qr-card">
-        <img src="trainer/qr_stufe2.png" alt="QR-Code Stufe 2 Check-in">
-        <div class="label">Stufe 2</div>
-        <div class="qr-actions">
-          <a href="trainer/qr_stufe2.png" download>Herunterladen</a>
-          <a href="checkin.html?typ=Stufe%202" target="_blank">Seite öffnen</a>
-        </div>
-      </div>
-      <div class="qr-card">
-        <img src="trainer/qr_lasi.png" alt="QR-Code LaSi Check-in">
-        <div class="label">LaSi</div>
-        <div class="qr-actions">
-          <a href="trainer/qr_lasi.png" download>Herunterladen</a>
-          <a href="checkin.html?typ=LaSi" target="_blank">Seite öffnen</a>
-        </div>
+    <p class="desc">Schulung auswählen — es wird dann nur der passende QR-Code angezeigt, ideal beim Bildschirmteilen, damit nicht versehentlich der falsche Code sichtbar ist.</p>
+    <div class="qr-picker" id="qrPicker">
+      <button class="qr-picker-btn" onclick="showQr('stufe1')">Stufe 1</button>
+      <button class="qr-picker-btn" onclick="showQr('stufe2')">Stufe 2</button>
+      <button class="qr-picker-btn" onclick="showQr('lasi')">Ladungssicherung</button>
+    </div>
+    <div class="qr-display" id="qrDisplay" style="display:none">
+      <img id="qrDisplayImg" src="" alt="">
+      <div class="label" id="qrDisplayLabel"></div>
+      <div class="qr-actions">
+        <a id="qrDisplayDownload" href="" download>Herunterladen</a>
+        <a id="qrDisplayOpen" href="" target="_blank">Seite öffnen</a>
+        <button onclick="hideQr()">← Andere Schulung</button>
       </div>
     </div>
   </div>
@@ -124,6 +122,28 @@ body{
 
 <script>
 var TRAINER_PW = 'Demo-001';
+
+var QR_DATA = {
+  stufe1: { img: 'trainer/qr_stufe1.png', label: 'Stufe 1', url: 'checkin.html?typ=Stufe%201' },
+  stufe2: { img: 'trainer/qr_stufe2.png', label: 'Stufe 2', url: 'checkin.html?typ=Stufe%202' },
+  lasi:   { img: 'trainer/qr_lasi.png',   label: 'Ladungssicherung', url: 'checkin.html?typ=LaSi' }
+};
+
+function showQr(key){
+  var d = QR_DATA[key];
+  document.getElementById('qrDisplayImg').src = d.img;
+  document.getElementById('qrDisplayImg').alt = 'QR-Code ' + d.label + ' Check-in';
+  document.getElementById('qrDisplayLabel').textContent = d.label;
+  document.getElementById('qrDisplayDownload').href = d.img;
+  document.getElementById('qrDisplayOpen').href = d.url;
+  document.getElementById('qrPicker').style.display = 'none';
+  document.getElementById('qrDisplay').style.display = 'block';
+}
+
+function hideQr(){
+  document.getElementById('qrDisplay').style.display = 'none';
+  document.getElementById('qrPicker').style.display = 'flex';
+}
 
 function unlock(){
   document.getElementById('gateOverlay').style.display = 'none';
