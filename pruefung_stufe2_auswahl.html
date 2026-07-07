@@ -163,7 +163,8 @@ function renderDevices(data){
     const geschlossen = !!data[g.geschlossenKey];
     if(booked) hasBooked = true; else hasDisabled = true;
 
-    const url = BASE + 'pruefung_stufe2.html?geraet=' + encodeURIComponent(g.key);
+    const nrForUrl = getRegnrFromUrl();
+    const url = BASE + 'pruefung_stufe2.html?geraet=' + encodeURIComponent(g.key) + (nrForUrl ? '&regnr=' + encodeURIComponent(nrForUrl) : '');
 
     if(booked && geschlossen){
       list.innerHTML += `
