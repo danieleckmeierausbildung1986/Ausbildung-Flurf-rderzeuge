@@ -632,6 +632,14 @@ function showModules(data){
     examCount++;
   }
 
+  if(data.lasi){
+    list.innerHTML += `
+      <a class="exam-tile" href="${BASE}lasi_praxismodul.html?regnr=${encodeURIComponent(currentRegnr)}${langParam}">
+        <img src="${BASE}format_icons/kurs_lasi.png" alt="Praxismodul Ladungssicherung">
+      </a>`;
+    count++;
+  }
+
   if(count === 0){
     list.innerHTML = `<div class="no-modules">${t.noModules}</div>`;
   }
