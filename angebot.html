@@ -83,6 +83,7 @@ nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.95);backdrop-
 }
 .module-item.selected .module-check{background:var(--blue);border-color:var(--blue);color:#fff}
 .module-icon{font-size:28px;margin-bottom:10px;display:block}
+.module-illustration{width:100%;max-width:160px;height:100px;object-fit:contain;display:block;margin-bottom:10px}
 .module-name{font-size:14px;font-weight:700;color:var(--navy)}
 .module-desc{font-size:12px;color:var(--muted);margin-top:4px;line-height:1.4}
 .module-tag{font-size:11px;font-weight:700;background:var(--safety);color:#fff;border-radius:4px;padding:2px 6px;display:inline-block;margin-top:6px}
@@ -236,7 +237,7 @@ nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.95);backdrop-
 
       <div class="module-item" id="mod-stufe1" onclick="toggleModule('stufe1')">
         <div class="module-check" id="chk-stufe1">✓</div>
-        <span class="module-icon">🏗️</span>
+        <img class="module-illustration" src="format_icons/kurs_stufe1.png" alt="">
         <div class="module-name">Stufe 1 — Allgemein</div>
         <div class="module-desc">Grundausbildung für alle Flurförderzeuge nach DGUV 308-001</div>
       </div>
@@ -244,7 +245,7 @@ nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.95);backdrop-
       <div class="stufe2-row">
         <div class="module-item" id="mod-stufe2" onclick="toggleStufe2()">
           <div class="module-check" id="chk-stufe2"></div>
-          <span class="module-icon">🚜</span>
+          <img class="module-illustration" src="format_icons/kurs_stufe2.png" alt="">
           <div class="module-name">Stufe 2 — Sondergeräte</div>
           <div class="module-desc">Zusatzausbildung für Sondergeräte — Gerät(e) rechts auswählen</div>
         </div>
@@ -275,7 +276,7 @@ nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.95);backdrop-
 
       <div class="module-item" id="mod-lasi" onclick="toggleModule('lasi')">
         <div class="module-check" id="chk-lasi"></div>
-        <span class="module-icon">🔒</span>
+        <img class="module-illustration" src="format_icons/kurs_lasi.png" alt="">
         <div class="module-name">Ladungssicherung</div>
         <div class="module-desc">Schulung nach VDI 2700 / DGUV</div>
       </div>
