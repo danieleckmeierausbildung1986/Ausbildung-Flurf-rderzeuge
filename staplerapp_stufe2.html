@@ -212,6 +212,8 @@ body::before{
         <div class="abschluss-titel" id="abschlussTitel"></div>
         <div class="abschluss-sub" id="abschlussSub"></div>
         <div class="abschluss-score" id="abschlussScore"></div>
+        <button class="abschluss-btn" id="lfBtn" style="display:none" onclick="modulAbschliessen()"></button>
+        <div id="lfStat" style="margin-top:10px;font-size:13px;color:var(--muted)"></div>
         <button class="abschluss-btn" onclick="restart()" id="restartBtnEl"></button>
       </div>
     </div>
@@ -235,10 +237,14 @@ body::before{
 var params=new URLSearchParams(window.location.search);
 var lang=params.get('lang')||'ro';
 var gerat=params.get('gerat')||'schubmast';
+var regnr=params.get('regnr')||'';
 var WA_NR='4916096877039';
 var MAIL='DanielEckmeier@Ausbildung1986.onmicrosoft.com';
 
 var ZUGANGSPRUEFUNG_URL = 'https://default8af25f9034bc4ef4aba22ab6f641d5.01.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/7058b6c8090842748465472db6085773/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=nxepIsGToa5my_-oIW5ZR5c3CQLtufN5DwNvM-qG1G4';
+var LERNFORTSCHRITT_URL = 'https://default8af25f9034bc4ef4aba22ab6f641d5.01.environment.api.powerplatform.com:443/powerautomate/automations/direct/cu/10/workflows/e13b7a8241154af890f2e1f30701fa38/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=jxQnSfmZ-MFxTzbQ8IFJrGWsbN1wjUdga6Fhr-jpHQE';
+var appStartZeit = Date.now();
+var geraetAbgeschlossen = false;
 (function(){
   var overlay = document.getElementById('zugangsCheckOverlay');
   var content = document.getElementById('zugangsCheckContent');
@@ -675,6 +681,45 @@ function showAbschluss(){
   document.getElementById('restartBtnEl').textContent=T.wiederholen;
   document.getElementById('pbar').style.width='100%';
   document.getElementById('progBadge').textContent=totalSteps()+' '+T.von+' '+totalSteps();
+  var lfBtn=document.getElementById('lfBtn');
+  var lfStat=document.getElementById('lfStat');
+  if(pass){
+    lfBtn.style.display='';
+    lfBtn.disabled=geraetAbgeschlossen;
+    lfBtn.style.background=geraetAbgeschlossen?'var(--ok)':'';
+    lfBtn.textContent=geraetAbgeschlossen?'✓ Abgeschlossen':'Thema abschließen & speichern';
+    lfStat.textContent=geraetAbgeschlossen?'Gespeichert.':'';
+  } else {
+    lfBtn.style.display='none';
+    lfStat.textContent='';
+  }
+}
+
+function modulAbschliessen(){
+  var lfBtn=document.getElementById('lfBtn');
+  var lfStat=document.getElementById('lfStat');
+  lfBtn.disabled=true;lfBtn.textContent='Wird gespeichert…';
+  var pct=Math.round((quizCorrect/QUIZ.length)*100);
+  var payload={
+    regnr:regnr,
+    geraet:gerat==='kommissionier'?'kommissionierer':gerat,
+    geraet_name:geratName,
+    datum_uhrzeit:new Date().toISOString(),
+    quiz_richtig:quizCorrect,
+    quiz_gesamt:QUIZ.length,
+    quiz_prozent:pct,
+    bestanden:true,
+    lernzeit_sekunden:Math.round((Date.now()-appStartZeit)/1000),
+    gesamt_geraete_abgeschlossen:1
+  };
+  function onOK(){
+    geraetAbgeschlossen=true;
+    lfBtn.textContent='✓ Abgeschlossen';lfBtn.style.background='var(--ok)';
+    lfStat.textContent='Gespeichert.';
+  }
+  fetch(LERNFORTSCHRITT_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)})
+    .then(onOK)
+    .catch(function(){lfBtn.disabled=false;lfBtn.textContent='Thema abschließen & speichern';lfStat.textContent='Fehler beim Speichern. Bitte erneut versuchen.';lfStat.style.color='var(--no)';});
 }
 
 /* ---- INIT ---- */
