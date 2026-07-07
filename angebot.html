@@ -233,7 +233,14 @@ nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.95);backdrop-
         <div class="module-desc">Grundausbildung für alle Flurförderzeuge nach DGUV 308-001</div>
       </div>
 
-      <div class="module-item" id="mod-schubmast" onclick="toggleModule('schubmast')">
+      <div class="module-item" id="mod-stufe2" onclick="toggleStufe2()">
+        <div class="module-check" id="chk-stufe2"></div>
+        <span class="module-icon">🚜</span>
+        <div class="module-name">Stufe 2 — Sondergeräte</div>
+        <div class="module-desc">Zusatzausbildung für Sondergeräte — Gerät(e) unten auswählen</div>
+      </div>
+
+      <div class="module-item device-card" id="mod-schubmast" style="display:none" onclick="toggleModule('schubmast')">
         <div class="module-check" id="chk-schubmast"></div>
         <span class="module-icon">📦</span>
         <div class="module-name">Stufe 2 — Schubmast</div>
@@ -241,7 +248,7 @@ nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.95);backdrop-
         <span class="module-tag">Stufe 2</span>
       </div>
 
-      <div class="module-item" id="mod-kommissionierer" onclick="toggleModule('kommissionierer')">
+      <div class="module-item device-card" id="mod-kommissionierer" style="display:none" onclick="toggleModule('kommissionierer')">
         <div class="module-check" id="chk-kommissionierer"></div>
         <span class="module-icon">🔧</span>
         <div class="module-name">Stufe 2 — Kommissionierer</div>
@@ -249,7 +256,7 @@ nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.95);backdrop-
         <span class="module-tag">Stufe 2</span>
       </div>
 
-      <div class="module-item" id="mod-schmalgang" onclick="toggleModule('schmalgang')">
+      <div class="module-item device-card" id="mod-schmalgang" style="display:none" onclick="toggleModule('schmalgang')">
         <div class="module-check" id="chk-schmalgang"></div>
         <span class="module-icon">↔️</span>
         <div class="module-name">Stufe 2 — Schmalgang</div>
@@ -395,7 +402,8 @@ var MODULE_NAMEN = {
 var FORMAT_NAMEN = {flex:'Flex (E-Learning)', online:'Online-Schulung', praesenz:'Präsenzschulung'};
 
 // ── State ──────────────────────────────────────────────────────
-var selected = {stufe1:true, schubmast:false, kommissionierer:false, schmalgang:false, lasi:false};
+var selected = {stufe1:true, stufe2:false, schubmast:false, kommissionierer:false, schmalgang:false, lasi:false};
+var DEVICE_KEYS = ['schubmast','kommissionierer','schmalgang'];
 var formats  = {stufe1:'flex', schubmast:'flex', kommissionierer:'flex', schmalgang:'flex', lasi:'flex'};
 var teilnehmer = 1;
 var currentStep = 1;
@@ -412,6 +420,20 @@ function toggleModule(id){
   chk.textContent = selected[id] ? '✓' : '';
 }
 
+function toggleStufe2(){
+  selected.stufe2 = !selected.stufe2;
+  document.getElementById('mod-stufe2').classList.toggle('selected', selected.stufe2);
+  document.getElementById('chk-stufe2').textContent = selected.stufe2 ? '✓' : '';
+  DEVICE_KEYS.forEach(function(id){
+    document.getElementById('mod-'+id).style.display = selected.stufe2 ? '' : 'none';
+    if(!selected.stufe2 && selected[id]){
+      selected[id] = false;
+      document.getElementById('mod-'+id).classList.remove('selected');
+      document.getElementById('chk-'+id).textContent = '';
+    }
+  });
+}
+
 // Init Stufe1 als vorausgewählt
 document.getElementById('mod-stufe1').classList.add('selected');
 document.getElementById('chk-stufe1').textContent = '✓';
@@ -419,8 +441,12 @@ document.getElementById('chk-stufe1').textContent = '✓';
 // ── Schritte ───────────────────────────────────────────────────
 function goStep(n){
   if(n === 2){
-    var any = Object.values(selected).some(function(v){return v;});
+    var any = selected.stufe1 || selected.lasi || DEVICE_KEYS.some(function(id){return selected[id];});
     if(!any){ alert('Bitte wählen Sie mindestens eine Schulung aus.'); return; }
+    if(selected.stufe2 && !DEVICE_KEYS.some(function(id){return selected[id];})){
+      alert('Bitte wählen Sie mindestens ein Stufe-2-Gerät aus:\nSchubmast, Kommissionierer oder Schmalgang.');
+      return;
+    }
     buildFormatSections();
   }
   if(n === 5){
