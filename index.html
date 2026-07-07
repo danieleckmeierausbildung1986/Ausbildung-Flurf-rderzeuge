@@ -599,22 +599,15 @@ function showModules(data){
     examCount++;
   }
 
-  if(data.lasi && lform === 'elearning'){
-    const lasiAbgeschlossen = getSF(data.pruefung_lasi_freigegeben) === 'geschlossen';
-    if(lasiAbgeschlossen){
-      list.innerHTML += `
-        <div class="exam-tile disabled">
-          <img src="${BASE}${logoImg('logo_ausbildung_lasi','jpg')}" alt="${t.mod.lasi.title}" style="filter:grayscale(1) brightness(1.15)">
-          <span class="exam-tile-badge">${t.badgeAbgeschlossen}</span>
-        </div>`;
-    } else {
-      list.innerHTML += `
-        <a class="exam-tile" href="${BASE}staplerapp_lasi_1.html?regnr=${encodeURIComponent(currentRegnr)}${langParam}">
-          <img src="${BASE}${logoImg('logo_ausbildung_lasi','jpg')}" alt="${t.mod.lasi.title}">
-        </a>`;
-    }
+  if(data.lasi){
+    list.innerHTML += `
+      <a class="exam-tile" href="${BASE}lasi_auswahl.html?regnr=${encodeURIComponent(currentRegnr)}${langParam}">
+        <img src="${BASE}${logoImg('logo_ausbildung_lasi','jpg')}" alt="Ladungssicherung">
+      </a>`;
     count++;
+  }
 
+  if(data.lasi && lform === 'elearning'){
     const lasiFreigegeben = data.pruefung_lasi_freigegeben === true || data.pruefung_lasi_freigegeben === 'True' || getSF(data.pruefung_lasi_freigegeben) === 'ja';
     const lasiGeschlossen = getSF(data.pruefung_lasi_freigegeben) === 'geschlossen';
     if(lasiFreigegeben){
@@ -630,14 +623,6 @@ function showModules(data){
         </div>`;
     }
     examCount++;
-  }
-
-  if(data.lasi){
-    list.innerHTML += `
-      <a class="exam-tile" href="${BASE}lasi_praxismodul.html?regnr=${encodeURIComponent(currentRegnr)}${langParam}">
-        <img src="${BASE}format_icons/kurs_lasi.png" alt="Praxismodul Ladungssicherung">
-      </a>`;
-    count++;
   }
 
   if(count === 0){
