@@ -23,15 +23,14 @@ body::before{
     radial-gradient(ellipse 60% 80% at 80% 80%, rgba(13,45,128,.32) 0%, transparent 60%);
   pointer-events:none;z-index:0;
 }
-.container{position:relative;z-index:1;width:100%;max-width:480px}
+.container{position:relative;z-index:1;width:100%;max-width:640px}
 .logo-area{text-align:center;margin-bottom:28px;animation:fadeDown .5s ease both}
 .logo-icon{
   width:72px;height:72px;border-radius:18px;
   background:linear-gradient(135deg,var(--blue-d),var(--blue-l));
-  display:flex;align-items:center;justify-content:center;
+  display:flex;align-items:center;justify-content:center;font-size:32px;
   margin:0 auto 16px;box-shadow:0 8px 32px rgba(13,45,128,.4);
 }
-.logo-icon svg{width:38px;height:38px;fill:#fff}
 .logo-area h1{color:#fff;font-size:22px;font-weight:700;margin-bottom:4px}
 .logo-area p{color:rgba(255,255,255,.6);font-size:13px}
 .card{
@@ -51,13 +50,27 @@ body::before{
 .lhint{font-size:11px;color:var(--muted);text-align:center;margin-top:10px}
 .spinner{width:22px;height:22px;border:3px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;display:inline-block;vertical-align:middle}
 
-.soon-icon{
-  width:64px;height:64px;border-radius:16px;background:var(--blue-xl);
-  display:flex;align-items:center;justify-content:center;font-size:30px;
-  margin:0 auto 18px;
+.greeting{text-align:center;padding:24px 24px 16px;border-bottom:1px solid var(--line)}
+.greeting-name{font-size:20px;font-weight:700;color:var(--navy);margin-bottom:4px}
+.greeting-sub{font-size:13px;color:var(--muted)}
+.toc-grid{padding:20px 24px 8px;display:grid;grid-template-columns:1fr;gap:14px}
+.toc-card{
+  display:flex;align-items:center;gap:16px;padding:16px 18px;
+  border:1.5px solid var(--line);border-radius:14px;text-decoration:none;
+  transition:all .15s;
 }
-.soon-title{font-size:19px;font-weight:800;color:var(--navy);text-align:center;margin-bottom:8px}
-.soon-text{font-size:13.5px;color:var(--muted);text-align:center;line-height:1.6;margin-bottom:22px}
+.toc-card:hover{border-color:var(--blue);transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.1)}
+.toc-icon{
+  width:52px;height:52px;border-radius:12px;flex-shrink:0;
+  background:linear-gradient(135deg,var(--blue-d),var(--blue-l));
+  display:flex;align-items:center;justify-content:center;font-size:24px;
+}
+.toc-info{flex:1}
+.toc-title{font-size:15px;font-weight:700;color:var(--navy);margin-bottom:2px}
+.toc-sub{font-size:12.5px;color:var(--muted)}
+.toc-arrow{font-size:18px;color:var(--muted);flex-shrink:0}
+.no-modules{text-align:center;padding:28px 20px;color:var(--muted);font-size:14px;line-height:1.6}
+.footer-area{padding:20px 24px 24px}
 .back-btn{
   display:block;width:100%;padding:11px;border:2px solid var(--line);
   border-radius:12px;background:#fff;color:var(--muted);
@@ -72,11 +85,9 @@ body::before{
 <body>
 <div class="container">
   <div class="logo-area">
-    <div class="logo-icon">
-      <svg viewBox="0 0 24 24"><path d="M12 2 3 7v6c0 5 3.8 9.4 9 11 5.2-1.6 9-6 9-11V7l-9-5zm0 2.2 7 3.9v4.9c0 4-2.9 7.7-7 8.9-4.1-1.2-7-4.9-7-8.9V8.1l7-3.9z"/></svg>
-    </div>
-    <h1 id="pageTitle">Geräteeinweisung</h1>
-    <p>Unterweisungsbibliothek · für registrierte Teilnehmer</p>
+    <div class="logo-icon" id="catIcon">🚜</div>
+    <h1 id="catTitle">Geräteeinweisung</h1>
+    <p id="catSub">Unterweisungsbibliothek · für registrierte Teilnehmer</p>
   </div>
 
   <div class="card" id="loginCard">
@@ -103,11 +114,13 @@ body::before{
     </div>
   </div>
 
-  <div class="card" id="soonCard" style="display:none">
-    <div class="card-body">
-      <div class="soon-icon">🛠️</div>
-      <div class="soon-title" id="soonTitle">Einweisung in Vorbereitung</div>
-      <div class="soon-text" id="soonText">Diese Geräteeinweisung wird gerade erstellt und ist in Kürze verfügbar.</div>
+  <div class="card" id="tocCard" style="display:none">
+    <div class="greeting">
+      <div class="greeting-name" id="greetName">Willkommen</div>
+      <div class="greeting-sub" id="tocSub">Verfügbare Modelle</div>
+    </div>
+    <div class="toc-grid" id="tocGrid"></div>
+    <div class="footer-area">
       <a class="back-btn" id="backLink" href="unterweisungsbibliothek.html">← Zurück zur Unterweisungsbibliothek</a>
     </div>
   </div>
@@ -117,13 +130,37 @@ body::before{
 const BASE = 'https://danieleckmeierausbildung1986.github.io/Ausbildung-Flurf-rderzeuge/';
 const ZUGANGSPRUEFUNG_URL = 'https://default8af25f9034bc4ef4aba22ab6f641d5.01.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/7058b6c8090842748465472db6085773/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=nxepIsGToa5my_-oIW5ZR5c3CQLtufN5DwNvM-qG1G4';
 
-const params = new URLSearchParams(window.location.search);
-const geraetName = params.get('name') || 'Dieses Gerät';
-document.getElementById('pageTitle').textContent = geraetName;
-document.getElementById('soonTitle').textContent = geraetName + ' — in Vorbereitung';
-document.getElementById('soonText').textContent = 'Die Sicherheitsunterweisung für "' + geraetName + '" wird gerade erstellt und ist in Kürze verfügbar. Bitte wenden Sie sich bei dringendem Bedarf an Ihren Ausbilder.';
+// Inhaltsverzeichnis je Gerätekategorie — neue Modelle hier ergänzen,
+// sobald Quellmaterial (Betriebsanleitung o. ä.) vorliegt.
+const KATEGORIEN = {
+  frontgabelstapler: {
+    titel: 'Frontgabelstapler', icon: '🏗️', sub: 'Standardgerät Stufe 1',
+    modelle: [
+      { titel:'Linde E20', sub:'Elektro-Gegengewichtstapler · 2.000 kg', icon:'🚜', url:'geraeteeinweisung_linde_e20.html' }
+    ]
+  },
+  schubmaststapler: {
+    titel: 'Schubmaststapler', icon: '📦', sub: 'Sondergerät Stufe 2',
+    modelle: []
+  },
+  kommissionierstapler: {
+    titel: 'Kommissionierstapler', icon: '🧰', sub: 'Sondergerät Stufe 2',
+    modelle: []
+  },
+  schmalgangstapler: {
+    titel: 'Schmalgangstapler', icon: '🏬', sub: 'Sondergerät Stufe 2',
+    modelle: []
+  }
+};
 
-let currentRegnr = '';
+const params = new URLSearchParams(window.location.search);
+const katKey = params.get('kategorie') || '';
+const kat = KATEGORIEN[katKey] || { titel:'Unbekannte Kategorie', icon:'❓', sub:'', modelle:[] };
+document.getElementById('catIcon').textContent = kat.icon;
+document.getElementById('catTitle').textContent = kat.titel;
+document.getElementById('catSub').textContent = kat.sub;
+
+let currentRegnr = '', currentVorname = '', currentNachname = '';
 
 async function doLogin(){
   const val      = document.getElementById('regnr').value.trim();
@@ -153,11 +190,11 @@ async function pruefeUndZeige(val, vorname, nachname, silent){
     const data = await res.json();
 
     if(data && data.zugang === true){
-      currentRegnr = val;
+      currentRegnr = val; currentVorname = vorname; currentNachname = nachname;
       sessionStorage.setItem('authRegnr', val);
       sessionStorage.setItem('authVorname', vorname);
       sessionStorage.setItem('authNachname', nachname);
-      showSoon();
+      showToc();
     } else if(!silent){
       errEl.textContent = data.grund || 'Registriernummer, Vorname oder Nachname stimmen nicht überein.';
     }
@@ -169,12 +206,34 @@ async function pruefeUndZeige(val, vorname, nachname, silent){
   }
 }
 
-function showSoon(){
+function showToc(){
   document.getElementById('loginCard').style.display = 'none';
-  document.getElementById('soonCard').style.display = 'block';
+  document.getElementById('tocCard').style.display = 'block';
+  document.getElementById('greetName').textContent = 'Hallo, ' + currentVorname + ' ' + currentNachname + '!';
+  document.getElementById('tocSub').textContent = kat.titel + ' — Modell wählen';
   document.getElementById('backLink').href = BASE + 'unterweisungsbibliothek.html?regnr=' + encodeURIComponent(currentRegnr);
+
+  const grid = document.getElementById('tocGrid');
+  if(!kat.modelle || kat.modelle.length === 0){
+    grid.innerHTML = '<div class="no-modules">Für diese Gerätekategorie sind noch keine Modelle hinterlegt. Bitte wenden Sie sich an Ihren Ausbilder.</div>';
+    return;
+  }
+  grid.innerHTML = kat.modelle.map(m => {
+    const sep = m.url.indexOf('?') >= 0 ? '&' : '?';
+    return `
+    <a class="toc-card" href="${BASE}${m.url}${sep}regnr=${encodeURIComponent(currentRegnr)}">
+      <div class="toc-icon">${m.icon}</div>
+      <div class="toc-info">
+        <div class="toc-title">${m.titel}</div>
+        <div class="toc-sub">${m.sub}</div>
+      </div>
+      <div class="toc-arrow">→</div>
+    </a>`;
+  }).join('');
 }
 
+// Auto-Login: nur wenn diese Registriernummer bereits in dieser Sitzung
+// erfolgreich angemeldet wurde.
 (function(){
   const nr = params.get('regnr');
   const authRegnr = sessionStorage.getItem('authRegnr');
@@ -187,6 +246,11 @@ function showSoon(){
       document.getElementById('nachname').value = authNachname;
       pruefeUndZeige(nr, authVorname, authNachname, true);
     }
+  } else if(authRegnr && authVorname && authNachname){
+    document.getElementById('regnr').value = authRegnr;
+    document.getElementById('vorname').value = authVorname;
+    document.getElementById('nachname').value = authNachname;
+    pruefeUndZeige(authRegnr, authVorname, authNachname, true);
   }
 })();
 </script>
