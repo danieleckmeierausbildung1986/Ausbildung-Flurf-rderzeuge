@@ -136,7 +136,11 @@ const ZUGANGSPRUEFUNG_URL = 'https://default8af25f9034bc4ef4aba22ab6f641d5.01.en
 
 // Geräte-Bibliothek — neue Einträge einfach hier ergänzen
 const GERAETE = [
-  { key:'linde-e20', titel:'Linde E20', sub:'Elektro-Gegengewichtstapler · 2.000 kg', icon:'🚜', url:'geraeteeinweisung_linde_e20.html' }
+  { key:'linde-e20', titel:'Linde E20', sub:'Elektro-Gegengewichtstapler · 2.000 kg', icon:'🚜', url:'geraeteeinweisung_linde_e20.html' },
+  { key:'frontgabelstapler', titel:'Frontgabelstapler', sub:'Standardgerät Stufe 1', icon:'🏗️', url:'geraeteeinweisung_platzhalter.html?geraet=frontgabelstapler&name=' + encodeURIComponent('Frontgabelstapler') },
+  { key:'schubmaststapler', titel:'Schubmaststapler', sub:'Sondergerät Stufe 2', icon:'📦', url:'geraeteeinweisung_platzhalter.html?geraet=schubmaststapler&name=' + encodeURIComponent('Schubmaststapler') },
+  { key:'kommissionierstapler', titel:'Kommissionierstapler', sub:'Sondergerät Stufe 2', icon:'🧰', url:'geraeteeinweisung_platzhalter.html?geraet=kommissionierstapler&name=' + encodeURIComponent('Kommissionierstapler') },
+  { key:'schmalgangstapler', titel:'Schmalgangstapler', sub:'Sondergerät Stufe 2', icon:'🏬', url:'geraeteeinweisung_platzhalter.html?geraet=schmalgangstapler&name=' + encodeURIComponent('Schmalgangstapler') }
 ];
 
 let currentRegnr = '', currentVorname = '', currentNachname = '';
@@ -199,15 +203,18 @@ function showLibrary(){
     grid.innerHTML = '<div class="no-modules">Aktuell sind noch keine Geräteeinweisungen verfügbar.</div>';
     return;
   }
-  grid.innerHTML = GERAETE.map(g => `
-    <a class="lib-card" href="${BASE}${g.url}?regnr=${encodeURIComponent(currentRegnr)}">
+  grid.innerHTML = GERAETE.map(g => {
+    const sep = g.url.indexOf('?') >= 0 ? '&' : '?';
+    return `
+    <a class="lib-card" href="${BASE}${g.url}${sep}regnr=${encodeURIComponent(currentRegnr)}">
       <div class="lib-icon">${g.icon}</div>
       <div class="lib-info">
         <div class="lib-title">${g.titel}</div>
         <div class="lib-sub">${g.sub}</div>
       </div>
       <div class="lib-arrow">→</div>
-    </a>`).join('');
+    </a>`;
+  }).join('');
 }
 
 // Auto-Login: nur wenn diese Registriernummer bereits in dieser Sitzung

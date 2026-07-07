@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Geräteeinweisung – ProDrive Akademie Niederbayern</title>
+<style>
+:root{
+  --blue:#1a4fa8;--blue-l:#2e75cc;--blue-d:#0d2d80;--blue-xl:#e8f0fb;
+  --navy:#16243f;--muted:#5a6a7a;--line:#e3e8f0;--ink:#1a2330;
+  --shadow:0 8px 40px rgba(0,0,0,.25);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:"Segoe UI",system-ui,sans-serif;
+  min-height:100vh;background:#0a1628;
+  display:flex;align-items:center;justify-content:center;padding:20px;
+}
+body::before{
+  content:'';position:fixed;inset:0;
+  background:
+    radial-gradient(ellipse 80% 60% at 20% 20%, rgba(26,79,168,.28) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 80% at 80% 80%, rgba(13,45,128,.32) 0%, transparent 60%);
+  pointer-events:none;z-index:0;
+}
+.container{position:relative;z-index:1;width:100%;max-width:480px}
+.logo-area{text-align:center;margin-bottom:28px;animation:fadeDown .5s ease both}
+.logo-icon{
+  width:72px;height:72px;border-radius:18px;
+  background:linear-gradient(135deg,var(--blue-d),var(--blue-l));
+  display:flex;align-items:center;justify-content:center;
+  margin:0 auto 16px;box-shadow:0 8px 32px rgba(13,45,128,.4);
+}
+.logo-icon svg{width:38px;height:38px;fill:#fff}
+.logo-area h1{color:#fff;font-size:22px;font-weight:700;margin-bottom:4px}
+.logo-area p{color:rgba(255,255,255,.6);font-size:13px}
+.card{
+  background:#fff;border-radius:20px;
+  box-shadow:var(--shadow);overflow:hidden;
+  animation:fadeUp .5s ease .1s both;
+}
+.card-body{padding:28px 30px 30px}
+.card-intro{font-size:13px;color:var(--muted);text-align:center;margin-bottom:20px;line-height:1.5}
+.lf{margin-bottom:16px}
+.lf label{display:block;font-size:11px;font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:.6px;margin-bottom:7px}
+.lf input{width:100%;padding:13px 16px;border:2px solid var(--line);border-radius:12px;font-size:16px;background:#fafbfc;transition:border-color .15s;color:var(--ink)}
+.lf input:focus{outline:none;border-color:var(--blue);background:#fff}
+.login-btn{width:100%;padding:14px;border:none;border-radius:12px;background:linear-gradient(135deg,var(--blue),var(--blue-d));color:#fff;font-size:15px;font-weight:700;cursor:pointer;transition:opacity .15s}
+.login-btn:hover{opacity:.9}
+.lerr{color:#c0392b;font-size:13px;margin-top:10px;text-align:center;min-height:18px}
+.lhint{font-size:11px;color:var(--muted);text-align:center;margin-top:10px}
+.spinner{width:22px;height:22px;border:3px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;display:inline-block;vertical-align:middle}
+
+.soon-icon{
+  width:64px;height:64px;border-radius:16px;background:var(--blue-xl);
+  display:flex;align-items:center;justify-content:center;font-size:30px;
+  margin:0 auto 18px;
+}
+.soon-title{font-size:19px;font-weight:800;color:var(--navy);text-align:center;margin-bottom:8px}
+.soon-text{font-size:13.5px;color:var(--muted);text-align:center;line-height:1.6;margin-bottom:22px}
+.back-btn{
+  display:block;width:100%;padding:11px;border:2px solid var(--line);
+  border-radius:12px;background:#fff;color:var(--muted);
+  font-size:14px;font-weight:600;cursor:pointer;transition:all .15s;text-align:center;text-decoration:none;
+}
+.back-btn:hover{border-color:var(--blue);color:var(--blue)}
+@keyframes fadeDown{from{opacity:0;transform:translateY(-12px)}to{opacity:1;transform:none}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+@keyframes spin{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="logo-area">
+    <div class="logo-icon">
+      <svg viewBox="0 0 24 24"><path d="M12 2 3 7v6c0 5 3.8 9.4 9 11 5.2-1.6 9-6 9-11V7l-9-5zm0 2.2 7 3.9v4.9c0 4-2.9 7.7-7 8.9-4.1-1.2-7-4.9-7-8.9V8.1l7-3.9z"/></svg>
+    </div>
+    <h1 id="pageTitle">Geräteeinweisung</h1>
+    <p>Unterweisungsbibliothek · für registrierte Teilnehmer</p>
+  </div>
+
+  <div class="card" id="loginCard">
+    <div class="card-body">
+      <div class="card-intro">Bitte melden Sie sich mit Ihrer Registriernummer, Vor- und Nachnamen an.</div>
+      <div class="lf">
+        <label>Registriernummer</label>
+        <input type="text" id="regnr" placeholder="2025-001" autocomplete="off"
+          onkeydown="if(event.key==='Enter')document.getElementById('vorname').focus()">
+      </div>
+      <div class="lf">
+        <label>Vorname</label>
+        <input type="text" id="vorname" placeholder="Max" autocomplete="off"
+          onkeydown="if(event.key==='Enter')document.getElementById('nachname').focus()">
+      </div>
+      <div class="lf">
+        <label>Nachname</label>
+        <input type="text" id="nachname" placeholder="Mustermann" autocomplete="off"
+          onkeydown="if(event.key==='Enter')doLogin()">
+      </div>
+      <button class="login-btn" id="loginBtn" onclick="doLogin()">Anmelden →</button>
+      <div class="lerr" id="lerr"></div>
+      <div class="lhint">Format: 2025-001 – erhalten Sie von Ihrem Ausbilder</div>
+    </div>
+  </div>
+
+  <div class="card" id="soonCard" style="display:none">
+    <div class="card-body">
+      <div class="soon-icon">🛠️</div>
+      <div class="soon-title" id="soonTitle">Einweisung in Vorbereitung</div>
+      <div class="soon-text" id="soonText">Diese Geräteeinweisung wird gerade erstellt und ist in Kürze verfügbar.</div>
+      <a class="back-btn" id="backLink" href="unterweisungsbibliothek.html">← Zurück zur Unterweisungsbibliothek</a>
+    </div>
+  </div>
+</div>
+
+<script>
+const BASE = 'https://danieleckmeierausbildung1986.github.io/Ausbildung-Flurf-rderzeuge/';
+const ZUGANGSPRUEFUNG_URL = 'https://default8af25f9034bc4ef4aba22ab6f641d5.01.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/7058b6c8090842748465472db6085773/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=nxepIsGToa5my_-oIW5ZR5c3CQLtufN5DwNvM-qG1G4';
+
+const params = new URLSearchParams(window.location.search);
+const geraetName = params.get('name') || 'Dieses Gerät';
+document.getElementById('pageTitle').textContent = geraetName;
+document.getElementById('soonTitle').textContent = geraetName + ' — in Vorbereitung';
+document.getElementById('soonText').textContent = 'Die Sicherheitsunterweisung für "' + geraetName + '" wird gerade erstellt und ist in Kürze verfügbar. Bitte wenden Sie sich bei dringendem Bedarf an Ihren Ausbilder.';
+
+let currentRegnr = '';
+
+async function doLogin(){
+  const val      = document.getElementById('regnr').value.trim();
+  const vorname  = document.getElementById('vorname').value.trim();
+  const nachname = document.getElementById('nachname').value.trim();
+  const errEl = document.getElementById('lerr');
+  errEl.textContent = '';
+
+  if(!val){ errEl.textContent = 'Bitte Registriernummer eingeben.'; return; }
+  if(!/^\d{4}-\d{3,4}$/.test(val)){ errEl.textContent = 'Ungültig. Format: 2025-001'; return; }
+  if(!vorname || !nachname){ errEl.textContent = 'Bitte Vor- und Nachnamen eingeben.'; return; }
+
+  await pruefeUndZeige(val, vorname, nachname, false);
+}
+
+async function pruefeUndZeige(val, vorname, nachname, silent){
+  const errEl = document.getElementById('lerr');
+  const btn   = document.getElementById('loginBtn');
+  btn.innerHTML = '<span class="spinner"></span>';
+  btn.disabled  = true;
+
+  try{
+    const res  = await fetch(ZUGANGSPRUEFUNG_URL, {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ registrierungsnummer: val, vorname: vorname, nachname: nachname })
+    });
+    const data = await res.json();
+
+    if(data && data.zugang === true){
+      currentRegnr = val;
+      sessionStorage.setItem('authRegnr', val);
+      sessionStorage.setItem('authVorname', vorname);
+      sessionStorage.setItem('authNachname', nachname);
+      showSoon();
+    } else if(!silent){
+      errEl.textContent = data.grund || 'Registriernummer, Vorname oder Nachname stimmen nicht überein.';
+    }
+  }catch(e){
+    if(!silent) errEl.textContent = 'Verbindungsfehler. Bitte erneut versuchen.';
+  }finally{
+    btn.textContent = 'Anmelden →';
+    btn.disabled = false;
+  }
+}
+
+function showSoon(){
+  document.getElementById('loginCard').style.display = 'none';
+  document.getElementById('soonCard').style.display = 'block';
+  document.getElementById('backLink').href = BASE + 'unterweisungsbibliothek.html?regnr=' + encodeURIComponent(currentRegnr);
+}
+
+(function(){
+  const nr = params.get('regnr');
+  const authRegnr = sessionStorage.getItem('authRegnr');
+  const authVorname = sessionStorage.getItem('authVorname');
+  const authNachname = sessionStorage.getItem('authNachname');
+  if(nr && /^\d{4}-\d{3,4}$/.test(nr)){
+    document.getElementById('regnr').value = nr;
+    if(authRegnr === nr && authVorname && authNachname){
+      document.getElementById('vorname').value = authVorname;
+      document.getElementById('nachname').value = authNachname;
+      pruefeUndZeige(nr, authVorname, authNachname, true);
+    }
+  }
+})();
+</script>
+</body>
+</html>
