@@ -217,6 +217,14 @@ footer{
           </div>
           <div class="af-geraet-hint" id="stufe2-geraet-hint">&#9888; Bitte mindestens einen Fahrzeugtyp auswählen!</div>
         </div>
+        <div class="af-subkurse" id="stufe2-vorqualifikation" style="display:none">
+          <div class="af-subkurse-title">Haben Sie Ihre Grundausbildung Stufe 1 bereits absolviert? <span style="color:#dc2626">*</span></div>
+          <div class="af-sub-checks">
+            <label class="af-sub-check"><input type="radio" name="vorqualifikation" id="vq-bei-uns" value="bei_uns"> Ja, bei der ProDrive Akademie</label>
+            <label class="af-sub-check"><input type="radio" name="vorqualifikation" id="vq-nicht-bei-uns" value="nicht_bei_uns"> Ja, bei einem anderen Anbieter</label>
+          </div>
+          <div class="af-geraet-hint" id="vq-hint">&#9888; Bitte auswählen — bei einem anderen Anbieter benötigen wir im Anschluss einen Nachweis.</div>
+        </div>
       </div>
 
       <div class="af-kurs-block" id="block-lasi">
@@ -280,6 +288,7 @@ var _urlKursSpId   = '';
   if(kurs === 'stufe2'){
     document.getElementById('stufe2-typen').style.display = 'block';
     validateStufe2();
+    updateVorqualifikation();
   }
   document.getElementById('block-' + kurs).scrollIntoView({behavior:'smooth', block:'center'});
 })();
@@ -290,8 +299,27 @@ var _urlKursSpId   = '';
     sel.disabled = !this.checked;
     if(!this.checked) sel.value = '';
     document.getElementById('block-'+id).classList.toggle('active', this.checked);
+    if(id === 'stufe1') updateVorqualifikation();
   });
 });
+
+function updateVorqualifikation(){
+  var stufe1 = document.getElementById('ck-stufe1').checked;
+  var stufe2 = document.getElementById('ck-stufe2').checked;
+  var vqDiv  = document.getElementById('stufe2-vorqualifikation');
+  var show = stufe2 && !stufe1;
+  vqDiv.style.display = show ? 'block' : 'none';
+  if(!show) document.getElementById('vq-hint').style.display = 'none';
+}
+function validateVorqualifikation(){
+  var stufe1 = document.getElementById('ck-stufe1').checked;
+  var stufe2 = document.getElementById('ck-stufe2').checked;
+  var hint = document.getElementById('vq-hint');
+  if(!stufe2 || stufe1){ hint.style.display = 'none'; return true; }
+  var ok = document.getElementById('vq-bei-uns').checked || document.getElementById('vq-nicht-bei-uns').checked;
+  hint.style.display = ok ? 'none' : 'block';
+  return ok;
+}
 document.getElementById('ck-training').addEventListener('change',function(){
   document.getElementById('block-training').classList.toggle('active',this.checked);
 });
@@ -311,6 +339,7 @@ document.getElementById('ck-stufe2').addEventListener('change',function(){
   document.getElementById('stufe2-typen').style.display = this.checked ? 'block' : 'none';
   if(this.checked) validateStufe2();
   else validateStufe2();
+  updateVorqualifikation();
 });
 ['ck-schubmast','ck-komm','ck-schmal'].forEach(function(id){
   document.getElementById(id).addEventListener('change', validateStufe2);
@@ -361,6 +390,13 @@ document.getElementById('anmeldungForm').addEventListener('submit', async functi
     return;
   }
 
+  if(!validateVorqualifikation()){
+    errEl.textContent = 'Bitte geben Sie an, ob Sie Ihre Stufe-1-Ausbildung bereits absolviert haben.';
+    errEl.style.display = 'block';
+    document.getElementById('stufe2-vorqualifikation').scrollIntoView({behavior:'smooth', block:'center'});
+    return;
+  }
+
   var schulungen = [];
   if(stufe1)   schulungen.push('Ausbildung Flurförderzeuge Stufe 1');
   if(stufe2)   schulungen.push('Zusatzausbildung Stufe 2');
@@ -370,6 +406,9 @@ document.getElementById('anmeldungForm').addEventListener('submit', async functi
   var formen = [s1form, s2form, liform];
   var schulungstyp = formen.indexOf('Elearning') >= 0 ? 'Elearning' :
                      formen.indexOf('Online')    >= 0 ? 'Online' : 'Präsenz';
+
+  var stufe1BereitsBeiUns = stufe1 ? true :
+    (stufe2 ? document.getElementById('vq-bei-uns').checked : true);
 
   var payload = {
     nachname:                document.getElementById('af-nachname').value.trim(),
@@ -382,6 +421,7 @@ document.getElementById('anmeldungForm').addEventListener('submit', async functi
     stufe1_schulungsform:    s1form,
     stufe2_gebucht:          stufe2,
     stufe2_schulungsform:    s2form,
+    stufe1_bereits_bei_uns:  stufe1BereitsBeiUns,
     schubmast_gebucht:       stufe2 && document.getElementById('ck-schubmast').checked,
     kommissionierer_gebucht: stufe2 && document.getElementById('ck-komm').checked,
     schmalgang_gebucht:      stufe2 && document.getElementById('ck-schmal').checked,
