@@ -134,13 +134,13 @@ body::before{
 const BASE = 'https://danieleckmeierausbildung1986.github.io/Ausbildung-Flurf-rderzeuge/';
 const ZUGANGSPRUEFUNG_URL = 'https://default8af25f9034bc4ef4aba22ab6f641d5.01.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/7058b6c8090842748465472db6085773/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=nxepIsGToa5my_-oIW5ZR5c3CQLtufN5DwNvM-qG1G4';
 
-// Geräte-Bibliothek — neue Einträge einfach hier ergänzen
+// Geräte-Kategorien — neue Kategorien einfach hier ergänzen.
+// Die Modelle je Kategorie stehen zentral in geraetekategorie.html (KATEGORIEN-Objekt).
 const GERAETE = [
-  { key:'linde-e20', titel:'Linde E20', sub:'Elektro-Gegengewichtstapler · 2.000 kg', icon:'🚜', url:'geraeteeinweisung_linde_e20.html' },
-  { key:'frontgabelstapler', titel:'Frontgabelstapler', sub:'Standardgerät Stufe 1', icon:'🏗️', url:'geraeteeinweisung_platzhalter.html?geraet=frontgabelstapler&name=' + encodeURIComponent('Frontgabelstapler') },
-  { key:'schubmaststapler', titel:'Schubmaststapler', sub:'Sondergerät Stufe 2', icon:'📦', url:'geraeteeinweisung_platzhalter.html?geraet=schubmaststapler&name=' + encodeURIComponent('Schubmaststapler') },
-  { key:'kommissionierstapler', titel:'Kommissionierstapler', sub:'Sondergerät Stufe 2', icon:'🧰', url:'geraeteeinweisung_platzhalter.html?geraet=kommissionierstapler&name=' + encodeURIComponent('Kommissionierstapler') },
-  { key:'schmalgangstapler', titel:'Schmalgangstapler', sub:'Sondergerät Stufe 2', icon:'🏬', url:'geraeteeinweisung_platzhalter.html?geraet=schmalgangstapler&name=' + encodeURIComponent('Schmalgangstapler') }
+  { key:'frontgabelstapler', titel:'Frontgabelstapler', sub:'Standardgerät Stufe 1', icon:'🏗️', url:'geraetekategorie.html?kategorie=frontgabelstapler' },
+  { key:'schubmaststapler', titel:'Schubmaststapler', sub:'Sondergerät Stufe 2', icon:'📦', url:'geraetekategorie.html?kategorie=schubmaststapler' },
+  { key:'kommissionierstapler', titel:'Kommissionierstapler', sub:'Sondergerät Stufe 2', icon:'🧰', url:'geraetekategorie.html?kategorie=kommissionierstapler' },
+  { key:'schmalgangstapler', titel:'Schmalgangstapler', sub:'Sondergerät Stufe 2', icon:'🏬', url:'geraetekategorie.html?kategorie=schmalgangstapler' }
 ];
 
 let currentRegnr = '', currentVorname = '', currentNachname = '';
