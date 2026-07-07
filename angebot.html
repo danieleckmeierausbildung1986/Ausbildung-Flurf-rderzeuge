@@ -60,7 +60,15 @@ nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.95);backdrop-
 .step-sub{font-size:14px;color:var(--muted);margin-bottom:28px}
 
 /* MODULE SELECTION */
-.module-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px}
+.module-stack{display:flex;flex-direction:column;gap:14px}
+.stufe2-row{display:flex;gap:14px;align-items:stretch}
+.stufe2-row .module-item{flex:0 0 260px}
+.device-panel{flex:1;display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+@media(max-width:720px){
+  .stufe2-row{flex-direction:column}
+  .stufe2-row .module-item{flex:none}
+  .device-panel{grid-template-columns:1fr}
+}
 .module-item{
   border:2px solid var(--line);border-radius:14px;padding:18px;cursor:pointer;
   transition:all .2s;background:#fff;position:relative;
@@ -224,7 +232,7 @@ nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.95);backdrop-
   <div class="step-card active" id="step1">
     <div class="step-title">Welche Schulungen benötigen Sie?</div>
     <div class="step-sub">Wählen Sie alle gewünschten Schulungen aus — Mehrfachauswahl möglich.</div>
-    <div class="module-grid">
+    <div class="module-stack">
 
       <div class="module-item" id="mod-stufe1" onclick="toggleModule('stufe1')">
         <div class="module-check" id="chk-stufe1">✓</div>
@@ -233,35 +241,36 @@ nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.95);backdrop-
         <div class="module-desc">Grundausbildung für alle Flurförderzeuge nach DGUV 308-001</div>
       </div>
 
-      <div class="module-item" id="mod-stufe2" onclick="toggleStufe2()">
-        <div class="module-check" id="chk-stufe2"></div>
-        <span class="module-icon">🚜</span>
-        <div class="module-name">Stufe 2 — Sondergeräte</div>
-        <div class="module-desc">Zusatzausbildung für Sondergeräte — Gerät(e) unten auswählen</div>
-      </div>
+      <div class="stufe2-row">
+        <div class="module-item" id="mod-stufe2" onclick="toggleStufe2()">
+          <div class="module-check" id="chk-stufe2"></div>
+          <span class="module-icon">🚜</span>
+          <div class="module-name">Stufe 2 — Sondergeräte</div>
+          <div class="module-desc">Zusatzausbildung für Sondergeräte — Gerät(e) rechts auswählen</div>
+        </div>
 
-      <div class="module-item device-card" id="mod-schubmast" style="display:none" onclick="toggleModule('schubmast')">
-        <div class="module-check" id="chk-schubmast"></div>
-        <span class="module-icon">📦</span>
-        <div class="module-name">Stufe 2 — Schubmast</div>
-        <div class="module-desc">Zusatzausbildung für Schubmaststapler</div>
-        <span class="module-tag">Stufe 2</span>
-      </div>
+        <div class="device-panel" id="devicePanel" style="display:none">
+          <div class="module-item device-card" id="mod-schubmast" onclick="toggleModule('schubmast')">
+            <div class="module-check" id="chk-schubmast"></div>
+            <span class="module-icon">📦</span>
+            <div class="module-name">Schubmast</div>
+            <div class="module-desc">Zusatzausbildung für Schubmaststapler</div>
+          </div>
 
-      <div class="module-item device-card" id="mod-kommissionierer" style="display:none" onclick="toggleModule('kommissionierer')">
-        <div class="module-check" id="chk-kommissionierer"></div>
-        <span class="module-icon">🔧</span>
-        <div class="module-name">Stufe 2 — Kommissionierer</div>
-        <div class="module-desc">Zusatzausbildung für Kommissionierstapler</div>
-        <span class="module-tag">Stufe 2</span>
-      </div>
+          <div class="module-item device-card" id="mod-kommissionierer" onclick="toggleModule('kommissionierer')">
+            <div class="module-check" id="chk-kommissionierer"></div>
+            <span class="module-icon">🔧</span>
+            <div class="module-name">Kommissionierer</div>
+            <div class="module-desc">Zusatzausbildung für Kommissionierstapler</div>
+          </div>
 
-      <div class="module-item device-card" id="mod-schmalgang" style="display:none" onclick="toggleModule('schmalgang')">
-        <div class="module-check" id="chk-schmalgang"></div>
-        <span class="module-icon">↔️</span>
-        <div class="module-name">Stufe 2 — Schmalgang</div>
-        <div class="module-desc">Zusatzausbildung für Schmalgangstapler</div>
-        <span class="module-tag">Stufe 2</span>
+          <div class="module-item device-card" id="mod-schmalgang" onclick="toggleModule('schmalgang')">
+            <div class="module-check" id="chk-schmalgang"></div>
+            <span class="module-icon">↔️</span>
+            <div class="module-name">Schmalgang</div>
+            <div class="module-desc">Zusatzausbildung für Schmalgangstapler</div>
+          </div>
+        </div>
       </div>
 
       <div class="module-item" id="mod-lasi" onclick="toggleModule('lasi')">
@@ -424,14 +433,16 @@ function toggleStufe2(){
   selected.stufe2 = !selected.stufe2;
   document.getElementById('mod-stufe2').classList.toggle('selected', selected.stufe2);
   document.getElementById('chk-stufe2').textContent = selected.stufe2 ? '✓' : '';
-  DEVICE_KEYS.forEach(function(id){
-    document.getElementById('mod-'+id).style.display = selected.stufe2 ? '' : 'none';
-    if(!selected.stufe2 && selected[id]){
-      selected[id] = false;
-      document.getElementById('mod-'+id).classList.remove('selected');
-      document.getElementById('chk-'+id).textContent = '';
-    }
-  });
+  document.getElementById('devicePanel').style.display = selected.stufe2 ? 'grid' : 'none';
+  if(!selected.stufe2){
+    DEVICE_KEYS.forEach(function(id){
+      if(selected[id]){
+        selected[id] = false;
+        document.getElementById('mod-'+id).classList.remove('selected');
+        document.getElementById('chk-'+id).textContent = '';
+      }
+    });
+  }
 }
 
 // Init Stufe1 als vorausgewählt
