@@ -98,6 +98,13 @@ body::before{
 const BASE = 'https://danieleckmeierausbildung1986.github.io/Ausbildung-Flurf-rderzeuge/';
 const ZUGANGSPRUEFUNG_URL = 'https://default8af25f9034bc4ef4aba22ab6f641d5.01.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/7058b6c8090842748465472db6085773/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=nxepIsGToa5my_-oIW5ZR5c3CQLtufN5DwNvM-qG1G4';
 
+const logoLangs = ['pl','ro','sq'];
+const currentLang = new URLSearchParams(window.location.search).get('lang') || 'de';
+function logoImg(base, ext){
+  const suffix = logoLangs.includes(currentLang) ? '_' + currentLang : '';
+  return 'logos/' + base + suffix + '.' + ext;
+}
+
 function getSF(val){
   if(val && typeof val === 'object') return (val.Value || '').toLowerCase().replace(/-/g,'');
   if(typeof val === 'string'){
@@ -129,19 +136,19 @@ function renderChoices(data, nr){
   if(theorieGeschlossen){
     list.innerHTML += `
       <div class="choice-btn disabled">
-        <img src="${BASE}logos/logo_ausbildung_lasi.jpg" alt="Theorieausbildung Ladungssicherung">
+        <img src="${BASE}${logoImg('logo_ausbildung_lasi','jpg')}" alt="Theorieausbildung Ladungssicherung">
         <span class="choice-badge">Bereits bestanden</span>
       </div>`;
   } else {
     list.innerHTML += `
       <a class="choice-btn" href="${theorieUrl}">
-        <img src="${BASE}logos/logo_ausbildung_lasi.jpg" alt="Theorieausbildung Ladungssicherung">
+        <img src="${BASE}${logoImg('logo_ausbildung_lasi','jpg')}" alt="Theorieausbildung Ladungssicherung">
       </a>`;
   }
 
   list.innerHTML += `
     <a class="choice-btn" href="${praxisUrl}">
-      <img src="${BASE}logos/lasi_praxis.jpg" alt="Praxisausbildung Ladungssicherung">
+      <img src="${BASE}${logoImg('lasi_praxis','jpg')}" alt="Praxisausbildung Ladungssicherung">
     </a>`;
 }
 
