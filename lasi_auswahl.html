@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Ladungssicherung – Auswahl</title>
+<style>
+:root{
+  --bg:#0d2b1a;--green-d:#0d2b1a;--green:#1a7a4a;--green-l:#2ea865;
+  --navy:#16243f;--muted:#68788f;--line:#e3e8f0;--ink:#1a2330;
+  --shadow:0 8px 40px rgba(0,0,0,.25);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:"Segoe UI",system-ui,sans-serif;
+  min-height:100vh;background:var(--bg);
+  display:flex;align-items:center;justify-content:center;padding:20px;
+}
+body::before{
+  content:'';position:fixed;inset:0;
+  background:
+    radial-gradient(ellipse 80% 60% at 20% 20%, rgba(26,122,74,.3) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 80% at 80% 80%, rgba(13,43,26,.35) 0%, transparent 60%);
+  pointer-events:none;z-index:0;
+}
+.container{position:relative;z-index:1;width:100%;max-width:640px;}
+.logo-area{text-align:center;margin-bottom:32px;animation:fadeDown .5s ease both}
+.logo-icon{
+  width:72px;height:72px;border-radius:18px;
+  background:linear-gradient(135deg,var(--green-d),var(--green-l));
+  display:flex;align-items:center;justify-content:center;
+  margin:0 auto 16px;box-shadow:0 8px 32px rgba(13,43,26,.4);
+}
+.logo-icon svg{width:38px;height:38px;fill:#fff}
+.logo-area h1{color:#fff;font-size:22px;font-weight:700;margin-bottom:4px}
+.logo-area p{color:rgba(255,255,255,.55);font-size:13px}
+.card{
+  background:#fff;border-radius:20px;
+  box-shadow:var(--shadow);overflow:hidden;
+  animation:fadeUp .5s ease .1s both;
+}
+.greeting{text-align:center;padding:24px 24px 16px;border-bottom:1px solid var(--line);}
+.greeting-name{font-size:20px;font-weight:700;color:var(--navy);margin-bottom:4px}
+.greeting-sub{font-size:13px;color:var(--muted)}
+.choices{padding:20px 24px 8px;display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:520px){.choices{grid-template-columns:1fr}}
+.choice-btn{
+  display:flex;flex-direction:column;align-items:center;text-align:center;gap:10px;
+  padding:22px 16px;border-radius:16px;border:none;
+  cursor:pointer;transition:all .15s;
+  text-decoration:none;width:100%;color:#fff;
+}
+.choice-btn.theorie{background:linear-gradient(135deg,#1a3a6b,#2e6cb0);}
+.choice-btn.praxis{background:linear-gradient(135deg,#0d2b1a,#1a7a4a);}
+.choice-btn:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,0,0,.25)}
+.choice-btn.disabled{
+  background:linear-gradient(135deg,#aaa,#ccc);
+  cursor:not-allowed;opacity:.6;
+}
+.choice-btn.disabled:hover{transform:none;box-shadow:none}
+.choice-icon{
+  width:52px;height:52px;border-radius:14px;
+  background:rgba(255,255,255,.2);
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+.choice-icon svg{width:28px;height:28px;fill:#fff}
+.choice-title{font-size:15px;font-weight:700}
+.choice-sub{font-size:12px;opacity:.75}
+.no-access{
+  text-align:center;padding:28px 20px;color:var(--muted);font-size:14px;line-height:1.6
+}
+.back-btn{
+  display:block;width:100%;padding:11px;border:2px solid var(--line);
+  border-radius:12px;background:#fff;color:var(--muted);
+  font-size:14px;font-weight:600;cursor:pointer;
+  transition:all .15s;text-align:center;
+}
+.back-btn:hover{border-color:var(--green);color:var(--green)}
+.footer-area{padding:20px 24px 24px;}
+@keyframes fadeDown{from{opacity:0;transform:translateY(-12px)}to{opacity:1;transform:none}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="logo-area">
+    <div class="logo-icon">
+      <svg viewBox="0 0 24 24"><path d="M20 8h-3V4H3c-1.1 0-2 .9-2 2v11h2c0 1.66 1.34 3 3 3s3-1.34 3-3h6c0 1.66 1.34 3 3 3s3-1.34 3-3h2v-5l-3-4z"/></svg>
+    </div>
+    <h1>Ladungssicherung</h1>
+    <p>VDI 2700 ff.</p>
+  </div>
+
+  <div class="card" id="mainCard">
+    <div class="greeting">
+      <div class="greeting-name" id="greetName">Willkommen</div>
+      <div class="greeting-sub">Bitte wählen Sie Theorie oder Praxis</div>
+    </div>
+    <div class="choices" id="choiceList"></div>
+    <div class="footer-area">
+      <button class="back-btn" onclick="goBack()">← Zurück zur Startseite</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const BASE = 'https://danieleckmeierausbildung1986.github.io/Ausbildung-Flurf-rderzeuge/';
+const ZUGANGSPRUEFUNG_URL = 'https://default8af25f9034bc4ef4aba22ab6f641d5.01.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/7058b6c8090842748465472db6085773/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=nxepIsGToa5my_-oIW5ZR5c3CQLtufN5DwNvM-qG1G4';
+
+function getSF(val){
+  if(val && typeof val === 'object') return (val.Value || '').toLowerCase().replace(/-/g,'');
+  if(typeof val === 'string'){
+    try{ const p = JSON.parse(val); if(p && p.Value) return String(p.Value).toLowerCase().replace(/-/g,''); }catch(e){}
+    return val.toLowerCase().replace(/-/g,'');
+  }
+  return '';
+}
+
+function getRegnrFromUrl(){
+  const params = new URLSearchParams(window.location.search);
+  const nr = params.get('regnr');
+  return (nr && /^\d{4}-\d{3,4}$/.test(nr)) ? nr : null;
+}
+
+function goBack(){
+  const nr = getRegnrFromUrl();
+  window.location.href = BASE + 'index.html' + (nr ? '?regnr=' + encodeURIComponent(nr) : '');
+}
+
+function renderChoices(data, nr){
+  const list = document.getElementById('choiceList');
+  list.innerHTML = '';
+
+  const theorieGeschlossen = getSF(data.pruefung_lasi_freigegeben) === 'geschlossen';
+  const theorieUrl = BASE + 'staplerapp_lasi_1.html?regnr=' + encodeURIComponent(nr);
+  const praxisUrl = BASE + 'lasi_praxismodul.html?regnr=' + encodeURIComponent(nr);
+
+  const theorieIcon = `<svg viewBox="0 0 24 24"><path d="M12 3L1 9l11 6 9-4.91V17h2V9L12 3zM5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82z"/></svg>`;
+  const praxisIcon = `<svg viewBox="0 0 24 24"><path d="M20 8h-3V4H3c-1.1 0-2 .9-2 2v11h2c0 1.66 1.34 3 3 3s3-1.34 3-3h6c0 1.66 1.34 3 3 3s3-1.34 3-3h2v-5l-3-4z"/></svg>`;
+
+  if(theorieGeschlossen){
+    list.innerHTML += `
+      <div class="choice-btn disabled">
+        <div class="choice-icon">${theorieIcon}</div>
+        <div class="choice-title">Theorie</div>
+        <div class="choice-sub">Bereits bestanden</div>
+      </div>`;
+  } else {
+    list.innerHTML += `
+      <a class="choice-btn theorie" href="${theorieUrl}">
+        <div class="choice-icon">${theorieIcon}</div>
+        <div class="choice-title">Theorieausbildung</div>
+        <div class="choice-sub">E-Learning</div>
+      </a>`;
+  }
+
+  list.innerHTML += `
+    <a class="choice-btn praxis" href="${praxisUrl}">
+      <div class="choice-icon">${praxisIcon}</div>
+      <div class="choice-title">Praxisausbildung</div>
+      <div class="choice-sub">Interaktives Modul</div>
+    </a>`;
+}
+
+async function init(){
+  const nr = getRegnrFromUrl();
+  const loginUrl = BASE + 'index.html' + (nr ? '?regnr=' + encodeURIComponent(nr) : '');
+  if(!nr){ window.location.href = loginUrl; return; }
+
+  const authRegnr = sessionStorage.getItem('authRegnr');
+  const authVorname = sessionStorage.getItem('authVorname');
+  const authNachname = sessionStorage.getItem('authNachname');
+  if(authRegnr !== nr || !authVorname || !authNachname){ window.location.href = loginUrl; return; }
+
+  document.getElementById('greetName').textContent = 'Hallo, ' + authVorname + ' ' + authNachname + '!';
+
+  try{
+    const res = await fetch(ZUGANGSPRUEFUNG_URL, {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ registrierungsnummer: nr, vorname: authVorname, nachname: authNachname })
+    });
+    const data = await res.json();
+    if(!(data && data.zugang === true) || !data.lasi){
+      document.getElementById('choiceList').innerHTML = '<div class="no-access">Für Sie ist aktuell keine Ladungssicherungs-Schulung gebucht. Bitte wenden Sie sich an Ihren Ausbilder.</div>';
+      return;
+    }
+    renderChoices(data, nr);
+  }catch(e){
+    document.getElementById('choiceList').innerHTML = '<div class="no-access">Verbindungsfehler. Bitte erneut versuchen.</div>';
+  }
+}
+
+init();
+</script>
+</body>
+</html>
