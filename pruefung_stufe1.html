@@ -413,6 +413,20 @@ var startTime = null;
 var vorname = '';
 var nachname = '';
 
+(function(){
+  var urlRegnr = urlParams.get('regnr');
+  if(!urlRegnr) return;
+  document.getElementById('regnr').value = urlRegnr;
+  var authRegnr = sessionStorage.getItem('authRegnr');
+  var authVorname = sessionStorage.getItem('authVorname');
+  var authNachname = sessionStorage.getItem('authNachname');
+  if(authRegnr === urlRegnr && authVorname && authNachname){
+    document.getElementById('vorname').value = authVorname;
+    document.getElementById('nachname').value = authNachname;
+    startWelcome();
+  }
+})();
+
 async function startWelcome(){
   regnr = document.getElementById('regnr').value.trim();
   vorname = document.getElementById('vorname').value.trim();
