@@ -125,6 +125,18 @@ button{font-family:inherit;cursor:pointer}
   background:#e8f0fe;border:1px solid #c5d5f5;border-radius:20px;
   color:#1a56db;font-size:11.5px;font-weight:600;text-decoration:none;white-space:nowrap}
 .mail-btn:hover{background:#d2e3fc}
+
+/* VIDEO-FOLIE */
+.video-slide{display:flex;flex-direction:column}
+.video-wrap{display:flex;flex-direction:column}
+.video-label{background:#16243f;color:#7ec8e3;font-size:13px;font-weight:700;
+  padding:10px 16px;letter-spacing:.03em;display:flex;align-items:center;
+  justify-content:space-between;border-radius:var(--r) var(--r) 0 0}
+.video-fs-btn{background:rgba(255,255,255,.15);border:none;border-radius:7px;
+  color:#fff;font-size:12px;font-weight:600;padding:4px 10px;cursor:pointer;
+  font-family:inherit;flex-shrink:0}
+.video-fs-btn:hover{background:rgba(255,255,255,.28)}
+.video-wrap iframe{display:block;width:100%;aspect-ratio:16/9;border:none}
 .mail-btn svg{width:13px;height:13px;fill:#1a56db;flex-shrink:0}
 
 /* QUIZ */
@@ -260,6 +272,22 @@ const LERNFORTSCHRITT_URL = 'https://default8af25f9034bc4ef4aba22ab6f641d5.01.en
 const WA_NR = '4916096877039';
 const MAIL = 'danieleckmeier@ausbildung1986.onmicrosoft.com';
 
+/* ── VIDEOS ──
+   Foliennummer → YouTube-Video (ersetzt die Folienbild-Anzeige für diese Nummer).
+   Folie 36 und 52 fehlen hier noch, da der Link in der Original-Präsentation
+   defekt war (kein gültiges Video hinterlegt) — sobald der richtige Link
+   bekannt ist, hier ergänzen. */
+const VIDEO_MAP = {
+  8:  { url:'https://www.youtube-nocookie.com/embed/S3jubdSZppc', titel:'Video: Unfallgeschehen' },
+  9:  { url:'https://www.youtube-nocookie.com/embed/S3jubdSZppc', titel:'Video: Unfallgeschehen (Fortsetzung)' },
+  41: { url:'https://www.youtube-nocookie.com/embed/iQ5Wtz8Rp7c?start=5', titel:'Video: Rechtliche Grundlagen & Verantwortung' },
+  94: { url:'https://www.youtube-nocookie.com/embed/9auPDNujfwk', titel:'Video: Physikalische Grundlagen (1)' },
+  95: { url:'https://www.youtube-nocookie.com/embed/RpX85Gt9Jrg', titel:'Video: Physikalische Grundlagen (2)' },
+  96: { url:'https://www.youtube-nocookie.com/embed/-halnFPU5ls', titel:'Video: Physikalische Grundlagen (3)' },
+  97: { url:'https://www.youtube-nocookie.com/embed/gpR58OEz0oc?start=5', titel:'Video: Physikalische Grundlagen (4)' },
+  119:{ url:'https://www.youtube-nocookie.com/embed/kYkAcw5y53U', titel:'Video: Arten der Ladungssicherung' }
+};
+
 /* ── KAPITEL DATA ── */
 const KAPITEL = [
   { title:"Einführung", folien:[1,2,3,4,5,6,7],
@@ -338,7 +366,10 @@ function buildSteps(){
   STEPS = [{type:'welcome'}];
   KAPITEL.forEach((k,ki)=>{
     STEPS.push({type:'chapter',ki});
-    k.folien.forEach((fn,fi)=>STEPS.push({type:'folie',ki,fi,fn}));
+    k.folien.forEach((fn,fi)=>{
+      if(VIDEO_MAP[fn]) STEPS.push({type:'video',ki,fi,fn,vidUrl:VIDEO_MAP[fn].url,titel:VIDEO_MAP[fn].titel});
+      else STEPS.push({type:'folie',ki,fi,fn});
+    });
     STEPS.push({type:'quiz',ki,qi:0});
   });
   STEPS.push({type:'exam'});
@@ -450,7 +481,7 @@ function renderFoot(showBack=true,showNext=true,nextLabel='Weiter →'){
   const foot=document.getElementById('foot');
   const s=STEPS[cur];
   let pageText='';
-  if(s.type==='folie'){
+  if(s.type==='folie'||s.type==='video'){
     const k=KAPITEL[s.ki];
     pageText=`Folie ${s.fi+1} / ${k.folien.length}`;
   }
@@ -469,6 +500,7 @@ function render(){
   if(s.type==='welcome'){crumb.textContent='';renderWelcome(host);}
   else if(s.type==='chapter'){crumb.textContent=`Kapitel ${s.ki+1}`;renderChapter(host,s.ki);}
   else if(s.type==='folie'){crumb.textContent=`Kapitel ${s.ki+1} · Folie ${s.fi+1}`;renderFolie(host,s);}
+  else if(s.type==='video'){crumb.textContent=`Kapitel ${s.ki+1} · Folie ${s.fi+1}`;renderVideo(host,s);}
   else if(s.type==='quiz'){crumb.textContent=`Kapitel ${s.ki+1} · Wissenstest`;renderQuiz(host,s.ki);}
   else if(s.type==='exam'){crumb.textContent='';renderExam(host);}
 }
@@ -532,6 +564,25 @@ function renderFolie(host,s){
     </div>
   </div>`;
   renderFoot(true,true,isLast?'Zum Quiz →':'Weiter →');
+}
+
+function renderVideo(host,s){
+  const nextStep=STEPS[cur+1];
+  const isLast=nextStep&&nextStep.type==='quiz';
+  host.innerHTML=`<div class="slide-card video-slide">
+    <div class="video-wrap">
+      <div class="video-label"><span>▶ ${s.titel}</span><button class="video-fs-btn" onclick="videoVollbild()">⛶ Vollbild</button></div>
+      <iframe id="videoFrame" src="${s.vidUrl}" allow="autoplay; fullscreen; picture-in-picture; encrypted-media" allowfullscreen></iframe>
+    </div>
+  </div>`;
+  renderFoot(true,true,isLast?'Zum Quiz →':'Weiter →');
+}
+
+function videoVollbild(){
+  const el=document.getElementById('videoFrame');
+  if(!el)return;
+  const req=el.requestFullscreen||el.webkitRequestFullscreen||el.mozRequestFullScreen||el.msRequestFullscreen;
+  if(req)req.call(el);
 }
 
 /* ── QUIZ ── */
