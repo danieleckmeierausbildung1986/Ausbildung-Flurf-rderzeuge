@@ -248,7 +248,7 @@ var GERAETE = {
       {num:22, text:"Bei 11.500 mm Einlagerhöhe: Wie viel darf die Last laut Traglastdiagramm maximal wiegen? (Angabe in kg)", type:"number", image:"STUFE2_BILDER/traglast_schubmast.png", correct:1250, tolerance:0},
       {num:23, text:"Bei 9.000 mm Höhe und 600 mm Lastschwerpunktabstand: Wie schwer darf die Last maximal sein? (Angabe in kg)", type:"number", image:"STUFE2_BILDER/traglast_schubmast.png", correct:1820, tolerance:0},
       {num:24, text:"Der Lastschwerpunkt liegt 600 mm vom Gabelrücken entfernt. Wie schwer darf die Last maximal sein? (Angabe in kg)", type:"number", image:"STUFE2_BILDER/traglast_schubmast.png", correct:2000, tolerance:0},
-      {num:25, text:"Wie viel Gewicht darf laut Typenschild maximal in ein Regalfeld gestellt werden? (Angabe in kg)", type:"number", correct:15000, tolerance:0},
+      {num:25, text:"Wie viel Gewicht darf laut Typenschild maximal in ein Regalfeld gestellt werden? (Angabe in kg)", type:"number", image:"STUFE2_BILDER/regalschild.png", correct:15000, tolerance:0},
       {num:26, text:"Welche Gefahr geht im Regalgang von den Radarmen aus?", opts:["Quetschgefahr durch Überfahren von Hindernissen oder Hängenbleiben an Regalstützen","Stromschlaggefahr","Rutschgefahr durch Öl auf den Radarmen"], correct:0},
       {num:27, text:"Ist im Hochregallagerbereich das Tragen eines Schutzhelms Pflicht?", opts:["Nein, nur bei Bauarbeiten","Ja","Nur für Besucher"], correct:1},
       {num:28, text:"Welche Bodenbeschaffenheit benötigt der Schubmaststapler?", opts:["Beliebiger Boden ist ausreichend","Extrem ebene und saubere Böden","Nur Böden mit starkem Gefälle"], correct:1},
@@ -256,7 +256,8 @@ var GERAETE = {
       {num:30, text:"Was gehört zur täglichen Funktionsprüfung?", opts:["Nur die Beleuchtung","U.a. Personenschutzeinrichtung (Bluespot), Gabelzinkenausschub, Feststell- und Betriebsbremse","Nur der Ölstand"], correct:1},
       {num:31, text:"Das Regal ist beschädigt. Wie gehst du vor?", opts:["Du sagst es niemandem","Du informierst deinen Vorgesetzten und deine Kollegen und sperrst den Bereich","Du reparierst den Schaden selbst"], correct:1},
       {num:32, text:"Wie näherst du dich Kreuzungen und unübersichtlichen Stellen in der Halle?", opts:["Mit überhöhter Geschwindigkeit","Mit besonderer Vorsicht und angepasster Geschwindigkeit","Hupend, ohne das Tempo zu ändern"], correct:1},
-      {num:33, text:"Was ist beim Durchfahren des Hallentors zu beachten?", opts:["Man darf grundsätzlich nicht durchfahren","Vorsichtig fahren und auf die Höhe des Staplers achten","Es spielt keine Rolle, wie hoch der Stapler ist"], correct:1}
+      {num:33, text:"Was ist beim Durchfahren des Hallentors zu beachten?", opts:["Man darf grundsätzlich nicht durchfahren","Vorsichtig fahren und auf die Höhe des Staplers achten","Es spielt keine Rolle, wie hoch der Stapler ist"], correct:1},
+      {num:34, text:"Darf laut nebenstehendem Schild eine weitere Person auf dem Schubmaststapler mitfahren?", image:"STUFE2_BILDER/mitfahren_verboten.png", opts:["Ja","Nein"], correct:1}
     ]
   },
   kommissionierer: {
@@ -281,11 +282,11 @@ var GERAETE = {
       {num:15, text:"Wie sollte bei einer vollgepackten Palette gefahren werden?", opts:["Vorwärts, das ist immer sicherer","Rückwärts, für eine bessere Sicht","Mit geschlossenen Augen, da die Kamera ausreicht"], correct:1},
       {num:16, text:"Wann sollte die Batterie eines Kommissionierers vollständig geladen werden?", opts:["Nach Feierabend, wenn Zeit ist","Vor Schichtbeginn","Nur einmal im Monat"], correct:1},
       {num:17, text:"Dürfen Personenschutzeinrichtungen überbrückt oder deaktiviert werden?", opts:["Ja, wenn es schneller geht","Nein, niemals","Nur mit mündlicher Erlaubnis des Vorgesetzten"], correct:1},
-      {num:18, text:"Last 1000 kg, Lastschwerpunktabstand 400 mm: Wie hoch darf diese maximal angehoben werden? (Angabe in mm)", type:"number", correct:2755, tolerance:0},
-      {num:19, text:"Last 700 kg, Lastschwerpunktabstand 500 mm: Wie hoch darf diese maximal angehoben werden? (Angabe in mm)", type:"number", correct:3580, tolerance:0},
-      {num:20, text:"Einlagerhöhe 3170 mm, Lastschwerpunktabstand 600 mm: Wie schwer darf die Last maximal sein? (Angabe in kg)", type:"number", correct:625, tolerance:0},
-      {num:21, text:"Einlagerhöhe 4395 mm, Lastschwerpunktabstand 400 mm: Wie schwer darf die Last maximal sein? (Angabe in kg)", type:"number", correct:750, tolerance:0},
-      {num:22, text:"Wie viel Gewicht darf laut Typenschild maximal in ein Regalfeld gestellt werden? (Angabe in kg)", type:"number", correct:15000, tolerance:0},
+      {num:18, text:"Last 1000 kg, Lastschwerpunktabstand 400 mm: Wie hoch darf diese maximal angehoben werden? (Angabe in mm)", type:"number", image:"STUFE2_BILDER/traglast_kommissionierer.png", correct:2755, tolerance:0},
+      {num:19, text:"Last 700 kg, Lastschwerpunktabstand 500 mm: Wie hoch darf diese maximal angehoben werden? (Angabe in mm)", type:"number", image:"STUFE2_BILDER/traglast_kommissionierer.png", correct:3580, tolerance:0},
+      {num:20, text:"Einlagerhöhe 3170 mm, Lastschwerpunktabstand 600 mm: Wie schwer darf die Last maximal sein? (Angabe in kg)", type:"number", image:"STUFE2_BILDER/traglast_kommissionierer.png", correct:625, tolerance:0},
+      {num:21, text:"Einlagerhöhe 4395 mm, Lastschwerpunktabstand 400 mm: Wie schwer darf die Last maximal sein? (Angabe in kg)", type:"number", image:"STUFE2_BILDER/traglast_kommissionierer.png", correct:750, tolerance:0},
+      {num:22, text:"Wie viel Gewicht darf laut Typenschild maximal in ein Regalfeld gestellt werden? (Angabe in kg)", type:"number", image:"STUFE2_BILDER/regalschild.png", correct:15000, tolerance:0},
       {num:23, text:"Worauf muss beim Ein- und Auslagern im Hochregallager geachtet werden?", opts:["Nur auf die Regalfarbe","Auf Sprinkleranlagen, Regalpfosten und Tiefenauflagen","Auf Staub im obersten Regalfach"], correct:1},
       {num:24, text:"Wann muss der Stapler auf seine Funktion geprüft werden?", opts:["Nie, das erledigt der Kundendienst","Vor Fahrtantritt","Einmal in der Woche"], correct:1},
       {num:25, text:"Was muss ich beim Anfahrschutz am Regal beachten?", opts:["Der Anfahrschutz hat nur optische Funktion","Der Anfahrschutz darf vom FFz nicht berührt werden","Das Vorderrad muss den Anfahrschutz berühren, nur so steht der Stapler gerade"], correct:1},
@@ -296,7 +297,8 @@ var GERAETE = {
       {num:30, text:"Darf beim Kommissionieren aus dem Fahrzeug herausgegriffen werden?", opts:["Ja, jederzeit","Ja, auch während der Fahrt","Nur bei still stehendem Fahrzeug"], correct:2},
       {num:31, text:"Wie verhält man sich beim Begegnen von Gegenverkehr?", opts:["Schnell vorbeifahren","Mit ausreichendem Abstand und angepasster Geschwindigkeit","Gegenverkehr grundsätzlich vermeiden"], correct:1},
       {num:32, text:"Wie näherst du dich Kreuzungen und unübersichtlichen Stellen in der Halle?", opts:["Mit überhöhter Geschwindigkeit","Mit besonderer Vorsicht und angepasster Geschwindigkeit","Hupend, ohne das Tempo zu ändern"], correct:1},
-      {num:33, text:"Was ist beim Durchfahren des Hallentors zu beachten?", opts:["Man darf grundsätzlich nicht durchfahren","Vorsichtig fahren und auf die Höhe des Staplers achten","Es spielt keine Rolle, wie hoch der Stapler ist"], correct:1}
+      {num:33, text:"Was ist beim Durchfahren des Hallentors zu beachten?", opts:["Man darf grundsätzlich nicht durchfahren","Vorsichtig fahren und auf die Höhe des Staplers achten","Es spielt keine Rolle, wie hoch der Stapler ist"], correct:1},
+      {num:34, text:"Darf laut nebenstehendem Schild eine weitere Person auf dem Kommissionierer mitfahren?", image:"STUFE2_BILDER/mitfahren_verboten.png", opts:["Ja","Nein"], correct:1}
     ]
   },
   schmalgang: {
@@ -327,7 +329,7 @@ var GERAETE = {
       {num:21, text:"Bei 6530 mm Einlagerhöhe und einem Lastschwerpunktabstand von 620 mm: Wie schwer darf die Last maximal sein? (Angabe in kg)", type:"number", image:"STUFE2_BILDER/traglast_schmalgang.png", correct:1500, tolerance:0},
       {num:22, text:"Bei 6530 mm Einlagerhöhe: Wie schwer darf eine Last mit demselben Lastschwerpunktabstand von 620 mm maximal sein? (Angabe in kg)", type:"number", image:"STUFE2_BILDER/traglast_schmalgang.png", correct:1500, tolerance:0},
       {num:23, text:"Der Lastschwerpunkt liegt 700 mm vom Gabelrücken entfernt: Wie schwer darf die Last bei 6530 mm Höhe maximal sein? (Angabe in kg)", type:"number", image:"STUFE2_BILDER/traglast_schmalgang.png", correct:1280, tolerance:0},
-      {num:24, text:"Wie viel Gewicht darf laut Typenschild maximal in ein Regalfeld gestellt werden? (Angabe in kg)", type:"number", correct:15000, tolerance:0},
+      {num:24, text:"Wie viel Gewicht darf laut Typenschild maximal in ein Regalfeld gestellt werden? (Angabe in kg)", type:"number", image:"STUFE2_BILDER/regalschild.png", correct:15000, tolerance:0},
       {num:25, text:"Welche Gefahr geht von Führungsrollen und Radarmen im Regalgang aus?", opts:["Es besteht keine besondere Gefahr","Sie können an Regalstützen hängenbleiben – der Boden muss vor Einfahrt auf Hindernisse geprüft werden","Nur Lärmbelästigung"], correct:1},
       {num:26, text:"Ist im Hochregallagerbereich das Tragen eines Schutzhelms Pflicht?", opts:["Nein, nur bei Bauarbeiten","Ja","Nur für Besucher"], correct:1},
       {num:27, text:"Welche Bodenbeschaffenheit benötigt der Schmalgangstapler?", opts:["Beliebiger Boden ist ausreichend","Extrem ebene Böden","Nur Böden mit starkem Gefälle"], correct:1},
@@ -336,7 +338,8 @@ var GERAETE = {
       {num:30, text:"Was gehört zur täglichen Sichtprüfung vor Fahrtantritt?", opts:["Nur der Ölstand","U.a. Hydraulik, Führungsrollen, Gabelzinken, Bereifung, Notablass-Ventil","Nur die Hupe"], correct:1},
       {num:31, text:"Was gehört zur täglichen Funktionsprüfung?", opts:["Nur die Beleuchtung","U.a. Zwangsführung einkoppeln testen, Feststell- und Betriebsbremse, Personenschutz-Scanner","Nur der Ölstand"], correct:1},
       {num:32, text:"Wie viele Rettungswege gibt es bei einer Störung in der Höhe, und welche?", opts:["Nur einen","Zwei: Notablass von unten durch eine zweite Person, sonst Selbstrettung durch Abseilen","Keinen, man wartet auf die Feuerwehr"], correct:1},
-      {num:33, text:"Was gilt für das Verhältnis zwischen Umwehrung und PSA gegen Absturz?", opts:["PSA hat immer Vorrang vor der Umwehrung","Kollektiver Schutz (Umwehrung) hat Vorrang vor persönlicher Schutzausrüstung (ArbSchG §4)","Beides ist völlig gleichrangig"], correct:1}
+      {num:33, text:"Was gilt für das Verhältnis zwischen Umwehrung und PSA gegen Absturz?", opts:["PSA hat immer Vorrang vor der Umwehrung","Kollektiver Schutz (Umwehrung) hat Vorrang vor persönlicher Schutzausrüstung (ArbSchG §4)","Beides ist völlig gleichrangig"], correct:1},
+      {num:34, text:"Darf laut nebenstehendem Schild eine weitere Person auf dem Schmalgangstapler mitfahren?", image:"STUFE2_BILDER/mitfahren_verboten.png", opts:["Ja","Nein"], correct:1}
     ]
   }
 };
