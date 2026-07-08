@@ -68,6 +68,18 @@ body::before{
 .dev-title{font-size:15px;font-weight:700;margin-bottom:2px}
 .dev-sub{font-size:12px;opacity:.7}
 .dev-arrow{font-size:18px;opacity:.7;flex-shrink:0}
+.device-tile{
+  display:block;border-radius:14px;overflow:hidden;border:1.5px solid var(--line);
+  position:relative;transition:all .15s;text-decoration:none;width:100%;
+}
+.device-tile img{display:block;width:100%;height:auto}
+a.device-tile:hover{border-color:var(--green);transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.12)}
+.device-tile.disabled{cursor:not-allowed}
+.device-tile.disabled img{filter:grayscale(1) brightness(1.1)}
+.device-tile-badge{
+  position:absolute;top:10px;right:10px;background:rgba(22,36,63,.85);color:#fff;
+  font-size:11px;font-weight:700;padding:4px 10px;border-radius:20px;
+}
 .no-devices{
   text-align:center;padding:28px 20px;color:var(--muted);font-size:14px;line-height:1.6
 }
@@ -166,34 +178,24 @@ function renderDevices(data){
     const nrForUrl = getRegnrFromUrl();
     const url = BASE + 'pruefung_stufe2.html?geraet=' + encodeURIComponent(g.key) + (nrForUrl ? '&regnr=' + encodeURIComponent(nrForUrl) : '');
 
+    const imgUrl = BASE + 'format_icons/kurs_stufe2_' + g.key + '.png';
+
     if(booked && geschlossen){
       list.innerHTML += `
-        <div class="device-btn disabled">
-          <div class="dev-icon">${g.icon}</div>
-          <div class="dev-info">
-            <div class="dev-title">${g.title}</div>
-            <div class="dev-sub">Bereits bestanden</div>
-          </div>
-          <div class="dev-arrow">✓</div>
+        <div class="device-tile disabled">
+          <img src="${imgUrl}" alt="${g.title}">
+          <span class="device-tile-badge">Bereits bestanden</span>
         </div>`;
     } else if(booked){
       list.innerHTML += `
-        <a class="device-btn ${g.cls}" href="${url}">
-          <div class="dev-icon">${g.icon}</div>
-          <div class="dev-info">
-            <div class="dev-title">${g.title}</div>
-          </div>
-          <div class="dev-arrow">→</div>
+        <a class="device-tile" href="${url}">
+          <img src="${imgUrl}" alt="${g.title}">
         </a>`;
     } else {
       list.innerHTML += `
-        <div class="device-btn disabled">
-          <div class="dev-icon">${g.icon}</div>
-          <div class="dev-info">
-            <div class="dev-title">${g.title}</div>
-            <div class="dev-sub">Nicht gebucht</div>
-          </div>
-          <div class="dev-arrow">🔒</div>
+        <div class="device-tile disabled">
+          <img src="${imgUrl}" alt="${g.title}">
+          <span class="device-tile-badge">Nicht gebucht</span>
         </div>`;
     }
   });
