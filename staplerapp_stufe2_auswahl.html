@@ -204,6 +204,11 @@ function getRegnrFromUrl(){
 }
 
 var currentLang = 'de';
+var logoLangs = ['pl','ro','sq'];
+function geraeteBild(key){
+  const suffix = logoLangs.includes(currentLang) ? '_' + currentLang : '';
+  return BASE + 'format_icons/kurs_stufe2_' + key + suffix + '.png';
+}
 
 function goBack(){
   const nr = getRegnrFromUrl();
@@ -231,12 +236,12 @@ function renderDevices(data, T){
     if(booked){
       list.innerHTML += `
         <a class="device-tile" href="${url}">
-          <img src="${BASE}format_icons/kurs_stufe2_${g.key}.png" alt="${title}">
+          <img src="${geraeteBild(g.key)}" alt="${title}">
         </a>`;
     } else {
       list.innerHTML += `
         <div class="device-tile disabled">
-          <img src="${BASE}format_icons/kurs_stufe2_${g.key}.png" alt="${title}">
+          <img src="${geraeteBild(g.key)}" alt="${title}">
           <span class="device-tile-badge">${T.notBooked}</span>
         </div>`;
     }
