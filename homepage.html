@@ -621,7 +621,7 @@ footer a{color:rgba(255,255,255,.4);text-decoration:underline}
         <p>Daniel Eckmeier<br>Am Schwimmbad 12<br>94436 Simbach</p>
         <h3>Kontakt</h3>
         <p>Telefon: wird ergänzt<br>E-Mail: <a href="mailto:DanielEckmeier@Ausbildung1986.onmicrosoft.com">DanielEckmeier@Ausbildung1986.onmicrosoft.com</a></p>
-        <h3>Verantwortlich nach § 55 Abs. 2 RStV</h3>
+        <h3>Verantwortlich nach § 18 Abs. 2 MStV</h3>
         <p>Daniel Eckmeier, Am Schwimmbad 12, 94436 Simbach</p>
       </div>
       <div class="imp-col">
@@ -634,13 +634,54 @@ footer a{color:rgba(255,255,255,.4);text-decoration:underline}
   </div>
 </section>
 
+<!-- DATENSCHUTZ -->
+<section class="impressum-section" id="datenschutz">
+  <div class="impressum-inner">
+    <div class="imp-toggle" onclick="toggleDatenschutz()">
+      <h2>Datenschutzerklärung</h2>
+      <span class="imp-toggle-arrow" id="ds-arrow">▾</span>
+    </div>
+    <div class="imp-body hidden" id="ds-body" style="grid-template-columns:1fr;max-width:760px">
+      <div class="imp-col" style="font-size:14px;line-height:1.7">
+        <h3>1. Datenschutz auf einen Blick</h3>
+        <p><strong>Allgemeine Hinweise</strong><br>
+        Die folgenden Hinweise geben einen einfachen Überblick darüber, was mit Ihren personenbezogenen Daten passiert, wenn Sie diese Website besuchen oder sich zu einer Schulung anmelden. Personenbezogene Daten sind alle Daten, mit denen Sie persönlich identifiziert werden können.</p>
+        <p><strong>Wer ist verantwortlich für die Datenerfassung auf dieser Website?</strong><br>
+        Die Datenverarbeitung erfolgt durch den Websitebetreiber. Dessen Kontaktdaten entnehmen Sie bitte dem <a href="#impressum" onclick="openImpressum()">Impressum</a>.</p>
+
+        <h3>2. Hosting</h3>
+        <p>Wir hosten diese Website bei GitHub Pages, einem Dienst der GitHub Inc., 88 Colin P. Kelly Jr. St., San Francisco, CA 94107, USA ("GitHub"). Beim Aufruf der Website erfasst GitHub technisch bedingt u. a. Ihre IP-Adresse, um die Seite an Ihren Browser auszuliefern. Die Datenübertragung in die USA wird auf die Standardvertragsklauseln der EU-Kommission gestützt. Details: <a href="https://docs.github.com/en/site-policy/privacy-policies/github-privacy-statement" target="_blank" rel="noopener">GitHub-Datenschutzerklärung</a>.</p>
+
+        <h3>3. SSL-/TLS-Verschlüsselung</h3>
+        <p>Diese Seite nutzt aus Sicherheitsgründen und zum Schutz der Übertragung vertraulicher Inhalte (z. B. Anmeldungen) eine SSL-/TLS-Verschlüsselung. Eine verschlüsselte Verbindung erkennen Sie am Wechsel von „http://" zu „https://" in der Adresszeile Ihres Browsers und am Schloss-Symbol.</p>
+
+        <h3>4. Datenerfassung bei Schulungsanmeldungen</h3>
+        <p><strong>Speicherung in Microsoft 365 / SharePoint</strong><br>
+        Wenn Sie sich über unser Online-Formular zu einer Schulung anmelden, werden die von Ihnen eingegebenen Daten (z. B. Name, Vorname, E-Mail-Adresse, gewählter Kurs) an unsere Cloud-Infrastruktur bei Microsoft übertragen und dort in Microsoft-SharePoint-Listen gespeichert. Anbieter ist die Microsoft Ireland Operations Limited, One Microsoft Place, South County Business Park, Leopardstown, Dublin 18, Irland ("Microsoft"). Mit Microsoft besteht ein Vertrag zur Auftragsverarbeitung (Data Processing Addendum), der eine DSGVO-konforme Verarbeitung sicherstellt.</p>
+        <p><strong>Pseudonymisierung der Einwilligung (Registrierungsnummer)</strong><br>
+        Aus Gründen der Datensparsamkeit dokumentieren wir Ihre datenschutzrechtliche Einwilligung getrennt von Ihren Klarnamen. Beim Absenden des Anmeldeformulars wird Ihre Einwilligung zusammen mit der jeweils aktuellen Version dieser Datenschutzerklärung und einem Zeitstempel gespeichert. Die Zuordnung erfolgt dabei über eine interne, pseudonymisierte Registrierungsnummer (Schema Jahreszahl_laufende Nummer, z. B. 2026_001). Eine Zusammenführung mit Ihren tatsächlichen Kundendaten erfolgt nur, wenn dies zu Nachweiszwecken (z. B. gegenüber Aufsichtsbehörden oder Berufsgenossenschaften) rechtlich erforderlich ist.</p>
+        <p><strong>Rechtsgrundlage</strong><br>
+        Die Verarbeitung im Rahmen der Kursanmeldung erfolgt nach Art. 6 Abs. 1 lit. b DSGVO (Vertragserfüllung bzw. vorvertragliche Maßnahmen). Die Speicherung des Einwilligungs-Status unter der Registrierungsnummer erfolgt nach Art. 6 Abs. 1 lit. c DSGVO (rechtliche Nachweispflicht) in Verbindung mit Art. 5 Abs. 1 lit. c DSGVO (Datensparsamkeit).</p>
+        <p><strong>Speicherdauer</strong><br>
+        Die Daten verbleiben bei uns, bis der Zweck für die Verarbeitung entfällt (z. B. nach abgeschlossener Abwicklung Ihrer Schulung) oder Sie uns zur Löschung auffordern. Gesetzliche Aufbewahrungsfristen sowie Nachweispflichten gegenüber Berufsgenossenschaften für ausgestellte Zertifikate (DGUV/VDI) bleiben unberührt.</p>
+
+        <h3>5. Ihre Rechte als betroffene Person</h3>
+        <p>Sie haben im Rahmen der geltenden gesetzlichen Bestimmungen jederzeit das Recht auf kostenlose Auskunft über Ihre gespeicherten personenbezogenen Daten (Art. 15 DSGVO), Berichtigung oder Löschung (Art. 16, 17 DSGVO), Einschränkung der Verarbeitung (Art. 18 DSGVO), Datenübertragbarkeit (Art. 20 DSGVO) sowie Widerruf einer erteilten Einwilligung mit Wirkung für die Zukunft (Art. 7 Abs. 3 DSGVO). Wenden Sie sich hierzu an die im <a href="#impressum" onclick="openImpressum()">Impressum</a> angegebene Adresse. Zudem steht Ihnen ein Beschwerderecht bei der zuständigen Datenschutz-Aufsichtsbehörde zu.</p>
+
+        <p style="color:var(--muted);font-size:12px;margin-top:20px">Stand: Version 1.0, Juli 2026</p>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- FOOTER -->
 <footer>
   <strong>ProDrive Akademie Niederbayern</strong> &nbsp;·&nbsp;
   Daniel Eckmeier &nbsp;·&nbsp;
   Am Schwimmbad 12, 94436 Simbach &nbsp;·&nbsp;
   DGUV 308-001 &nbsp;·&nbsp; VDI 2700 &nbsp;·&nbsp;
-  <a href="#impressum" onclick="openImpressum()">Impressum</a>
+  <a href="#impressum" onclick="openImpressum()">Impressum</a> &nbsp;·&nbsp;
+  <a href="#datenschutz" onclick="openDatenschutz()">Datenschutzerklärung</a>
 </footer>
 
 <script>
@@ -659,6 +700,20 @@ function openImpressum(){
   if(body.classList.contains('hidden')){
     body.classList.remove('hidden');
     document.getElementById('imp-arrow').classList.add('open');
+  }
+}
+function toggleDatenschutz(){
+  var body  = document.getElementById('ds-body');
+  var arrow = document.getElementById('ds-arrow');
+  var open  = !body.classList.contains('hidden');
+  body.classList.toggle('hidden', open);
+  arrow.classList.toggle('open', !open);
+}
+function openDatenschutz(){
+  var body = document.getElementById('ds-body');
+  if(body.classList.contains('hidden')){
+    body.classList.remove('hidden');
+    document.getElementById('ds-arrow').classList.add('open');
   }
 }
 
