@@ -89,6 +89,11 @@ body{
 .toggle.on .tl-on{display:block}
 
 /* Auswertung */
+.review-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:22px;
+  background:#fafbfc;border:1.5px solid var(--line);border-radius:12px;padding:16px}
+@media(max-width:640px){.review-grid{grid-template-columns:1fr 1fr}}
+.review-item span{display:block;font-size:10.5px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;margin-bottom:3px}
+.review-item b{display:block;font-size:14px;color:var(--navy);font-weight:700}
 .result-summary{display:flex;gap:14px;margin-bottom:22px;flex-wrap:wrap}
 .rs-card{flex:1;min-width:140px;border:1.5px solid var(--line);border-radius:12px;padding:16px;text-align:center}
 .rs-card b{display:block;font-size:26px;color:var(--navy)}
@@ -219,7 +224,8 @@ body{
     <div id="auswertungScreen" style="display:none">
       <div class="q-body">
         <div class="check-title">3. Auswertung und Ergebnis</div>
-        <div class="check-sub">Wird automatisch aus der Checkliste berechnet</div>
+        <div class="check-sub">Bitte Teilnehmerdaten vor dem Abschluss final abgleichen</div>
+        <div class="review-grid" id="reviewGrid"></div>
         <div class="result-summary">
           <div class="rs-card"><b id="rsFehler">0</b><span>Fehler gezählt</span></div>
           <div class="rs-card"><b id="rsZulaessig">9</b><span>zulässige Fehler</span></div>
@@ -305,6 +311,8 @@ body{
 // TODO: sobald FlowPraxisprotokoll / Fahrausweis_Flow_V2 auf HTTP-Trigger umgestellt sind, hier die echten URLs eintragen
 var ZUGANGSPRUEFUNG_URL = 'https://default8af25f9034bc4ef4aba22ab6f641d5.01.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/7058b6c8090842748465472db6085773/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=nxepIsGToa5my_-oIW5ZR5c3CQLtufN5DwNvM-qG1G4';
 var PRAXISPRUEFUNG_STUFE1_URL = 'TODO_HTTP_TRIGGER_URL_FLOWPRAXISPROTOKOLL';
+var ZERTIFIKATERSTELLUNG_URL = 'TODO_HTTP_TRIGGER_URL_ZERTIFIKATERSTELLUNG';
+var FAHRAUSWEIS_STUFE1_URL = 'TODO_HTTP_TRIGGER_URL_FAHRAUSWEIS_FLOW_V2';
 
 var PASS_MAX_FEHLER = 9; // zulässige Fehler — ggf. anpassen
 
@@ -348,6 +356,7 @@ var checkState = {};
 [].concat(CHECK1, CHECK2).forEach(function(i){ checkState[i.key] = false; });
 
 var regnr = '', vorname = '', nachname = '', pruefername = '';
+var geburtsdatum = '', geburtsort = '', kursBeginn = '', kursEnde = '';
 var fotoBase64 = '';
 
 function showScreen(id){
@@ -434,7 +443,14 @@ async function startLogin(){
     if(!(data && data.zugang === true)){
       errBox.textContent = data.grund || 'Registrierungsnummer nicht gefunden.';
       errBox.style.display = 'block';
+    } else if(data.status_theorie !== 'Bestanden'){
+      errBox.textContent = 'Dieser Teilnehmer hat die Theorieprüfung noch nicht bestanden. Die Praxisprüfung kann erst danach durchgeführt werden.';
+      errBox.style.display = 'block';
     } else {
+      geburtsdatum = data.geburtsdatum || '';
+      geburtsort = data.geburtsort || '';
+      kursBeginn = data.kurs_beginn || '';
+      kursEnde = data.kurs_ende || '';
       document.getElementById('check1Teilnehmer').textContent = vorname + ' ' + nachname + ' (' + regnr + ')';
       showScreen('check1Screen');
     }
@@ -447,6 +463,13 @@ async function startLogin(){
   }
 }
 
+function formatDate(v){
+  if(!v) return '–';
+  var m = /^(\d{4})-(\d{2})-(\d{2})/.exec(v);
+  if(m) return m[3] + '.' + m[2] + '.' + m[1];
+  return v;
+}
+
 function renderAuswertung(){
   var fehler = 0;
   [].concat(CHECK1, CHECK2).forEach(function(i){ if(!checkState[i.key]) fehler++; });
@@ -456,6 +479,20 @@ function renderAuswertung(){
   var statusEl = document.getElementById('rsStatus');
   statusEl.textContent = bestanden ? 'Bestanden' : 'Nicht bestanden';
   statusEl.className = 'rs-status ' + (bestanden ? 'pass' : 'fail');
+
+  var reviewFields = [
+    ['Reg.-Nr.', regnr],
+    ['Nachname', nachname],
+    ['Vorname', vorname],
+    ['Geburtsdatum', formatDate(geburtsdatum)],
+    ['Geburtsort', geburtsort || '–'],
+    ['Kurs Beginn', formatDate(kursBeginn)],
+    ['Kurs Ende', formatDate(kursEnde)],
+    ['Prüfer', pruefername]
+  ];
+  document.getElementById('reviewGrid').innerHTML = reviewFields.map(function(f){
+    return '<div class="review-item"><span>' + f[0] + '</span><b>' + f[1] + '</b></div>';
+  }).join('');
 }
 
 function onFotoSelected(e){
@@ -562,6 +599,10 @@ async function submitPruefung(){
     bewertungstext: document.getElementById('bewertungstext').value.trim(),
     fehlerbesprechung: fehlerbespr,
     checkliste: checkliste,
+    geburtsdatum: geburtsdatum,
+    geburtsort: geburtsort,
+    kurs_beginn: kursBeginn,
+    kurs_ende: kursEnde,
     unterschrift_pruefer: sigDataUrl('sigPruefer'),
     unterschrift_teilnehmer: sigDataUrl('sigTeilnehmer'),
     foto_fahrausweis: bestanden ? fotoBase64 : '',
@@ -580,6 +621,30 @@ async function submitPruefung(){
     });
   } catch(e){
     // Flow-URL ist aktuell noch ein Platzhalter — Speichern schlägt bis zur Umstellung erwartungsgemäß fehl
+  }
+
+  if(bestanden){
+    // Entspricht Zertifikaterstellung.Run(...) / Fahrausweis_Flow_V2.Run(...) aus der Power-Apps-App.
+    // Feldnamen 1:1 auf die 12 Trigger-Parameter von Fahrausweis_Flow_V2 gemappt (ID, Nachname, Vorname,
+    // Pruefungsdatum, Pruefer, UnterschriftPruefer, vonDatum, bisDatum, Geburtsdatum, Geburtsort,
+    // UnterschriftTeilnehmer, PassbildBase64). Unterschriften/Foto als reines Base64 ohne data:-Prefix —
+    // "Datei erstellen 2" muss das Prefix bei text_5/text_10 entsprechend ergänzen (siehe Absprache).
+    var dokPayload = {
+      id: regnr,
+      nachname: nachname,
+      vorname: vorname,
+      pruefungsdatum: document.getElementById('datumPraxis').value,
+      pruefer: pruefername,
+      unterschrift_pruefer: sigDataUrl('sigPruefer'),
+      von_datum: kursBeginn,
+      bis_datum: kursEnde,
+      geburtsdatum: geburtsdatum,
+      geburtsort: geburtsort,
+      unterschrift_teilnehmer: sigDataUrl('sigTeilnehmer'),
+      foto_base64: fotoBase64
+    };
+    try { await fetch(ZERTIFIKATERSTELLUNG_URL, {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(dokPayload)}); } catch(e){}
+    try { await fetch(FAHRAUSWEIS_STUFE1_URL, {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(dokPayload)}); } catch(e){}
   }
 
   document.getElementById('resIcon').textContent = bestanden ? '✅' : '❌';
