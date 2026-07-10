@@ -632,7 +632,7 @@ async function submitPruefung(){
   checkliste.PP_Kommentar = document.getElementById('kommentar1').value.trim();
 
   var fehlerbespr = document.querySelector('input[name="fehlerbespr"]:checked').value;
-  var pruefungsdatum = document.getElementById('datumPraxis').value;
+  var pruefungsdatum = formatDate(document.getElementById('datumPraxis').value);
   var sigPrueferUrl = sigDataUrl('sigPruefer');
   var sigTeilnehmerUrl = sigDataUrl('sigTeilnehmer');
 
@@ -678,9 +678,9 @@ async function submitPruefung(){
       text_3: pruefungsdatum,
       text_4: pruefername,
       text_5: sigPrueferUrl,
-      text_6: kursBeginn,
-      text_7: kursEnde,
-      text_8: geburtsdatum,
+      text_6: formatDate(kursBeginn),
+      text_7: formatDate(kursEnde),
+      text_8: formatDate(geburtsdatum),
       text_9: geburtsort,
       text_10: sigTeilnehmerUrl
     };
