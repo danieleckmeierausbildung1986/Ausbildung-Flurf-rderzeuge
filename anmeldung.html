@@ -94,6 +94,12 @@ nav{
   background:#fef2f2;border:1px solid #fecaca;color:#dc2626;
   border-radius:10px;padding:12px 16px;font-size:14px;margin-top:16px;
 }
+.af-consent{
+  display:flex;align-items:flex-start;gap:10px;margin-top:22px;
+  font-size:13.5px;color:var(--muted);line-height:1.5;
+}
+.af-consent input{margin-top:3px;flex-shrink:0}
+.af-consent a{color:var(--blue);font-weight:600}
 .af-submit{
   display:block;width:100%;padding:14px;border-radius:12px;
   font-size:16px;font-weight:700;background:var(--blue);color:#fff;
@@ -253,6 +259,11 @@ footer{
         </div>
       </div>
 
+      <label class="af-consent">
+        <input type="checkbox" id="ck-datenschutz" required>
+        Ich habe die <a href="homepage.html#datenschutz" target="_blank" rel="noopener">Datenschutzerklärung</a> zur Kenntnis genommen und willige in die Verarbeitung meiner Daten ein.
+      </label>
+
       <div id="af-error" class="af-error" style="display:none"></div>
       <button type="submit" class="af-submit">Anmeldung absenden</button>
     </form>
@@ -263,7 +274,8 @@ footer{
   <strong>ProDrive Akademie Niederbayern</strong> &nbsp;·&nbsp;
   Daniel Eckmeier &nbsp;·&nbsp;
   Am Schwimmbad 12, 94436 Simbach &nbsp;·&nbsp;
-  <a href="homepage.html#impressum">Impressum</a>
+  <a href="homepage.html#impressum">Impressum</a> &nbsp;·&nbsp;
+  <a href="homepage.html#datenschutz">Datenschutzerklärung</a>
 </footer>
 
 <script>
@@ -397,6 +409,13 @@ document.getElementById('anmeldungForm').addEventListener('submit', async functi
     return;
   }
 
+  if(!document.getElementById('ck-datenschutz').checked){
+    errEl.textContent = 'Bitte bestätigen Sie die Datenschutzerklärung, bevor Sie fortfahren.';
+    errEl.style.display = 'block';
+    document.querySelector('.af-consent').scrollIntoView({behavior:'smooth', block:'center'});
+    return;
+  }
+
   var schulungen = [];
   if(stufe1)   schulungen.push('Ausbildung Flurförderzeuge Stufe 1');
   if(stufe2)   schulungen.push('Zusatzausbildung Stufe 2');
@@ -431,7 +450,9 @@ document.getElementById('anmeldungForm').addEventListener('submit', async functi
     schulung:                schulungen.join(', '),
     schulungstyp:            schulungstyp,
     kursnummer:              _urlKursnummer,
-    kurs_sp_id:              _urlKursSpId
+    kurs_sp_id:              _urlKursSpId,
+    datenschutz_einwilligung: true,
+    datenschutz_version:      '1.0'
   };
 
   var btn = e.target.querySelector('.af-submit');
