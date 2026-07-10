@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Praxisprüfung Stufe 2 – ProDrive Akademie Niederbayern</title>
+<style>
+:root{
+  --green-d:#1a3a6b;--green:#2e6cb0;--green-l:#4a8ad4;
+  --acc1:#1a3a6b;--acc2:#2e6cb0;
+  --navy:#16243f;--line:#e3e8f0;--muted:#5a6a7a;--ink:#1a2330;
+  --danger:#dc2626;--danger-bg:#fef2f2;--ok:#15803d;--ok-bg:#f0fdf4;
+  --bg-glow-1:rgba(26,58,107,.28);--bg-glow-2:rgba(46,108,176,.32);
+  --shadow:0 8px 40px rgba(0,0,0,.25);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:"Segoe UI",system-ui,sans-serif;
+  min-height:100vh;background:#0a1628;
+  background-image:radial-gradient(ellipse 80% 60% at 20% 10%, var(--bg-glow-1) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 80% at 90% 90%, var(--bg-glow-2) 0%, transparent 60%);
+  display:flex;justify-content:center;padding:24px 16px 60px;
+}
+.wrap{width:100%;max-width:960px}
+.topbar{display:flex;align-items:center;gap:14px;margin-bottom:14px}
+.ti{width:46px;height:46px;border-radius:12px;flex-shrink:0;
+  background:linear-gradient(135deg,var(--acc1),var(--acc2));
+  display:flex;align-items:center;justify-content:center;box-shadow:0 6px 20px rgba(0,0,0,.3)}
+.topbar h1{color:#fff;font-size:18px;font-weight:700;line-height:1.2}
+.topbar p{color:rgba(255,255,255,.5);font-size:12px}
+
+.stage{background:#fff;border-radius:18px;box-shadow:var(--shadow);overflow:hidden}
+.progress{height:5px;background:var(--line)}
+.progress-bar{height:100%;background:linear-gradient(90deg,var(--acc1),var(--acc2));transition:width .25s ease;width:0}
+
+.q-body{padding:34px 30px 28px}
+.q-num{font-size:12px;font-weight:700;letter-spacing:.5px;color:var(--green);text-transform:uppercase;margin-bottom:8px}
+.q-text{font-size:19px;font-weight:700;color:var(--navy);line-height:1.5;margin-bottom:22px}
+.q-sub{font-size:13.5px;color:var(--muted);line-height:1.55;margin-bottom:20px}
+
+.field{margin-bottom:16px}
+.field label{display:block;font-size:12.5px;font-weight:700;color:var(--navy);margin-bottom:8px}
+.field input, .field textarea, .field select{
+  width:100%;padding:13px 16px;border:1.5px solid var(--line);border-radius:12px;
+  font-size:16px;color:var(--ink);font-family:inherit;background:#fff
+}
+.field input:focus, .field textarea:focus, .field select:focus{outline:none;border-color:var(--green)}
+.field input[readonly]{background:#f5f7fa;color:var(--muted)}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:560px){.field-row{grid-template-columns:1fr}}
+
+.err-box{background:var(--danger-bg);border:1px solid #fecaca;color:var(--danger);border-radius:10px;
+  padding:12px 16px;font-size:13.5px;margin-top:14px;display:none}
+
+.nav-row{display:flex;justify-content:space-between;align-items:center;padding:18px 30px;border-top:1px solid var(--line)}
+.nav-btn{border:none;border-radius:10px;padding:11px 22px;font-size:14px;font-weight:700;cursor:pointer;transition:all .15s}
+.nav-btn.back{background:#fff;border:1.5px solid var(--line);color:var(--muted)}
+.nav-btn.back:hover{border-color:var(--navy);color:var(--navy)}
+.nav-btn.back:disabled{opacity:.4;cursor:default}
+.nav-btn.next{background:var(--green);color:#fff}
+.nav-btn.next:hover{background:var(--green-d)}
+.nav-btn.next:disabled{opacity:.5;cursor:default}
+.step-count{font-size:13px;color:var(--muted);font-weight:600}
+
+/* Checkliste */
+.check-title{font-size:16px;font-weight:800;color:var(--navy);margin-bottom:4px}
+.check-sub{font-size:12.5px;color:var(--muted);margin-bottom:14px}
+.check-all-btn{
+  display:block;width:100%;padding:12px;margin-bottom:18px;border:1.5px solid var(--ok);border-radius:12px;
+  background:var(--ok-bg);color:var(--ok);font-size:13.5px;font-weight:700;cursor:pointer;transition:all .15s;
+}
+.check-all-btn:hover{background:var(--ok);color:#fff}
+.check-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px 16px}
+@media(max-width:640px){.check-grid{grid-template-columns:1fr}}
+.check-item{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  border:1.5px solid var(--line);border-radius:12px;padding:12px 14px;
+}
+.check-item span{font-size:14px;color:var(--ink);font-weight:600}
+.toggle{position:relative;width:52px;height:30px;flex-shrink:0;cursor:pointer;
+  border-radius:16px;background:var(--danger);transition:background .15s;border:none}
+.toggle.on{background:var(--ok)}
+.toggle::after{content:'';position:absolute;top:3px;left:3px;width:24px;height:24px;
+  border-radius:50%;background:#fff;transition:transform .15s;box-shadow:0 1px 3px rgba(0,0,0,.3)}
+.toggle.on::after{transform:translateX(22px)}
+.toggle-label{font-size:10.5px;font-weight:700;color:#fff;position:absolute;top:50%;transform:translateY(-50%);
+  pointer-events:none;letter-spacing:.3px}
+.toggle .tl-off{right:6px}
+.toggle .tl-on{left:6px;display:none}
+.toggle.on .tl-off{display:none}
+.toggle.on .tl-on{display:block}
+
+/* Auswertung */
+.review-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:22px;
+  background:#fafbfc;border:1.5px solid var(--line);border-radius:12px;padding:16px}
+@media(max-width:640px){.review-grid{grid-template-columns:1fr 1fr}}
+.review-item span{display:block;font-size:10.5px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;margin-bottom:3px}
+.review-item b{display:block;font-size:14px;color:var(--navy);font-weight:700}
+.result-summary{display:flex;gap:14px;margin-bottom:22px;flex-wrap:wrap}
+.rs-card{flex:1;min-width:140px;border:1.5px solid var(--line);border-radius:12px;padding:16px;text-align:center}
+.rs-card b{display:block;font-size:26px;color:var(--navy)}
+.rs-card span{font-size:11.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.4px}
+.rs-status{padding:14px;border-radius:12px;text-align:center;font-size:17px;font-weight:800;margin-bottom:22px}
+.rs-status.pass{background:var(--ok-bg);color:var(--ok)}
+.rs-status.fail{background:var(--danger-bg);color:var(--danger)}
+.radio-row{display:flex;gap:18px;margin-top:8px}
+.radio-opt{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--ink);cursor:pointer}
+.radio-opt input{width:17px;height:17px;accent-color:var(--green)}
+
+/* Abschluss */
+.consent{border:1.5px solid var(--line);border-radius:12px;padding:16px 18px;margin-bottom:18px;display:flex;gap:12px}
+.consent input{margin-top:3px;accent-color:var(--green);width:18px;height:18px;flex-shrink:0}
+.consent p{font-size:13px;color:var(--ink);line-height:1.55}
+.consent b{color:var(--navy)}
+
+.foto-box{border:1.5px dashed var(--line);border-radius:12px;padding:18px;text-align:center;margin-bottom:18px}
+.foto-box img{max-width:160px;border-radius:10px;display:block;margin:0 auto 12px}
+.foto-btn{background:var(--green);color:#fff;border:none;border-radius:10px;padding:11px 20px;font-size:14px;font-weight:700;cursor:pointer}
+
+.sign-wrap{margin-bottom:18px}
+.sign-wrap label{display:block;font-size:12.5px;font-weight:700;color:var(--navy);margin-bottom:8px}
+.sign-pad-box{border:1.5px solid var(--line);border-radius:12px;overflow:hidden;position:relative;background:#fafbfc}
+.sign-pad-box canvas{display:block;width:100%;height:150px;touch-action:none}
+.sign-clear{position:absolute;top:8px;right:8px;background:#fff;border:1px solid var(--line);border-radius:8px;
+  padding:5px 10px;font-size:11.5px;color:var(--muted);cursor:pointer}
+
+.submit-btn{
+  display:block;width:100%;padding:15px;border:none;border-radius:12px;background:var(--green);
+  color:#fff;font-size:16px;font-weight:700;cursor:pointer;transition:background .15s;margin-top:6px
+}
+.submit-btn:hover{background:var(--green-d)}
+.submit-btn:disabled{opacity:.5;cursor:default}
+
+.result-box{padding:50px 30px;text-align:center}
+.result-icon{font-size:56px;margin-bottom:14px}
+.result-title{font-size:24px;font-weight:800;margin-bottom:8px}
+.result-title.pass{color:var(--ok)}
+.result-title.fail{color:var(--danger)}
+.result-hint{font-size:13.5px;color:var(--muted);max-width:420px;margin:0 auto;line-height:1.6}
+
+@media(max-width:640px){
+  .q-body{padding:22px 18px}
+  .nav-row{padding:14px 18px}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="topbar">
+    <div class="ti"><svg viewBox="0 0 24 24" style="width:26px;height:26px;fill:#fff"><path fill-rule="evenodd" d="M6.5 4C5.67 4 5 4.67 5 5.5V10H4.5C3.67 10 3 10.67 3 11.5V16h.6a3.6 3.6 0 0 1 7 0h.9a3.6 3.6 0 0 1 3.5-2.9V11.3c0-.72-.58-1.3-1.3-1.3h-.9L11.4 5a1.5 1.5 0 0 0-1.4-1H6.5zm.7 1.8h2.3l1.5 4.2H7.2V5.8z"/><circle cx="7.1" cy="17.6" r="2.4"/><circle cx="14.6" cy="17.6" r="2.4"/><path d="M16.6 2.5c-.44 0-.8.36-.8.8v10.5c0 .44.36.8.8.8h.2c.44 0 .8-.36.8-.8V3.3c0-.44-.36-.8-.8-.8h-.2z"/><path d="M15.8 14.2h6.7c.44 0 .8.36.8.8v.2c0 .44-.36.8-.8.8h-6.7v-1.8z"/></svg></div>
+    <div>
+      <h1>ProDrive Akademie Niederbayern</h1>
+      <p id="topbarSub">Praxisprüfung Stufe 2 · DGUV Grundsatz 308-001</p>
+    </div>
+  </div>
+
+  <div class="stage">
+    <div class="progress" id="progressWrap" style="display:none"><div class="progress-bar" id="pbar"></div></div>
+
+    <!-- ===== SCREEN 1: LOGIN / TEILNEHMER ===== -->
+    <div id="loginScreen">
+      <div class="q-body">
+        <div class="q-num">Prüfer-Anmeldung</div>
+        <div class="q-text" id="loginTitle">Praxisprüfung Stufe 2</div>
+        <div class="q-sub" id="loginSub">Bitte Registrierungsnummer sowie Vor- und Nachname des Prüflings eingeben.</div>
+        <div class="field">
+          <label>Registrierungsnummer</label>
+          <input type="text" id="regnr" placeholder="2026-001" autocomplete="off">
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label>Vorname</label>
+            <input type="text" id="vorname" placeholder="Max" autocomplete="off">
+          </div>
+          <div class="field">
+            <label>Nachname</label>
+            <input type="text" id="nachname" placeholder="Mustermann" autocomplete="off">
+          </div>
+        </div>
+        <div class="field">
+          <label>Prüfer (Ihr Name)</label>
+          <input type="text" id="pruefername" placeholder="z. B. Daniel Eckmeier" autocomplete="off">
+        </div>
+        <div class="err-box" id="loginErrBox"></div>
+      </div>
+      <div class="nav-row">
+        <button class="nav-btn back" onclick="zurueckZurAuswahl()">← Zurück zur Geräteauswahl</button>
+        <button class="nav-btn next" id="loginNextBtn" onclick="startLogin()">Weiter →</button>
+      </div>
+    </div>
+
+    <!-- ===== SCREEN 2: CHECKLISTE 1 – SICHT & FUNKTIONSKONTROLLE ===== -->
+    <div id="check1Screen" style="display:none">
+      <div class="q-body">
+        <div class="check-title">1. Sicht- und Funktionskontrolle</div>
+        <div class="check-sub" id="check1Teilnehmer"></div>
+        <button type="button" class="check-all-btn" onclick="setAllChecks(CHECK1, true)">✓ Alles in Ordnung — alle auf I.O. setzen</button>
+        <div class="check-grid" id="check1Grid"></div>
+        <div class="field" style="margin-top:18px">
+          <label>Kommentar (optional)</label>
+          <textarea id="kommentar1" rows="2"></textarea>
+        </div>
+      </div>
+      <div class="nav-row">
+        <button class="nav-btn back" onclick="showScreen('loginScreen')">← Zurück</button>
+        <span class="step-count">Schritt 1 / 4</span>
+        <button class="nav-btn next" onclick="showScreen('check2Screen')">Weiter →</button>
+      </div>
+    </div>
+
+    <!-- ===== SCREEN 3: CHECKLISTE 2 – FAHRPROBE & HANDLING ===== -->
+    <div id="check2Screen" style="display:none">
+      <div class="q-body">
+        <div class="check-title">2. Fahrprobe und Handling</div>
+        <div class="check-sub" id="check2Sub">Praktische Durchführung bewerten</div>
+        <button type="button" class="check-all-btn" onclick="setAllChecks(CHECK2, true)">✓ Alles in Ordnung — alle auf I.O. setzen</button>
+        <div class="check-grid" id="check2Grid"></div>
+      </div>
+      <div class="nav-row">
+        <button class="nav-btn back" onclick="showScreen('check1Screen')">← Zurück</button>
+        <span class="step-count">Schritt 2 / 4</span>
+        <button class="nav-btn next" onclick="renderAuswertung();showScreen('auswertungScreen')">Weiter →</button>
+      </div>
+    </div>
+
+    <!-- ===== SCREEN 4: AUSWERTUNG ===== -->
+    <div id="auswertungScreen" style="display:none">
+      <div class="q-body">
+        <div class="check-title">3. Auswertung und Ergebnis</div>
+        <div class="check-sub">Bitte Teilnehmerdaten vor dem Abschluss final abgleichen</div>
+        <div class="review-grid" id="reviewGrid"></div>
+        <div class="result-summary">
+          <div class="rs-card"><b id="rsFehler">0</b><span>Fehler gezählt</span></div>
+          <div class="rs-card"><b id="rsZulaessig">9</b><span>zulässige Fehler</span></div>
+        </div>
+        <div class="rs-status" id="rsStatus">–</div>
+        <div class="field">
+          <label>Bewertungstext / Kommentar zur Praxisprüfung</label>
+          <textarea id="bewertungstext" rows="3"></textarea>
+        </div>
+        <div class="field">
+          <label>Datum der Praxisprüfung</label>
+          <input type="date" id="datumPraxis">
+        </div>
+        <div class="field">
+          <label>Fehlerbesprechung mit dem Prüfling durchgeführt?</label>
+          <div class="radio-row">
+            <label class="radio-opt"><input type="radio" name="fehlerbespr" value="Ja"> Ja</label>
+            <label class="radio-opt"><input type="radio" name="fehlerbespr" value="Nein" checked> Nein</label>
+          </div>
+        </div>
+      </div>
+      <div class="nav-row">
+        <button class="nav-btn back" onclick="showScreen('check2Screen')">← Zurück</button>
+        <span class="step-count">Schritt 3 / 4</span>
+        <button class="nav-btn next" onclick="showScreen('abschlussScreen')">Weiter →</button>
+      </div>
+    </div>
+
+    <!-- ===== SCREEN 5: ABSCHLUSS & DOKUMENTE ===== -->
+    <div id="abschlussScreen" style="display:none">
+      <div class="q-body">
+        <div class="check-title">4. Abschluss und Dokumente</div>
+        <div class="consent">
+          <input type="checkbox" id="ckDguv">
+          <p>Gemäß <b>DGUV 308-001</b> sind wir verpflichtet, Ihre Prüfungsunterlagen einschließlich Lichtbild für 10 Jahre aufzubewahren. Mit dem Abhaken und Ihrer Unterschrift bestätigen Sie Ihr Einverständnis zur Speicherung Ihrer Daten und Ihres Fotos.</p>
+        </div>
+
+        <div class="foto-box" id="fotoBox">
+          <div id="fotoPreviewWrap" style="display:none"><img id="fotoPreview"></div>
+          <input type="file" id="fotoInput" accept="image/*" capture="environment" style="display:none" onchange="onFotoSelected(event)">
+          <button type="button" class="foto-btn" onclick="document.getElementById('fotoInput').click()">📷 Foto für Fahrausweis aufnehmen</button>
+        </div>
+
+        <div class="sign-wrap">
+          <label>Unterschrift Prüfer</label>
+          <div class="sign-pad-box">
+            <canvas id="sigPruefer"></canvas>
+            <button type="button" class="sign-clear" onclick="clearSig('sigPruefer')">Löschen</button>
+          </div>
+        </div>
+        <div class="sign-wrap">
+          <label>Unterschrift Teilnehmer</label>
+          <div class="sign-pad-box">
+            <canvas id="sigTeilnehmer"></canvas>
+            <button type="button" class="sign-clear" onclick="clearSig('sigTeilnehmer')">Löschen</button>
+          </div>
+        </div>
+
+        <button class="submit-btn" id="submitBtn" onclick="submitPruefung()">Prüfung speichern</button>
+        <div class="err-box" id="finalErrBox"></div>
+      </div>
+      <div class="nav-row">
+        <button class="nav-btn back" onclick="showScreen('auswertungScreen')">← Zurück</button>
+        <span class="step-count">Schritt 4 / 4</span>
+        <span></span>
+      </div>
+    </div>
+
+    <!-- ===== SCREEN 6: ERGEBNIS ===== -->
+    <div id="resultScreen" style="display:none">
+      <div class="result-box">
+        <div class="result-icon" id="resIcon">✅</div>
+        <div class="result-title" id="resTitle">Gespeichert</div>
+        <div class="result-hint" id="resHint"></div>
+        <button class="nav-btn next" style="margin-top:24px" onclick="location.reload()">Nächste Prüfung →</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+var BASE = 'https://danieleckmeierausbildung1986.github.io/Ausbildung-Flurf-rderzeuge/';
+
+// Gleicher Zugangsprüfung-Flow wie bei der Theorieprüfung Stufe 2 / Praxisprüfung Stufe 1 —
+// liefert u.a. zugang, status_theorie, geburtsdatum, geburtsort, kurs_beginn, kurs_ende
+// sowie je Gerät ein Freigabe-Feld (z.B. pruefung_schubmast_freigegeben: true/'Ja'/'Geschlossen').
+// "Geschlossen" an diesem Feld heißt: die Theorieprüfung für das Gerät wurde bereits bestanden —
+// das ist unser Gate für den Zugang zur Praxisprüfung Stufe 2.
+var ZUGANGSPRUEFUNG_URL = 'https://default8af25f9034bc4ef4aba22ab6f641d5.01.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/7058b6c8090842748465472db6085773/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=nxepIsGToa5my_-oIW5ZR5c3CQLtufN5DwNvM-qG1G4';
+
+// TODO: Noch anzulegende Flows (Kopien von FlowPraxisprotokoll / Zertifikaterstellung / Fahrausweis_Flow_V2,
+// aber mit gerätespezifischer Beschriftung "Schubmaststapler" / "Kommissionierstapler" / "Schmalgangstapler"
+// auf Zertifikat & Fahrausweis) — URLs hier eintragen, sobald die Flows stehen.
+var FLOW_URLS = {
+  schubmast: { praxis:'', zertifikat:'', fahrausweis:'' },
+  kommissionierer: { praxis:'', zertifikat:'', fahrausweis:'' },
+  schmalgang: { praxis:'', zertifikat:'', fahrausweis:'' }
+};
+
+var GERAETE = {
+  schubmast: {
+    label: 'Schubmaststapler',
+    freigabeFeld: 'pruefung_schubmast_freigegeben',
+    farbD: '#1a3a6b', farbL: '#2e6cb0', glow1: 'rgba(26,58,107,.28)', glow2: 'rgba(46,108,176,.32)',
+    passMaxFehler: 8,
+    check1: [
+      {key:'PP2_Beleuchtung', label:'Beleuchtung'},
+      {key:'PP2_Hupe', label:'Hupe'},
+      {key:'PP2_ReifenRadarme', label:'Bereifung / Radarme'},
+      {key:'PP2_Bremsen', label:'Feststell- und Betriebsbremse'},
+      {key:'PP2_Hydraulik', label:'Hydraulik / Leckverlust'},
+      {key:'PP2_Gabelzinken', label:'Gabelzinken'},
+      {key:'PP2_Hubketten', label:'Hubketten'},
+      {key:'PP2_RisseMast', label:'Mast auf Risse geprüft'},
+      {key:'PP2_Ausschubmechanismus', label:'Ausschubmechanismus'},
+      {key:'PP2_Gabelzinkenausschub', label:'Gabelzinkenausschub-Funktion'},
+      {key:'PP2_Bluespot', label:'Personenschutzeinrichtung (Bluespot)'},
+      {key:'PP2_Pruefplakette', label:'Prüfplakette'},
+      {key:'PP2_AnzeigeKontrolle', label:'Anzeige-Kontrolle'},
+      {key:'PP2_Kamerasystem', label:'Kamerasystem an den Gabelzinken'}
+    ],
+    check2: [
+      {key:'PP2_LastBodennah', label:'Last bodennah / Mast eingezogen fahren'},
+      {key:'PP2_MastEingezogen', label:'Niemals mit ausgefahrenem Mast fahren oder lenken'},
+      {key:'PP2_MastschwingungAbwarten', label:'Mastschwingung in großer Höhe vor Ein-/Auslagern abgewartet'},
+      {key:'PP2_KameraZusatzblick', label:'Kamerasystem nicht als Ersatz genutzt — zusätzlich mit bloßem Auge kontrolliert'},
+      {key:'PP2_HeckSchwenken', label:'Heck-Ausschwenken beim Lenken beachtet'},
+      {key:'PP2_Kreuzungen', label:'Angepasste Geschwindigkeit an Kreuzungen / unübersichtlichen Stellen'},
+      {key:'PP2_HupenLangsam', label:'Hupen & langsam bei Tor / Engstellen'},
+      {key:'PP2_NaesseGlaette', label:'Bremsverhalten bei Nässe / Glätte angepasst'},
+      {key:'PP2_Regalstuetzen', label:'Radarme im Gang — kein Hängenbleiben an Regalstützen'},
+      {key:'PP2_Feststellbremse', label:'Feststellbremse nach dem Abstellen angezogen'},
+      {key:'PP2_Schluessel', label:'Schlüssel abgezogen / gegen unbefugte Benutzung gesichert'},
+      {key:'PP2_Aufnehmen', label:'Sicheres Aufnehmen der Last'},
+      {key:'PP2_Stapeln', label:'Sicheres Stapeln und/oder Absetzen der Last'},
+      {key:'PP2_KeinAnstossen', label:'Kein Anstoßen an Regale oder Hindernisse'}
+    ]
+  },
+  kommissionierer: {
+    label: 'Kommissionierstapler',
+    freigabeFeld: 'pruefung_kommissionierer_freigegeben',
+    farbD: '#2d1b6b', farbL: '#5b3db0', glow1: 'rgba(45,27,107,.30)', glow2: 'rgba(91,61,176,.34)',
+    passMaxFehler: 7,
+    check1: [
+      {key:'PP2_Beleuchtung', label:'Beleuchtung'},
+      {key:'PP2_Hupe', label:'Hupe'},
+      {key:'PP2_Bereifung', label:'Bereifung'},
+      {key:'PP2_Hydraulikschlaeuche', label:'Hydraulikschläuche'},
+      {key:'PP2_Rahmen', label:'Rahmen auf Beschädigungen'},
+      {key:'PP2_Batterieladestand', label:'Batterie vollständig geladen'},
+      {key:'PP2_PSA', label:'PSA gegen Absturz — Sicht- und Funktionsprüfung (Gurt, Anschlagmittel)'},
+      {key:'PP2_Personenschutz', label:'Personenschutzeinrichtungen aktiv, nicht überbrückt'},
+      {key:'PP2_Bremsen', label:'Feststell- und Betriebsbremse'},
+      {key:'PP2_AnzeigeKontrolle', label:'Anzeige-Kontrolle'},
+      {key:'PP2_Pruefplakette', label:'Prüfplakette'},
+      {key:'PP2_Umwehrung', label:'Umwehrung / Fahrkorb unbeschädigt'}
+    ],
+    check2: [
+      {key:'PP2_PSAAnlegen', label:'PSA gegen Absturz vor Öffnen der Umwehrung angelegt'},
+      {key:'PP2_Kabinenkontur', label:'Hände / Füße innerhalb der Kabinenkontur (Quetschgefahr)'},
+      {key:'PP2_DefektVerhalten', label:'Verhalten bei Defekt in der Höhe bekannt (Ruhe bewahren, Kollegen alarmieren)'},
+      {key:'PP2_Rueckwaerts', label:'Rückwärtsfahren bei vollgepackter Palette'},
+      {key:'PP2_KeinGreifenWaehrendFahrt', label:'Kein Herausgreifen während der Fahrt, nur bei Stillstand'},
+      {key:'PP2_Sprinkler', label:'Sprinkleranlagen, Regalpfosten und Tiefenauflagen beachtet'},
+      {key:'PP2_Anfahrschutz', label:'Anfahrschutz am Regal beachtet'},
+      {key:'PP2_Kreuzungen', label:'Angepasste Geschwindigkeit an Kreuzungen / unübersichtlichen Stellen'},
+      {key:'PP2_Gegenverkehr', label:'Ausreichender Abstand bei Gegenverkehr'},
+      {key:'PP2_Aufnehmen', label:'Sicheres Aufnehmen der Last'},
+      {key:'PP2_Feststellbremse', label:'Feststellbremse angezogen'},
+      {key:'PP2_Schluessel', label:'Schlüssel abgezogen / gegen unbefugte Benutzung gesichert'}
+    ]
+  },
+  schmalgang: {
+    label: 'Schmalgangstapler',
+    freigabeFeld: 'pruefung_schmalgang_freigegeben',
+    farbD: '#1a5a3a', farbL: '#2ea865', glow1: 'rgba(26,90,58,.28)', glow2: 'rgba(46,168,101,.32)',
+    passMaxFehler: 7,
+    check1: [
+      {key:'PP2_Beleuchtung', label:'Beleuchtung'},
+      {key:'PP2_Hupe', label:'Hupe'},
+      {key:'PP2_Bereifung', label:'Bereifung'},
+      {key:'PP2_Hydraulik', label:'Hydraulik'},
+      {key:'PP2_Fuehrungsrollen', label:'Führungsrollen'},
+      {key:'PP2_Gabelzinken', label:'Gabelzinken'},
+      {key:'PP2_NotablassVentil', label:'Notablass-Ventil'},
+      {key:'PP2_Zwangsfuehrung', label:'Zwangsführung einkoppeln (Funktionstest)'},
+      {key:'PP2_Bremsen', label:'Feststell- und Betriebsbremse'},
+      {key:'PP2_PersonenschutzScanner', label:'Personenschutz-Scanner'},
+      {key:'PP2_Pruefplakette', label:'Prüfplakette'},
+      {key:'PP2_AnzeigeKontrolle', label:'Anzeige-Kontrolle'}
+    ],
+    check2: [
+      {key:'PP2_Annaehern', label:'Langsames Annähern & exaktes Ausrichten vor Einfahrt in den Gang'},
+      {key:'PP2_ZwangsfuehrungAbwarten', label:'Abgewartet, bis Zwangsführung eingekoppelt hat'},
+      {key:'PP2_NieOhneZwangsfuehrung', label:'Nie ohne aktive Zwangsführung eingefahren'},
+      {key:'PP2_PSAAnlegen', label:'PSA gegen Absturz vor Öffnen der Umwehrung angelegt (Man-Up)'},
+      {key:'PP2_Rettungswege', label:'Rettungswege bei Defekt in großer Höhe bekannt'},
+      {key:'PP2_Traglastdiagramm', label:'Traglastdiagramm vor Einsatz beachtet'},
+      {key:'PP2_MastschwingungAbwarten', label:'Mastschwingung nach Anhalten vollständig abgewartet vor Einlagern'},
+      {key:'PP2_Aufnehmen', label:'Sicheres Aufnehmen der Last'},
+      {key:'PP2_Feststellbremse', label:'Feststellbremse angezogen'},
+      {key:'PP2_Schluessel', label:'Schlüssel abgezogen / gegen unbefugte Benutzung gesichert'},
+      {key:'PP2_Kreuzungen', label:'Angepasste Geschwindigkeit an Kreuzungen / unübersichtlichen Stellen'}
+    ]
+  }
+};
+
+var urlParams = new URLSearchParams(window.location.search);
+var geraet = urlParams.get('geraet') || '';
+var G = GERAETE[geraet];
+var CHECK1 = G ? G.check1 : [];
+var CHECK2 = G ? G.check2 : [];
+var PASS_MAX_FEHLER = G ? G.passMaxFehler : 9; // Platzhalter-Werte — ggf. anpassen
+
+if(G){
+  document.title = 'Praxisprüfung Stufe 2 – ' + G.label + ' – ProDrive Akademie Niederbayern';
+  document.getElementById('topbarSub').textContent = 'Praxisprüfung Stufe 2 · ' + G.label + ' · DGUV Grundsatz 308-001';
+  document.getElementById('loginTitle').textContent = 'Praxisprüfung ' + G.label;
+  document.getElementById('check2Sub').textContent = 'Praktische Durchführung bewerten — ' + G.label;
+  document.getElementById('rsZulaessig').textContent = PASS_MAX_FEHLER;
+  document.documentElement.style.setProperty('--acc1', G.farbD);
+  document.documentElement.style.setProperty('--acc2', G.farbL);
+  document.documentElement.style.setProperty('--green-d', G.farbD);
+  document.documentElement.style.setProperty('--green', G.farbL);
+  document.documentElement.style.setProperty('--bg-glow-1', G.glow1);
+  document.documentElement.style.setProperty('--bg-glow-2', G.glow2);
+} else {
+  document.getElementById('loginScreen').innerHTML = '<div class="q-body"><div class="q-num">Fehler</div><div class="q-text">Kein gültiges Gerät angegeben. Bitte rufen Sie diese Seite über die Geräteauswahl auf.</div></div>';
+}
+
+var checkState = {};
+[].concat(CHECK1, CHECK2).forEach(function(i){ checkState[i.key] = false; });
+
+var regnr = '', vorname = '', nachname = '', pruefername = '';
+var geburtsdatum = '', geburtsort = '', kursBeginn = '', kursEnde = '';
+var fotoBase64 = '';
+
+function zurueckZurAuswahl(){
+  window.location.href = BASE + 'praxispruefung_stufe2_auswahl.html';
+}
+
+function showScreen(id){
+  ['loginScreen','check1Screen','check2Screen','auswertungScreen','abschlussScreen','resultScreen'].forEach(function(s){
+    document.getElementById(s).style.display = (s===id) ? 'block' : 'none';
+  });
+  var progressMap = {check1Screen:25, check2Screen:50, auswertungScreen:75, abschlussScreen:95};
+  var pw = document.getElementById('progressWrap');
+  if(progressMap[id]){
+    pw.style.display = 'block';
+    document.getElementById('pbar').style.width = progressMap[id] + '%';
+  } else {
+    pw.style.display = 'none';
+  }
+  if(id === 'abschlussScreen') setTimeout(initSigPads, 30);
+}
+
+function renderChecklist(gridId, items){
+  var host = document.getElementById(gridId);
+  host.innerHTML = '';
+  items.forEach(function(item){
+    var row = document.createElement('div');
+    row.className = 'check-item';
+    row.innerHTML = '<span>' + item.label + '</span>' +
+      '<button type="button" class="toggle" data-key="' + item.key + '">' +
+        '<span class="toggle-label tl-off">n.i.O.</span>' +
+        '<span class="toggle-label tl-on">I.O.</span>' +
+      '</button>';
+    host.appendChild(row);
+  });
+  host.querySelectorAll('.toggle').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var key = btn.getAttribute('data-key');
+      checkState[key] = !checkState[key];
+      btn.classList.toggle('on', checkState[key]);
+    });
+  });
+}
+renderChecklist('check1Grid', CHECK1);
+renderChecklist('check2Grid', CHECK2);
+
+function setAllChecks(items, value){
+  items.forEach(function(item){
+    checkState[item.key] = value;
+  });
+  document.querySelectorAll('.toggle').forEach(function(btn){
+    var key = btn.getAttribute('data-key');
+    if(items.some(function(i){ return i.key === key; })){
+      btn.classList.toggle('on', value);
+    }
+  });
+}
+document.getElementById('datumPraxis').value = new Date().toISOString().slice(0,10);
+
+function isFreigabeGeschlossen(val){
+  if(val && typeof val === 'object') val = val.Value;
+  return val === 'Geschlossen';
+}
+
+async function startLogin(){
+  regnr = document.getElementById('regnr').value.trim();
+  vorname = document.getElementById('vorname').value.trim();
+  nachname = document.getElementById('nachname').value.trim();
+  pruefername = document.getElementById('pruefername').value.trim();
+  var errBox = document.getElementById('loginErrBox');
+  var btn = document.getElementById('loginNextBtn');
+  errBox.style.display = 'none';
+
+  if(!regnr){ errBox.textContent = 'Bitte Registrierungsnummer eingeben.'; errBox.style.display = 'block'; return; }
+  if(!vorname || !nachname){ errBox.textContent = 'Bitte Vor- und Nachnamen eingeben.'; errBox.style.display = 'block'; return; }
+  if(!pruefername){ errBox.textContent = 'Bitte Ihren Namen als Prüfer eintragen.'; errBox.style.display = 'block'; return; }
+
+  btn.disabled = true;
+  btn.textContent = 'Prüfe…';
+  try {
+    var res = await fetch(ZUGANGSPRUEFUNG_URL, {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ registrierungsnummer: regnr, vorname: vorname, nachname: nachname })
+    });
+    var data = await res.json();
+
+    if(!(data && data.zugang === true)){
+      errBox.textContent = data.grund || 'Registrierungsnummer nicht gefunden.';
+      errBox.style.display = 'block';
+    } else if(!isFreigabeGeschlossen(data[G.freigabeFeld])){
+      errBox.textContent = 'Dieser Teilnehmer hat die Theorieprüfung Stufe 2 (' + G.label + ') noch nicht bestanden. Die Praxisprüfung kann erst danach durchgeführt werden.';
+      errBox.style.display = 'block';
+    } else {
+      geburtsdatum = data.geburtsdatum || '';
+      geburtsort = data.geburtsort || '';
+      kursBeginn = data.kurs_beginn || '';
+      kursEnde = data.kurs_ende || '';
+      document.getElementById('check1Teilnehmer').textContent = vorname + ' ' + nachname + ' (' + regnr + ') — ' + G.label;
+      showScreen('check1Screen');
+    }
+  } catch(e){
+    errBox.textContent = 'Verbindung fehlgeschlagen. Bitte versuchen Sie es erneut.';
+    errBox.style.display = 'block';
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Weiter →';
+  }
+}
+
+function formatDate(v){
+  if(!v) return '–';
+  var m = /^(\d{4})-(\d{2})-(\d{2})/.exec(v);
+  if(m) return m[3] + '.' + m[2] + '.' + m[1];
+  return v;
+}
+
+function renderAuswertung(){
+  var fehler = 0;
+  [].concat(CHECK1, CHECK2).forEach(function(i){ if(!checkState[i.key]) fehler++; });
+  var bestanden = fehler <= PASS_MAX_FEHLER;
+  document.getElementById('rsFehler').textContent = fehler;
+  document.getElementById('rsZulaessig').textContent = PASS_MAX_FEHLER;
+  var statusEl = document.getElementById('rsStatus');
+  statusEl.textContent = bestanden ? 'Bestanden' : 'Nicht bestanden';
+  statusEl.className = 'rs-status ' + (bestanden ? 'pass' : 'fail');
+
+  var reviewFields = [
+    ['Gerät', G.label],
+    ['Reg.-Nr.', regnr],
+    ['Nachname', nachname],
+    ['Vorname', vorname],
+    ['Geburtsdatum', formatDate(geburtsdatum)],
+    ['Geburtsort', geburtsort || '–'],
+    ['Kurs Beginn', formatDate(kursBeginn)],
+    ['Kurs Ende', formatDate(kursEnde)],
+    ['Prüfer', pruefername]
+  ];
+  document.getElementById('reviewGrid').innerHTML = reviewFields.map(function(f){
+    return '<div class="review-item"><span>' + f[0] + '</span><b>' + f[1] + '</b></div>';
+  }).join('');
+}
+
+function onFotoSelected(e){
+  var file = e.target.files[0];
+  if(!file) return;
+  var reader = new FileReader();
+  reader.onload = function(ev){
+    var img = new Image();
+    img.onload = function(){
+      var maxDim = 500;
+      var scale = Math.min(1, maxDim / Math.max(img.width, img.height));
+      var canvas = document.createElement('canvas');
+      canvas.width = Math.round(img.width * scale);
+      canvas.height = Math.round(img.height * scale);
+      canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+      var dataUrl = canvas.toDataURL('image/jpeg', 0.75);
+      fotoBase64 = dataUrl.split(',')[1];
+      document.getElementById('fotoPreview').src = dataUrl;
+      document.getElementById('fotoPreviewWrap').style.display = 'block';
+    };
+    img.src = ev.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+/* ===== Unterschriften-Pads ===== */
+var sigPads = {};
+function initSigPads(){
+  ['sigPruefer','sigTeilnehmer'].forEach(function(id){
+    if(sigPads[id]) return;
+    var canvas = document.getElementById(id);
+    var ratio = window.devicePixelRatio || 1;
+    canvas.width = canvas.clientWidth * ratio;
+    canvas.height = canvas.clientHeight * ratio;
+    var ctx = canvas.getContext('2d');
+    ctx.scale(ratio, ratio);
+    ctx.strokeStyle = '#16243f';
+    ctx.lineWidth = 2.2;
+    ctx.lineCap = 'round';
+    var drawing = false, last = null;
+    function pos(e){
+      var r = canvas.getBoundingClientRect();
+      return {x: e.clientX - r.left, y: e.clientY - r.top};
+    }
+    canvas.addEventListener('pointerdown', function(e){
+      drawing = true; last = pos(e); canvas.setPointerCapture(e.pointerId);
+    });
+    canvas.addEventListener('pointermove', function(e){
+      if(!drawing) return;
+      var p = pos(e);
+      ctx.beginPath(); ctx.moveTo(last.x, last.y); ctx.lineTo(p.x, p.y); ctx.stroke();
+      last = p;
+    });
+    ['pointerup','pointerleave','pointercancel'].forEach(function(ev){
+      canvas.addEventListener(ev, function(){ drawing = false; });
+    });
+    sigPads[id] = canvas;
+  });
+}
+function clearSig(id){
+  var canvas = document.getElementById(id);
+  var ctx = canvas.getContext('2d');
+  ctx.save();
+  ctx.setTransform(1, 0, 0, 1, 0, 0);
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.restore();
+}
+function sigDataUrl(id){
+  return document.getElementById(id).toDataURL('image/png');
+}
+function sigIsEmpty(id){
+  var canvas = document.getElementById(id);
+  var ctx = canvas.getContext('2d');
+  var data = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+  for(var i = 3; i < data.length; i += 4){ if(data[i] !== 0) return false; }
+  return true;
+}
+
+async function submitPruefung(){
+  var errBox = document.getElementById('finalErrBox');
+  errBox.style.display = 'none';
+
+  if(!document.getElementById('ckDguv').checked){
+    errBox.textContent = 'Bitte bestätigen Sie den DGUV-308-001-Hinweis.';
+    errBox.style.display = 'block';
+    document.getElementById('ckDguv').scrollIntoView({behavior:'smooth', block:'center'});
+    return;
+  }
+  if(!fotoBase64){
+    errBox.textContent = 'Bitte ein Foto aufnehmen, bevor Sie die Prüfung speichern.';
+    errBox.style.display = 'block';
+    document.getElementById('fotoBox').scrollIntoView({behavior:'smooth', block:'center'});
+    return;
+  }
+  if(sigIsEmpty('sigPruefer') || sigIsEmpty('sigTeilnehmer')){
+    errBox.textContent = 'Bitte beide Unterschriften einholen, bevor Sie speichern.';
+    errBox.style.display = 'block';
+    document.getElementById(sigIsEmpty('sigPruefer') ? 'sigPruefer' : 'sigTeilnehmer').scrollIntoView({behavior:'smooth', block:'center'});
+    return;
+  }
+
+  var fehler = 0;
+  var checkliste = {};
+  [].concat(CHECK1, CHECK2).forEach(function(i){
+    checkliste[i.key] = checkState[i.key] ? 'I.O.' : 'n.i.O.';
+    if(!checkState[i.key]) fehler++;
+  });
+  var bestanden = fehler <= PASS_MAX_FEHLER;
+  var status = bestanden ? 'Bestanden' : 'nicht Bestanden';
+  checkliste.PP2_Geraet = G.label;
+  checkliste.PP2_Kommentar = document.getElementById('kommentar1').value.trim();
+
+  var fehlerbespr = document.querySelector('input[name="fehlerbespr"]:checked').value;
+  var pruefungsdatum = formatDate(document.getElementById('datumPraxis').value);
+  var sigPrueferUrl = sigDataUrl('sigPruefer');
+  var sigTeilnehmerUrl = sigDataUrl('sigTeilnehmer');
+
+  // Gleiches Schema wie Praxisprüfung Stufe 1 (Variante B: text..text_N, damit die
+  // gerätespezifischen Kopien der Flows ohne Änderung an Dokumenterstellung/Update übernommen werden können).
+  var payload = {
+    text: regnr,
+    text_1: status,
+    text_2: nachname,
+    text_3: vorname,
+    text_4: pruefungsdatum,
+    text_5: pruefername,
+    text_6: JSON.stringify(checkliste),
+    text_7: sigPrueferUrl,
+    text_8: '0',
+    text_9: String(fehler),
+    text_10: document.getElementById('bewertungstext').value.trim(),
+    text_11: fehlerbespr
+  };
+
+  var urls = FLOW_URLS[geraet];
+  var btn = document.getElementById('submitBtn');
+  btn.disabled = true;
+  btn.textContent = 'Wird gespeichert…';
+
+  try {
+    if(urls.praxis){
+      await fetch(urls.praxis, {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload)});
+    }
+  } catch(e){}
+
+  if(bestanden){
+    var dokPayload = {
+      text: regnr,
+      text_1: nachname,
+      text_2: vorname,
+      text_3: pruefungsdatum,
+      text_4: pruefername,
+      text_5: sigPrueferUrl,
+      text_6: formatDate(kursBeginn),
+      text_7: formatDate(kursEnde),
+      text_8: formatDate(geburtsdatum),
+      text_9: geburtsort,
+      text_10: sigTeilnehmerUrl
+    };
+    var fahrausweisPayload = Object.assign({}, dokPayload, {text_11: fotoBase64});
+    try { if(urls.zertifikat) await fetch(urls.zertifikat, {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(dokPayload)}); } catch(e){}
+    try { if(urls.fahrausweis) await fetch(urls.fahrausweis, {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(fahrausweisPayload)}); } catch(e){}
+  }
+
+  document.getElementById('resIcon').textContent = bestanden ? '✅' : '❌';
+  var t = document.getElementById('resTitle');
+  t.textContent = bestanden ? 'Bestanden!' : 'Nicht bestanden';
+  t.className = 'result-title ' + (bestanden ? 'pass' : 'fail');
+  document.getElementById('resHint').textContent = bestanden
+    ? 'Das Ergebnis wurde übermittelt. Zertifikat und Fahrausweis werden automatisch erstellt.'
+    : 'Das Ergebnis wurde übermittelt. Bitte vereinbaren Sie einen Termin für die Nachprüfung.';
+  showScreen('resultScreen');
+}
+</script>
+</body>
+</html>
