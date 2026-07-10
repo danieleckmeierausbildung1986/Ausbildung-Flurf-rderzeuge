@@ -39,11 +39,12 @@ body{
 
 .field{margin-bottom:16px}
 .field label{display:block;font-size:12.5px;font-weight:700;color:var(--navy);margin-bottom:8px}
-.field input, .field textarea{
+.field input, .field textarea, .field select{
   width:100%;padding:13px 16px;border:1.5px solid var(--line);border-radius:12px;
-  font-size:16px;color:var(--ink);font-family:inherit
+  font-size:16px;color:var(--ink);font-family:inherit;background:#fff
 }
-.field input:focus, .field textarea:focus{outline:none;border-color:var(--green)}
+.field input:focus, .field textarea:focus, .field select:focus{outline:none;border-color:var(--green)}
+.field input[readonly]{background:#f5f7fa;color:var(--muted)}
 .field-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 @media(max-width:560px){.field-row{grid-template-columns:1fr}}
 
@@ -161,17 +162,19 @@ body{
         <div class="q-num">Prüfer-Anmeldung</div>
         <div class="q-text">Prüfling auswählen und Prüfer eintragen</div>
         <div class="field">
-          <label>Registrierungsnummer des Prüflings</label>
-          <input type="text" id="regnr" placeholder="z. B. 2026-004" autocomplete="off">
+          <label>Prüfling auswählen</label>
+          <select id="regnr" onchange="onPrueflingChange()">
+            <option value="">Wird geladen…</option>
+          </select>
         </div>
         <div class="field-row">
           <div class="field">
             <label>Vorname</label>
-            <input type="text" id="vorname" autocomplete="off">
+            <input type="text" id="vorname" autocomplete="off" readonly>
           </div>
           <div class="field">
             <label>Nachname</label>
-            <input type="text" id="nachname" autocomplete="off">
+            <input type="text" id="nachname" autocomplete="off" readonly>
           </div>
         </div>
         <div class="field">
@@ -310,6 +313,7 @@ body{
 <script>
 // TODO: sobald FlowPraxisprotokoll / Fahrausweis_Flow_V2 auf HTTP-Trigger umgestellt sind, hier die echten URLs eintragen
 var ZUGANGSPRUEFUNG_URL = 'https://default8af25f9034bc4ef4aba22ab6f641d5.01.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/7058b6c8090842748465472db6085773/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=nxepIsGToa5my_-oIW5ZR5c3CQLtufN5DwNvM-qG1G4';
+var PRUEFLINGE_LISTE_URL = 'https://default8af25f9034bc4ef4aba22ab6f641d5.01.environment.api.powerplatform.com:443/powerautomate/automations/direct/cu/30/workflows/9e6fae0576604a4cb56d6e6564a5c7a3/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=8WWsT1WAvVm9yv1tgLA_imFMdSu8snL8Hu0HQVRVqG8';
 var PRAXISPRUEFUNG_STUFE1_URL = 'TODO_HTTP_TRIGGER_URL_FLOWPRAXISPROTOKOLL';
 var ZERTIFIKATERSTELLUNG_URL = 'TODO_HTTP_TRIGGER_URL_ZERTIFIKATERSTELLUNG';
 var FAHRAUSWEIS_STUFE1_URL = 'TODO_HTTP_TRIGGER_URL_FAHRAUSWEIS_FLOW_V2';
@@ -411,6 +415,38 @@ function setAllChecks(items, value){
 }
 document.getElementById('datumPraxis').value = new Date().toISOString().slice(0,10);
 
+var PRUEFLINGE = [];
+
+async function ladePruefungsliste(){
+  var sel = document.getElementById('regnr');
+  try {
+    var res = await fetch(PRUEFLINGE_LISTE_URL, {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({})
+    });
+    PRUEFLINGE = await res.json();
+    if(!Array.isArray(PRUEFLINGE)) PRUEFLINGE = [];
+    if(PRUEFLINGE.length === 0){
+      sel.innerHTML = '<option value="">Keine anstehenden Prüflinge gefunden</option>';
+      return;
+    }
+    sel.innerHTML = '<option value="">Bitte auswählen…</option>' + PRUEFLINGE.map(function(p){
+      return '<option value="' + p.registrierungsnummer + '">' + p.nachname + ', ' + p.vorname + ' (' + p.registrierungsnummer + ')</option>';
+    }).join('');
+  } catch(e){
+    sel.innerHTML = '<option value="">Liste konnte nicht geladen werden</option>';
+  }
+}
+ladePruefungsliste();
+
+function onPrueflingChange(){
+  var regnrVal = document.getElementById('regnr').value;
+  var p = PRUEFLINGE.find(function(x){ return x.registrierungsnummer === regnrVal; });
+  document.getElementById('vorname').value = p ? p.vorname : '';
+  document.getElementById('nachname').value = p ? p.nachname : '';
+}
+
 async function startLogin(){
   regnr = document.getElementById('regnr').value.trim();
   vorname = document.getElementById('vorname').value.trim();
@@ -421,7 +457,7 @@ async function startLogin(){
   errBox.style.display = 'none';
 
   if(!regnr || !vorname || !nachname){
-    errBox.textContent = 'Bitte Registrierungsnummer, Vor- und Nachname des Prüflings eingeben.';
+    errBox.textContent = 'Bitte einen Prüfling aus der Liste auswählen.';
     errBox.style.display = 'block';
     return;
   }
