@@ -586,7 +586,9 @@ function clearSig(id){
   ctx.restore();
 }
 function sigDataUrl(id){
-  return document.getElementById(id).toDataURL('image/png').split(',')[1];
+  // Volle Data-URI (mit "data:image/png;base64,"-Prefix) — die Dokument-Vorlagen
+  // (Protokoll/Zertifikat/Fahrausweis) setzen die Unterschriften direkt als <img src="...">, ohne eigenes Prefix.
+  return document.getElementById(id).toDataURL('image/png');
 }
 function sigIsEmpty(id){
   var canvas = document.getElementById(id);
@@ -630,27 +632,24 @@ async function submitPruefung(){
   checkliste.PP_Kommentar = document.getElementById('kommentar1').value.trim();
 
   var fehlerbespr = document.querySelector('input[name="fehlerbespr"]:checked').value;
+  var pruefungsdatum = document.getElementById('datumPraxis').value;
+  var sigPrueferUrl = sigDataUrl('sigPruefer');
+  var sigTeilnehmerUrl = sigDataUrl('sigTeilnehmer');
 
+  // FlowPraxisprotokoll-Trigger (9 Felder, alte Power-Apps-Reihenfolge 1:1 nachgebaut,
+  // damit im Flow selbst nichts außer dem Trigger geändert werden muss):
+  // text=ID, text_1=Status, text_2=Name(Nachname), text_3=Vorname, text_4=Pruefungsdatum,
+  // text_5=Pruefer, text_6=Checkpunkte(JSON-Text), text_7=Unterschrift(Prüfer), text_8=Nachpruefung
   var payload = {
-    registrierungsnummer: regnr,
-    vorname: vorname,
-    nachname: nachname,
-    pruefer: pruefername,
-    status_praxis: status,
-    fehleranzahl: fehler,
-    zulaessige_fehler: PASS_MAX_FEHLER,
-    datum_praxispruefung: document.getElementById('datumPraxis').value,
-    bewertungstext: document.getElementById('bewertungstext').value.trim(),
-    fehlerbesprechung: fehlerbespr,
-    checkliste: checkliste,
-    geburtsdatum: geburtsdatum,
-    geburtsort: geburtsort,
-    kurs_beginn: kursBeginn,
-    kurs_ende: kursEnde,
-    unterschrift_pruefer: sigDataUrl('sigPruefer'),
-    unterschrift_teilnehmer: sigDataUrl('sigTeilnehmer'),
-    foto_fahrausweis: fotoBase64,
-    datenschutz_dguv: true
+    text: regnr,
+    text_1: status,
+    text_2: nachname,
+    text_3: vorname,
+    text_4: pruefungsdatum,
+    text_5: pruefername,
+    text_6: JSON.stringify(checkliste),
+    text_7: sigPrueferUrl,
+    text_8: '0'
   };
 
   var btn = document.getElementById('submitBtn');
@@ -668,27 +667,26 @@ async function submitPruefung(){
   }
 
   if(bestanden){
-    // Entspricht Zertifikaterstellung.Run(...) / Fahrausweis_Flow_V2.Run(...) aus der Power-Apps-App.
-    // Feldnamen 1:1 auf die 12 Trigger-Parameter von Fahrausweis_Flow_V2 gemappt (ID, Nachname, Vorname,
-    // Pruefungsdatum, Pruefer, UnterschriftPruefer, vonDatum, bisDatum, Geburtsdatum, Geburtsort,
-    // UnterschriftTeilnehmer, PassbildBase64). Unterschriften/Foto als reines Base64 ohne data:-Prefix —
-    // "Datei erstellen 2" muss das Prefix bei text_5/text_10 entsprechend ergänzen (siehe Absprache).
+    // Zertifikaterstellung (11 Felder) / Fahrausweis_Flow_V2 (12 Felder, + Passbild) —
+    // text=ID, text_1=Nachname, text_2=Vorname, text_3=Pruefungsdatum, text_4=Pruefer,
+    // text_5=UnterschriftPruefer, text_6=VonDatum, text_7=BisDatum, text_8=Geburtsdatum,
+    // text_9=Geburtsort, text_10=UnterschriftTeilnehmer, (nur Fahrausweis:) text_11=PassbildBase64
     var dokPayload = {
-      id: regnr,
-      nachname: nachname,
-      vorname: vorname,
-      pruefungsdatum: document.getElementById('datumPraxis').value,
-      pruefer: pruefername,
-      unterschrift_pruefer: sigDataUrl('sigPruefer'),
-      von_datum: kursBeginn,
-      bis_datum: kursEnde,
-      geburtsdatum: geburtsdatum,
-      geburtsort: geburtsort,
-      unterschrift_teilnehmer: sigDataUrl('sigTeilnehmer'),
-      foto_base64: fotoBase64
+      text: regnr,
+      text_1: nachname,
+      text_2: vorname,
+      text_3: pruefungsdatum,
+      text_4: pruefername,
+      text_5: sigPrueferUrl,
+      text_6: kursBeginn,
+      text_7: kursEnde,
+      text_8: geburtsdatum,
+      text_9: geburtsort,
+      text_10: sigTeilnehmerUrl
     };
+    var fahrausweisPayload = Object.assign({}, dokPayload, {text_11: fotoBase64});
     try { await fetch(ZERTIFIKATERSTELLUNG_URL, {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(dokPayload)}); } catch(e){}
-    try { await fetch(FAHRAUSWEIS_STUFE1_URL, {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(dokPayload)}); } catch(e){}
+    try { await fetch(FAHRAUSWEIS_STUFE1_URL, {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(fahrausweisPayload)}); } catch(e){}
   }
 
   document.getElementById('resIcon').textContent = bestanden ? '✅' : '❌';
