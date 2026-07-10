@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Praxisprüfung Stufe 2 – in Arbeit</title>
+<style>
+:root{
+  --bg:#0d1f12;--green:#1a7a4a;--green-l:#2ea865;--green-d:#0d4a24;
+  --navy:#16243f;--muted:#68788f;--line:#e3e8f0;--ink:#1a2330;
+  --shadow:0 8px 40px rgba(0,0,0,.25);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:"Segoe UI",system-ui,sans-serif;
+  min-height:100vh;background:var(--bg);
+  display:flex;align-items:center;justify-content:center;padding:20px;
+}
+body::before{
+  content:'';position:fixed;inset:0;
+  background:
+    radial-gradient(ellipse 80% 60% at 20% 20%, rgba(26,122,74,.25) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 80% at 80% 80%, rgba(13,74,36,.3) 0%, transparent 60%);
+  pointer-events:none;z-index:0;
+}
+.card{
+  position:relative;z-index:1;background:#fff;border-radius:20px;box-shadow:var(--shadow);
+  max-width:420px;width:100%;padding:44px 32px;text-align:center;
+}
+.icon{font-size:44px;margin-bottom:16px}
+h1{color:var(--navy);font-size:19px;font-weight:800;margin-bottom:10px}
+p{color:var(--muted);font-size:14px;line-height:1.6;margin-bottom:26px}
+.back-btn{
+  display:inline-block;padding:12px 24px;border:2px solid var(--line);
+  border-radius:12px;background:#fff;color:var(--muted);
+  font-size:14px;font-weight:600;text-decoration:none;transition:all .15s;
+}
+.back-btn:hover{border-color:var(--green);color:var(--green)}
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="icon">🚧</div>
+  <h1 id="titel">Praxisprüfung – in Arbeit</h1>
+  <p>Die Praxisprüfung für dieses Gerät wird gerade aufgebaut und ist noch nicht verfügbar. Bitte in Kürze erneut versuchen.</p>
+  <a class="back-btn" href="praxispruefung_stufe2_auswahl.html">← Zurück zur Geräteauswahl</a>
+</div>
+<script>
+var geraet = new URLSearchParams(window.location.search).get('geraet');
+if(geraet) document.getElementById('titel').textContent = 'Praxisprüfung ' + geraet + ' – in Arbeit';
+</script>
+</body>
+</html>
