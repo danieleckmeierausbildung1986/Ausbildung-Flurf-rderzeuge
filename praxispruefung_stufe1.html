@@ -567,11 +567,19 @@ async function submitPruefung(){
   if(!document.getElementById('ckDguv').checked){
     errBox.textContent = 'Bitte bestätigen Sie den DGUV-308-001-Hinweis.';
     errBox.style.display = 'block';
+    document.getElementById('ckDguv').scrollIntoView({behavior:'smooth', block:'center'});
+    return;
+  }
+  if(!fotoBase64){
+    errBox.textContent = 'Bitte ein Foto aufnehmen, bevor Sie die Prüfung speichern.';
+    errBox.style.display = 'block';
+    document.getElementById('fotoBox').scrollIntoView({behavior:'smooth', block:'center'});
     return;
   }
   if(sigIsEmpty('sigPruefer') || sigIsEmpty('sigTeilnehmer')){
     errBox.textContent = 'Bitte beide Unterschriften einholen, bevor Sie speichern.';
     errBox.style.display = 'block';
+    document.getElementById(sigIsEmpty('sigPruefer') ? 'sigPruefer' : 'sigTeilnehmer').scrollIntoView({behavior:'smooth', block:'center'});
     return;
   }
 
@@ -605,7 +613,7 @@ async function submitPruefung(){
     kurs_ende: kursEnde,
     unterschrift_pruefer: sigDataUrl('sigPruefer'),
     unterschrift_teilnehmer: sigDataUrl('sigTeilnehmer'),
-    foto_fahrausweis: bestanden ? fotoBase64 : '',
+    foto_fahrausweis: fotoBase64,
     datenschutz_dguv: true
   };
 
