@@ -649,10 +649,13 @@ async function submitPruefung(){
   var sigPrueferUrl = sigDataUrl('sigPruefer');
   var sigTeilnehmerUrl = sigDataUrl('sigTeilnehmer');
 
-  // FlowPraxisprotokoll-Trigger (9 Felder, alte Power-Apps-Reihenfolge 1:1 nachgebaut,
-  // damit im Flow selbst nichts außer dem Trigger geändert werden muss):
+  // FlowPraxisprotokoll-Trigger — die alten 9 Felder (text..text_8) 1:1 nachgebaut,
+  // damit am bestehenden Flow-Teil (Dokumenterstellung) nichts geändert werden muss.
+  // text_9-text_11 sind NEU (gab's in der alten App nicht als Flow-Input, da die App selbst
+  // direkt in SharePoint gepatcht hat) — für den neuen "Element aktualisieren"-Schritt am Ende.
   // text=ID, text_1=Status, text_2=Name(Nachname), text_3=Vorname, text_4=Pruefungsdatum,
-  // text_5=Pruefer, text_6=Checkpunkte(JSON-Text), text_7=Unterschrift(Prüfer), text_8=Nachpruefung
+  // text_5=Pruefer, text_6=Checkpunkte(JSON-Text), text_7=Unterschrift(Prüfer), text_8=Nachpruefung,
+  // text_9=Fehleranzahl, text_10=Bewertungstext, text_11=Fehlerbesprechung
   var payload = {
     text: regnr,
     text_1: status,
@@ -662,7 +665,10 @@ async function submitPruefung(){
     text_5: pruefername,
     text_6: JSON.stringify(checkliste),
     text_7: sigPrueferUrl,
-    text_8: '0'
+    text_8: '0',
+    text_9: String(fehler),
+    text_10: document.getElementById('bewertungstext').value.trim(),
+    text_11: fehlerbespr
   };
 
   var btn = document.getElementById('submitBtn');
