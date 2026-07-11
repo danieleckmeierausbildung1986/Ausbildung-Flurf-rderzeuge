@@ -352,6 +352,7 @@ function setPruefungsart(art){
   document.getElementById('segErst').classList.toggle('active', art === 'Erstpruefung');
   document.getElementById('segNach').classList.toggle('active', art === 'Nachpruefung');
   document.getElementById('segNach').classList.toggle('nach', art === 'Nachpruefung');
+  renderPrueflingeDropdown();
 }
 
 var GERAETE = {
@@ -560,16 +561,27 @@ async function ladePruefungsliste(){
     });
     PRUEFLINGE = await res.json();
     if(!Array.isArray(PRUEFLINGE)) PRUEFLINGE = [];
-    if(PRUEFLINGE.length === 0){
-      sel.innerHTML = '<option value="">Keine anstehenden Prüflinge gefunden</option>';
-      return;
-    }
-    sel.innerHTML = '<option value="">Bitte auswählen…</option>' + PRUEFLINGE.map(function(p){
-      return '<option value="' + p.registrierungsnummer + '">' + p.nachname + ', ' + p.vorname + ' (' + p.registrierungsnummer + ')</option>';
-    }).join('');
+    renderPrueflingeDropdown();
   } catch(e){
     sel.innerHTML = '<option value="">Liste konnte nicht geladen werden</option>';
   }
+}
+
+function renderPrueflingeDropdown(){
+  var sel = document.getElementById('regnr');
+  if(!sel || !Array.isArray(PRUEFLINGE)) return;
+  // Erstprüfung: noch nie geprüft (praxis_status leer). Nachprüfung: schon durchgefallen ("nicht Bestanden").
+  var gefiltert = PRUEFLINGE.filter(function(p){
+    var status = (p.praxis_status || '').trim();
+    return pruefungsart === 'Nachpruefung' ? status === 'nicht Bestanden' : status === '';
+  });
+  if(gefiltert.length === 0){
+    sel.innerHTML = '<option value="">Keine anstehenden Prüflinge gefunden</option>';
+    return;
+  }
+  sel.innerHTML = '<option value="">Bitte auswählen…</option>' + gefiltert.map(function(p){
+    return '<option value="' + p.registrierungsnummer + '">' + p.nachname + ', ' + p.vorname + ' (' + p.registrierungsnummer + ')</option>';
+  }).join('');
 }
 if(G) ladePruefungsliste();
 
