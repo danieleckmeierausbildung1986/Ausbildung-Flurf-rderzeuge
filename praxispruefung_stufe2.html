@@ -341,14 +341,10 @@ var PRUEFLINGE_LISTE_URL = 'https://default8af25f9034bc4ef4aba22ab6f641d5.01.env
 // aber mit gerätespezifischer Beschriftung "Schubmaststapler" / "Kommissionierstapler" / "Schmalgangstapler"
 // auf Zertifikat & Fahrausweis) — URLs hier eintragen, sobald die Flows stehen.
 var FLOW_URLS = {
-  schubmast: { praxis:'', zertifikat:'', fahrausweis:'' },
-  kommissionierer: { praxis:'', zertifikat:'', fahrausweis:'' },
-  schmalgang: { praxis:'', zertifikat:'', fahrausweis:'' }
+  schubmast: { praxis:'', zertifikat:'', fahrausweis:'', nachpruefung:'' },
+  kommissionierer: { praxis:'', zertifikat:'', fahrausweis:'', nachpruefung:'' },
+  schmalgang: { praxis:'', zertifikat:'', fahrausweis:'', nachpruefung:'' }
 };
-
-// TODO: Noch anzulegender Flow "FlowPraxisprotokoll_Nachpruefung" (schreibt in die Liste
-// "Staplerprüfung_Nachpruefung" statt in die gerätespezifische Praxisprüfung) — URL hier eintragen, sobald vorhanden.
-var NACHPRUEFUNG_URL = '';
 var pruefungsart = 'Erstpruefung';
 function setPruefungsart(art){
   pruefungsart = art;
@@ -802,35 +798,17 @@ async function submitPruefung(){
   };
 
   // Nachprüfungen bekommen einen eigenen Datensatz in der Liste "Staplerprüfung_Nachpruefung"
-  // (eigener Flow FlowPraxisprotokoll_Nachpruefung) statt den Erstprüfungs-Datensatz zu überschreiben.
-  var nachpruefungPayload = {
-    titel: regnr,
-    nachpruefung_art: 'Praxis',
-    schulung: 'Stufe 2',
-    geraet: G.label,
-    vorname: vorname,
-    nachname: nachname,
-    status_nachpruefung: status,
-    fehleranzahl_praxis_nachpruefung: String(fehler),
-    datum_nachpruefung: pruefungsdatum,
-    pruefer_nachpruefung: pruefername,
-    kommentar_nachpruefung: bewertungstext,
-    checkliste: JSON.stringify(checkliste),
-    unterschrift_pruefer: sigPrueferUrl,
-    unterschrift_teilnehmer: sigTeilnehmerUrl
-  };
-
+  // (eigener Flow FlowPraxisprotokoll_Nachpruefung je Gerät — eine Kopie von urls.praxis mit
+  // demselben text..text_11-Trigger, nur der abschließende Schreib-Schritt zeigt auf die
+  // Nachprüfungsliste statt auf die gerätespezifische Praxisprüfung) — Payload bleibt identisch.
   var urls = FLOW_URLS[geraet];
   var btn = document.getElementById('submitBtn');
   btn.disabled = true;
   btn.textContent = 'Wird gespeichert…';
 
   try {
-    if(istNachpruefung){
-      if(NACHPRUEFUNG_URL) await fetch(NACHPRUEFUNG_URL, {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(nachpruefungPayload)});
-    } else if(urls.praxis){
-      await fetch(urls.praxis, {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload)});
-    }
+    var zielUrl = istNachpruefung ? urls.nachpruefung : urls.praxis;
+    if(zielUrl) await fetch(zielUrl, {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload)});
   } catch(e){}
 
   if(bestanden){

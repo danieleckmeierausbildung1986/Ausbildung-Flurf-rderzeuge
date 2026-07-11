@@ -701,39 +701,20 @@ async function submitPruefung(){
   };
 
   // Nachprüfungen bekommen einen eigenen Datensatz in der Liste "Staplerprüfung_Nachpruefung"
-  // (eigener Flow FlowPraxisprotokoll_Nachpruefung), damit die Historie aller Prüfversuche
-  // nachvollziehbar bleibt — statt den Erstprüfungs-Datensatz zu überschreiben.
-  var nachpruefungPayload = {
-    titel: regnr,
-    nachpruefung_art: 'Praxis',
-    schulung: 'Stufe 1',
-    geraet: 'Stufe 1',
-    vorname: vorname,
-    nachname: nachname,
-    status_nachpruefung: status,
-    fehleranzahl_praxis_nachpruefung: String(fehler),
-    datum_nachpruefung: pruefungsdatum,
-    pruefer_nachpruefung: pruefername,
-    kommentar_nachpruefung: bewertungstext,
-    checkliste: JSON.stringify(checkliste),
-    unterschrift_pruefer: sigPrueferUrl,
-    unterschrift_teilnehmer: sigTeilnehmerUrl
-  };
-
+  // (eigener Flow FlowPraxisprotokoll_Nachpruefung — eine Kopie von FlowPraxisprotokoll mit
+  // demselben text..text_11-Trigger, nur der abschließende Schreib-Schritt zeigt auf die
+  // Nachprüfungsliste statt auf die Staplerprüfung_Master) — statt den Erstprüfungs-Datensatz
+  // zu überschreiben. Payload bleibt deshalb identisch zu payload oben.
   var btn = document.getElementById('submitBtn');
   btn.disabled = true;
   btn.textContent = 'Wird gespeichert…';
 
   try {
-    if(istNachpruefung){
-      if(NACHPRUEFUNG_URL) await fetch(NACHPRUEFUNG_URL, {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(nachpruefungPayload)});
-    } else {
-      await fetch(PRAXISPRUEFUNG_STUFE1_URL, {
-        method: 'POST',
-        headers: {'Content-Type':'application/json'},
-        body: JSON.stringify(payload)
-      });
-    }
+    await fetch(istNachpruefung ? NACHPRUEFUNG_URL : PRAXISPRUEFUNG_STUFE1_URL, {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify(payload)
+    });
   } catch(e){
     // Flow-URL ist aktuell noch ein Platzhalter — Speichern schlägt bis zur Umstellung erwartungsgemäß fehl
   }
