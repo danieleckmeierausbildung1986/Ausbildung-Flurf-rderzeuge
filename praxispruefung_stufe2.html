@@ -49,6 +49,12 @@ body{
 .field-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 @media(max-width:560px){.field-row{grid-template-columns:1fr}}
 
+.seg-switch{display:flex;border:1.5px solid var(--line);border-radius:12px;padding:4px;gap:4px}
+.seg-btn{flex:1;border:none;background:transparent;padding:10px 8px;border-radius:9px;
+  font-size:13.5px;font-weight:700;color:var(--muted);cursor:pointer;transition:all .15s}
+.seg-btn.active{background:var(--green);color:#fff}
+.seg-btn.active.nach{background:#b7770d}
+
 .err-box{background:var(--danger-bg);border:1px solid #fecaca;color:var(--danger);border-radius:10px;
   padding:12px 16px;font-size:13.5px;margin-top:14px;display:none}
 
@@ -180,6 +186,13 @@ body{
         <div class="field">
           <label>Prüfer (Ihr Name)</label>
           <input type="text" id="pruefername" placeholder="z. B. Daniel Eckmeier" autocomplete="off">
+        </div>
+        <div class="field">
+          <label>Prüfungsart</label>
+          <div class="seg-switch">
+            <button type="button" class="seg-btn active" id="segErst" onclick="setPruefungsart('Erstpruefung')">Erstprüfung</button>
+            <button type="button" class="seg-btn" id="segNach" onclick="setPruefungsart('Nachpruefung')">Nachprüfung</button>
+          </div>
         </div>
         <div class="err-box" id="loginErrBox"></div>
       </div>
@@ -328,6 +341,17 @@ var FLOW_URLS = {
   kommissionierer: { praxis:'', zertifikat:'', fahrausweis:'' },
   schmalgang: { praxis:'', zertifikat:'', fahrausweis:'' }
 };
+
+// TODO: Noch anzulegender Flow "FlowPraxisprotokoll_Nachpruefung" (schreibt in die Liste
+// "Staplerprüfung_Nachpruefung" statt in die gerätespezifische Praxisprüfung) — URL hier eintragen, sobald vorhanden.
+var NACHPRUEFUNG_URL = '';
+var pruefungsart = 'Erstpruefung';
+function setPruefungsart(art){
+  pruefungsart = art;
+  document.getElementById('segErst').classList.toggle('active', art === 'Erstpruefung');
+  document.getElementById('segNach').classList.toggle('active', art === 'Nachpruefung');
+  document.getElementById('segNach').classList.toggle('nach', art === 'Nachpruefung');
+}
 
 var GERAETE = {
   schubmast: {
@@ -600,7 +624,8 @@ function renderAuswertung(){
     ['Geburtsort', geburtsort || '–'],
     ['Kurs Beginn', formatDate(kursBeginn)],
     ['Kurs Ende', formatDate(kursEnde)],
-    ['Prüfer', pruefername]
+    ['Prüfer', pruefername],
+    ['Prüfungsart', pruefungsart === 'Nachpruefung' ? 'Nachprüfung' : 'Erstprüfung']
   ];
   document.getElementById('reviewGrid').innerHTML = reviewFields.map(function(f){
     return '<div class="review-item"><span>' + f[0] + '</span><b>' + f[1] + '</b></div>';
@@ -721,6 +746,8 @@ async function submitPruefung(){
   var pruefungsdatum = formatDate(document.getElementById('datumPraxis').value);
   var sigPrueferUrl = sigDataUrl('sigPruefer');
   var sigTeilnehmerUrl = sigDataUrl('sigTeilnehmer');
+  var istNachpruefung = (pruefungsart === 'Nachpruefung');
+  var bewertungstext = document.getElementById('bewertungstext').value.trim();
 
   // Gleiches Schema wie Praxisprüfung Stufe 1 (Variante B: text..text_N, damit die
   // gerätespezifischen Kopien der Flows ohne Änderung an Dokumenterstellung/Update übernommen werden können).
@@ -733,10 +760,29 @@ async function submitPruefung(){
     text_5: pruefername,
     text_6: JSON.stringify(checkliste),
     text_7: sigPrueferUrl,
-    text_8: '0',
+    text_8: istNachpruefung ? '1' : '0',
     text_9: String(fehler),
-    text_10: document.getElementById('bewertungstext').value.trim(),
+    text_10: bewertungstext,
     text_11: fehlerbespr
+  };
+
+  // Nachprüfungen bekommen einen eigenen Datensatz in der Liste "Staplerprüfung_Nachpruefung"
+  // (eigener Flow FlowPraxisprotokoll_Nachpruefung) statt den Erstprüfungs-Datensatz zu überschreiben.
+  var nachpruefungPayload = {
+    titel: regnr,
+    nachpruefung_art: 'Praxis',
+    schulung: 'Stufe 2',
+    geraet: G.label,
+    vorname: vorname,
+    nachname: nachname,
+    status_nachpruefung: status,
+    fehleranzahl_praxis_nachpruefung: String(fehler),
+    datum_nachpruefung: pruefungsdatum,
+    pruefer_nachpruefung: pruefername,
+    kommentar_nachpruefung: bewertungstext,
+    checkliste: JSON.stringify(checkliste),
+    unterschrift_pruefer: sigPrueferUrl,
+    unterschrift_teilnehmer: sigTeilnehmerUrl
   };
 
   var urls = FLOW_URLS[geraet];
@@ -745,7 +791,9 @@ async function submitPruefung(){
   btn.textContent = 'Wird gespeichert…';
 
   try {
-    if(urls.praxis){
+    if(istNachpruefung){
+      if(NACHPRUEFUNG_URL) await fetch(NACHPRUEFUNG_URL, {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(nachpruefungPayload)});
+    } else if(urls.praxis){
       await fetch(urls.praxis, {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload)});
     }
   } catch(e){}
