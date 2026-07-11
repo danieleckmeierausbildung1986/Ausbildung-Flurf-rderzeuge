@@ -49,6 +49,12 @@ body{
 .field-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 @media(max-width:560px){.field-row{grid-template-columns:1fr}}
 
+.seg-switch{display:flex;border:1.5px solid var(--line);border-radius:12px;padding:4px;gap:4px}
+.seg-btn{flex:1;border:none;background:transparent;padding:10px 8px;border-radius:9px;
+  font-size:13.5px;font-weight:700;color:var(--muted);cursor:pointer;transition:all .15s}
+.seg-btn.active{background:var(--green);color:#fff}
+.seg-btn.active.nach{background:#b7770d}
+
 .err-box{background:var(--danger-bg);border:1px solid #fecaca;color:var(--danger);border-radius:10px;
   padding:12px 16px;font-size:13.5px;margin-top:14px;display:none}
 
@@ -183,10 +189,17 @@ body{
           <label>Prüfer (Ihr Name)</label>
           <input type="text" id="pruefername" placeholder="z. B. Daniel Eckmeier" autocomplete="off">
         </div>
+        <div class="field">
+          <label>Prüfungsart</label>
+          <div class="seg-switch">
+            <button type="button" class="seg-btn active" id="segErst" onclick="setPruefungsart('Erstpruefung')">Erstprüfung</button>
+            <button type="button" class="seg-btn" id="segNach" onclick="setPruefungsart('Nachpruefung')">Nachprüfung</button>
+          </div>
+        </div>
         <div class="err-box" id="loginErrBox"></div>
       </div>
       <div class="nav-row">
-        <span></span>
+        <a class="nav-btn back" href="praxispruefung_start.html" style="text-decoration:none;display:inline-block">← Zurück</a>
         <button class="nav-btn next" id="loginNextBtn" onclick="startLogin()">Weiter →</button>
       </div>
     </div>
@@ -319,8 +332,18 @@ var PRUEFLINGE_LISTE_URL = 'https://default8af25f9034bc4ef4aba22ab6f641d5.01.env
 var PRAXISPRUEFUNG_STUFE1_URL = 'https://2bb3195223a7efb1a05e6e69ad5c54.4c.environment.api.powerplatform.com:443/powerautomate/automations/direct/cu/17/workflows/703a050f9eca4a3b973c948b6f7fa7bf/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=iao7EkxbTyGISTUpG9bc0m6ZBhgUfIfMCVeoAybeKOA';
 var ZERTIFIKATERSTELLUNG_URL = 'https://2bb3195223a7efb1a05e6e69ad5c54.4c.environment.api.powerplatform.com:443/powerautomate/automations/direct/cu/04/workflows/221c347470e547eea5a042555437be07/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=tINbkBHdBOzB1h2ifwYX4UMEcsleweE5MWsSaBIRmig';
 var FAHRAUSWEIS_STUFE1_URL = 'https://2bb3195223a7efb1a05e6e69ad5c54.4c.environment.api.powerplatform.com:443/powerautomate/automations/direct/cu/04/workflows/f1bd24f2c44245d0a90b7b7d15b14eed/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=2qnQIfYz0KDDXEy-ny24SYT2RJdFnJDNhkovfkyOYjs';
+// TODO: Noch anzulegender Flow "FlowPraxisprotokoll_Nachpruefung" (schreibt in die Liste
+// "Staplerprüfung_Nachpruefung" statt in die Staplerprüfung_Master) — URL hier eintragen, sobald vorhanden.
+var NACHPRUEFUNG_URL = '';
 
 var PASS_MAX_FEHLER = 9; // zulässige Fehler — ggf. anpassen
+var pruefungsart = 'Erstpruefung';
+function setPruefungsart(art){
+  pruefungsart = art;
+  document.getElementById('segErst').classList.toggle('active', art === 'Erstpruefung');
+  document.getElementById('segNach').classList.toggle('active', art === 'Nachpruefung');
+  document.getElementById('segNach').classList.toggle('nach', art === 'Nachpruefung');
+}
 
 var CHECK1 = [
   {key:'PP_Fahrerschutzdach', label:'Fahrerschutzdach'},
@@ -526,7 +549,8 @@ function renderAuswertung(){
     ['Geburtsort', geburtsort || '–'],
     ['Kurs Beginn', formatDate(kursBeginn)],
     ['Kurs Ende', formatDate(kursEnde)],
-    ['Prüfer', pruefername]
+    ['Prüfer', pruefername],
+    ['Prüfungsart', pruefungsart === 'Nachpruefung' ? 'Nachprüfung' : 'Erstprüfung']
   ];
   document.getElementById('reviewGrid').innerHTML = reviewFields.map(function(f){
     return '<div class="review-item"><span>' + f[0] + '</span><b>' + f[1] + '</b></div>';
@@ -658,6 +682,9 @@ async function submitPruefung(){
   // text=ID, text_1=Status, text_2=Name(Nachname), text_3=Vorname, text_4=Pruefungsdatum,
   // text_5=Pruefer, text_6=Checkpunkte(JSON-Text), text_7=Unterschrift(Prüfer), text_8=Nachpruefung,
   // text_9=Fehleranzahl, text_10=Bewertungstext, text_11=Fehlerbesprechung
+  var istNachpruefung = (pruefungsart === 'Nachpruefung');
+  var bewertungstext = document.getElementById('bewertungstext').value.trim();
+
   var payload = {
     text: regnr,
     text_1: status,
@@ -667,10 +694,30 @@ async function submitPruefung(){
     text_5: pruefername,
     text_6: JSON.stringify(checkliste),
     text_7: sigPrueferUrl,
-    text_8: '0',
+    text_8: istNachpruefung ? '1' : '0',
     text_9: String(fehler),
-    text_10: document.getElementById('bewertungstext').value.trim(),
+    text_10: bewertungstext,
     text_11: fehlerbespr
+  };
+
+  // Nachprüfungen bekommen einen eigenen Datensatz in der Liste "Staplerprüfung_Nachpruefung"
+  // (eigener Flow FlowPraxisprotokoll_Nachpruefung), damit die Historie aller Prüfversuche
+  // nachvollziehbar bleibt — statt den Erstprüfungs-Datensatz zu überschreiben.
+  var nachpruefungPayload = {
+    titel: regnr,
+    nachpruefung_art: 'Praxis',
+    schulung: 'Stufe 1',
+    geraet: 'Stufe 1',
+    vorname: vorname,
+    nachname: nachname,
+    status_nachpruefung: status,
+    fehleranzahl_praxis_nachpruefung: String(fehler),
+    datum_nachpruefung: pruefungsdatum,
+    pruefer_nachpruefung: pruefername,
+    kommentar_nachpruefung: bewertungstext,
+    checkliste: JSON.stringify(checkliste),
+    unterschrift_pruefer: sigPrueferUrl,
+    unterschrift_teilnehmer: sigTeilnehmerUrl
   };
 
   var btn = document.getElementById('submitBtn');
@@ -678,11 +725,15 @@ async function submitPruefung(){
   btn.textContent = 'Wird gespeichert…';
 
   try {
-    await fetch(PRAXISPRUEFUNG_STUFE1_URL, {
-      method: 'POST',
-      headers: {'Content-Type':'application/json'},
-      body: JSON.stringify(payload)
-    });
+    if(istNachpruefung){
+      if(NACHPRUEFUNG_URL) await fetch(NACHPRUEFUNG_URL, {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(nachpruefungPayload)});
+    } else {
+      await fetch(PRAXISPRUEFUNG_STUFE1_URL, {
+        method: 'POST',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify(payload)
+      });
+    }
   } catch(e){
     // Flow-URL ist aktuell noch ein Platzhalter — Speichern schlägt bis zur Umstellung erwartungsgemäß fehl
   }
