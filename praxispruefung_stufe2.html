@@ -783,7 +783,8 @@ async function submitPruefung(){
       text_7: formatDate(kursEnde),
       text_8: formatDate(geburtsdatum),
       text_9: geburtsort,
-      text_10: sigTeilnehmerUrl
+      text_10: sigTeilnehmerUrl,
+      text_11: G.label
     };
     try { if(urls.zertifikat) await fetch(urls.zertifikat, {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(dokPayload)}); } catch(e){}
   }
