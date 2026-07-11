@@ -278,13 +278,7 @@ body{
         <div class="check-title">4. Abschluss und Dokumente</div>
         <div class="consent">
           <input type="checkbox" id="ckDguv">
-          <p>Gemäß <b>DGUV 308-001</b> sind wir verpflichtet, Ihre Prüfungsunterlagen einschließlich Lichtbild für 10 Jahre aufzubewahren. Mit dem Abhaken und Ihrer Unterschrift bestätigen Sie Ihr Einverständnis zur Speicherung Ihrer Daten und Ihres Fotos.</p>
-        </div>
-
-        <div class="foto-box" id="fotoBox">
-          <div id="fotoPreviewWrap" style="display:none"><img id="fotoPreview"></div>
-          <input type="file" id="fotoInput" accept="image/*" capture="environment" style="display:none" onchange="onFotoSelected(event)">
-          <button type="button" class="foto-btn" onclick="document.getElementById('fotoInput').click()">📷 Foto für Fahrausweis aufnehmen</button>
+          <p>Gemäß <b>DGUV 308-001</b> sind wir verpflichtet, Ihre Prüfungsunterlagen für 10 Jahre aufzubewahren. Mit dem Abhaken und Ihrer Unterschrift bestätigen Sie Ihr Einverständnis zur Speicherung Ihrer Daten.</p>
         </div>
 
         <div class="sign-wrap">
@@ -339,11 +333,13 @@ var PRUEFLINGE_LISTE_URL = 'https://default8af25f9034bc4ef4aba22ab6f641d5.01.env
 
 // TODO: Noch anzulegende Flows (Kopien von FlowPraxisprotokoll / Zertifikaterstellung / Fahrausweis_Flow_V2,
 // aber mit gerätespezifischer Beschriftung "Schubmaststapler" / "Kommissionierstapler" / "Schmalgangstapler"
-// auf Zertifikat & Fahrausweis) — URLs hier eintragen, sobald die Flows stehen.
+// auf Zertifikat) — URLs hier eintragen, sobald die Flows stehen.
+// Kein eigener Fahrausweis-Flow für Stufe 2: der Stufe-1-Fahrausweis trägt bereits den QR-Code,
+// der über fahrausweis-check.html alle Qualifikationen inkl. Stufe 2 live anzeigt.
 var FLOW_URLS = {
-  schubmast: { praxis:'https://2bb3195223a7efb1a05e6e69ad5c54.4c.environment.api.powerplatform.com:443/powerautomate/automations/direct/cu/16/workflows/6c19b46bd509467ea3a9d2024714cdc8/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=qCAtQT7huNYiP3zgk3uvX1CXmd8P18sW5R80Bto_2Nw', zertifikat:'', fahrausweis:'', nachpruefung:'https://2bb3195223a7efb1a05e6e69ad5c54.4c.environment.api.powerplatform.com:443/powerautomate/automations/direct/cu/18/workflows/1b1f28d9c0904507babb04e13902308d/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=9iBok3vmP0N9GLGn8Z2zmbSPObzOCg75-YxZnISn5qM' },
-  kommissionierer: { praxis:'', zertifikat:'', fahrausweis:'', nachpruefung:'' },
-  schmalgang: { praxis:'', zertifikat:'', fahrausweis:'', nachpruefung:'' }
+  schubmast: { praxis:'https://2bb3195223a7efb1a05e6e69ad5c54.4c.environment.api.powerplatform.com:443/powerautomate/automations/direct/cu/16/workflows/6c19b46bd509467ea3a9d2024714cdc8/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=qCAtQT7huNYiP3zgk3uvX1CXmd8P18sW5R80Bto_2Nw', zertifikat:'', nachpruefung:'https://2bb3195223a7efb1a05e6e69ad5c54.4c.environment.api.powerplatform.com:443/powerautomate/automations/direct/cu/18/workflows/1b1f28d9c0904507babb04e13902308d/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=9iBok3vmP0N9GLGn8Z2zmbSPObzOCg75-YxZnISn5qM' },
+  kommissionierer: { praxis:'', zertifikat:'', nachpruefung:'' },
+  schmalgang: { praxis:'', zertifikat:'', nachpruefung:'' }
 };
 var pruefungsart = 'Erstpruefung';
 function setPruefungsart(art){
@@ -483,7 +479,6 @@ var checkState = {};
 
 var regnr = '', vorname = '', nachname = '', pruefername = '';
 var geburtsdatum = '', geburtsort = '', kursBeginn = '', kursEnde = '';
-var fotoBase64 = '';
 
 function zurueckZurAuswahl(){
   window.location.href = BASE + 'praxispruefung_stufe2_auswahl.html';
@@ -657,29 +652,6 @@ function renderAuswertung(){
   }).join('');
 }
 
-function onFotoSelected(e){
-  var file = e.target.files[0];
-  if(!file) return;
-  var reader = new FileReader();
-  reader.onload = function(ev){
-    var img = new Image();
-    img.onload = function(){
-      var maxDim = 500;
-      var scale = Math.min(1, maxDim / Math.max(img.width, img.height));
-      var canvas = document.createElement('canvas');
-      canvas.width = Math.round(img.width * scale);
-      canvas.height = Math.round(img.height * scale);
-      canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
-      var dataUrl = canvas.toDataURL('image/jpeg', 0.75);
-      fotoBase64 = dataUrl.split(',')[1];
-      document.getElementById('fotoPreview').src = dataUrl;
-      document.getElementById('fotoPreviewWrap').style.display = 'block';
-    };
-    img.src = ev.target.result;
-  };
-  reader.readAsDataURL(file);
-}
-
 /* ===== Unterschriften-Pads ===== */
 var sigPads = {};
 function initSigPads(){
@@ -741,12 +713,6 @@ async function submitPruefung(){
     errBox.textContent = 'Bitte bestätigen Sie den DGUV-308-001-Hinweis.';
     errBox.style.display = 'block';
     document.getElementById('ckDguv').scrollIntoView({behavior:'smooth', block:'center'});
-    return;
-  }
-  if(!fotoBase64){
-    errBox.textContent = 'Bitte ein Foto aufnehmen, bevor Sie die Prüfung speichern.';
-    errBox.style.display = 'block';
-    document.getElementById('fotoBox').scrollIntoView({behavior:'smooth', block:'center'});
     return;
   }
   if(sigIsEmpty('sigPruefer') || sigIsEmpty('sigTeilnehmer')){
@@ -819,9 +785,7 @@ async function submitPruefung(){
       text_9: geburtsort,
       text_10: sigTeilnehmerUrl
     };
-    var fahrausweisPayload = Object.assign({}, dokPayload, {text_11: fotoBase64});
     try { if(urls.zertifikat) await fetch(urls.zertifikat, {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(dokPayload)}); } catch(e){}
-    try { if(urls.fahrausweis) await fetch(urls.fahrausweis, {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(fahrausweisPayload)}); } catch(e){}
   }
 
   document.getElementById('resIcon').textContent = bestanden ? '✅' : '❌';
@@ -829,7 +793,7 @@ async function submitPruefung(){
   t.textContent = bestanden ? 'Bestanden!' : 'Nicht bestanden';
   t.className = 'result-title ' + (bestanden ? 'pass' : 'fail');
   document.getElementById('resHint').textContent = bestanden
-    ? 'Das Ergebnis wurde übermittelt. Zertifikat und Fahrausweis werden automatisch erstellt.'
+    ? 'Das Ergebnis wurde übermittelt. Das Zertifikat wird automatisch erstellt.'
     : 'Das Ergebnis wurde übermittelt. Bitte vereinbaren Sie einen Termin für die Nachprüfung.';
   showScreen('resultScreen');
 }
