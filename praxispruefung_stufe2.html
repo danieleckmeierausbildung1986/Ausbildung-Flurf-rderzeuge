@@ -328,8 +328,13 @@ var BASE = 'https://danieleckmeierausbildung1986.github.io/Ausbildung-Flurf-rder
 // "Geschlossen" an diesem Feld heißt: die Theorieprüfung für das Gerät wurde bereits bestanden —
 // das ist unser Gate für den Zugang zur Praxisprüfung Stufe 2.
 var ZUGANGSPRUEFUNG_URL = 'https://default8af25f9034bc4ef4aba22ab6f641d5.01.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/7058b6c8090842748465472db6085773/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=nxepIsGToa5my_-oIW5ZR5c3CQLtufN5DwNvM-qG1G4';
-// Prüflinge-Liste Stufe 2 (analog zu Stufe 1) — liefert die anstehenden Prüflinge fürs Dropdown.
-var PRUEFLINGE_LISTE_URL = 'https://default8af25f9034bc4ef4aba22ab6f641d5.01.environment.api.powerplatform.com:443/powerautomate/automations/direct/cu/15/workflows/06fff95605ef4fbea1d34b1d8a0c59a4/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=xbsAq8uSfrR9vwaJBtWtotrrQYSNGJZRh39N90xu4EQ';
+// Prüflinge-Liste Stufe 2 — je Gerät ein eigener Flow, da jedes Gerät eigene
+// "_gebucht"/"_Theorie_Status"/"_Praxis_bestanden"-Spalten in der Staplerprüfung_Stufe2 hat.
+var PRUEFLINGE_LISTE_URLS = {
+  schubmast: '',
+  kommissionierer: 'https://default8af25f9034bc4ef4aba22ab6f641d5.01.environment.api.powerplatform.com:443/powerautomate/automations/direct/cu/15/workflows/06fff95605ef4fbea1d34b1d8a0c59a4/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=xbsAq8uSfrR9vwaJBtWtotrrQYSNGJZRh39N90xu4EQ',
+  schmalgang: ''
+};
 
 // TODO: Noch anzulegende Flows (Kopien von FlowPraxisprotokoll / Zertifikaterstellung / Fahrausweis_Flow_V2,
 // aber mit gerätespezifischer Beschriftung "Schubmaststapler" / "Kommissionierstapler" / "Schmalgangstapler"
@@ -542,8 +547,13 @@ var PRUEFLINGE = [];
 
 async function ladePruefungsliste(){
   var sel = document.getElementById('regnr');
+  var url = PRUEFLINGE_LISTE_URLS[geraet];
+  if(!url){
+    sel.innerHTML = '<option value="">Liste noch nicht verfügbar</option>';
+    return;
+  }
   try {
-    var res = await fetch(PRUEFLINGE_LISTE_URL, {
+    var res = await fetch(url, {
       method: 'POST',
       headers: {'Content-Type':'application/json'},
       body: JSON.stringify({})
