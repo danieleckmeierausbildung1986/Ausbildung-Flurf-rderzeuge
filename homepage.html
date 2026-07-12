@@ -56,12 +56,15 @@ nav{
   transition:all .15s;white-space:nowrap;
 }
 .nav-login:hover{border-color:var(--navy);background:var(--bg)}
+.nav-actions{display:flex;align-items:center;gap:10px}
 .nav-toggle{
-  display:none;width:40px;height:40px;border-radius:8px;border:1.5px solid var(--line);
-  background:#fff;flex-direction:column;align-items:center;justify-content:center;gap:4px;
-  cursor:pointer;flex-shrink:0;
+  display:none;align-items:center;gap:8px;
+  padding:8px 14px;border-radius:10px;border:1.5px solid var(--line);
+  background:#fff;cursor:pointer;flex-shrink:0;white-space:nowrap;
+  font-size:13px;font-weight:600;color:var(--navy);font-family:inherit;
 }
-.nav-toggle span{display:block;width:20px;height:2px;background:var(--navy);border-radius:2px}
+.nav-toggle .bars{display:flex;flex-direction:column;gap:4px}
+.nav-toggle .bars span{display:block;width:18px;height:2px;background:var(--navy);border-radius:2px}
 
 /* HERO */
 .hero{
@@ -413,10 +416,12 @@ footer a{color:rgba(255,255,255,.4);text-decoration:underline}
       <a class="nav-login" href="trainerbereich.html">Trainerzugang</a>
       <a class="nav-login" href="index.html">Teilnehmer-Login</a>
     </div>
-    <button class="nav-toggle" id="navToggle" aria-label="Menü öffnen" aria-expanded="false" onclick="document.getElementById('navLinks').classList.toggle('open');this.setAttribute('aria-expanded', document.getElementById('navLinks').classList.contains('open'))">
-      <span></span><span></span><span></span>
-    </button>
-    <a class="nav-cta" href="#termine">Jetzt buchen →</a>
+    <div class="nav-actions">
+      <button class="nav-toggle" id="navToggle" aria-label="Menü öffnen" aria-expanded="false" onclick="document.getElementById('navLinks').classList.toggle('open');this.setAttribute('aria-expanded', document.getElementById('navLinks').classList.contains('open'))">
+        <span class="bars"><span></span><span></span><span></span></span>Menü
+      </button>
+      <a class="nav-cta" href="#termine">Jetzt buchen →</a>
+    </div>
   </div>
 </nav>
 
