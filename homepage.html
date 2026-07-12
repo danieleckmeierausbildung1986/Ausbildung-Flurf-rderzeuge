@@ -26,7 +26,7 @@ nav{
   padding:0 24px;
 }
 .nav-inner{
-  max-width:1100px;margin:0 auto;
+  position:relative;max-width:1100px;margin:0 auto;
   display:flex;align-items:center;justify-content:space-between;
   height:190px;gap:16px;
 }
@@ -56,6 +56,12 @@ nav{
   transition:all .15s;white-space:nowrap;
 }
 .nav-login:hover{border-color:var(--navy);background:var(--bg)}
+.nav-toggle{
+  display:none;width:40px;height:40px;border-radius:8px;border:1.5px solid var(--line);
+  background:#fff;flex-direction:column;align-items:center;justify-content:center;gap:4px;
+  cursor:pointer;flex-shrink:0;
+}
+.nav-toggle span{display:block;width:20px;height:2px;background:var(--navy);border-radius:2px}
 
 /* HERO */
 .hero{
@@ -367,7 +373,17 @@ footer a{color:rgba(255,255,255,.4);text-decoration:underline}
 
 /* RESPONSIVE */
 @media(max-width:768px){
-  .nav-links{display:none}
+  .nav-toggle{display:flex}
+  .nav-inner{height:auto;padding:12px 0}
+  .nav-logo img{height:48px!important}
+  .nav-links{
+    display:none;position:absolute;top:100%;left:0;right:0;
+    flex-direction:column;align-items:stretch;gap:2px;
+    background:#fff;border-bottom:1px solid var(--line);
+    padding:10px 16px 16px;box-shadow:var(--shadow-md);
+  }
+  .nav-links.open{display:flex}
+  .nav-link,.nav-login{width:100%;text-align:center}
   .hero{padding:56px 20px 64px}
   .hero-stats{gap:24px}
   .section{padding:56px 20px}
@@ -389,7 +405,7 @@ footer a{color:rgba(255,255,255,.4);text-decoration:underline}
     <div class="nav-logo">
       <img src="logos/logo_haupt_transparent.png" alt="ProDrive Akademie Niederbayern" style="height:180px;object-fit:contain">
     </div>
-    <div class="nav-links">
+    <div class="nav-links" id="navLinks">
       <a class="nav-link" href="#kurse">Schulungen</a>
       <a class="nav-link" href="#termine">Termine</a>
       <a class="nav-link" href="anmeldung.html">Anmeldung</a>
@@ -397,6 +413,9 @@ footer a{color:rgba(255,255,255,.4);text-decoration:underline}
       <a class="nav-login" href="trainerbereich.html">Trainerzugang</a>
       <a class="nav-login" href="index.html">Teilnehmer-Login</a>
     </div>
+    <button class="nav-toggle" id="navToggle" aria-label="Menü öffnen" aria-expanded="false" onclick="document.getElementById('navLinks').classList.toggle('open');this.setAttribute('aria-expanded', document.getElementById('navLinks').classList.contains('open'))">
+      <span></span><span></span><span></span>
+    </button>
     <a class="nav-cta" href="#termine">Jetzt buchen →</a>
   </div>
 </nav>
