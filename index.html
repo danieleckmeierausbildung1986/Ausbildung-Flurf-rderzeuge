@@ -192,6 +192,7 @@ a.exam-tile:hover{border-color:var(--green);transform:translateY(-2px);box-shado
       <button class="login-btn" id="loginBtn" onclick="doLogin()"></button>
       <div class="lerr" id="lerr"></div>
       <div class="lhint" id="txt-hint"></div>
+      <a class="back-btn" id="txt-back-home-login" href="homepage.html" style="display:block;margin-top:14px;text-decoration:none;box-sizing:border-box"></a>
     </div>
   </div>
 
@@ -207,8 +208,9 @@ a.exam-tile:hover{border-color:var(--green);transform:translateY(-2px);box-shado
       </div>
       <div class="modules" id="moduleListLearning"></div>
       <div class="modules" id="moduleListExams" style="display:none"></div>
-      <div style="padding:0 24px 20px">
+      <div style="padding:0 24px 20px;display:flex;flex-direction:column;gap:8px">
         <button class="back-btn" id="txt-back" onclick="goBack()"></button>
+        <a class="back-btn" id="txt-back-home-modules" href="homepage.html" style="text-decoration:none;box-sizing:border-box"></a>
       </div>
     </div>
   </div>
@@ -229,6 +231,7 @@ const TRANSLATIONS = {
     hint:         'Format: 2025-001 – erhalten Sie von Ihrem Ausbilder',
     choose:       'Bitte wählen Sie Ihre Schulung',
     back:         '← Zurück zur Anmeldung',
+    backHome:     '← Zurück zur ProDrive Startseite',
     noModules:    'Für diese Registriernummer sind keine E-Learning-Module gebucht.<br>Bitte wenden Sie sich an Ihren Ausbilder.',
     errEmpty:     'Bitte Registriernummer eingeben.',
     errEmptyName: 'Bitte Vor- und Nachnamen eingeben.',
@@ -257,6 +260,7 @@ const TRANSLATIONS = {
     hint:         'Format: 2025-001 – provided by your instructor',
     choose:       'Please select your training module',
     back:         '← Back to login',
+    backHome:     '← Back to ProDrive homepage',
     noModules:    'No e-learning modules are booked for this registration number.<br>Please contact your instructor.',
     errEmpty:     'Please enter your registration number.',
     errEmptyName: 'Please enter your first and last name.',
@@ -285,6 +289,7 @@ const TRANSLATIONS = {
     hint:         'Format: 2025-001 – podany przez instruktora',
     choose:       'Proszę wybrać moduł szkoleniowy',
     back:         '← Powrót do logowania',
+    backHome:     '← Powrót do strony głównej ProDrive',
     noModules:    'Dla tego numeru rejestracyjnego nie są zarezerwowane żadne moduły e-learning.<br>Proszę skontaktować się z instruktorem.',
     errEmpty:     'Proszę podać numer rejestracyjny.',
     errEmptyName: 'Proszę podać imię i nazwisko.',
@@ -313,6 +318,7 @@ const TRANSLATIONS = {
     hint:         'Format: 2025-001 – furnizat de instructor',
     choose:       'Vă rugăm selectați modulul de instruire',
     back:         '← Înapoi la autentificare',
+    backHome:     '← Înapoi la pagina principală ProDrive',
     noModules:    'Pentru acest număr de înregistrare nu sunt rezervate module e-learning.<br>Vă rugăm contactați instructorul.',
     errEmpty:     'Vă rugăm introduceți numărul de înregistrare.',
     errEmptyName: 'Vă rugăm introduceți prenumele și numele.',
@@ -341,6 +347,7 @@ const TRANSLATIONS = {
     hint:         'Format: 2025-001 – dhënë nga instruktori',
     choose:       'Ju lutemi zgjidhni modulin e trajnimit',
     back:         '← Kthehu te hyrja',
+    backHome:     '← Kthehu te faqja kryesore ProDrive',
     noModules:    'Për këtë numër regjistrimi nuk janë rezervuar module e-learning.<br>Ju lutemi kontaktoni instruktorin.',
     errEmpty:     'Ju lutemi vendosni numrin e regjistrimit.',
     errEmptyName: 'Ju lutemi vendosni emrin dhe mbiemrin.',
@@ -387,6 +394,8 @@ function setLang(lang){
   document.getElementById('txt-hint').textContent     = t.hint;
   document.getElementById('txt-choose').textContent   = t.choose;
   document.getElementById('txt-back').textContent     = t.back;
+  document.getElementById('txt-back-home-login').textContent   = t.backHome;
+  document.getElementById('txt-back-home-modules').textContent = t.backHome;
 
   // Modulkarte neu rendern falls sichtbar
   if(document.getElementById('moduleCard').style.display !== 'none' && Object.keys(currentData).length){
