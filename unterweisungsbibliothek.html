@@ -94,27 +94,10 @@ body::before{
     <p>Gerätespezifische Sicherheitsunterweisungen mit Wissenscheck und digitalem Nachweis — für registrierte Teilnehmer.</p>
   </div>
 
-  <div class="card" id="loginCard">
-    <div class="card-body">
-      <div class="card-intro">Bitte melden Sie sich mit Ihrer Registriernummer, Vor- und Nachnamen an.</div>
-      <div class="lf">
-        <label>Registriernummer</label>
-        <input type="text" id="regnr" placeholder="2025-001" autocomplete="off"
-          onkeydown="if(event.key==='Enter')document.getElementById('vorname').focus()">
-      </div>
-      <div class="lf">
-        <label>Vorname</label>
-        <input type="text" id="vorname" placeholder="Max" autocomplete="off"
-          onkeydown="if(event.key==='Enter')document.getElementById('nachname').focus()">
-      </div>
-      <div class="lf">
-        <label>Nachname</label>
-        <input type="text" id="nachname" placeholder="Mustermann" autocomplete="off"
-          onkeydown="if(event.key==='Enter')doLogin()">
-      </div>
-      <button class="login-btn" id="loginBtn" onclick="doLogin()">Anmelden →</button>
-      <div class="lerr" id="lerr"></div>
-      <div class="lhint">Format: 2025-001 – erhalten Sie von Ihrem Ausbilder</div>
+  <div class="card" id="loadingCard">
+    <div class="card-body" style="text-align:center">
+      <span class="spinner" style="border-color:var(--line);border-top-color:var(--blue)"></span>
+      <div class="lhint" style="margin-top:14px">Lade Unterweisungsbibliothek…</div>
     </div>
   </div>
 
@@ -149,26 +132,15 @@ function goBack(){
   window.location.href = BASE + 'homepage.html';
 }
 
-async function doLogin(){
-  const val      = document.getElementById('regnr').value.trim();
-  const vorname  = document.getElementById('vorname').value.trim();
-  const nachname = document.getElementById('nachname').value.trim();
-  const errEl = document.getElementById('lerr');
-  errEl.textContent = '';
-
-  if(!val){ errEl.textContent = 'Bitte Registriernummer eingeben.'; return; }
-  if(!/^\d{4}-\d{3,4}$/.test(val)){ errEl.textContent = 'Ungültig. Format: 2025-001'; return; }
-  if(!vorname || !nachname){ errEl.textContent = 'Bitte Vor- und Nachnamen eingeben.'; return; }
-
-  await pruefeUndZeige(val, vorname, nachname, false);
+function zeigeFehler(text){
+  document.getElementById('loadingCard').innerHTML =
+    '<div class="card-body" style="text-align:center">' +
+    '<div class="lerr" style="min-height:auto">' + text + '</div>' +
+    '<button class="back-btn" style="margin-top:16px" onclick="goBack()">← Zurück zur Startseite</button>' +
+    '</div>';
 }
 
-async function pruefeUndZeige(val, vorname, nachname, silent){
-  const errEl = document.getElementById('lerr');
-  const btn   = document.getElementById('loginBtn');
-  btn.innerHTML = '<span class="spinner"></span>';
-  btn.disabled  = true;
-
+async function pruefeUndZeige(val, vorname, nachname){
   try{
     const res  = await fetch(ZUGANGSPRUEFUNG_URL, {
       method:'POST', headers:{'Content-Type':'application/json'},
@@ -182,19 +154,16 @@ async function pruefeUndZeige(val, vorname, nachname, silent){
       sessionStorage.setItem('authVorname', vorname);
       sessionStorage.setItem('authNachname', nachname);
       showLibrary();
-    } else if(!silent){
-      errEl.textContent = data.grund || 'Registriernummer, Vor- oder Nachname stimmen nicht überein. Bitte Ausbilder kontaktieren.';
+    } else {
+      zeigeFehler(data.grund || 'Registriernummer, Vor- oder Nachname stimmen nicht überein. Bitte Ausbilder kontaktieren.');
     }
   }catch(e){
-    if(!silent) errEl.textContent = 'Verbindungsfehler. Bitte erneut versuchen.';
-  }finally{
-    btn.textContent = 'Anmelden →';
-    btn.disabled = false;
+    zeigeFehler('Verbindungsfehler. Bitte erneut versuchen.');
   }
 }
 
 function showLibrary(){
-  document.getElementById('loginCard').style.display = 'none';
+  document.getElementById('loadingCard').style.display = 'none';
   document.getElementById('libCard').style.display = 'block';
   document.getElementById('greetName').textContent = 'Hallo, ' + currentVorname + ' ' + currentNachname + '!';
 
@@ -217,8 +186,9 @@ function showLibrary(){
   }).join('');
 }
 
-// Auto-Login: nur wenn diese Registriernummer bereits in dieser Sitzung
-// erfolgreich angemeldet wurde.
+// Login passiert bereits auf einer vorherigen Seite (z.B. Teilnehmer-Login).
+// Hier nur noch die dort hinterlegten Daten übernehmen — kein eigenes
+// Login-Formular mehr. Fehlen die Daten, zurück zur Anmeldung.
 (function(){
   const params = new URLSearchParams(window.location.search);
   const nr = params.get('regnr');
@@ -226,18 +196,12 @@ function showLibrary(){
   const authVorname = sessionStorage.getItem('authVorname');
   const authNachname = sessionStorage.getItem('authNachname');
 
-  if(nr && /^\d{4}-\d{3,4}$/.test(nr)){
-    document.getElementById('regnr').value = nr;
-    if(authRegnr === nr && authVorname && authNachname){
-      document.getElementById('vorname').value = authVorname;
-      document.getElementById('nachname').value = authNachname;
-      pruefeUndZeige(nr, authVorname, authNachname, true);
-    }
-  } else if(authRegnr && authVorname && authNachname){
-    document.getElementById('regnr').value = authRegnr;
-    document.getElementById('vorname').value = authVorname;
-    document.getElementById('nachname').value = authNachname;
-    pruefeUndZeige(authRegnr, authVorname, authNachname, true);
+  const nrToUse = (nr && /^\d{4}-\d{3,4}$/.test(nr)) ? nr : authRegnr;
+
+  if(nrToUse === authRegnr && authVorname && authNachname){
+    pruefeUndZeige(authRegnr, authVorname, authNachname);
+  } else {
+    window.location.href = BASE + 'index.html' + (nrToUse ? '?regnr=' + encodeURIComponent(nrToUse) : '');
   }
 })();
 </script>
