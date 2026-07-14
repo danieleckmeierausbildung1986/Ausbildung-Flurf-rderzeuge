@@ -135,9 +135,8 @@ body::before{
         <div class="lib-arrow">→</div>
       </a>
     </div>
-    <div class="footer-area" style="display:flex;flex-direction:column;gap:8px">
+    <div class="footer-area">
       <button class="back-btn" onclick="doLogout()" style="cursor:pointer">↩ Abmelden</button>
-      <a class="back-btn" href="homepage.html">← Zurück zur Startseite</a>
     </div>
   </div>
 </div>
@@ -153,10 +152,7 @@ function showTools(name){
 
 function doLogout(){
   sessionStorage.removeItem('trainerAuth');
-  document.getElementById('toolsCard').style.display = 'none';
-  document.getElementById('loginCard').style.display = 'block';
-  document.getElementById('benutzername').value = '';
-  document.getElementById('passwort').value = '';
+  window.location.href = 'homepage.html';
 }
 
 async function doLogin(){
