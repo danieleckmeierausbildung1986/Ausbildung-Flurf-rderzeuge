@@ -99,7 +99,7 @@ body{
     <p class="desc">Schulung auswählen — es wird dann nur der passende QR-Code angezeigt, ideal beim Bildschirmteilen, damit nicht versehentlich der falsche Code sichtbar ist.</p>
     <div class="qr-picker" id="qrPicker">
       <button class="qr-picker-btn" onclick="showQr('stufe1')">Stufe 1</button>
-      <button class="qr-picker-btn" onclick="showQr('stufe2')">Zusatzgeräte</button>
+      <button class="qr-picker-btn" onclick="showQr('stufe2')">Stufe 2</button>
       <button class="qr-picker-btn" onclick="showQr('lasi')">Ladungssicherung</button>
     </div>
     <div class="qr-display" id="qrDisplay" style="display:none">
@@ -125,7 +125,7 @@ var TRAINER_PW = 'Demo-001';
 
 var QR_DATA = {
   stufe1: { img: 'trainer/qr_stufe1.png', label: 'Stufe 1', url: 'checkin.html?typ=Stufe%201' },
-  stufe2: { img: 'trainer/qr_stufe2.png', label: 'Zusatzgeräte', url: 'checkin.html?typ=Stufe%202' },
+  stufe2: { img: 'trainer/qr_stufe2.png', label: 'Stufe 2', url: 'checkin.html?typ=Stufe%202' },
   lasi:   { img: 'trainer/qr_lasi.png',   label: 'Ladungssicherung', url: 'checkin.html?typ=LaSi' }
 };
 

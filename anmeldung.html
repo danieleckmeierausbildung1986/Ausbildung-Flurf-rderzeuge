@@ -204,7 +204,7 @@ footer{
         <div class="af-kurs-top">
           <label class="af-kurs-label">
             <input type="checkbox" id="ck-stufe2">
-            Ausbildung Zusatzgeräte
+            Zusatzausbildung Stufe 2
             <span style="font-size:11px;font-weight:400;color:#b7770d;background:#fef9e7;border:1px solid #f9e4a0;border-radius:10px;padding:2px 7px;margin-left:4px">Auf Anfrage</span>
           </label>
           <select class="af-kurs-select" id="sel-stufe2" disabled>
@@ -396,7 +396,7 @@ document.getElementById('anmeldungForm').addEventListener('submit', async functi
   }
 
   if(stufe2 && !validateStufe2()){
-    errEl.textContent = 'Bitte wählen Sie bei den Zusatzgeräten mindestens einen Fahrzeugtyp aus (Schubmaststapler, Kommissionierer oder Schmalgangstapler).';
+    errEl.textContent = 'Bitte wählen Sie bei Stufe 2 mindestens einen Fahrzeugtyp aus (Schubmaststapler, Kommissionierer oder Schmalgangstapler).';
     errEl.style.display = 'block';
     document.getElementById('stufe2-typen').scrollIntoView({behavior:'smooth', block:'center'});
     return;
@@ -418,7 +418,7 @@ document.getElementById('anmeldungForm').addEventListener('submit', async functi
 
   var schulungen = [];
   if(stufe1)   schulungen.push('Ausbildung Flurförderzeuge Stufe 1');
-  if(stufe2)   schulungen.push('Ausbildung Zusatzgeräte');
+  if(stufe2)   schulungen.push('Zusatzausbildung Stufe 2');
   if(lasi)     schulungen.push('Ladungssicherung VDI 2700');
   if(training) schulungen.push('Grundlagentraining');
 
