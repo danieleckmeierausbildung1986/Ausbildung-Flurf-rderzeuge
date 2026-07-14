@@ -483,6 +483,16 @@ var checkState = {};
 var regnr = '', vorname = '', nachname = '', pruefername = '';
 var geburtsdatum = '', geburtsort = '', kursBeginn = '', kursEnde = '';
 
+// Prüfername aus dem Trainerzugang vorausfüllen, falls im Browser eingeloggt.
+(function(){
+  try{
+    var auth = JSON.parse(sessionStorage.getItem('trainerAuth') || 'null');
+    if(auth && auth.name){
+      document.getElementById('pruefername').value = auth.name;
+    }
+  }catch(e){}
+})();
+
 function zurueckZurAuswahl(){
   window.location.href = BASE + 'praxispruefung_stufe2_auswahl.html';
 }

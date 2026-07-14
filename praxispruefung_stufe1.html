@@ -388,6 +388,16 @@ var regnr = '', vorname = '', nachname = '', pruefername = '';
 var geburtsdatum = '', geburtsort = '', kursBeginn = '', kursEnde = '';
 var fotoBase64 = '';
 
+// Prüfername aus dem Trainerzugang vorausfüllen, falls im Browser eingeloggt.
+(function(){
+  try{
+    var auth = JSON.parse(sessionStorage.getItem('trainerAuth') || 'null');
+    if(auth && auth.name){
+      document.getElementById('pruefername').value = auth.name;
+    }
+  }catch(e){}
+})();
+
 function showScreen(id){
   ['loginScreen','check1Screen','check2Screen','auswertungScreen','abschlussScreen','resultScreen'].forEach(function(s){
     document.getElementById(s).style.display = (s===id) ? 'block' : 'none';
