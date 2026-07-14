@@ -107,7 +107,7 @@ async function checkAusweis(regnr, token) {
 
     let html = '<div class="person-header"><div class="person-name">' + d.vorname + ' ' + d.name + '</div><div class="person-regnr">Reg.-Nr. ' + regnr + '</div></div>';
     html += '<div class="section-title">Stapler Stufe 1</div>' + s1Row;
-    html += '<div class="section-title">Stapler Stufe 2</div>';
+    html += '<div class="section-title">Zusatzgeräte</div>';
     html += (d.schubmast === 'Bestanden')
       ? row('Schubmast', 'Prüfung am ' + (d.schubmast_datum || '—'), '✓ Bestanden', 'badge-ok')
       : row('Schubmast', d.schubmast_gebucht === 'Ja' ? 'gebucht' : 'nicht absolviert', d.schubmast_gebucht === 'Ja' ? 'ausstehend' : '—', d.schubmast_gebucht === 'Ja' ? 'badge-warn' : 'badge-none');

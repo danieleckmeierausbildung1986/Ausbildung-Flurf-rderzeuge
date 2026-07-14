@@ -244,7 +244,7 @@ const TRANSLATIONS = {
     badgeNochNichtFreigegeben: 'Noch nicht freigegeben',
     mod: {
       stufe1:     { title: 'Stapler Stufe 1',    sub: 'DGUV Grundsatz 308-001' },
-      stufe2:     { title: 'Stapler Stufe 2',    sub: 'DGUV Grundsatz 308-001' },
+      stufe2:     { title: 'Zusatzgeräte',    sub: 'DGUV Grundsatz 308-001' },
       lasi:       { title: 'Ladungssicherung',   sub: 'VDI 2700 ff. · DGUV 308-009' },
     }
   },
@@ -596,13 +596,13 @@ function showModules(data){
     if(s2AllAbgeschlossen){
       examList.innerHTML += `
         <div class="exam-tile disabled">
-          <img src="${BASE}${logoImg('logo_pruefung_stufe2','jpg')}" alt="Theorieprüfung Stufe 2" style="filter:grayscale(1) brightness(1.15)">
+          <img src="${BASE}${logoImg('logo_pruefung_stufe2','jpg')}" alt="Theorieprüfung Zusatzgeräte" style="filter:grayscale(1) brightness(1.15)">
           <span class="exam-tile-badge">${t.badgeBereitsBestanden}</span>
         </div>`;
     } else {
       examList.innerHTML += `
         <div class="exam-tile" style="cursor:pointer" onclick='goPruefungStufe2(${JSON.stringify(s2data)})'>
-          <img src="${BASE}${logoImg('logo_pruefung_stufe2','jpg')}" alt="Theorieprüfung Stufe 2">
+          <img src="${BASE}${logoImg('logo_pruefung_stufe2','jpg')}" alt="Theorieprüfung Zusatzgeräte">
         </div>`;
     }
     examCount++;
