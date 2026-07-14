@@ -10,7 +10,7 @@
   --ink:#1a2330;--muted:#68788f;--line:#e3e8f0;--bg:#edf1f7;--card:#fff;
   --ok:#1a9e6e;--okbg:#e8f7f2;--no:#c0392b;--nobg:#fdecea;
   --shadow:0 4px 22px rgba(22,36,63,.10);--r:14px;
-  --lasi:#1a7a4a;--lasi-l:#2ea865;--lasi-d:#0d4a24;
+  --lasi:#e8690f;--lasi-l:#f0904a;--lasi-d:#7a3502;
 }
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:"Segoe UI",system-ui,sans-serif;background:var(--bg);color:var(--ink)}
@@ -19,10 +19,10 @@ button{font-family:inherit;cursor:pointer}
 
 /* LOGIN */
 #login{min-height:100vh;display:flex;align-items:center;justify-content:center;
-  background:linear-gradient(135deg,#0a1f12,#14422a 55%,#1a5c38);padding:20px}
+  background:linear-gradient(135deg,#1f1206,#3d2410 55%,#7a3502);padding:20px}
 .lcard{background:#fff;border-radius:22px;box-shadow:0 24px 64px rgba(0,0,0,.28);
   width:100%;max-width:420px;overflow:hidden}
-.lcard-top{background:linear-gradient(135deg,#0d2b1a,#1a5c38);padding:36px 32px 28px;text-align:center}
+.lcard-top{background:linear-gradient(135deg,#7a3502,#b8500a);padding:36px 32px 28px;text-align:center}
 .lcard-top .ico{width:64px;height:64px;border-radius:14px;background:rgba(255,255,255,.14);
   display:flex;align-items:center;justify-content:center;margin:0 auto 14px}
 .lcard-top .ico svg{width:34px;height:34px;fill:#fff}
@@ -44,7 +44,7 @@ button{font-family:inherit;cursor:pointer}
 
 /* APP */
 #app{min-height:100vh;display:flex;flex-direction:column}
-.topbar{background:linear-gradient(90deg,#0d2b1a,#1a5c38);color:#fff;height:56px;
+.topbar{background:linear-gradient(90deg,#7a3502,#b8500a);color:#fff;height:56px;
   display:flex;align-items:center;gap:12px;padding:0 16px;
   position:sticky;top:0;z-index:40;box-shadow:0 2px 10px rgba(0,0,0,.2)}
 .burger{width:38px;height:38px;border:none;background:rgba(255,255,255,.1);
@@ -71,8 +71,8 @@ button{font-family:inherit;cursor:pointer}
   max-height:calc(100vh - 59px);flex-shrink:0}
 .sidebar-item{padding:10px 14px;font-size:13px;cursor:pointer;
   display:flex;align-items:flex-start;gap:10px;border-left:3px solid transparent;transition:background .1s}
-.sidebar-item:hover{background:#f0faf4}
-.sidebar-item.active{background:#e6f5ec;border-left-color:var(--lasi);font-weight:600;color:#0d2b1a}
+.sidebar-item:hover{background:#fdf1e7}
+.sidebar-item.active{background:#fce8d5;border-left-color:var(--lasi);font-weight:600;color:#7a3502}
 .snum{width:23px;height:23px;border-radius:50%;background:var(--line);color:var(--muted);
   font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
 .sidebar-item.active .snum{background:var(--lasi);color:#fff}
@@ -90,7 +90,7 @@ button{font-family:inherit;cursor:pointer}
 .welcome-card{background:var(--card);border-radius:var(--r);box-shadow:var(--shadow);
   text-align:center;padding:52px 28px 44px;animation:fin .28s ease}
 .w-icon{width:82px;height:82px;border-radius:50%;
-  background:linear-gradient(135deg,var(--lasi),#0d2b1a);
+  background:linear-gradient(135deg,var(--lasi),#7a3502);
   display:flex;align-items:center;justify-content:center;margin:0 auto 20px}
 .w-icon svg{width:42px;height:42px;fill:#fff}
 .welcome-card h2{font-size:26px;color:var(--navy);margin-bottom:10px}
@@ -149,7 +149,7 @@ button{font-family:inherit;cursor:pointer}
 .quiz-opts{padding:0 20px 20px;display:grid;gap:8px}
 .opt{display:block;width:100%;text-align:left;padding:13px 16px;border:2px solid var(--line);
   border-radius:11px;background:#fff;font-size:14.5px;color:var(--ink);transition:all .1s}
-.opt:hover:not(:disabled){border-color:var(--lasi);background:#f0faf4}
+.opt:hover:not(:disabled){border-color:var(--lasi);background:#fdf1e7}
 .opt:disabled{cursor:default}
 .opt.correct{border-color:var(--ok)!important;background:var(--okbg)!important;color:var(--ok)!important}
 .opt.wrong{border-color:var(--no)!important;background:var(--nobg)!important;color:var(--no)!important}
@@ -200,7 +200,7 @@ button{font-family:inherit;cursor:pointer}
 </head>
 <body>
 
-<div id="zugangsCheckOverlay" style="display:none;position:fixed;inset:0;background:#0d2b1a;z-index:9999;align-items:center;justify-content:center;color:#fff;font-family:'Segoe UI',system-ui,sans-serif;text-align:center;padding:24px;">
+<div id="zugangsCheckOverlay" style="display:none;position:fixed;inset:0;background:#7a3502;z-index:9999;align-items:center;justify-content:center;color:#fff;font-family:'Segoe UI',system-ui,sans-serif;text-align:center;padding:24px;">
   <div id="zugangsCheckContent">Zugang wird gepr&uuml;ft&hellip;</div>
 </div>
 
@@ -396,7 +396,7 @@ async function startApp(nr, vorname, nachname){
   const overlay = document.getElementById('zugangsCheckOverlay');
   const content = document.getElementById('zugangsCheckContent');
   overlay.style.display = 'flex';
-  const backBtnHtml = '<button onclick="window.location.href=\'' + PORTAL_URL + '?regnr=' + encodeURIComponent(nr) + '\'" style="padding:12px 28px;border:none;border-radius:12px;background:#fff;color:#0d2b1a;font-weight:700;font-size:14px;cursor:pointer;font-family:inherit">&larr; Zur&uuml;ck zur Startseite</button>';
+  const backBtnHtml = '<button onclick="window.location.href=\'' + PORTAL_URL + '?regnr=' + encodeURIComponent(nr) + '\'" style="padding:12px 28px;border:none;border-radius:12px;background:#fff;color:#7a3502;font-weight:700;font-size:14px;cursor:pointer;font-family:inherit">&larr; Zur&uuml;ck zur Startseite</button>';
   try {
     const res = await fetch(ZUGANGSPRUEFUNG_URL, {
       method: 'POST', headers: {'Content-Type':'application/json'},
