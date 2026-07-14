@@ -57,6 +57,34 @@ body::before{
   font-size:14px;font-weight:600;cursor:pointer;transition:all .15s;text-align:center;text-decoration:none;
 }
 .back-btn:hover{border-color:var(--blue);color:var(--blue)}
+.login-body{padding:26px 26px 30px}
+.lf{margin-bottom:16px}
+.lf label{
+  display:block;font-size:11px;font-weight:700;color:var(--navy);
+  text-transform:uppercase;letter-spacing:.6px;margin-bottom:7px
+}
+.lf input{
+  width:100%;padding:13px 16px;border:2px solid var(--line);border-radius:12px;
+  font-size:16px;background:#fafbfc;transition:border-color .15s;color:var(--ink);
+}
+.lf input:focus{outline:none;border-color:var(--blue);background:#fff}
+.login-btn{
+  width:100%;padding:14px;border:none;border-radius:12px;
+  background:linear-gradient(135deg,var(--blue),var(--blue-d));
+  color:#fff;font-size:15px;font-weight:700;cursor:pointer;
+  transition:opacity .15s;letter-spacing:.3px;
+}
+.login-btn:hover{opacity:.9}
+.login-btn:disabled{opacity:.6;cursor:not-allowed}
+.lerr{color:#c0392b;font-size:13px;margin-top:10px;text-align:center;min-height:18px}
+.spinner{
+  width:18px;height:18px;border:3px solid rgba(255,255,255,.35);
+  border-top-color:#fff;border-radius:50%;
+  animation:spin .7s linear infinite;display:inline-block;vertical-align:middle;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+.greeting{text-align:center;padding:20px 24px 0}
+.greeting-name{font-size:17px;font-weight:700;color:var(--navy)}
 </style>
 </head>
 <body>
@@ -68,7 +96,27 @@ body::before{
     <p>Werkzeuge für Ausbilder und Prüfer — Unterweisungen, Praxisprüfungen und Nachweise.</p>
   </div>
 
-  <div class="card">
+  <div class="card" id="loginCard">
+    <div class="login-body">
+      <div class="lf">
+        <label>Benutzername</label>
+        <input type="text" id="benutzername" placeholder="z.B. daniel" autocomplete="off"
+          onkeydown="if(event.key==='Enter')document.getElementById('passwort').focus()">
+      </div>
+      <div class="lf">
+        <label>Passwort</label>
+        <input type="password" id="passwort" placeholder="••••••••" autocomplete="off"
+          onkeydown="if(event.key==='Enter')doLogin()">
+      </div>
+      <button class="login-btn" id="loginBtn" onclick="doLogin()">Anmelden →</button>
+      <div class="lerr" id="lerr"></div>
+    </div>
+  </div>
+
+  <div class="card" id="toolsCard" style="display:none">
+    <div class="greeting">
+      <div class="greeting-name" id="greetName"></div>
+    </div>
     <div class="lib-grid">
       <a class="lib-card" href="praxispruefung_start.html">
         <div class="lib-icon">📋</div>
@@ -87,10 +135,73 @@ body::before{
         <div class="lib-arrow">→</div>
       </a>
     </div>
-    <div class="footer-area">
+    <div class="footer-area" style="display:flex;flex-direction:column;gap:8px">
+      <button class="back-btn" onclick="doLogout()" style="cursor:pointer">↩ Abmelden</button>
       <a class="back-btn" href="homepage.html">← Zurück zur Startseite</a>
     </div>
   </div>
 </div>
+
+<script>
+// TODO: URL hier eintragen, sobald der Flow "TrainerZugangspruefung" veröffentlicht ist.
+var TRAINER_LOGIN_URL = '';
+
+function showTools(name){
+  document.getElementById('loginCard').style.display = 'none';
+  document.getElementById('toolsCard').style.display = 'block';
+  document.getElementById('greetName').textContent = name ? ('Hallo, ' + name + '!') : '';
+}
+
+function doLogout(){
+  sessionStorage.removeItem('trainerAuth');
+  document.getElementById('toolsCard').style.display = 'none';
+  document.getElementById('loginCard').style.display = 'block';
+  document.getElementById('benutzername').value = '';
+  document.getElementById('passwort').value = '';
+}
+
+async function doLogin(){
+  var benutzername = document.getElementById('benutzername').value.trim();
+  var passwort = document.getElementById('passwort').value;
+  var errEl = document.getElementById('lerr');
+  var btn = document.getElementById('loginBtn');
+  errEl.textContent = '';
+
+  if(!benutzername || !passwort){ errEl.textContent = 'Bitte Benutzername und Passwort eingeben.'; return; }
+  if(!TRAINER_LOGIN_URL){ errEl.textContent = 'Trainer-Login ist noch nicht eingerichtet (Flow-URL fehlt).'; return; }
+
+  btn.innerHTML = '<span class="spinner"></span>';
+  btn.disabled = true;
+  try{
+    var res = await fetch(TRAINER_LOGIN_URL, {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ benutzername: benutzername, passwort: passwort })
+    });
+    var data = await res.json();
+    if(data && data.zugang === true){
+      sessionStorage.setItem('trainerAuth', JSON.stringify({ benutzername: benutzername, name: data.name || '' }));
+      showTools(data.name);
+    } else {
+      errEl.textContent = 'Benutzername oder Passwort falsch.';
+    }
+  } catch(e){
+    errEl.textContent = 'Verbindung fehlgeschlagen. Bitte erneut versuchen.';
+  } finally {
+    btn.textContent = 'Anmelden →';
+    btn.disabled = false;
+  }
+}
+
+(function(){
+  var raw = sessionStorage.getItem('trainerAuth');
+  if(raw){
+    try{
+      var auth = JSON.parse(raw);
+      showTools(auth.name);
+    }catch(e){ sessionStorage.removeItem('trainerAuth'); }
+  }
+})();
+</script>
 </body>
 </html>
