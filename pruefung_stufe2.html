@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Theorieprüfung Stufe 2 – ProDrive Akademie Niederbayern</title>
+<title>Theorieprüfung Zusatzgeräte – ProDrive Akademie Niederbayern</title>
 <style>
 :root{
   --green-d:#2d1b6b;--green:#5b3db0;--green-l:#7c5cd6;
@@ -119,7 +119,7 @@ body{
     <div class="ti"><img src="logos/logo_icon.png" alt="ProDrive Akademie"></div>
     <div>
       <h1>ProDrive Akademie Niederbayern</h1>
-      <p id="topbarSub">Theorieprüfung Stufe 2 · DGUV Grundsatz 308-001</p>
+      <p id="topbarSub">Theorieprüfung Zusatzgeräte · DGUV Grundsatz 308-001</p>
     </div>
     <div class="timer" id="timerBox" style="display:none">40:00</div>
   </div>
@@ -155,8 +155,8 @@ body{
     <!-- WELCOME -->
     <div id="welcomeScreen" style="display:none">
       <div class="welcome-box">
-        <span class="welcome-logo-tile"><img id="welcomeLogo" src="logos/logo_pruefung_stufe2.jpg" alt="Theorieprüfung Stufe 2"></span>
-        <div class="welcome-titel" id="welcomeTitel">Theorieprüfung Stufe 2</div>
+        <span class="welcome-logo-tile"><img id="welcomeLogo" src="logos/logo_pruefung_stufe2.jpg" alt="Theorieprüfung Zusatzgeräte"></span>
+        <div class="welcome-titel" id="welcomeTitel">Theorieprüfung Zusatzgeräte</div>
         <div class="welcome-sub" id="welcomeSub">Diese Prüfung deckt die theoretischen Grundlagen nach <b>DGUV Grundsatz 308-001</b> für Ihr Gerät ab. Beantworten Sie alle Fragen sorgfältig — die Prüfung kann nur einmal durchgeführt werden.</div>
         <div class="welcome-grid">
           <div class="wg"><b id="statFragenN">33</b><span>Fragen</span></div>
@@ -366,8 +366,8 @@ var FRAGEN = G ? G.fragen : [];
 var PASS_SCORE = Math.ceil(FRAGEN.length * PASS_QUOTE);
 
 if(G){
-  document.title = 'Theorieprüfung Stufe 2 – ' + G.label + ' – ProDrive Akademie Niederbayern';
-  document.getElementById('topbarSub').textContent = 'Theorieprüfung Stufe 2 · ' + G.label + ' · DGUV Grundsatz 308-001';
+  document.title = 'Theorieprüfung Zusatzgeräte – ' + G.label + ' – ProDrive Akademie Niederbayern';
+  document.getElementById('topbarSub').textContent = 'Theorieprüfung Zusatzgeräte · ' + G.label + ' · DGUV Grundsatz 308-001';
   document.getElementById('welcomeTitel').textContent = 'Theorieprüfung ' + G.label;
   document.getElementById('welcomeLogo').src = G.logo;
   document.getElementById('statFragenN').textContent = FRAGEN.length;
