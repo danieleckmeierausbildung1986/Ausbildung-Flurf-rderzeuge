@@ -59,6 +59,13 @@ nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.95);backdrop-
 .timeline .year{font-size:13px;font-weight:800;color:var(--blue-d);letter-spacing:.3px}
 .timeline .desc{font-size:14.5px;color:var(--ink);margin-top:2px}
 
+.feature-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:22px 0 30px}
+@media(max-width:560px){.feature-grid{grid-template-columns:1fr}}
+.feature-item{background:var(--blue-xl);border-radius:12px;padding:18px}
+.feature-icon{font-size:22px;margin-bottom:8px}
+.feature-title{font-size:14.5px;font-weight:800;color:var(--navy);margin-bottom:6px}
+.feature-desc{font-size:13.5px;color:var(--muted);line-height:1.5}
+
 .signoff{margin-top:8px;font-size:15px;color:var(--navy);font-weight:700}
 .signoff span{display:block;font-size:13px;font-weight:400;color:var(--muted);margin-top:2px}
 
@@ -94,7 +101,7 @@ footer a{color:rgba(255,255,255,.5);text-decoration:underline}
 <div class="page-hero">
   <div class="eyebrow">Über uns</div>
   <h1>Warum es die ProDrive Akademie gibt</h1>
-  <p>Eine kurze Geschichte über Bürokratie, eine Initialzündung – und die Überzeugung, dass Ausbildung auch einfacher geht.</p>
+  <p>Meine Überzeugung, mein Werdegang – und warum bei der ProDrive Akademie der Teilnehmer im Mittelpunkt steht.</p>
 </div>
 
 <div class="main">
@@ -105,13 +112,22 @@ footer a{color:rgba(255,255,255,.5);text-decoration:underline}
       <span class="badge">Seit 2015 in der Ausbildung tätig</span>
     </div>
 
-    <p class="lead">Ich heiße Eckmeier Daniel, gelernter Ausbilder für Flurförderzeuge und Ladungssicherung – und der Grund, warum es die ProDrive Akademie gibt, ist eigentlich ganz einfach: mir ist als Ausbilder über die Jahre der Papierkram einfach zu viel geworden.</p>
+    <p class="lead">Meine Überzeugung: Der Teilnehmer steht im Mittelpunkt.</p>
 
-    <p>Bürokratie, Formulare, Verwaltungsaufwand statt Zeit für das, worauf es eigentlich ankommt – die Ausbildung selbst. Bestärkt hat mich darin ein ehemaliger Kollege, der genau dieses Problem auf mich zukommen ließ: Die Bürokratie rund um Ausbildungen wird nicht weniger, sondern mehr.</p>
+    <p>Eine gute Ausbildung steht und fällt mit den Teilnehmern. Deshalb habe ich die ProDrive Akademie so aufgebaut, dass sich das Lernen an die Menschen anpasst – und nicht umgekehrt. Theorie kann man hervorragend eigenständig lernen. Durch E-Learning und Online-Schulungen können die Teilnehmer lernen, wann und wo sie wollen – in ihrer eigenen Sprache und in ihrem eigenen Tempo.</p>
 
-    <div class="pullquote">Das war für mich die Initialzündung, es anders zu machen.</div>
-
-    <p>Meine Überzeugung dabei: Theorie kann man auch eigenständig lernen. Durch E-Learning und Online-Schulungen können Teilnehmer lernen, wann und wo sie wollen – in ihrer eigenen Sprache, in ihrem eigenen Tempo. Digital, wo es Sinn ergibt. Persönlich, wo es zählt: Die praktische Prüfung findet weiterhin vor Ort bei Ihnen statt.</p>
+    <div class="feature-grid">
+      <div class="feature-item">
+        <div class="feature-icon">💻</div>
+        <div class="feature-title">Digital, wo es Sinn ergibt</div>
+        <div class="feature-desc">Flexibles, stressfreies Lernen der Theorie im Netz – genau passend für jeden einzelnen Teilnehmer.</div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-icon">🤝</div>
+        <div class="feature-title">Persönlich, wo es zählt</div>
+        <div class="feature-desc">Die praktische Prüfung findet weiterhin vor Ort bei Ihnen statt, wo wir uns ganz individuell Zeit für Ihre Mitarbeiter nehmen.</div>
+      </div>
+    </div>
 
     <div class="section-divider">
       <h2>Mein Weg</h2>
@@ -120,12 +136,13 @@ footer a{color:rgba(255,255,255,.5);text-decoration:underline}
 
     <ul class="timeline">
       <li><div class="year">2002</div><div class="desc">Ausbildung zum Tischler/Schreiner erfolgreich abgeschlossen.</div></li>
-      <li><div class="year">2008</div><div class="desc">Nach dem Zivildienst Einstieg bei Kühne+Nagel als Staplerfahrer – u. a. mit Langgabelstaplern bei der LKW- und Container-Entladung.</div></li>
-      <li><div class="year">2015</div><div class="desc">Wechsel in die Rolle des Ausbilders für Flurförderzeuge bei Kühne+Nagel.</div></li>
-      <li><div class="year">2022</div><div class="desc">Wechsel zu BMW. Da mich das Thema Ladungssicherung besonders interessiert und es perfekt zum Thema Logistik und Flurförderzeuge passt, habe ich mich entschieden, auch diese Zusatzqualifikation zu absolvieren.</div></li>
+      <li><div class="year">2008</div><div class="desc">Nach dem Zivildienst Einstieg bei Kühne+Nagel. Dort zunächst sieben Jahre als Staplerfahrer tätig – unter anderem mit Langgabelstaplern bei der LKW- und Container-Entladung.</div></li>
+      <li><div class="year">2015 – 2022</div><div class="desc">In dieser Zeit habe ich meinen Ausbilder für Flurförderzeuge gemacht, in dieser Rolle bei Kühne+Nagel gearbeitet und dabei die unterschiedlichsten Erfahrungen gesammelt.</div></li>
+      <li><div class="year">Seit 2022</div><div class="desc">Tätig bei BMW.</div></li>
+      <li><div class="year">Zusatzqualifikation</div><div class="desc">Da mich das Thema Ladungssicherung besonders interessiert und es perfekt zum Thema Logistik und Flurförderzeuge passt, habe ich mich entschieden, auch diese Zusatzqualifikation zu absolvieren.</div></li>
     </ul>
 
-    <p>Diese über zwanzig Jahre praktische Erfahrung in Logistik, Staplerfahrt und Ausbildung fließen direkt in jede Schulung bei der ProDrive Akademie ein.</p>
+    <p><strong>Das Fundament:</strong> Diese über zwanzig Jahre praktische Erfahrung in Logistik, Staplerfahrt und Ausbildung fließen direkt in jede Schulung bei der ProDrive Akademie ein – für eine Ausbildung auf Augenhöhe, die den Teilnehmern wirklich weiterhilft.</p>
 
     <div class="signoff">Eckmeier Daniel<span>Ausbilder & Inhaber · ProDrive Akademie Niederbayern</span></div>
 
