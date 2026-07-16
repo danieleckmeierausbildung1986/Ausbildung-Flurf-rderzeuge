@@ -726,10 +726,6 @@ function generatePDF(data){
           }, margin:[0,0,0,4]},
         // Summen
         {table:{widths:['*',115], body:totalsBody}, layout:'noBorders', margin:[0,0,0,14]},
-        // §19 + Konditionen
-        {text:'Gemäß §19 UStG wird keine Umsatzsteuer berechnet.', bold:true, fontSize:9.5, color:'#16243f', margin:[0,0,0,5]},
-        {text:'Alle Schulungen werden nach DGUV Grundsatz 308-001 bzw. VDI 2700 ff. durchgeführt. Die praktische Prüfung findet vor Ort beim Kunden statt. Der Praxistermin wird nach Auftragseingang individuell vereinbart.', fontSize:8, color:'#6b7280', italics:true, margin:[0,0,0,6]},
-        {text:[{text:'Konditionen: ', bold:true, fontSize:9},{text:'Zahlbar innerhalb von 14 Tagen nach Rechnungsstellung. Dieses Angebot ist 30 Tage gültig.', fontSize:9, color:'#6b7280'}], margin:[0,0,0,6]},
         ...notizBlock,
         {text:'Wir freuen uns auf eine erfolgreiche Zusammenarbeit. Bei Fragen stehen wir Ihnen jederzeit gerne zur Verfügung.', fontSize:10, color:'#16243f', margin:[0,0,0,14]},
         // Unterschrift
@@ -737,7 +733,12 @@ function generatePDF(data){
         {image:sigB64, width:90, margin:[0,0,0,2]},
         {canvas:[{type:'line',x1:0,y1:0,x2:155,y2:0,lineWidth:1.5,lineColor:'#16243f'}], margin:[0,0,0,3]},
         {text:'Daniel Eckmeier', bold:true, fontSize:10, color:'#16243f'},
-        {text:'Ausbilder & Inhaber · ProDrive Akademie Niederbayern', fontSize:8, color:'#6b7280', italics:true}
+        {text:'Ausbilder & Inhaber · ProDrive Akademie Niederbayern', fontSize:8, color:'#6b7280', italics:true},
+        // §19 + Konditionen (Kleingedrucktes)
+        {canvas:[{type:'line',x1:0,y1:0,x2:515,y2:0,lineWidth:0.5,lineColor:'#e5e7eb'}], margin:[0,18,0,10]},
+        {text:'Gemäß §19 UStG wird keine Umsatzsteuer berechnet.', bold:true, fontSize:8.5, color:'#6b7280', margin:[0,0,0,4]},
+        {text:'Alle Schulungen werden nach DGUV Grundsatz 308-001 bzw. VDI 2700 ff. durchgeführt. Die praktische Prüfung findet vor Ort beim Kunden statt. Der Praxistermin wird nach Auftragseingang individuell vereinbart.', fontSize:8, color:'#9ca3af', italics:true, margin:[0,0,0,4]},
+        {text:[{text:'Konditionen: ', bold:true, fontSize:8.5, color:'#6b7280'},{text:'Zahlbar innerhalb von 14 Tagen nach Rechnungsstellung. Dieses Angebot ist 30 Tage gültig.', fontSize:8.5, color:'#9ca3af'}]}
       ],
       styles:{th:{bold:true, fontSize:8, color:'#ffffff'}},
       footer:function(){return {margin:[40,8,40,0], text:'ProDrive Akademie Niederbayern · Daniel Eckmeier · Am Schwimmbad 12, 94436 Simbach · DGUV 308-001 · VDI 2700', fontSize:7, color:'#9ca3af', alignment:'center'};}
