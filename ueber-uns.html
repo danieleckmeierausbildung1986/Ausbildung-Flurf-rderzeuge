@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Über uns – ProDrive Akademie Niederbayern</title>
+<style>
+:root{
+  --blue:#1a4fa8;--blue-l:#2e75cc;--blue-d:#0d2d80;--blue-xl:#e8f0fb;
+  --navy:#16243f;--ink:#1a2330;--muted:#5a6a7a;--line:#e3e8f0;
+  --safety:#f07920;--white:#fff;--bg:#f7f9fb;
+  --shadow-sm:0 2px 8px rgba(0,0,0,.08);
+  --shadow-md:0 8px 32px rgba(0,0,0,.12);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"Segoe UI",system-ui,sans-serif;color:var(--ink);background:var(--bg);line-height:1.7}
+a{text-decoration:none;color:inherit}
+
+/* NAV */
+nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.95);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);padding:0 24px}
+.nav-inner{max-width:900px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:90px;gap:16px}
+.nav-logo{display:flex;align-items:center;gap:12px}
+.nav-back{font-size:14px;color:var(--muted);display:flex;align-items:center;gap:6px}
+.nav-back:hover{color:var(--blue)}
+
+/* HERO */
+.page-hero{background:linear-gradient(135deg,var(--navy),var(--blue-d));padding:56px 24px;text-align:center}
+.page-hero .eyebrow{font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--safety);margin-bottom:10px}
+.page-hero h1{font-size:clamp(26px,4.5vw,42px);font-weight:800;color:#fff;margin-bottom:10px}
+.page-hero p{font-size:15px;color:rgba(255,255,255,.75);max-width:560px;margin:0 auto}
+
+/* MAIN */
+.main{max-width:760px;margin:0 auto;padding:48px 24px 80px}
+.card{background:#fff;border-radius:18px;border:1px solid var(--line);box-shadow:var(--shadow-sm);padding:44px}
+@media(max-width:600px){.card{padding:28px 22px}}
+
+.badge-row{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:28px}
+.badge{font-size:12px;font-weight:700;color:var(--blue-d);background:var(--blue-xl);border-radius:20px;padding:6px 14px}
+
+.lead{font-size:17px;color:var(--navy);margin-bottom:18px}
+.card p{font-size:15px;color:var(--ink);margin-bottom:18px}
+
+.pullquote{
+  border-left:3px solid var(--safety);background:#fff8f1;border-radius:0 12px 12px 0;
+  padding:16px 20px;margin:24px 0;font-size:15px;color:var(--navy);font-style:italic;
+}
+
+.section-divider{display:flex;align-items:center;gap:14px;margin:40px 0 22px}
+.section-divider .line{flex:1;height:1px;background:var(--line)}
+.section-divider h2{font-size:20px;font-weight:800;color:var(--navy);white-space:nowrap}
+
+.timeline{list-style:none;margin:0 0 24px;padding:0;border-left:2px solid var(--blue-xl)}
+.timeline li{position:relative;padding:0 0 20px 24px}
+.timeline li:last-child{padding-bottom:0}
+.timeline li::before{
+  content:'';position:absolute;left:-7px;top:4px;width:12px;height:12px;
+  border-radius:50%;background:var(--blue);border:2px solid #fff;box-shadow:0 0 0 2px var(--blue-xl);
+}
+.timeline .year{font-size:13px;font-weight:800;color:var(--blue-d);letter-spacing:.3px}
+.timeline .desc{font-size:14.5px;color:var(--ink);margin-top:2px}
+
+.signoff{margin-top:8px;font-size:15px;color:var(--navy);font-weight:700}
+.signoff span{display:block;font-size:13px;font-weight:400;color:var(--muted);margin-top:2px}
+
+.cta-box{
+  margin-top:40px;background:linear-gradient(135deg,var(--navy),var(--blue-d));
+  border-radius:16px;padding:32px;text-align:center;
+}
+.cta-box h3{color:#fff;font-size:19px;font-weight:800;margin-bottom:8px}
+.cta-box p{color:rgba(255,255,255,.75);font-size:14px;margin-bottom:20px}
+.cta-box .btn{
+  display:inline-block;background:var(--safety);color:#fff;font-weight:700;font-size:14.5px;
+  padding:13px 28px;border-radius:10px;transition:opacity .15s;
+}
+.cta-box .btn:hover{opacity:.9}
+
+/* FOOTER */
+footer{background:var(--navy);color:rgba(255,255,255,.55);text-align:center;padding:24px;font-size:12.5px}
+footer strong{color:rgba(255,255,255,.75)}
+footer a{color:rgba(255,255,255,.5);text-decoration:underline}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a class="nav-logo" href="homepage.html">
+      <img src="logos/logo_haupt_transparent.png" alt="ProDrive Akademie Niederbayern" style="height:80px;object-fit:contain">
+    </a>
+    <a class="nav-back" href="homepage.html">← Zurück zur Startseite</a>
+  </div>
+</nav>
+
+<div class="page-hero">
+  <div class="eyebrow">Über uns</div>
+  <h1>Warum es ProDrive Akademie gibt</h1>
+  <p>Eine kurze Geschichte über Bürokratie, eine Initialzündung – und die Überzeugung, dass Ausbildung auch einfacher geht.</p>
+</div>
+
+<div class="main">
+  <div class="card">
+    <div class="badge-row">
+      <span class="badge">Ausbilder Flurförderzeuge</span>
+      <span class="badge">Ausbilder Ladungssicherung</span>
+      <span class="badge">Seit 2015 in der Ausbildung tätig</span>
+    </div>
+
+    <p class="lead">Ich heiße Eckmeier Daniel, gelernter Ausbilder für Flurförderzeuge und Ladungssicherung – und der Grund, warum es ProDrive Akademie gibt, ist eigentlich ganz einfach: mir ist als Ausbilder über die Jahre der Papierkram einfach zu viel geworden.</p>
+
+    <p>Bürokratie, Formulare, Verwaltungsaufwand statt Zeit für das, worauf es eigentlich ankommt – die Ausbildung selbst. Bestärkt hat mich darin ein ehemaliger Kollege, der genau dieses Problem auf mich zukommen ließ: Die Bürokratie rund um Ausbildungen wird nicht weniger, sondern mehr.</p>
+
+    <div class="pullquote">Das war für mich die Initialzündung, es anders zu machen.</div>
+
+    <p>Meine Überzeugung dabei: Theorie kann man auch eigenständig lernen. Durch E-Learning und Online-Schulungen können Teilnehmer lernen, wann und wo sie wollen – in ihrer eigenen Sprache, in ihrem eigenen Tempo. Digital, wo es Sinn ergibt. Persönlich, wo es zählt: Die praktische Prüfung findet weiterhin vor Ort bei Ihnen statt.</p>
+
+    <div class="section-divider">
+      <h2>Mein Weg</h2>
+      <div class="line"></div>
+    </div>
+
+    <ul class="timeline">
+      <li><div class="year">2002</div><div class="desc">Ausbildung zum Tischler/Schreiner erfolgreich abgeschlossen.</div></li>
+      <li><div class="year">2008</div><div class="desc">Nach dem Zivildienst Einstieg bei Kühne+Nagel als Staplerfahrer – u. a. mit Langgabelstaplern bei der LKW- und Container-Entladung.</div></li>
+      <li><div class="year">2015</div><div class="desc">Wechsel in die Rolle des Ausbilders für Flurförderzeuge bei Kühne+Nagel.</div></li>
+      <li><div class="year">2022</div><div class="desc">Wechsel zu BMW. Da mich das Thema Ladungssicherung besonders interessiert und es perfekt zum Thema Logistik und Flurförderzeuge passt, habe ich mich entschieden, auch diese Zusatzqualifikation zu absolvieren.</div></li>
+    </ul>
+
+    <p>Diese über zwanzig Jahre praktische Erfahrung in Logistik, Staplerfahrt und Ausbildung fließen direkt in jede Schulung bei ProDrive Akademie ein.</p>
+
+    <div class="signoff">Eckmeier Daniel<span>Ausbilder & Inhaber · ProDrive Akademie Niederbayern</span></div>
+
+    <div class="cta-box">
+      <h3>Lernen Sie ProDrive Akademie kennen</h3>
+      <p>Individuelles Angebot anfordern – digital, unkompliziert, ohne Papierkram.</p>
+      <a class="btn" href="angebot.html">Unverbindliches Angebot anfordern →</a>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <strong>ProDrive Akademie Niederbayern</strong> &nbsp;·&nbsp;
+  Daniel Eckmeier &nbsp;·&nbsp;
+  Am Schwimmbad 12, 94436 Simbach &nbsp;·&nbsp;
+  DGUV 308-001 &nbsp;·&nbsp; VDI 2700 &nbsp;·&nbsp;
+  <a href="homepage.html">Zurück zur Startseite</a>
+</footer>
+
+</body>
+</html>
