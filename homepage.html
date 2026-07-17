@@ -888,7 +888,18 @@ async function ladeTermine(){
       }
     });
   }catch(e){
-    grid.innerHTML = '<div class="termine-empty"><h3>Termine konnten nicht geladen werden</h3><p>Bitte kontaktieren Sie uns direkt für aktuelle Termine.</p><a href="#kontakt">Kontakt →</a></div>';
+    grid.innerHTML = '<div class="termine-empty"><h3>Termine werden auf Anfrage vergeben</h3><p>Melden Sie sich gerne — wir finden gemeinsam einen passenden Termin.</p><a href="termin-anfragen.html">Termin anfragen →</a></div>';
+    // Bei Ladefehler: alle Modul-Buttons auf "Termin anfragen" setzen,
+    // statt ins Leere/zur Fehlermeldung zu scrollen.
+    ['stufe1','stufe2','lasi','training'].forEach(function(kid){
+      var btn = document.getElementById('btn-kurs-'+kid);
+      if(!btn) return;
+      btn.textContent = 'Termin anfragen →';
+      btn.href = 'termin-anfragen.html?kurs='+kid;
+      btn.style.background = 'transparent';
+      btn.style.color = 'var(--blue)';
+      btn.style.border = '2px solid var(--blue)';
+    });
   }
 }
 
