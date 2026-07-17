@@ -168,11 +168,20 @@ body{
       <div class="q-body">
         <div class="q-num">Prüfer-Anmeldung</div>
         <div class="q-text" id="loginTitle">Praxisprüfung Stufe 2</div>
-        <div class="q-sub" id="loginSub">Prüfling auswählen und Prüfer eintragen</div>
+        <div class="q-sub" id="loginSub">Gerät und Prüfling auswählen, Prüfer eintragen</div>
+        <div class="field">
+          <label>Gerät auswählen</label>
+          <select id="geraetSelect" onchange="onGeraetChange()">
+            <option value="">Bitte Gerät wählen…</option>
+            <option value="schubmast">Schubmaststapler</option>
+            <option value="kommissionierer">Kommissionierer</option>
+            <option value="schmalgang">Schmalgangstapler</option>
+          </select>
+        </div>
         <div class="field">
           <label>Prüfling auswählen</label>
-          <select id="regnr" onchange="onPrueflingChange()">
-            <option value="">Wird geladen…</option>
+          <select id="regnr" onchange="onPrueflingChange()" disabled>
+            <option value="">Bitte zuerst Gerät wählen…</option>
           </select>
         </div>
         <div class="field-row">
@@ -199,7 +208,7 @@ body{
         <div class="err-box" id="loginErrBox"></div>
       </div>
       <div class="nav-row">
-        <button class="nav-btn back" onclick="zurueckZurAuswahl()">← Zurück zur Geräteauswahl</button>
+        <button class="nav-btn back" onclick="zurueckZurAuswahl()">← Zurück zur Praxisprüfung</button>
         <button class="nav-btn next" id="loginNextBtn" onclick="startLogin()">Weiter →</button>
       </div>
     </div>
@@ -455,13 +464,22 @@ var GERAETE = {
 };
 
 var urlParams = new URLSearchParams(window.location.search);
-var geraet = urlParams.get('geraet') || '';
-var G = GERAETE[geraet];
-var CHECK1 = G ? G.check1 : [];
-var CHECK2 = G ? G.check2 : [];
-var PASS_MAX_FEHLER = G ? G.passMaxFehler : 9; // Platzhalter-Werte — ggf. anpassen
+// Gerät wird jetzt über das Dropdown auf dem Anmeldebildschirm gewählt
+// (nicht mehr über einen separaten Auswahl-Screen / URL-Parameter).
+var geraet = '';
+var G = null;
+var CHECK1 = [];
+var CHECK2 = [];
+var PASS_MAX_FEHLER = 9; // Platzhalter-Werte — ggf. anpassen
 
-if(G){
+// Wird aufgerufen, sobald im Dropdown ein Gerät gewählt wird.
+function applyGeraet(key){
+  geraet = key;
+  G = GERAETE[key];
+  if(!G) return;
+  CHECK1 = G.check1;
+  CHECK2 = G.check2;
+  PASS_MAX_FEHLER = G.passMaxFehler;
   document.title = 'Praxisprüfung Stufe 2 – ' + G.label + ' – ProDrive Akademie Niederbayern';
   document.getElementById('topbarSub').textContent = 'Praxisprüfung Stufe 2 · ' + G.label + ' · DGUV Grundsatz 308-001';
   document.getElementById('loginTitle').textContent = 'Praxisprüfung ' + G.label;
@@ -473,8 +491,30 @@ if(G){
   document.documentElement.style.setProperty('--green', G.farbL);
   document.documentElement.style.setProperty('--bg-glow-1', G.glow1);
   document.documentElement.style.setProperty('--bg-glow-2', G.glow2);
-} else {
-  document.getElementById('loginScreen').innerHTML = '<div class="q-body"><div class="q-num">Fehler</div><div class="q-text">Kein gültiges Gerät angegeben. Bitte rufen Sie diese Seite über die Geräteauswahl auf.</div></div>';
+  // Checklisten sind geräteabhängig → neu aufbauen
+  checkState = {};
+  [].concat(CHECK1, CHECK2).forEach(function(i){ checkState[i.key] = false; });
+  renderChecklist('check1Grid', CHECK1);
+  renderChecklist('check2Grid', CHECK2);
+  // Prüflings-Dropdown aktivieren und Liste für dieses Gerät laden
+  var sel = document.getElementById('regnr');
+  sel.disabled = false;
+  sel.innerHTML = '<option value="">Wird geladen…</option>';
+  ladePruefungsliste();
+}
+
+function onGeraetChange(){
+  var key = document.getElementById('geraetSelect').value;
+  var sel = document.getElementById('regnr');
+  document.getElementById('vorname').value = '';
+  document.getElementById('nachname').value = '';
+  if(!key){
+    geraet = ''; G = null; CHECK1 = []; CHECK2 = [];
+    sel.disabled = true;
+    sel.innerHTML = '<option value="">Bitte zuerst Gerät wählen…</option>';
+    return;
+  }
+  applyGeraet(key);
 }
 
 var checkState = {};
@@ -494,7 +534,7 @@ var geburtsdatum = '', geburtsort = '', kursBeginn = '', kursEnde = '';
 })();
 
 function zurueckZurAuswahl(){
-  window.location.href = BASE + 'praxispruefung_stufe2_auswahl.html';
+  window.location.href = BASE + 'praxispruefung_start.html';
 }
 
 function showScreen(id){
@@ -596,7 +636,15 @@ function renderPrueflingeDropdown(){
     return '<option value="' + p.registrierungsnummer + '">' + p.nachname + ', ' + p.vorname + ' (' + p.registrierungsnummer + ')</option>';
   }).join('');
 }
-if(G) ladePruefungsliste();
+// Rückwärtskompatibilität: falls die Seite doch mit ?geraet=… aufgerufen wird,
+// Gerät vorauswählen und Liste direkt laden.
+(function(){
+  var urlGeraet = urlParams.get('geraet');
+  if(urlGeraet && GERAETE[urlGeraet]){
+    document.getElementById('geraetSelect').value = urlGeraet;
+    applyGeraet(urlGeraet);
+  }
+})();
 
 function onPrueflingChange(){
   var regnrVal = document.getElementById('regnr').value;
@@ -614,6 +662,7 @@ async function startLogin(){
   var btn = document.getElementById('loginNextBtn');
   errBox.style.display = 'none';
 
+  if(!G){ errBox.textContent = 'Bitte zuerst ein Gerät auswählen.'; errBox.style.display = 'block'; return; }
   if(!regnr || !vorname || !nachname){ errBox.textContent = 'Bitte einen Prüfling aus der Liste auswählen.'; errBox.style.display = 'block'; return; }
   if(!pruefername){ errBox.textContent = 'Bitte Ihren Namen als Prüfer eintragen.'; errBox.style.display = 'block'; return; }
 
