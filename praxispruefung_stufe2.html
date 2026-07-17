@@ -167,7 +167,7 @@ body{
     <!-- ===== SCREEN 1: LOGIN / TEILNEHMER ===== -->
     <div id="loginScreen">
       <div class="q-body">
-        <img class="login-illustration" id="loginIllu" src="format_icons/kurs_stufe2.png" alt="">
+        <img class="login-illustration" id="loginIllu" src="format_icons/kurs_stufe2_illu.png" alt="">
         <div class="q-num">Prüfer-Anmeldung</div>
         <div class="q-text" id="loginTitle">Praxisprüfung Stufe 2</div>
         <div class="q-sub" id="loginSub">Gerät und Prüfling auswählen, Prüfer eintragen</div>
@@ -485,7 +485,6 @@ function applyGeraet(key){
   document.title = 'Praxisprüfung Stufe 2 – ' + G.label + ' – ProDrive Akademie Niederbayern';
   document.getElementById('topbarSub').textContent = 'Praxisprüfung Stufe 2 · ' + G.label + ' · DGUV Grundsatz 308-001';
   document.getElementById('loginTitle').textContent = 'Praxisprüfung ' + G.label;
-  document.getElementById('loginIllu').src = 'format_icons/kurs_stufe2_' + key + '.png';
   document.getElementById('check2Sub').textContent = 'Praktische Durchführung bewerten — ' + G.label;
   document.getElementById('rsZulaessig').textContent = PASS_MAX_FEHLER;
   document.documentElement.style.setProperty('--acc1', G.farbD);
@@ -513,7 +512,6 @@ function onGeraetChange(){
   document.getElementById('nachname').value = '';
   if(!key){
     geraet = ''; G = null; CHECK1 = []; CHECK2 = [];
-    document.getElementById('loginIllu').src = 'format_icons/kurs_stufe2.png';
     sel.disabled = true;
     sel.innerHTML = '<option value="">Bitte zuerst Gerät wählen…</option>';
     return;
