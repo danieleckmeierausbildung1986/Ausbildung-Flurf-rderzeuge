@@ -598,6 +598,10 @@ footer a{color:rgba(255,255,255,.4);text-decoration:underline}
     <div class="termine-grid" id="termine-grid">
       <div class="termine-loading">Termine werden geladen…</div>
     </div>
+    <div id="termine-anfrage" style="display:none;text-align:center;margin-top:30px;padding-top:24px;border-top:1px solid var(--line)">
+      <span style="color:var(--muted);font-size:14.5px">Kein passender Termin dabei?</span>
+      <a href="termin-anfragen.html" style="display:inline-block;margin-left:10px;padding:10px 22px;border-radius:10px;border:2px solid var(--blue);color:var(--blue);font-weight:700;font-size:14px;text-decoration:none">Wunschtermin anfragen →</a>
+    </div>
   </div>
 </section>
 
@@ -866,6 +870,7 @@ async function ladeTermine(){
 
     if(html){
       grid.innerHTML = html;
+      document.getElementById('termine-anfrage').style.display = 'block';
     } else {
       grid.innerHTML = '<div class="termine-empty"><h3>Aktuell keine Termine eingetragen</h3><p>Melden Sie sich gerne — wir finden gemeinsam einen passenden Termin.</p><a href="termin-anfragen.html">Termin anfragen →</a></div>';
     }
