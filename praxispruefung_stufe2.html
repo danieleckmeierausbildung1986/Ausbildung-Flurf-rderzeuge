@@ -34,6 +34,7 @@ body{
 .progress-bar{height:100%;background:linear-gradient(90deg,var(--acc1),var(--acc2));transition:width .25s ease;width:0}
 
 .q-body{padding:34px 30px 28px}
+.login-illustration{display:block;max-width:220px;width:100%;height:auto;margin:0 auto 22px}
 .q-num{font-size:12px;font-weight:700;letter-spacing:.5px;color:var(--green);text-transform:uppercase;margin-bottom:8px}
 .q-text{font-size:19px;font-weight:700;color:var(--navy);line-height:1.5;margin-bottom:22px}
 .q-sub{font-size:13.5px;color:var(--muted);line-height:1.55;margin-bottom:20px}
@@ -166,6 +167,7 @@ body{
     <!-- ===== SCREEN 1: LOGIN / TEILNEHMER ===== -->
     <div id="loginScreen">
       <div class="q-body">
+        <img class="login-illustration" id="loginIllu" src="format_icons/kurs_stufe2.png" alt="">
         <div class="q-num">Prüfer-Anmeldung</div>
         <div class="q-text" id="loginTitle">Praxisprüfung Stufe 2</div>
         <div class="q-sub" id="loginSub">Gerät und Prüfling auswählen, Prüfer eintragen</div>
@@ -483,6 +485,7 @@ function applyGeraet(key){
   document.title = 'Praxisprüfung Stufe 2 – ' + G.label + ' – ProDrive Akademie Niederbayern';
   document.getElementById('topbarSub').textContent = 'Praxisprüfung Stufe 2 · ' + G.label + ' · DGUV Grundsatz 308-001';
   document.getElementById('loginTitle').textContent = 'Praxisprüfung ' + G.label;
+  document.getElementById('loginIllu').src = 'format_icons/kurs_stufe2_' + key + '.png';
   document.getElementById('check2Sub').textContent = 'Praktische Durchführung bewerten — ' + G.label;
   document.getElementById('rsZulaessig').textContent = PASS_MAX_FEHLER;
   document.documentElement.style.setProperty('--acc1', G.farbD);
@@ -510,6 +513,7 @@ function onGeraetChange(){
   document.getElementById('nachname').value = '';
   if(!key){
     geraet = ''; G = null; CHECK1 = []; CHECK2 = [];
+    document.getElementById('loginIllu').src = 'format_icons/kurs_stufe2.png';
     sel.disabled = true;
     sel.innerHTML = '<option value="">Bitte zuerst Gerät wählen…</option>';
     return;
