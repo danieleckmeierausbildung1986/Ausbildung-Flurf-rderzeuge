@@ -68,6 +68,15 @@ body::before{
   font-size:16px;background:#fafbfc;transition:border-color .15s;color:var(--ink);
 }
 .lf input:focus{outline:none;border-color:var(--blue);background:#fff}
+.pw-wrap{position:relative}
+.pw-wrap input{padding-right:48px}
+.pw-eye{
+  position:absolute;right:8px;top:50%;transform:translateY(-50%);
+  background:none;border:none;cursor:pointer;padding:8px;display:flex;
+  align-items:center;justify-content:center;color:var(--muted);border-radius:8px;
+}
+.pw-eye:hover{color:var(--blue)}
+.pw-eye svg{width:22px;height:22px;fill:currentColor;display:block}
 .login-btn{
   width:100%;padding:14px;border:none;border-radius:12px;
   background:linear-gradient(135deg,var(--blue),var(--blue-d));
@@ -105,8 +114,13 @@ body::before{
       </div>
       <div class="lf">
         <label>Passwort</label>
-        <input type="password" id="passwort" placeholder="••••••••" autocomplete="off"
-          onkeydown="if(event.key==='Enter')doLogin()">
+        <div class="pw-wrap">
+          <input type="password" id="passwort" placeholder="••••••••" autocomplete="off"
+            onkeydown="if(event.key==='Enter')doLogin()">
+          <button type="button" class="pw-eye" id="pwEye" onclick="togglePw()" aria-label="Passwort anzeigen" title="Passwort anzeigen">
+            <svg id="pwEyeIcon" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.7 7.6 1 12c1.7 4.4 6 7.5 11 7.5s9.3-3.1 11-7.5C21.3 7.6 17 4.5 12 4.5zm0 12.5a5 5 0 1 1 0-10 5 5 0 0 1 0 10zm0-8a3 3 0 1 0 0 6 3 3 0 0 0 0-6z"/></svg>
+          </button>
+        </div>
       </div>
       <button class="login-btn" id="loginBtn" onclick="doLogin()">Anmelden →</button>
       <div class="lerr" id="lerr"></div>
@@ -153,6 +167,19 @@ function showTools(name){
 function doLogout(){
   sessionStorage.removeItem('trainerAuth');
   window.location.href = 'homepage.html';
+}
+
+var PW_EYE = '<path d="M12 4.5C7 4.5 2.7 7.6 1 12c1.7 4.4 6 7.5 11 7.5s9.3-3.1 11-7.5C21.3 7.6 17 4.5 12 4.5zm0 12.5a5 5 0 1 1 0-10 5 5 0 0 1 0 10zm0-8a3 3 0 1 0 0 6 3 3 0 0 0 0-6z"/>';
+var PW_EYE_OFF = '<path d="M12 7a5 5 0 0 1 5 5c0 .64-.13 1.25-.35 1.81l2.92 2.92A11.8 11.8 0 0 0 23 12c-1.7-4.4-6-7.5-11-7.5-1.4 0-2.73.25-3.98.7l2.16 2.16C10.75 7.13 11.36 7 12 7zM2 4.27l2.28 2.28.46.46A11.8 11.8 0 0 0 1 12c1.7 4.4 6 7.5 11 7.5 1.55 0 3.03-.3 4.38-.84l.42.42L19.73 22 21 20.73 3.27 3 2 4.27zm5.53 5.53 1.55 1.55c-.05.21-.08.43-.08.65a3 3 0 0 0 3 3c.22 0 .44-.03.65-.08l1.55 1.55c-.67.32-1.41.53-2.2.53a5 5 0 0 1-5-5c0-.79.21-1.53.53-2.2zm4.31-.78 3.15 3.15L15 12a3 3 0 0 0-3-3l-.16.02z"/>';
+function togglePw(){
+  var inp = document.getElementById('passwort');
+  var icon = document.getElementById('pwEyeIcon');
+  var eye = document.getElementById('pwEye');
+  var show = inp.type === 'password';
+  inp.type = show ? 'text' : 'password';
+  icon.innerHTML = show ? PW_EYE_OFF : PW_EYE;
+  var lbl = show ? 'Passwort verbergen' : 'Passwort anzeigen';
+  eye.setAttribute('aria-label', lbl); eye.setAttribute('title', lbl);
 }
 
 async function doLogin(){
