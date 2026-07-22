@@ -126,7 +126,7 @@ const GERAETE = [
   { key:'schmalgangstapler', titel:'Schmalgangstapler', sub:'Sondergerät Stufe 2', icon:'🏬', url:'geraetekategorie.html?kategorie=schmalgangstapler' }
 ];
 
-let currentRegnr = '', currentVorname = '', currentNachname = '';
+let currentRegnr = '', currentVorname = '', currentNachname = '', isTrainer = false;
 
 function goBack(){
   window.location.href = BASE + 'homepage.html';
@@ -165,7 +165,9 @@ async function pruefeUndZeige(val, vorname, nachname){
 function showLibrary(){
   document.getElementById('loadingCard').style.display = 'none';
   document.getElementById('libCard').style.display = 'block';
-  document.getElementById('greetName').textContent = 'Hallo, ' + currentVorname + ' ' + currentNachname + '!';
+  document.getElementById('greetName').textContent = isTrainer
+    ? ('Hallo, ' + currentVorname + '!')
+    : ('Hallo, ' + currentVorname + ' ' + currentNachname + '!');
 
   const grid = document.getElementById('libGrid');
   if(GERAETE.length === 0){
@@ -174,8 +176,10 @@ function showLibrary(){
   }
   grid.innerHTML = GERAETE.map(g => {
     const sep = g.url.indexOf('?') >= 0 ? '&' : '?';
+    // Trainer haben keine Registriernummer → als Trainer-Vorschau markieren.
+    const param = isTrainer ? 'trainer=1' : ('regnr=' + encodeURIComponent(currentRegnr));
     return `
-    <a class="lib-card" href="${BASE}${g.url}${sep}regnr=${encodeURIComponent(currentRegnr)}">
+    <a class="lib-card" href="${BASE}${g.url}${sep}${param}">
       <div class="lib-icon">${g.icon}</div>
       <div class="lib-info">
         <div class="lib-title">${g.titel}</div>
@@ -190,6 +194,19 @@ function showLibrary(){
 // Hier nur noch die dort hinterlegten Daten übernehmen — kein eigenes
 // Login-Formular mehr. Fehlen die Daten, zurück zur Anmeldung.
 (function(){
+  // Trainer: als Trainer eingeloggt → keine Teilnehmer-Zugangsprüfung nötig,
+  // Bibliothek direkt anzeigen.
+  let trainerAuth = null;
+  try { trainerAuth = JSON.parse(sessionStorage.getItem('trainerAuth') || 'null'); } catch(e){}
+  if(trainerAuth && trainerAuth.name){
+    isTrainer = true;
+    currentVorname = trainerAuth.name;
+    currentNachname = '';
+    currentRegnr = '';
+    showLibrary();
+    return;
+  }
+
   const params = new URLSearchParams(window.location.search);
   const nr = params.get('regnr');
   const authRegnr = sessionStorage.getItem('authRegnr');
