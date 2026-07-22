@@ -224,6 +224,21 @@ const ZUGANGSPRUEFUNG_URL = 'https://default8af25f9034bc4ef4aba22ab6f641d5.01.en
 let regnr = '';
 let teilnehmerName = '';
 let heuteStr = '';
+let isTrainer = false;
+
+// Trainer-Vorschau: Unterweisung ohne Teilnehmer-Login anzeigen (kein Nachweis).
+function startAppTrainer(name){
+  isTrainer = true;
+  regnr = '';
+  teilnehmerName = name || 'Trainer-Vorschau';
+  heuteStr = new Date().toLocaleDateString('de-DE',{day:'2-digit',month:'2-digit',year:'numeric'});
+  document.getElementById('login').classList.add('hidden');
+  document.getElementById('app').classList.remove('hidden');
+  document.getElementById('topbar-who').textContent = 'Trainer-Vorschau';
+  document.getElementById('backHomeBtn').href = PORTAL_URL + 'unterweisungsbibliothek.html';
+  renderSide();
+  renderContent();
+}
 
 function doLogin(){
   const val = document.getElementById('regnr').value.trim();
@@ -569,6 +584,13 @@ function confirmEinweisung(){
 // mit Vor-/Nachname erfolgreich angemeldet wurde.
 (function(){
   const params = new URLSearchParams(window.location.search);
+  // Trainer eingeloggt (oder ?trainer=1) → Vorschau ohne Teilnehmer-Login.
+  let trainerAuth = null;
+  try { trainerAuth = JSON.parse(sessionStorage.getItem('trainerAuth') || 'null'); } catch(e){}
+  if((trainerAuth && trainerAuth.name) || params.get('trainer') === '1'){
+    startAppTrainer(trainerAuth && trainerAuth.name ? trainerAuth.name : 'Trainer');
+    return;
+  }
   const nr = params.get('regnr');
   const authRegnr = sessionStorage.getItem('authRegnr');
   const authVorname = sessionStorage.getItem('authVorname');

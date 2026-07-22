@@ -160,7 +160,7 @@ document.getElementById('catIcon').textContent = kat.icon;
 document.getElementById('catTitle').textContent = kat.titel;
 document.getElementById('catSub').textContent = kat.sub;
 
-let currentRegnr = '', currentVorname = '', currentNachname = '';
+let currentRegnr = '', currentVorname = '', currentNachname = '', isTrainer = false;
 
 async function doLogin(){
   const val      = document.getElementById('regnr').value.trim();
@@ -209,9 +209,13 @@ async function pruefeUndZeige(val, vorname, nachname, silent){
 function showToc(){
   document.getElementById('loginCard').style.display = 'none';
   document.getElementById('tocCard').style.display = 'block';
-  document.getElementById('greetName').textContent = 'Hallo, ' + currentVorname + ' ' + currentNachname + '!';
+  document.getElementById('greetName').textContent = isTrainer
+    ? ('Hallo, ' + currentVorname + '!')
+    : ('Hallo, ' + currentVorname + ' ' + currentNachname + '!');
   document.getElementById('tocSub').textContent = kat.titel + ' — Modell wählen';
-  document.getElementById('backLink').href = BASE + 'unterweisungsbibliothek.html?regnr=' + encodeURIComponent(currentRegnr);
+  document.getElementById('backLink').href = isTrainer
+    ? (BASE + 'unterweisungsbibliothek.html')
+    : (BASE + 'unterweisungsbibliothek.html?regnr=' + encodeURIComponent(currentRegnr));
 
   const grid = document.getElementById('tocGrid');
   if(!kat.modelle || kat.modelle.length === 0){
@@ -220,8 +224,9 @@ function showToc(){
   }
   grid.innerHTML = kat.modelle.map(m => {
     const sep = m.url.indexOf('?') >= 0 ? '&' : '?';
+    const param = isTrainer ? 'trainer=1' : ('regnr=' + encodeURIComponent(currentRegnr));
     return `
-    <a class="toc-card" href="${BASE}${m.url}${sep}regnr=${encodeURIComponent(currentRegnr)}">
+    <a class="toc-card" href="${BASE}${m.url}${sep}${param}">
       <div class="toc-icon">${m.icon}</div>
       <div class="toc-info">
         <div class="toc-title">${m.titel}</div>
@@ -235,6 +240,19 @@ function showToc(){
 // Auto-Login: nur wenn diese Registriernummer bereits in dieser Sitzung
 // erfolgreich angemeldet wurde.
 (function(){
+  // Trainer: als Trainer eingeloggt (oder ?trainer=1) → keine
+  // Teilnehmer-Zugangsprüfung, Modellauswahl direkt anzeigen.
+  let trainerAuth = null;
+  try { trainerAuth = JSON.parse(sessionStorage.getItem('trainerAuth') || 'null'); } catch(e){}
+  if((trainerAuth && trainerAuth.name) || params.get('trainer') === '1'){
+    isTrainer = true;
+    currentVorname = (trainerAuth && trainerAuth.name) ? trainerAuth.name : 'Trainer';
+    currentNachname = '';
+    currentRegnr = '';
+    showToc();
+    return;
+  }
+
   const nr = params.get('regnr');
   const authRegnr = sessionStorage.getItem('authRegnr');
   const authVorname = sessionStorage.getItem('authVorname');
