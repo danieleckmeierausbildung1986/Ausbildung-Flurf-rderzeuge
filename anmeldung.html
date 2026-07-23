@@ -69,6 +69,11 @@ nav{
 .af-field input:focus,.af-field select:focus{outline:none;border-color:var(--blue)}
 .af-divider{border:none;border-top:1px solid var(--line);margin:24px 0}
 
+.kt-wrap{display:flex;gap:12px}
+.kt-btn{flex:1;padding:14px;border-radius:10px;border:2px solid var(--line);background:#fff;font-size:14px;font-weight:700;color:var(--navy);cursor:pointer;transition:all .15s;font-family:inherit}
+.kt-btn:hover{border-color:var(--blue-l);background:var(--blue-xl)}
+.kt-btn.selected{border-color:var(--blue);background:var(--blue-xl);color:var(--blue-d)}
+
 .af-kurs-block{
   border:1.5px solid var(--line);border-radius:12px;
   padding:14px 16px;margin-bottom:10px;transition:border-color .2s,background .2s;
@@ -151,6 +156,17 @@ footer{
     </div>
 
     <form id="anmeldungForm">
+      <div class="af-field" style="margin-bottom:16px">
+        <label>Ich bin *</label>
+        <div class="kt-wrap">
+          <button type="button" class="kt-btn selected" id="kt-privat" onclick="setKontaktTyp('privat')">🙋 Privatperson</button>
+          <button type="button" class="kt-btn" id="kt-gewerblich" onclick="setKontaktTyp('gewerblich')">🏢 Gewerblich</button>
+        </div>
+      </div>
+      <div class="af-field" id="af-ff-firma" style="display:none;margin-bottom:16px">
+        <label>Firma / Organisation *</label>
+        <input type="text" id="af-firma" placeholder="Muster GmbH">
+      </div>
       <div class="af-row2">
         <div class="af-field">
           <label>Nachname *</label>
@@ -305,6 +321,15 @@ var _urlKursSpId   = '';
   document.getElementById('block-' + kurs).scrollIntoView({behavior:'smooth', block:'center'});
 })();
 
+// ── Kontakttyp (Privat/Gewerblich) ─────────────────────────────
+var kontaktTyp = 'privat';
+function setKontaktTyp(t){
+  kontaktTyp = t;
+  document.getElementById('kt-privat').classList.toggle('selected', t==='privat');
+  document.getElementById('kt-gewerblich').classList.toggle('selected', t==='gewerblich');
+  document.getElementById('af-ff-firma').style.display = t==='privat' ? 'none' : '';
+}
+
 ['stufe1','stufe2','lasi'].forEach(function(id){
   document.getElementById('ck-'+id).addEventListener('change',function(){
     var sel = document.getElementById('sel-'+id);
@@ -360,9 +385,10 @@ document.getElementById('ck-stufe2').addEventListener('change',function(){
 function weitererTeilnehmer(){
   document.getElementById('af-success-msg').style.display = 'none';
   document.getElementById('anmeldungForm').style.display = 'block';
-  ['af-nachname','af-vorname','af-email','af-telefon','af-geburtsdatum','af-geburtsort'].forEach(function(id){
+  ['af-nachname','af-vorname','af-email','af-telefon','af-geburtsdatum','af-geburtsort','af-firma'].forEach(function(id){
     document.getElementById(id).value = '';
   });
+  setKontaktTyp('privat');
   document.getElementById('af-error').style.display = 'none';
   var btn = document.querySelector('#anmeldungForm .af-submit');
   btn.disabled = false;
@@ -382,6 +408,13 @@ document.getElementById('anmeldungForm').addEventListener('submit', async functi
   if(!stufe1 && !stufe2 && !lasi && !training){
     errEl.textContent = 'Bitte wählen Sie mindestens eine Schulung aus.';
     errEl.style.display = 'block';
+    return;
+  }
+
+  if(kontaktTyp === 'gewerblich' && !document.getElementById('af-firma').value.trim()){
+    errEl.textContent = 'Bitte geben Sie Ihre Firma / Organisation an.';
+    errEl.style.display = 'block';
+    document.getElementById('af-firma').focus();
     return;
   }
 
@@ -430,6 +463,8 @@ document.getElementById('anmeldungForm').addEventListener('submit', async functi
     (stufe2 ? document.getElementById('vq-bei-uns').checked : true);
 
   var payload = {
+    anmeldungsart:           kontaktTyp === 'privat' ? 'Privatperson' : 'Gewerblich',
+    firma:                   kontaktTyp === 'gewerblich' ? document.getElementById('af-firma').value.trim() : '',
     nachname:                document.getElementById('af-nachname').value.trim(),
     vorname:                 document.getElementById('af-vorname').value.trim(),
     email:                   document.getElementById('af-email').value.trim(),
