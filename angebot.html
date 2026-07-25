@@ -358,6 +358,21 @@ nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.95);backdrop-
         <label>Telefonnummer (optional)</label>
         <input type="tel" id="inp-tel" placeholder="+49 123 456789">
       </div>
+      <div class="form-field full" id="ff-strasse">
+        <label id="lbl-strasse">Straße und Hausnummer *</label>
+        <input type="text" id="inp-strasse" placeholder="Musterstraße 12">
+        <div class="error-msg">Bitte geben Sie Ihre Straße und Hausnummer ein.</div>
+      </div>
+      <div class="form-field" id="ff-plz">
+        <label>PLZ *</label>
+        <input type="text" id="inp-plz" placeholder="94436">
+        <div class="error-msg">Bitte geben Sie Ihre PLZ ein.</div>
+      </div>
+      <div class="form-field" id="ff-ort">
+        <label>Ort *</label>
+        <input type="text" id="inp-ort" placeholder="Simbach">
+        <div class="error-msg">Bitte geben Sie Ihren Ort ein.</div>
+      </div>
       <div class="form-field full">
         <label>Anmerkungen (optional)</label>
         <textarea id="inp-notiz" placeholder="z.B. gewünschter Zeitraum, besondere Anforderungen…"></textarea>
@@ -559,6 +574,7 @@ function setKontaktTyp(t){
   document.getElementById('kt-privat').classList.toggle('selected', t==='privat');
   document.getElementById('kt-gewerblich').classList.toggle('selected', t==='gewerblich');
   document.getElementById('ff-firma').style.display = t==='privat' ? 'none' : '';
+  document.getElementById('lbl-strasse').textContent = t==='privat' ? 'Straße und Hausnummer *' : 'Firmenanschrift – Straße und Hausnummer *';
 }
 
 // ── Validierung ────────────────────────────────────────────────
@@ -574,6 +590,9 @@ function validateKontakt(){
   check('inp-firma','ff-firma', kontaktTyp==='privat' || document.getElementById('inp-firma').value.trim().length > 0);
   var email = document.getElementById('inp-email').value.trim();
   check('inp-email','ff-email', /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email));
+  check('inp-strasse','ff-strasse', document.getElementById('inp-strasse').value.trim().length > 0);
+  check('inp-plz','ff-plz', document.getElementById('inp-plz').value.trim().length > 0);
+  check('inp-ort','ff-ort', document.getElementById('inp-ort').value.trim().length > 0);
   return ok;
 }
 
@@ -730,6 +749,8 @@ function generatePDF(data){
             {text:'AN', fontSize:7, color:'#6b7280', margin:[0,0,0,5]},
             {text:data.firma, bold:true, fontSize:11, color:'#16243f'},
             {text:data.vorname+' '+data.nachname, fontSize:9.5, color:'#16243f'},
+            {text:data.strasse, fontSize:9, color:'#16243f'},
+            {text:data.plz+' '+data.ort, fontSize:9, color:'#16243f'},
             ...(data.telefon ? [{text:data.telefon, fontSize:9, color:'#16243f'}] : []),
             {text:data.email, fontSize:9, color:'#2563eb'}
           ]},
@@ -805,6 +826,9 @@ async function submitAngebot(){
     firma:          kontaktTyp==='privat' ? 'Privatperson' : document.getElementById('inp-firma').value.trim(),
     email:          document.getElementById('inp-email').value.trim(),
     telefon:        document.getElementById('inp-tel').value.trim(),
+    strasse:        document.getElementById('inp-strasse').value.trim(),
+    plz:            document.getElementById('inp-plz').value.trim(),
+    ort:            document.getElementById('inp-ort').value.trim(),
     notiz:          document.getElementById('inp-notiz').value.trim(),
     teilnehmer:     teilnehmer,
     gesamtNetto:    p.netto,
