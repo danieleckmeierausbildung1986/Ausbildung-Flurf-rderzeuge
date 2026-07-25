@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Terminanfragen – ProDrive Akademie Niederbayern</title>
+<style>
+:root{
+  --blue:#1a4fa8;--blue-l:#2e75cc;--blue-d:#0d2d80;--blue-xl:#e8f0fb;
+  --navy:#16243f;--ink:#1a2330;--muted:#5a6a7a;--line:#e3e8f0;--bg:#f7f9fb;
+  --shadow-sm:0 2px 8px rgba(0,0,0,.08);
+  --green:#16a34a;--green-l:#e8f7ee;--red:#dc2626;--red-l:#fef2f2;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"Segoe UI",system-ui,sans-serif;color:var(--ink);background:var(--bg);line-height:1.6}
+a{text-decoration:none;color:inherit}
+
+nav{
+  position:sticky;top:0;z-index:100;background:rgba(255,255,255,.95);backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--line);padding:0 24px;
+}
+.nav-inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:90px;gap:16px}
+.nav-logo{display:flex;align-items:center;gap:12px}
+.nav-back{
+  display:inline-flex;align-items:center;gap:8px;padding:8px 16px;border-radius:10px;
+  font-size:14px;font-weight:600;color:var(--muted);border:1.5px solid var(--line);background:#fff;
+}
+.nav-back:hover{color:var(--ink);border-color:var(--navy)}
+
+.page{max-width:900px;margin:0 auto;padding:48px 24px 80px}
+.page-label{font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--blue);margin-bottom:10px}
+.page-title{font-size:clamp(24px,4vw,34px);font-weight:800;color:var(--navy);margin-bottom:8px}
+.page-sub{font-size:15px;color:var(--muted);margin-bottom:32px}
+
+.ta-list{display:flex;flex-direction:column;gap:16px}
+.ta-card{background:#fff;border-radius:16px;border:1px solid var(--line);box-shadow:var(--shadow-sm);padding:24px}
+.ta-top{display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:10px;margin-bottom:14px}
+.ta-name{font-size:17px;font-weight:800;color:var(--navy)}
+.ta-firma{font-size:13px;color:var(--muted)}
+.ta-id{font-size:11px;color:var(--muted);font-weight:600}
+.ta-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px 24px;margin-bottom:14px;font-size:14px}
+@media(max-width:560px){.ta-grid{grid-template-columns:1fr}}
+.ta-grid div span{display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-bottom:2px}
+.ta-notiz{font-size:13.5px;color:var(--muted);background:var(--bg);border-radius:10px;padding:10px 14px;margin-bottom:16px}
+.ta-actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.ta-btn{padding:10px 18px;border-radius:10px;font-size:14px;font-weight:700;border:none;cursor:pointer;transition:opacity .15s}
+.ta-btn:hover{opacity:.85}
+.ta-btn:disabled{opacity:.5;cursor:default}
+.ta-btn-confirm{background:var(--green);color:#fff}
+.ta-btn-decline{background:var(--red-l);color:var(--red);border:1.5px solid #fecaca}
+.ta-date-input{padding:9px 12px;border-radius:10px;border:1.5px solid var(--line);font-size:14px;font-family:inherit}
+.ta-empty{text-align:center;padding:60px 20px;color:var(--muted)}
+.ta-status{font-size:13px;color:var(--muted)}
+
+footer{text-align:center;padding:24px;font-size:13px;color:var(--muted);border-top:1px solid var(--line);background:#fff}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a class="nav-logo" href="trainerbereich.html">
+      <img src="logos/logo_haupt_transparent.png" alt="ProDrive Akademie Niederbayern" style="height:80px;object-fit:contain">
+    </a>
+    <a class="nav-back" href="trainerbereich.html">← Zurück zum Trainerbereich</a>
+  </div>
+</nav>
+
+<div class="page">
+  <div class="page-label">Trainerbereich</div>
+  <h1 class="page-title">Offene Terminanfragen</h1>
+  <p class="page-sub">Alle offenen Wunschtermin-Anfragen — Termin bestätigen oder ablehnen, die passende E-Mail geht automatisch an den Anfragenden.</p>
+
+  <div id="ta-status" class="ta-status">Lade Anfragen…</div>
+  <div id="ta-list" class="ta-list"></div>
+</div>
+
+<footer>
+  <strong>ProDrive Akademie Niederbayern</strong> &nbsp;·&nbsp; Daniel Eckmeier &nbsp;·&nbsp;
+  Am Schwimmbad 12, 94436 Simbach
+</footer>
+
+<script>
+// ── Zugriffsschutz: nur eingeloggte Trainer ──────────────────────
+var trainerAuth = null;
+try { trainerAuth = JSON.parse(sessionStorage.getItem('trainerAuth') || 'null'); } catch(e){}
+if(!trainerAuth || !trainerAuth.name){
+  window.location.replace('trainerbereich.html');
+}
+
+var TERMINANFRAGEN_ABRUFEN_URL = 'https://default8af25f9034bc4ef4aba22ab6f641d5.01.environment.api.powerplatform.com:443/powerautomate/automations/direct/cu/07/workflows/8c549e94aeb24ea6b0165e7422d5790d/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=nI1jC_sh0gcZ2AQLM4qpzHD-MF_gB7Dsc4P5B_aczjE';
+var TERMIN_ENTSCHEIDEN_URL = '';
+
+function esc(s){
+  var d = document.createElement('div');
+  d.textContent = s == null ? '' : s;
+  return d.innerHTML;
+}
+
+async function ladeAnfragen(){
+  var statusEl = document.getElementById('ta-status');
+  var listEl = document.getElementById('ta-list');
+  statusEl.textContent = 'Lade Anfragen…';
+  listEl.innerHTML = '';
+  try{
+    var res = await fetch(TERMINANFRAGEN_ABRUFEN_URL, {method:'POST', headers:{'Content-Type':'application/json'}, body:'{}'});
+    var data = await res.json();
+    var list = Array.isArray(data) ? data : (data.value || []);
+    if(list.length === 0){
+      statusEl.style.display = 'none';
+      listEl.innerHTML = '<div class="ta-empty">Aktuell keine offenen Terminanfragen. 🎉</div>';
+      return;
+    }
+    statusEl.style.display = 'none';
+    listEl.innerHTML = list.map(renderCard).join('');
+  }catch(e){
+    statusEl.textContent = 'Fehler beim Laden der Anfragen. Bitte Seite neu laden.';
+  }
+}
+
+function renderCard(a){
+  var id = esc(a.Title || a.Anfragen_ID);
+  return ''+
+    '<div class="ta-card" data-id="'+id+'">'+
+      '<div class="ta-top">'+
+        '<div>'+
+          '<div class="ta-name">'+esc(a.Vorname)+' '+esc(a.Nachname)+'</div>'+
+          (a.Firma ? '<div class="ta-firma">'+esc(a.Firma)+'</div>' : '')+
+        '</div>'+
+        '<div class="ta-id">'+id+'</div>'+
+      '</div>'+
+      '<div class="ta-grid">'+
+        '<div><span>Schulung</span>'+esc(a.Schulung)+'</div>'+
+        '<div><span>Wunschtermine</span>'+esc(a.Wunschdaten)+'</div>'+
+        '<div><span>E-Mail</span>'+esc(a.Email)+'</div>'+
+        '<div><span>Telefon</span>'+esc(a.Telefon || '–')+'</div>'+
+      '</div>'+
+      (a.Notiz ? '<div class="ta-notiz">'+esc(a.Notiz)+'</div>' : '')+
+      '<div class="ta-actions">'+
+        '<input type="date" class="ta-date-input" id="date-'+id+'">'+
+        '<button class="ta-btn ta-btn-confirm" onclick="entscheiden(\''+id+'\',\'Bestätigt\')">✓ Bestätigen</button>'+
+        '<button class="ta-btn ta-btn-decline" onclick="entscheiden(\''+id+'\',\'Abgelehnt\')">✕ Ablehnen</button>'+
+      '</div>'+
+    '</div>';
+}
+
+async function entscheiden(id, entscheidung){
+  if(!TERMIN_ENTSCHEIDEN_URL){
+    alert('Der Bestätigungs-Flow ist noch nicht eingerichtet.');
+    return;
+  }
+  var card = document.querySelector('.ta-card[data-id="'+CSS.escape(id)+'"]');
+  var dateInput = document.getElementById('date-'+id);
+  var bestaetigterTermin = dateInput ? dateInput.value : '';
+
+  if(entscheidung === 'Bestätigt' && !bestaetigterTermin){
+    alert('Bitte wählen Sie zuerst das bestätigte Datum aus.');
+    return;
+  }
+  if(entscheidung === 'Abgelehnt' && !confirm('Diese Terminanfrage wirklich ablehnen? Der Anfragende erhält automatisch eine Absage-E-Mail.')){
+    return;
+  }
+
+  var buttons = card.querySelectorAll('.ta-btn');
+  buttons.forEach(function(b){ b.disabled = true; });
+
+  try{
+    var res = await fetch(TERMIN_ENTSCHEIDEN_URL, {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        anfragen_id: id,
+        entscheidung: entscheidung,
+        trainer_name: trainerAuth.name,
+        bestaetigter_termin: bestaetigterTermin
+      })
+    });
+    if(res.ok || res.status === 202){
+      card.style.opacity = '.4';
+      card.innerHTML = '<div style="padding:20px;text-align:center;font-weight:700;color:'+(entscheidung==='Bestätigt'?'var(--green)':'var(--red)')+'">'+
+        (entscheidung==='Bestätigt' ? '✓ Termin bestätigt' : '✕ Anfrage abgelehnt')+'</div>';
+    } else {
+      throw new Error('Status ' + res.status);
+    }
+  }catch(e){
+    buttons.forEach(function(b){ b.disabled = false; });
+    alert('Fehler beim Senden — bitte erneut versuchen.');
+  }
+}
+
+ladeAnfragen();
+</script>
+</body>
+</html>
