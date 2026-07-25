@@ -42,7 +42,7 @@ nav{
 @media(max-width:540px){.row2{grid-template-columns:1fr}}
 .field{display:flex;flex-direction:column;gap:6px}
 .field label{font-size:13px;font-weight:700;color:var(--navy)}
-.field input,.field textarea{padding:10px 14px;border-radius:10px;border:1.5px solid var(--line);font-size:14px;font-family:inherit;color:var(--ink);background:#fff;transition:border-color .15s}
+.field input,.field textarea,.field select{padding:10px 14px;border-radius:10px;border:1.5px solid var(--line);font-size:14px;font-family:inherit;color:var(--ink);background:#fff;transition:border-color .15s}
 .field input:focus,.field textarea:focus{outline:none;border-color:var(--blue)}
 .field textarea{resize:vertical;min-height:90px}
 
@@ -147,6 +147,15 @@ footer{text-align:center;padding:24px;font-size:13px;color:var(--muted);border-t
       </div>
       <div class="kurs-block" id="kb-training" onclick="toggleKurs('training')">
         <label class="kurs-label"><input type="checkbox" id="ck-training"> Grundlagentraining Flurförderzeuge</label>
+      </div>
+      <div class="field" style="margin-top:14px">
+        <label>Gewünschtes Format (optional)</label>
+        <select id="f-schulungsform">
+          <option value="">Keine Präferenz / noch offen</option>
+          <option value="Elearning">E-Learning</option>
+          <option value="Online">Online</option>
+          <option value="Präsenz">Präsenz</option>
+        </select>
       </div>
     </div>
 
@@ -309,6 +318,7 @@ document.getElementById('anfragForm').addEventListener('submit', async function(
     telefon:       document.getElementById('f-telefon').value.trim(),
     firma:         document.getElementById('f-firma').value.trim(),
     schulung:      schulungen.join(', '),
+    schulungsform: document.getElementById('f-schulungsform').value,
     wunschdaten:   selDates.map(fmtDE).join(', '),
     notiz:         document.getElementById('f-notiz').value.trim(),
     anfrage_typ:   'Terminanfrage'
