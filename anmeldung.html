@@ -382,6 +382,9 @@ function setKontaktTyp(t){
   document.getElementById('af-kurs-mehrfach').style.display = t==='gewerblich' ? 'none' : '';
   document.getElementById('af-kurs-hint-gewerblich').style.display = t==='gewerblich' ? 'block' : 'none';
   document.getElementById('af-teilnehmer-section').style.display = t==='gewerblich' ? 'block' : 'none';
+  if(t==='privat'){
+    document.getElementById('af-teilnehmer-list').innerHTML = '';
+  }
   if(t==='gewerblich' && document.querySelectorAll('.af-teilnehmer-row').length===0){
     addTeilnehmer();
   }
