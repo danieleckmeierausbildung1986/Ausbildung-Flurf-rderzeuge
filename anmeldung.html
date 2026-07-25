@@ -326,6 +326,10 @@ footer{
 (function(){var p=new URLSearchParams(window.location.search);if((p.get('v')||0)<4){p.set('v',4);window.location.replace(location.pathname+'?'+p.toString());}})();
 var ANMELDUNG_URL = 'https://default8af25f9034bc4ef4aba22ab6f641d5.01.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/dbe5673986dd498bb2049e8a80220add/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=ogUKNB6jpCkEcxwY87bHLFJbIzrnQm5TPAwNTX4DYFQ';
 
+// Kontakttyp-Status muss VOR allen Vorausfüll-IIFEs deklariert werden,
+// sonst überschreibt diese Zeile ein per URL-Parameter gesetztes 'gewerblich' wieder mit 'privat'.
+var kontaktTyp = 'privat';
+
 // Kurs + Kursnummer per URL-Parameter vorauswählen
 var _urlKursnummer = '';
 var _urlKursSpId   = '';
@@ -368,7 +372,6 @@ var _urlKursSpId   = '';
 })();
 
 // ── Kontakttyp (Privat/Gewerblich) ─────────────────────────────
-var kontaktTyp = 'privat';
 function setKontaktTyp(t){
   kontaktTyp = t;
   document.getElementById('kt-privat').classList.toggle('selected', t==='privat');
