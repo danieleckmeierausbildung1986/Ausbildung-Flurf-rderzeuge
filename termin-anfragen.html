@@ -136,7 +136,7 @@ footer{text-align:center;padding:24px;font-size:13px;color:var(--muted);border-t
     <!-- Schulungsauswahl -->
     <div class="card">
       <div class="card-title">📚 Gewünschte Schulung</div>
-      <div class="kurs-block" id="kb-stufe1" onclick="toggleKurs('stufe1')">
+      <div class="kurs-block" id="kb-stufe1" onclick="toggleKurs('stufe1', event)">
         <label class="kurs-label"><input type="checkbox" id="ck-stufe1"> Ausbildung Flurförderzeuge Stufe 1</label>
         <div class="kurs-format" id="kf-stufe1" style="display:none;margin-top:10px;padding-top:10px;border-top:1px solid var(--line)">
           <label style="font-size:12px;font-weight:700;color:var(--navy);display:block;margin-bottom:6px">Gewünschtes Format</label>
@@ -148,7 +148,7 @@ footer{text-align:center;padding:24px;font-size:13px;color:var(--muted);border-t
           </select>
         </div>
       </div>
-      <div class="kurs-block" id="kb-stufe2" onclick="toggleKurs('stufe2')">
+      <div class="kurs-block" id="kb-stufe2" onclick="toggleKurs('stufe2', event)">
         <label class="kurs-label"><input type="checkbox" id="ck-stufe2"> Zusatzausbildung Flurförderzeuge Stufe 2</label>
         <div class="kurs-format" id="kf-stufe2" style="display:none;margin-top:10px;padding-top:10px;border-top:1px solid var(--line)">
           <label style="font-size:12px;font-weight:700;color:var(--navy);display:block;margin-bottom:6px">Gewünschtes Format</label>
@@ -160,7 +160,7 @@ footer{text-align:center;padding:24px;font-size:13px;color:var(--muted);border-t
           </select>
         </div>
       </div>
-      <div class="kurs-block" id="kb-lasi" onclick="toggleKurs('lasi')">
+      <div class="kurs-block" id="kb-lasi" onclick="toggleKurs('lasi', event)">
         <label class="kurs-label"><input type="checkbox" id="ck-lasi"> Ladungssicherung nach VDI 2700 ff.</label>
         <div class="kurs-format" id="kf-lasi" style="display:none;margin-top:10px;padding-top:10px;border-top:1px solid var(--line)">
           <label style="font-size:12px;font-weight:700;color:var(--navy);display:block;margin-bottom:6px">Gewünschtes Format</label>
@@ -172,7 +172,7 @@ footer{text-align:center;padding:24px;font-size:13px;color:var(--muted);border-t
           </select>
         </div>
       </div>
-      <div class="kurs-block" id="kb-training" onclick="toggleKurs('training')">
+      <div class="kurs-block" id="kb-training" onclick="toggleKurs('training', event)">
         <label class="kurs-label"><input type="checkbox" id="ck-training"> Grundlagentraining Flurförderzeuge <span style="font-weight:400;color:var(--muted);font-size:12.5px">(nur Präsenz)</span></label>
       </div>
     </div>
@@ -227,13 +227,27 @@ var ANMELDUNG_URL = 'https://default8af25f9034bc4ef4aba22ab6f641d5.01.environmen
   }
 })();
 
-function toggleKurs(id){
+function syncKursBlock(id){
   var ck = document.getElementById('ck-'+id);
-  ck.checked = !ck.checked;
   document.getElementById('kb-'+id).classList.toggle('active', ck.checked);
   var kf = document.getElementById('kf-'+id);
   if(kf) kf.style.display = ck.checked ? 'block' : 'none';
 }
+
+function toggleKurs(id, evt){
+  // Klick direkt auf Checkbox oder Label: der Browser toggelt die Checkbox
+  // bereits selbst (über den 'change'-Listener unten) — hier nicht nochmal
+  // manuell toggeln, sonst hebt sich das gegenseitig auf.
+  if(evt && evt.target && (evt.target.tagName === 'INPUT' || evt.target.tagName === 'LABEL')) return;
+  var ck = document.getElementById('ck-'+id);
+  ck.checked = !ck.checked;
+  syncKursBlock(id);
+}
+
+['stufe1','stufe2','lasi','training'].forEach(function(id){
+  var ck = document.getElementById('ck-'+id);
+  if(ck) ck.addEventListener('change', function(){ syncKursBlock(id); });
+});
 
 // ── Kalender ──────────────────────────────────────────────
 var selDates = [];
