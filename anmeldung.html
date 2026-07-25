@@ -167,6 +167,9 @@ footer{
         <label>Firma / Organisation *</label>
         <input type="text" id="af-firma" placeholder="Muster GmbH">
       </div>
+      <div id="af-hint-ansprechpartner" style="display:none;font-size:13px;color:var(--muted);margin-bottom:10px">
+        Ansprechpartner für diese Anmeldung — muss kein Teilnehmer der Schulung sein.
+      </div>
       <div class="af-row2">
         <div class="af-field">
           <label>Nachname *</label>
@@ -187,7 +190,7 @@ footer{
           <input type="tel" id="af-telefon" placeholder="+49 123 456789">
         </div>
       </div>
-      <div class="af-row2">
+      <div class="af-row2" id="af-row-geburt">
         <div class="af-field">
           <label>Geburtsdatum *</label>
           <input type="date" id="af-geburtsdatum" required>
@@ -213,7 +216,10 @@ footer{
       </div>
 
       <hr class="af-divider">
-      <div style="font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--navy);margin-bottom:14px">Schulungsauswahl (Mehrfachauswahl möglich)</div>
+      <div style="font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--navy);margin-bottom:6px">Schulungsauswahl<span id="af-kurs-mehrfach"> (Mehrfachauswahl möglich)</span></div>
+      <div id="af-kurs-hint-gewerblich" style="display:none;font-size:13px;color:var(--muted);margin-bottom:14px">
+        Bitte wählen Sie genau einen Kurs für die gesamte Teilnehmerliste aus.
+      </div>
 
       <div class="af-kurs-block" id="block-stufe1">
         <div class="af-kurs-top">
@@ -289,6 +295,14 @@ footer{
         </div>
       </div>
 
+      <div id="af-teilnehmer-section" style="display:none">
+        <hr class="af-divider">
+        <div style="font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--navy);margin-bottom:6px">Teilnehmerliste</div>
+        <div style="font-size:13px;color:var(--muted);margin-bottom:14px">Bitte tragen Sie für jeden Teilnehmer die Daten ein.</div>
+        <div id="af-teilnehmer-list"></div>
+        <button type="button" class="kt-btn" id="af-add-teilnehmer" onclick="addTeilnehmer()" style="margin-top:4px;margin-bottom:20px">+ Teilnehmer hinzufügen</button>
+      </div>
+
       <label class="af-consent">
         <input type="checkbox" id="ck-datenschutz" required>
         Ich habe die <a href="homepage.html#datenschutz" target="_blank" rel="noopener">Datenschutzerklärung</a> zur Kenntnis genommen und willige in die Verarbeitung meiner Daten ein.
@@ -343,6 +357,97 @@ function setKontaktTyp(t){
   document.getElementById('kt-gewerblich').classList.toggle('selected', t==='gewerblich');
   document.getElementById('af-ff-firma').style.display = t==='privat' ? 'none' : '';
   document.getElementById('af-lbl-strasse').textContent = t==='privat' ? 'Straße und Hausnummer *' : 'Firmenanschrift – Straße und Hausnummer *';
+  document.getElementById('af-hint-ansprechpartner').style.display = t==='gewerblich' ? 'block' : 'none';
+  document.getElementById('af-row-geburt').style.display = t==='gewerblich' ? 'none' : '';
+  document.getElementById('af-kurs-mehrfach').style.display = t==='gewerblich' ? 'none' : '';
+  document.getElementById('af-kurs-hint-gewerblich').style.display = t==='gewerblich' ? 'block' : 'none';
+  document.getElementById('af-teilnehmer-section').style.display = t==='gewerblich' ? 'block' : 'none';
+  if(t==='gewerblich' && document.querySelectorAll('.af-teilnehmer-row').length===0){
+    addTeilnehmer();
+  }
+}
+
+// ── Bei Gewerblich: nur ein Kurs für die ganze Teilnehmerliste ──
+var ALL_KURS_IDS = ['stufe1','stufe2','lasi','training'];
+function enforceSingleKurs(currentId){
+  if(kontaktTyp !== 'gewerblich') return;
+  ALL_KURS_IDS.forEach(function(id){
+    if(id === currentId) return;
+    var ck = document.getElementById('ck-'+id);
+    if(ck.checked){
+      ck.checked = false;
+      ck.dispatchEvent(new Event('change'));
+    }
+  });
+}
+
+// ── Teilnehmerliste (Sammelanmeldung) ────────────────────────────
+var tnCounter = 0;
+function addTeilnehmer(){
+  tnCounter++;
+  var id = 'tn-row-' + tnCounter;
+  var html =
+    '<div class="af-teilnehmer-row" id="'+id+'" style="border:1.5px solid var(--line);border-radius:12px;padding:14px 16px;margin-bottom:10px">'+
+      '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">'+
+        '<strong style="font-size:13px;color:var(--navy)">Teilnehmer</strong>'+
+        '<button type="button" class="af-tn-remove" onclick="removeTeilnehmer(\''+id+'\')" style="background:none;border:none;color:#dc2626;font-size:13px;font-weight:600;cursor:pointer">Entfernen</button>'+
+      '</div>'+
+      '<div class="af-row2">'+
+        '<div class="af-field"><label>Nachname *</label><input type="text" class="tn-nachname" placeholder="Mustermann" required></div>'+
+        '<div class="af-field"><label>Vorname *</label><input type="text" class="tn-vorname" placeholder="Max" required></div>'+
+      '</div>'+
+      '<div class="af-row2">'+
+        '<div class="af-field"><label>Geburtsdatum *</label><input type="date" class="tn-geburtsdatum" required></div>'+
+        '<div class="af-field"><label>Geburtsort *</label><input type="text" class="tn-geburtsort" placeholder="München" required></div>'+
+      '</div>'+
+      '<div class="af-row2">'+
+        '<div class="af-field"><label>E-Mail *</label><input type="email" class="tn-email" placeholder="teilnehmer@firma.de" required></div>'+
+        '<div class="af-field"><label>Telefon</label><input type="tel" class="tn-telefon" placeholder="+49 123 456789"></div>'+
+      '</div>'+
+    '</div>';
+  document.getElementById('af-teilnehmer-list').insertAdjacentHTML('beforeend', html);
+  updateTnRemoveButtons();
+}
+function removeTeilnehmer(id){
+  if(document.querySelectorAll('.af-teilnehmer-row').length <= 1) return;
+  var el = document.getElementById(id);
+  if(el) el.remove();
+  updateTnRemoveButtons();
+}
+function updateTnRemoveButtons(){
+  var rows = document.querySelectorAll('.af-teilnehmer-row');
+  rows.forEach(function(row){
+    row.querySelector('.af-tn-remove').style.display = rows.length <= 1 ? 'none' : '';
+  });
+}
+function buildTeilnehmerArray(){
+  var arr = [];
+  document.querySelectorAll('.af-teilnehmer-row').forEach(function(row){
+    arr.push({
+      nachname:     row.querySelector('.tn-nachname').value.trim(),
+      vorname:      row.querySelector('.tn-vorname').value.trim(),
+      geburtsdatum: row.querySelector('.tn-geburtsdatum').value,
+      geburtsort:   row.querySelector('.tn-geburtsort').value.trim(),
+      email:        row.querySelector('.tn-email').value.trim(),
+      telefon:      row.querySelector('.tn-telefon').value.trim()
+    });
+  });
+  return arr;
+}
+function validateTeilnehmer(){
+  var rows = document.querySelectorAll('.af-teilnehmer-row');
+  if(rows.length === 0) return false;
+  var ok = true;
+  rows.forEach(function(row){
+    if(!row.querySelector('.tn-nachname').value.trim() ||
+       !row.querySelector('.tn-vorname').value.trim() ||
+       !row.querySelector('.tn-geburtsdatum').value ||
+       !row.querySelector('.tn-geburtsort').value.trim() ||
+       !row.querySelector('.tn-email').value.trim()){
+      ok = false;
+    }
+  });
+  return ok;
 }
 
 ['stufe1','stufe2','lasi'].forEach(function(id){
@@ -352,6 +457,7 @@ function setKontaktTyp(t){
     if(!this.checked) sel.value = '';
     document.getElementById('block-'+id).classList.toggle('active', this.checked);
     if(id === 'stufe1') updateVorqualifikation();
+    if(this.checked) enforceSingleKurs(id);
   });
 });
 
@@ -374,6 +480,7 @@ function validateVorqualifikation(){
 }
 document.getElementById('ck-training').addEventListener('change',function(){
   document.getElementById('block-training').classList.toggle('active',this.checked);
+  if(this.checked) enforceSingleKurs('training');
 });
 function validateStufe2(){
   var stufe2 = document.getElementById('ck-stufe2').checked;
@@ -403,6 +510,7 @@ function weitererTeilnehmer(){
   ['af-nachname','af-vorname','af-email','af-telefon','af-geburtsdatum','af-geburtsort','af-firma','af-strasse','af-plz','af-ort'].forEach(function(id){
     document.getElementById(id).value = '';
   });
+  document.getElementById('af-teilnehmer-list').innerHTML = '';
   setKontaktTyp('privat');
   document.getElementById('af-error').style.display = 'none';
   var btn = document.querySelector('#anmeldungForm .af-submit');
@@ -430,6 +538,13 @@ document.getElementById('anmeldungForm').addEventListener('submit', async functi
     errEl.textContent = 'Bitte geben Sie Ihre Firma / Organisation an.';
     errEl.style.display = 'block';
     document.getElementById('af-firma').focus();
+    return;
+  }
+
+  if(kontaktTyp === 'gewerblich' && !validateTeilnehmer()){
+    errEl.textContent = 'Bitte füllen Sie für jeden Teilnehmer alle Felder aus (Nachname, Vorname, Geburtsdatum, Geburtsort, E-Mail).';
+    errEl.style.display = 'block';
+    document.getElementById('af-teilnehmer-section').scrollIntoView({behavior:'smooth', block:'center'});
     return;
   }
 
@@ -505,7 +620,12 @@ document.getElementById('anmeldungForm').addEventListener('submit', async functi
     kursnummer:              _urlKursnummer,
     kurs_sp_id:              _urlKursSpId,
     datenschutz_einwilligung: true,
-    datenschutz_version:      '1.0'
+    datenschutz_version:      '1.0',
+    ansprechpartner_vorname:  kontaktTyp === 'gewerblich' ? document.getElementById('af-vorname').value.trim() : '',
+    ansprechpartner_nachname: kontaktTyp === 'gewerblich' ? document.getElementById('af-nachname').value.trim() : '',
+    ansprechpartner_email:    kontaktTyp === 'gewerblich' ? document.getElementById('af-email').value.trim() : '',
+    ansprechpartner_telefon:  kontaktTyp === 'gewerblich' ? document.getElementById('af-telefon').value.trim() : '',
+    teilnehmer:               kontaktTyp === 'gewerblich' ? buildTeilnehmerArray() : []
   };
 
   var btn = e.target.querySelector('.af-submit');
