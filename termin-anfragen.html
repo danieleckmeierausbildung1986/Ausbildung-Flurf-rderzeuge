@@ -298,9 +298,19 @@ document.getElementById('anfragForm').addEventListener('submit', async function(
   var errEl = document.getElementById('f-error');
   errEl.style.display = 'none';
 
+  var SCHULUNG_LABELS = {
+    stufe1:   'Ausbildung Flurförderzeuge Stufe 1',
+    stufe2:   'Zusatzausbildung Stufe 2',
+    lasi:     'Ladungssicherung nach VDI 2700 ff.',
+    training: 'Grundlagentraining Flurförderzeuge'
+  };
   var schulungen = [];
+  var schulungIds = [];
   ['stufe1','stufe2','lasi','training'].forEach(function(id){
-    if(document.getElementById('ck-'+id).checked) schulungen.push(id);
+    if(document.getElementById('ck-'+id).checked){
+      schulungen.push(SCHULUNG_LABELS[id]);
+      schulungIds.push(id);
+    }
   });
   if(schulungen.length === 0){
     errEl.textContent = 'Bitte wählen Sie mindestens eine Schulung aus.';
@@ -318,6 +328,7 @@ document.getElementById('anfragForm').addEventListener('submit', async function(
     telefon:       document.getElementById('f-telefon').value.trim(),
     firma:         document.getElementById('f-firma').value.trim(),
     schulung:      schulungen.join(', '),
+    schulung_id:   schulungIds[0] || '',
     schulungsform: document.getElementById('f-schulungsform').value,
     wunschdaten:   selDates.map(fmtDE).join(', '),
     notiz:         document.getElementById('f-notiz').value.trim(),
