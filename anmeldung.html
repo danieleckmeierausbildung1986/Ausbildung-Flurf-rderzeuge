@@ -359,6 +359,8 @@ function setKontaktTyp(t){
   document.getElementById('af-lbl-strasse').textContent = t==='privat' ? 'Straße und Hausnummer *' : 'Firmenanschrift – Straße und Hausnummer *';
   document.getElementById('af-hint-ansprechpartner').style.display = t==='gewerblich' ? 'block' : 'none';
   document.getElementById('af-row-geburt').style.display = t==='gewerblich' ? 'none' : '';
+  document.getElementById('af-geburtsdatum').required = (t === 'privat');
+  document.getElementById('af-geburtsort').required = (t === 'privat');
   document.getElementById('af-kurs-mehrfach').style.display = t==='gewerblich' ? 'none' : '';
   document.getElementById('af-kurs-hint-gewerblich').style.display = t==='gewerblich' ? 'block' : 'none';
   document.getElementById('af-teilnehmer-section').style.display = t==='gewerblich' ? 'block' : 'none';
