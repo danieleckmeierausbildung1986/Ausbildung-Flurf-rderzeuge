@@ -349,6 +349,24 @@ var _urlKursSpId   = '';
   document.getElementById('block-' + kurs).scrollIntoView({behavior:'smooth', block:'center'});
 })();
 
+// Kontaktdaten per URL-Parameter vorausfüllen (z.B. Link aus einer Terminbestätigung)
+(function(){
+  var params = new URLSearchParams(window.location.search);
+  var map = {
+    vorname:  'af-vorname',
+    nachname: 'af-nachname',
+    email:    'af-email',
+    telefon:  'af-telefon',
+    firma:    'af-firma'
+  };
+  var hasFirma = !!params.get('firma');
+  if(hasFirma) setKontaktTyp('gewerblich');
+  Object.keys(map).forEach(function(key){
+    var val = params.get(key);
+    if(val) document.getElementById(map[key]).value = val;
+  });
+})();
+
 // ── Kontakttyp (Privat/Gewerblich) ─────────────────────────────
 var kontaktTyp = 'privat';
 function setKontaktTyp(t){
