@@ -264,11 +264,12 @@ body{
             <label class="radio-opt"><input type="radio" name="fehlerbespr" value="Nein" checked> Nein</label>
           </div>
         </div>
+        <div class="err-box" id="auswertungErrBox" style="display:none"></div>
       </div>
       <div class="nav-row">
         <button class="nav-btn back" onclick="showScreen('check2Screen')">← Zurück</button>
         <span class="step-count">Schritt 3 / 4</span>
-        <button class="nav-btn next" onclick="showScreen('abschlussScreen')">Weiter →</button>
+        <button class="nav-btn next" onclick="goToAbschluss()">Weiter →</button>
       </div>
     </div>
 
@@ -580,6 +581,20 @@ function renderAuswertung(){
   document.getElementById('reviewGrid').innerHTML = html;
 }
 
+function goToAbschluss(){
+  var errBox = document.getElementById('auswertungErrBox');
+  var rvKursBeginnEl = document.getElementById('rvKursBeginn');
+  var rvKursEndeEl = document.getElementById('rvKursEnde');
+  if(!rvKursBeginnEl.value || !rvKursEndeEl.value){
+    errBox.textContent = 'Bitte Kurs Beginn und Kurs Ende eintragen, bevor Sie fortfahren.';
+    errBox.style.display = 'block';
+    (rvKursBeginnEl.value ? rvKursEndeEl : rvKursBeginnEl).scrollIntoView({behavior:'smooth', block:'center'});
+    return;
+  }
+  errBox.style.display = 'none';
+  showScreen('abschlussScreen');
+}
+
 function onFotoSelected(e){
   var file = e.target.files[0];
   if(!file) return;
@@ -680,6 +695,13 @@ async function submitPruefung(){
     errBox.textContent = 'Bitte beide Unterschriften einholen, bevor Sie speichern.';
     errBox.style.display = 'block';
     document.getElementById(sigIsEmpty('sigPruefer') ? 'sigPruefer' : 'sigTeilnehmer').scrollIntoView({behavior:'smooth', block:'center'});
+    return;
+  }
+  var rvKursBeginnEl = document.getElementById('rvKursBeginn');
+  var rvKursEndeEl = document.getElementById('rvKursEnde');
+  if(!rvKursBeginnEl.value || !rvKursEndeEl.value){
+    showScreen('auswertungScreen');
+    goToAbschluss();
     return;
   }
 
