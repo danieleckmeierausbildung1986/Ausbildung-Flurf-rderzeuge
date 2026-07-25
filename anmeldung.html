@@ -197,6 +197,20 @@ footer{
           <input type="text" id="af-geburtsort" placeholder="München" required>
         </div>
       </div>
+      <div class="af-field" style="margin-bottom:16px">
+        <label>Straße und Hausnummer *</label>
+        <input type="text" id="af-strasse" placeholder="Musterstraße 12" required>
+      </div>
+      <div class="af-row2">
+        <div class="af-field">
+          <label>PLZ *</label>
+          <input type="text" id="af-plz" placeholder="94436" required>
+        </div>
+        <div class="af-field">
+          <label>Ort *</label>
+          <input type="text" id="af-ort" placeholder="Simbach" required>
+        </div>
+      </div>
 
       <hr class="af-divider">
       <div style="font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--navy);margin-bottom:14px">Schulungsauswahl (Mehrfachauswahl möglich)</div>
@@ -385,7 +399,7 @@ document.getElementById('ck-stufe2').addEventListener('change',function(){
 function weitererTeilnehmer(){
   document.getElementById('af-success-msg').style.display = 'none';
   document.getElementById('anmeldungForm').style.display = 'block';
-  ['af-nachname','af-vorname','af-email','af-telefon','af-geburtsdatum','af-geburtsort','af-firma'].forEach(function(id){
+  ['af-nachname','af-vorname','af-email','af-telefon','af-geburtsdatum','af-geburtsort','af-firma','af-strasse','af-plz','af-ort'].forEach(function(id){
     document.getElementById(id).value = '';
   });
   setKontaktTyp('privat');
@@ -471,6 +485,9 @@ document.getElementById('anmeldungForm').addEventListener('submit', async functi
     telefon:                 document.getElementById('af-telefon').value.trim(),
     geburtsdatum:            document.getElementById('af-geburtsdatum').value,
     geburtsort:              document.getElementById('af-geburtsort').value.trim(),
+    strasse:                 document.getElementById('af-strasse').value.trim(),
+    plz:                     document.getElementById('af-plz').value.trim(),
+    ort:                     document.getElementById('af-ort').value.trim(),
     stufe1_gebucht:          stufe1,
     stufe1_schulungsform:    s1form,
     stufe2_gebucht:          stufe2,
