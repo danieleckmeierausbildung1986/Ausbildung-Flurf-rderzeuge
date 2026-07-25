@@ -138,24 +138,42 @@ footer{text-align:center;padding:24px;font-size:13px;color:var(--muted);border-t
       <div class="card-title">📚 Gewünschte Schulung</div>
       <div class="kurs-block" id="kb-stufe1" onclick="toggleKurs('stufe1')">
         <label class="kurs-label"><input type="checkbox" id="ck-stufe1"> Ausbildung Flurförderzeuge Stufe 1</label>
+        <div class="kurs-format" id="kf-stufe1" style="display:none;margin-top:10px;padding-top:10px;border-top:1px solid var(--line)">
+          <label style="font-size:12px;font-weight:700;color:var(--navy);display:block;margin-bottom:6px">Gewünschtes Format</label>
+          <select id="fmt-stufe1" onclick="event.stopPropagation()">
+            <option value="">Keine Präferenz / noch offen</option>
+            <option value="Elearning">E-Learning</option>
+            <option value="Online">Online</option>
+            <option value="Präsenz">Präsenz</option>
+          </select>
+        </div>
       </div>
       <div class="kurs-block" id="kb-stufe2" onclick="toggleKurs('stufe2')">
         <label class="kurs-label"><input type="checkbox" id="ck-stufe2"> Zusatzausbildung Flurförderzeuge Stufe 2</label>
+        <div class="kurs-format" id="kf-stufe2" style="display:none;margin-top:10px;padding-top:10px;border-top:1px solid var(--line)">
+          <label style="font-size:12px;font-weight:700;color:var(--navy);display:block;margin-bottom:6px">Gewünschtes Format</label>
+          <select id="fmt-stufe2" onclick="event.stopPropagation()">
+            <option value="">Keine Präferenz / noch offen</option>
+            <option value="Elearning">E-Learning</option>
+            <option value="Online">Online</option>
+            <option value="Präsenz">Präsenz</option>
+          </select>
+        </div>
       </div>
       <div class="kurs-block" id="kb-lasi" onclick="toggleKurs('lasi')">
         <label class="kurs-label"><input type="checkbox" id="ck-lasi"> Ladungssicherung nach VDI 2700 ff.</label>
+        <div class="kurs-format" id="kf-lasi" style="display:none;margin-top:10px;padding-top:10px;border-top:1px solid var(--line)">
+          <label style="font-size:12px;font-weight:700;color:var(--navy);display:block;margin-bottom:6px">Gewünschtes Format</label>
+          <select id="fmt-lasi" onclick="event.stopPropagation()">
+            <option value="">Keine Präferenz / noch offen</option>
+            <option value="Elearning">E-Learning</option>
+            <option value="Online">Online</option>
+            <option value="Präsenz">Präsenz</option>
+          </select>
+        </div>
       </div>
       <div class="kurs-block" id="kb-training" onclick="toggleKurs('training')">
-        <label class="kurs-label"><input type="checkbox" id="ck-training"> Grundlagentraining Flurförderzeuge</label>
-      </div>
-      <div class="field" style="margin-top:14px">
-        <label>Gewünschtes Format (optional)</label>
-        <select id="f-schulungsform">
-          <option value="">Keine Präferenz / noch offen</option>
-          <option value="Elearning">E-Learning</option>
-          <option value="Online">Online</option>
-          <option value="Präsenz">Präsenz</option>
-        </select>
+        <label class="kurs-label"><input type="checkbox" id="ck-training"> Grundlagentraining Flurförderzeuge <span style="font-weight:400;color:var(--muted);font-size:12.5px">(nur Präsenz)</span></label>
       </div>
     </div>
 
@@ -204,6 +222,8 @@ var ANMELDUNG_URL = 'https://default8af25f9034bc4ef4aba22ab6f641d5.01.environmen
   if(k && document.getElementById('ck-'+k)){
     document.getElementById('ck-'+k).checked = true;
     document.getElementById('kb-'+k).classList.add('active');
+    var kf = document.getElementById('kf-'+k);
+    if(kf) kf.style.display = 'block';
   }
 })();
 
@@ -211,6 +231,8 @@ function toggleKurs(id){
   var ck = document.getElementById('ck-'+id);
   ck.checked = !ck.checked;
   document.getElementById('kb-'+id).classList.toggle('active', ck.checked);
+  var kf = document.getElementById('kf-'+id);
+  if(kf) kf.style.display = ck.checked ? 'block' : 'none';
 }
 
 // ── Kalender ──────────────────────────────────────────────
@@ -306,12 +328,21 @@ document.getElementById('anfragForm').addEventListener('submit', async function(
   };
   var schulungen = [];
   var schulungIds = [];
-  ['stufe1','stufe2','lasi','training'].forEach(function(id){
+  var schulungsformen = [];
+  ['stufe1','stufe2','lasi'].forEach(function(id){
     if(document.getElementById('ck-'+id).checked){
-      schulungen.push(SCHULUNG_LABELS[id]);
+      var fmtSel = document.getElementById('fmt-'+id);
+      var fmt = fmtSel ? fmtSel.value : '';
+      schulungen.push(SCHULUNG_LABELS[id] + (fmt ? ' (' + fmt + ')' : ''));
       schulungIds.push(id);
+      if(fmt) schulungsformen.push(fmt);
     }
   });
+  if(document.getElementById('ck-training').checked){
+    schulungen.push(SCHULUNG_LABELS.training + ' (Präsenz)');
+    schulungIds.push('training');
+    schulungsformen.push('Präsenz');
+  }
   if(schulungen.length === 0){
     errEl.textContent = 'Bitte wählen Sie mindestens eine Schulung aus.';
     errEl.style.display = 'block'; return;
@@ -329,7 +360,7 @@ document.getElementById('anfragForm').addEventListener('submit', async function(
     firma:         document.getElementById('f-firma').value.trim(),
     schulung:      schulungen.join(', '),
     schulung_id:   schulungIds[0] || '',
-    schulungsform: document.getElementById('f-schulungsform').value,
+    schulungsform: schulungsformen.join(', '),
     wunschdaten:   selDates.map(fmtDE).join(', '),
     notiz:         document.getElementById('f-notiz').value.trim(),
     anfrage_typ:   'Terminanfrage'
