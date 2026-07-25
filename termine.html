@@ -137,7 +137,10 @@ function renderCard(a){
       '</div>'+
       (a.Notiz ? '<div class="ta-notiz">'+esc(a.Notiz)+'</div>' : '')+
       '<div class="ta-actions">'+
-        '<input type="date" class="ta-date-input" id="date-'+id+'">'+
+        '<label style="font-size:12px;color:var(--muted);font-weight:700">Von</label>'+
+        '<input type="date" class="ta-date-input" id="date-von-'+id+'">'+
+        '<label style="font-size:12px;color:var(--muted);font-weight:700">Bis</label>'+
+        '<input type="date" class="ta-date-input" id="date-bis-'+id+'">'+
         '<button class="ta-btn ta-btn-confirm" onclick="entscheiden(\''+id+'\',\'Bestätigt\')">✓ Bestätigen</button>'+
         '<button class="ta-btn ta-btn-decline" onclick="entscheiden(\''+id+'\',\'Abgelehnt\')">✕ Ablehnen</button>'+
       '</div>'+
@@ -150,11 +153,13 @@ async function entscheiden(id, entscheidung){
     return;
   }
   var card = document.querySelector('.ta-card[data-id="'+CSS.escape(id)+'"]');
-  var dateInput = document.getElementById('date-'+id);
-  var bestaetigterTermin = dateInput ? dateInput.value : '';
+  var vonInput = document.getElementById('date-von-'+id);
+  var bisInput = document.getElementById('date-bis-'+id);
+  var bestaetigterTerminVon = vonInput ? vonInput.value : '';
+  var bestaetigterTerminBis = bisInput && bisInput.value ? bisInput.value : bestaetigterTerminVon;
 
-  if(entscheidung === 'Bestätigt' && !bestaetigterTermin){
-    alert('Bitte wählen Sie zuerst das bestätigte Datum aus.');
+  if(entscheidung === 'Bestätigt' && !bestaetigterTerminVon){
+    alert('Bitte wählen Sie zuerst mindestens das Start-Datum aus (bei mehrtägigen Schulungen zusätzlich das Enddatum).');
     return;
   }
   if(entscheidung === 'Abgelehnt' && !confirm('Diese Terminanfrage wirklich ablehnen? Der Anfragende erhält automatisch eine Absage-E-Mail.')){
@@ -172,7 +177,8 @@ async function entscheiden(id, entscheidung){
         anfragen_id: id,
         entscheidung: entscheidung,
         trainer_name: trainerAuth.name,
-        bestaetigter_termin: bestaetigterTermin
+        bestaetigter_termin: bestaetigterTerminVon,
+        bestaetigter_termin_bis: bestaetigterTerminBis
       })
     });
     if(res.ok || res.status === 202){
