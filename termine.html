@@ -136,6 +136,10 @@ function renderCard(a){
         '<div><span>Telefon</span>'+esc(a.Telefon || '–')+'</div>'+
       '</div>'+
       (a.Notiz ? '<div class="ta-notiz">'+esc(a.Notiz)+'</div>' : '')+
+      '<div style="margin-bottom:14px">'+
+        '<label style="font-size:12px;color:var(--muted);font-weight:700;display:block;margin-bottom:6px">Persönliche Nachricht (optional, wird mit in die E-Mail übernommen)</label>'+
+        '<textarea id="kommentar-'+id+'" style="width:100%;min-height:60px;padding:10px 12px;border-radius:10px;border:1.5px solid var(--line);font-family:inherit;font-size:13.5px;resize:vertical" placeholder="z.B. individuelle Hinweise für diese Anfrage…"></textarea>'+
+      '</div>'+
       '<div class="ta-actions">'+
         '<label style="font-size:12px;color:var(--muted);font-weight:700">Von</label>'+
         '<input type="date" class="ta-date-input" id="date-von-'+id+'">'+
@@ -157,6 +161,8 @@ async function entscheiden(id, entscheidung){
   var bisInput = document.getElementById('date-bis-'+id);
   var bestaetigterTerminVon = vonInput ? vonInput.value : '';
   var bestaetigterTerminBis = bisInput && bisInput.value ? bisInput.value : bestaetigterTerminVon;
+  var kommentarInput = document.getElementById('kommentar-'+id);
+  var kommentar = kommentarInput ? kommentarInput.value.trim() : '';
 
   if(entscheidung === 'Bestätigt' && !bestaetigterTerminVon){
     alert('Bitte wählen Sie zuerst mindestens das Start-Datum aus (bei mehrtägigen Schulungen zusätzlich das Enddatum).');
@@ -178,7 +184,8 @@ async function entscheiden(id, entscheidung){
         entscheidung: entscheidung,
         trainer_name: trainerAuth.name,
         bestaetigter_termin: bestaetigterTerminVon,
-        bestaetigter_termin_bis: bestaetigterTerminBis
+        bestaetigter_termin_bis: bestaetigterTerminBis,
+        kommentar: kommentar
       })
     });
     if(res.ok || res.status === 202){
