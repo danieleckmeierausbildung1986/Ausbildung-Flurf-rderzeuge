@@ -551,20 +551,33 @@ function renderAuswertung(){
   statusEl.textContent = bestanden ? 'Bestanden' : 'Nicht bestanden';
   statusEl.className = 'rs-status ' + (bestanden ? 'pass' : 'fail');
 
-  var reviewFields = [
+  var reviewFieldsVorher = [
     ['Reg.-Nr.', regnr],
     ['Nachname', nachname],
     ['Vorname', vorname],
     ['Geburtsdatum', formatDate(geburtsdatum)],
-    ['Geburtsort', geburtsort || '–'],
-    ['Kurs Beginn', formatDate(kursBeginn)],
-    ['Kurs Ende', formatDate(kursEnde)],
+    ['Geburtsort', geburtsort || '–']
+  ];
+  var reviewFieldsNachher = [
     ['Prüfer', pruefername],
     ['Prüfungsart', pruefungsart === 'Nachpruefung' ? 'Nachprüfung' : 'Erstprüfung']
   ];
-  document.getElementById('reviewGrid').innerHTML = reviewFields.map(function(f){
+  var html = reviewFieldsVorher.map(function(f){
     return '<div class="review-item"><span>' + f[0] + '</span><b>' + f[1] + '</b></div>';
   }).join('');
+  // Kurs Beginn/Ende kommen nur automatisch, wenn in Staplerprüfung_Master ein Kurs-Lookup gesetzt ist.
+  // Bei Sammelanmeldungen/Terminanfragen ist das oft nicht der Fall — deshalb hier direkt editierbar,
+  // damit der Prüfer sie bei Bedarf von Hand eintragen kann, ohne vorher in SharePoint etwas verknüpfen zu müssen.
+  html += '<div class="review-item"><span>Kurs Beginn</span>' +
+    '<input type="date" id="rvKursBeginn" value="' + (kursBeginn || '') + '" style="font:inherit;font-weight:700;border:1px solid #cfd8e6;border-radius:6px;padding:4px 6px;">' +
+    '</div>';
+  html += '<div class="review-item"><span>Kurs Ende</span>' +
+    '<input type="date" id="rvKursEnde" value="' + (kursEnde || '') + '" style="font:inherit;font-weight:700;border:1px solid #cfd8e6;border-radius:6px;padding:4px 6px;">' +
+    '</div>';
+  html += reviewFieldsNachher.map(function(f){
+    return '<div class="review-item"><span>' + f[0] + '</span><b>' + f[1] + '</b></div>';
+  }).join('');
+  document.getElementById('reviewGrid').innerHTML = html;
 }
 
 function onFotoSelected(e){
@@ -685,6 +698,11 @@ async function submitPruefung(){
   var sigPrueferUrl = sigDataUrl('sigPruefer');
   var sigTeilnehmerUrl = sigDataUrl('sigTeilnehmer');
 
+  // Kurs Beginn/Ende ggf. auf der Auswertungs-Seite von Hand nachgetragen/korrigiert —
+  // diese Werte übernehmen und gleich mit an Staplerprüfung_Master zurückschreiben.
+  kursBeginn = document.getElementById('rvKursBeginn').value || kursBeginn;
+  kursEnde   = document.getElementById('rvKursEnde').value   || kursEnde;
+
   // FlowPraxisprotokoll-Trigger — die alten 9 Felder (text..text_8) 1:1 nachgebaut,
   // damit am bestehenden Flow-Teil (Dokumenterstellung) nichts geändert werden muss.
   // text_9-text_11 sind NEU (gab's in der alten App nicht als Flow-Input, da die App selbst
@@ -707,7 +725,9 @@ async function submitPruefung(){
     text_8: istNachpruefung ? '1' : '0',
     text_9: String(fehler),
     text_10: bewertungstext,
-    text_11: fehlerbespr
+    text_11: fehlerbespr,
+    text_12: kursBeginn,
+    text_13: kursEnde
   };
 
   // Nachprüfungen bekommen einen eigenen Datensatz in der Liste "Staplerprüfung_Nachpruefung"
