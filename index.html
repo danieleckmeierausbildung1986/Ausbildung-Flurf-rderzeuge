@@ -543,7 +543,11 @@ function showModules(data){
         </a>`;
     }
     count++;
+  }
 
+  // Die Theorieprüfung läuft immer über diese Plattform, unabhängig von der Schulungsform
+  // (auch bei Präsenz/Online meldet sich der Teilnehmer hier zur Prüfung an).
+  if(data.stufe1){
     const s1Freigegeben = data.pruefung_stufe1_freigegeben === true || data.pruefung_stufe1_freigegeben === 'True' || getSF(data.pruefung_stufe1_freigegeben) === 'ja';
     const s1Geschlossen = getSF(data.pruefung_stufe1_freigegeben) === 'geschlossen';
     if(s1Freigegeben){
@@ -592,7 +596,27 @@ function showModules(data){
         </div>`;
     }
     count++;
+  }
 
+  // Die Theorieprüfung läuft immer über diese Plattform, unabhängig von der Schulungsform.
+  if(data.stufe2){
+    const s2data = {
+      regnr:           currentRegnr,
+      vorname:         data.vorname,
+      nachname:        data.nachname,
+      lang:            currentLang,
+      schubmast:       data.schubmast_gebucht       === true || data.schubmast_gebucht       === 'Ja' || data.schubmast_gebucht       === 'True',
+      kommissionierer: data.kommissionierer_gebucht === true || data.kommissionierer_gebucht === 'Ja' || data.kommissionierer_gebucht === 'True',
+      schmalgang:      data.schmalgang_gebucht       === true || data.schmalgang_gebucht       === 'Ja' || data.schmalgang_gebucht       === 'True',
+      schubmastGeschlossen:       getSF(data.pruefung_schubmast_freigegeben) === 'geschlossen',
+      kommissiererGeschlossen:    getSF(data.pruefung_kommissionierer_freigegeben) === 'geschlossen',
+      schmalgangGeschlossen:      getSF(data.pruefung_schmalgang_freigegeben) === 'geschlossen'
+    };
+    const s2AllAbgeschlossen =
+      (!s2data.schubmast       || getSF(data.pruefung_schubmast_freigegeben) === 'geschlossen') &&
+      (!s2data.kommissionierer || getSF(data.pruefung_kommissionierer_freigegeben) === 'geschlossen') &&
+      (!s2data.schmalgang      || getSF(data.pruefung_schmalgang_freigegeben) === 'geschlossen') &&
+      (s2data.schubmast || s2data.kommissionierer || s2data.schmalgang);
     if(s2AllAbgeschlossen){
       examList.innerHTML += `
         <div class="exam-tile disabled">
@@ -616,7 +640,8 @@ function showModules(data){
     count++;
   }
 
-  if(data.lasi && lform === 'elearning'){
+  // Die Theorieprüfung läuft immer über diese Plattform, unabhängig von der Schulungsform.
+  if(data.lasi){
     const lasiFreigegeben = data.pruefung_lasi_freigegeben === true || data.pruefung_lasi_freigegeben === 'True' || getSF(data.pruefung_lasi_freigegeben) === 'ja';
     const lasiGeschlossen = getSF(data.pruefung_lasi_freigegeben) === 'geschlossen';
     if(lasiFreigegeben){
