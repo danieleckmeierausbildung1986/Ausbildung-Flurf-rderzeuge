@@ -330,8 +330,8 @@ nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.95);backdrop-
       <div class="form-field full">
         <label>Ich bin *</label>
         <div class="kt-wrap">
-          <button type="button" class="kt-btn" id="kt-privat" onclick="setKontaktTyp('privat')">🙋 Privatperson</button>
-          <button type="button" class="kt-btn selected" id="kt-gewerblich" onclick="setKontaktTyp('gewerblich')">🏢 Gewerblich</button>
+          <button type="button" class="kt-btn selected" id="kt-privat" onclick="setKontaktTyp('privat')">🙋 Privatperson</button>
+          <button type="button" class="kt-btn" id="kt-gewerblich" onclick="setKontaktTyp('gewerblich')">🏢 Gewerblich</button>
         </div>
       </div>
       <div class="form-field" id="ff-vorname">
@@ -568,7 +568,7 @@ document.getElementById('tnNum').addEventListener('blur', function(){
 });
 
 // ── Kontakttyp (Privat/Gewerblich) ─────────────────────────────
-var kontaktTyp = 'gewerblich';
+var kontaktTyp = 'privat';
 function setKontaktTyp(t){
   kontaktTyp = t;
   document.getElementById('kt-privat').classList.toggle('selected', t==='privat');
@@ -576,6 +576,7 @@ function setKontaktTyp(t){
   document.getElementById('ff-firma').style.display = t==='privat' ? 'none' : '';
   document.getElementById('lbl-strasse').textContent = t==='privat' ? 'Straße und Hausnummer *' : 'Firmenanschrift – Straße und Hausnummer *';
 }
+setKontaktTyp('privat');
 
 // ── Validierung ────────────────────────────────────────────────
 function validateKontakt(){
