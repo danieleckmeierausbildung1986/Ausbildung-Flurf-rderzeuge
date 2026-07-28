@@ -266,6 +266,12 @@ footer{
             <label class="af-sub-check"><input type="radio" name="vorqualifikation" id="vq-nicht-bei-uns" value="nicht_bei_uns"> Ja, bei einem anderen Anbieter</label>
           </div>
           <div class="af-geraet-hint" id="vq-hint">&#9888; Bitte auswählen — bei einem anderen Anbieter benötigen wir im Anschluss einen Nachweis.</div>
+          <div id="vq-upload" style="display:none;margin-top:12px">
+            <div class="af-subkurse-title" style="font-size:13px">Nachweis Stufe 1 hochladen (Staplerschein oder Zertifikat, Foto oder PDF) <span style="color:#dc2626">*</span></div>
+            <input type="file" id="vq-nachweis-datei" accept="image/*,application/pdf" style="font-size:13px">
+            <div id="vq-upload-status" style="font-size:12px;color:#16a34a;margin-top:6px;display:none">&#10003; Datei übernommen</div>
+            <div class="af-geraet-hint" id="vq-upload-hint" style="display:none">&#9888; Bitte laden Sie Ihren Stufe-1-Nachweis hoch (max. 4 MB).</div>
+          </div>
         </div>
       </div>
 
@@ -497,6 +503,7 @@ function updateVorqualifikation(){
   var show = stufe2 && !stufe1;
   vqDiv.style.display = show ? 'block' : 'none';
   if(!show) document.getElementById('vq-hint').style.display = 'none';
+  updateNachweisUpload();
 }
 function validateVorqualifikation(){
   var stufe1 = document.getElementById('ck-stufe1').checked;
@@ -504,6 +511,76 @@ function validateVorqualifikation(){
   var hint = document.getElementById('vq-hint');
   if(!stufe2 || stufe1){ hint.style.display = 'none'; return true; }
   var ok = document.getElementById('vq-bei-uns').checked || document.getElementById('vq-nicht-bei-uns').checked;
+  hint.style.display = ok ? 'none' : 'block';
+  return ok;
+}
+
+// ── Stufe-1-Nachweis-Upload (nur bei "Ja, bei einem anderen Anbieter") ──
+var nachweisBase64 = '';
+var nachweisDateiname = '';
+function updateNachweisUpload(){
+  var zeigen = document.getElementById('vq-nicht-bei-uns').checked &&
+               document.getElementById('stufe2-vorqualifikation').style.display !== 'none';
+  document.getElementById('vq-upload').style.display = zeigen ? 'block' : 'none';
+  if(!zeigen) document.getElementById('vq-upload-hint').style.display = 'none';
+}
+['vq-bei-uns','vq-nicht-bei-uns'].forEach(function(id){
+  document.getElementById(id).addEventListener('change', updateNachweisUpload);
+});
+document.getElementById('vq-nachweis-datei').addEventListener('change', function(e){
+  nachweisBase64 = '';
+  nachweisDateiname = '';
+  document.getElementById('vq-upload-status').style.display = 'none';
+  var file = e.target.files[0];
+  if(!file) return;
+  var hint = document.getElementById('vq-upload-hint');
+  if(file.type === 'application/pdf'){
+    if(file.size > 4 * 1024 * 1024){
+      hint.textContent = '⚠ Die PDF-Datei ist zu groß (max. 4 MB). Bitte eine kleinere Datei wählen.';
+      hint.style.display = 'block';
+      e.target.value = '';
+      return;
+    }
+    var reader = new FileReader();
+    reader.onload = function(ev){
+      nachweisBase64 = ev.target.result.split(',')[1];
+      nachweisDateiname = file.name;
+      hint.style.display = 'none';
+      document.getElementById('vq-upload-status').style.display = 'block';
+    };
+    reader.readAsDataURL(file);
+  } else {
+    // Bilder wie beim Praxisprüfungs-Foto verkleinern, damit der Flow-Aufruf klein bleibt
+    var reader2 = new FileReader();
+    reader2.onload = function(ev){
+      var img = new Image();
+      img.onload = function(){
+        var maxDim = 1600;
+        var scale = Math.min(1, maxDim / Math.max(img.width, img.height));
+        var canvas = document.createElement('canvas');
+        canvas.width = Math.round(img.width * scale);
+        canvas.height = Math.round(img.height * scale);
+        canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+        nachweisBase64 = canvas.toDataURL('image/jpeg', 0.8).split(',')[1];
+        nachweisDateiname = (file.name.replace(/\.[^.]+$/, '') || 'nachweis') + '.jpg';
+        hint.style.display = 'none';
+        document.getElementById('vq-upload-status').style.display = 'block';
+      };
+      img.src = ev.target.result;
+    };
+    reader2.readAsDataURL(file);
+  }
+});
+function validateNachweisUpload(){
+  var noetig = document.getElementById('ck-stufe2').checked &&
+               !document.getElementById('ck-stufe1').checked &&
+               document.getElementById('vq-nicht-bei-uns').checked;
+  if(!noetig) return true;
+  var ok = nachweisBase64.length > 0;
+  var hint = document.getElementById('vq-upload-hint');
+  if(!ok){
+    hint.textContent = '⚠ Bitte laden Sie Ihren Stufe-1-Nachweis hoch (max. 4 MB).';
+  }
   hint.style.display = ok ? 'none' : 'block';
   return ok;
 }
@@ -601,6 +678,13 @@ document.getElementById('anmeldungForm').addEventListener('submit', async functi
     return;
   }
 
+  if(!validateNachweisUpload()){
+    errEl.textContent = 'Bitte laden Sie Ihren Stufe-1-Nachweis hoch (Staplerschein oder Zertifikat).';
+    errEl.style.display = 'block';
+    document.getElementById('vq-upload').scrollIntoView({behavior:'smooth', block:'center'});
+    return;
+  }
+
   if(!document.getElementById('ck-datenschutz').checked){
     errEl.textContent = 'Bitte bestätigen Sie die Datenschutzerklärung, bevor Sie fortfahren.';
     errEl.style.display = 'block';
@@ -654,7 +738,9 @@ document.getElementById('anmeldungForm').addEventListener('submit', async functi
     ansprechpartner_nachname: kontaktTyp === 'gewerblich' ? document.getElementById('af-nachname').value.trim() : '',
     ansprechpartner_email:    kontaktTyp === 'gewerblich' ? document.getElementById('af-email').value.trim() : '',
     ansprechpartner_telefon:  kontaktTyp === 'gewerblich' ? document.getElementById('af-telefon').value.trim() : '',
-    teilnehmer:               kontaktTyp === 'gewerblich' ? buildTeilnehmerArray() : []
+    teilnehmer:               kontaktTyp === 'gewerblich' ? buildTeilnehmerArray() : [],
+    nachweis_stufe1_base64:    nachweisBase64,
+    nachweis_stufe1_dateiname: nachweisDateiname
   };
 
   var btn = e.target.querySelector('.af-submit');
