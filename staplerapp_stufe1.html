@@ -61,20 +61,14 @@ body::before{
   min-height:200px;}
 .slidebox img{width:100%;height:auto;display:block;max-height:65vh;object-fit:contain;}
 
-/* ERKLÄRUNGS-KASTEN (aufklappbar, unter der Folie) */
+/* ERKLÄRUNGS-KASTEN (immer eingeblendet, unter der Folie) */
 .erklaerung-box{background:#fff;border:1px solid var(--line);border-top:none;border-radius:0 0 14px 14px;overflow:hidden}
-.erklaerung-toggle{width:100%;display:flex;align-items:center;justify-content:space-between;gap:10px;
-  padding:12px 18px;background:#f7f9fc;border:none;cursor:pointer;font-family:inherit;font-size:14px;
-  font-weight:700;color:var(--ink);text-align:left}
-.erklaerung-toggle:hover{background:#eef2f8}
-.erklaerung-toggle .chev{transition:transform .2s;flex-shrink:0;color:var(--acc1)}
-.erklaerung-toggle.open .chev{transform:rotate(180deg)}
-.erklaerung-content{max-height:0;overflow:hidden;transition:max-height .25s ease}
-.erklaerung-content.open{max-height:600px}
-.erklaerung-content p{margin:0;padding:16px 18px;font-size:14px;line-height:1.65;color:var(--muted)}
+.erklaerung-label{display:flex;align-items:center;gap:8px;padding:12px 20px 0;font-size:14px;
+  font-weight:700;color:var(--acc1)}
+.erklaerung-content p{margin:0;padding:10px 20px 20px;font-size:17px;line-height:1.75;color:var(--ink)}
 @media(max-width:600px){
-  .erklaerung-toggle{font-size:13px;padding:10px 14px}
-  .erklaerung-content p{font-size:13px;padding:12px 14px}
+  .erklaerung-label{font-size:13px;padding:10px 14px 0}
+  .erklaerung-content p{font-size:15px;padding:8px 14px 16px}
 }
 .nav-zone{position:absolute;top:0;bottom:0;width:30%;cursor:pointer;z-index:2;
   display:flex;align-items:center;opacity:0;transition:opacity .15s}
@@ -1198,10 +1192,8 @@ function render(){
       '</div>'+
       (erklaerung?(
         '<div class="erklaerung-box">'+
-          '<button class="erklaerung-toggle" id="erklTgl" onclick="toggleErklaerung()">'+
-            '<span>💡 Erklärung anzeigen</span><span class="chev">▾</span>'+
-          '</button>'+
-          '<div class="erklaerung-content" id="erklCont"><p>'+erklaerung+'</p></div>'+
+          '<div class="erklaerung-label">💡 Erklärung</div>'+
+          '<div class="erklaerung-content"><p>'+erklaerung+'</p></div>'+
         '</div>'
       ):'');
     counter.textContent=T.folie+' '+s.fn+' / '+TOTAL_FOLIEN;
@@ -1353,14 +1345,6 @@ function kapitelAbschliessen(knr,kname){
 var quizTimer=null;
 function next(){if(quizTimer){clearTimeout(quizTimer);quizTimer=null;}if(cur<STEPS.length-1){cur++;render();saveProgress();}}
 function prev(){if(quizTimer){clearTimeout(quizTimer);quizTimer=null;}if(cur>0){cur--;render();saveProgress();}}
-function toggleErklaerung(){
-  var tgl=document.getElementById('erklTgl');
-  var cont=document.getElementById('erklCont');
-  if(!tgl||!cont) return;
-  var open=cont.classList.toggle('open');
-  tgl.classList.toggle('open',open);
-  tgl.querySelector('span').textContent=open?'💡 Erklärung ausblenden':'💡 Erklärung anzeigen';
-}
 function restart(){cur=0;answered={};score=0;kapitelAbgeschlossen={};render();}
 
 document.addEventListener('keydown',function(e){
