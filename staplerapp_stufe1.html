@@ -60,6 +60,22 @@ body::before{
 .slidebox{position:relative;background:#0d1a2e;display:flex;align-items:center;justify-content:center;
   min-height:200px;}
 .slidebox img{width:100%;height:auto;display:block;max-height:65vh;object-fit:contain;}
+
+/* ERKLÄRUNGS-KASTEN (aufklappbar, unter der Folie) */
+.erklaerung-box{background:#fff;border:1px solid var(--line);border-top:none;border-radius:0 0 14px 14px;overflow:hidden}
+.erklaerung-toggle{width:100%;display:flex;align-items:center;justify-content:space-between;gap:10px;
+  padding:12px 18px;background:#f7f9fc;border:none;cursor:pointer;font-family:inherit;font-size:14px;
+  font-weight:700;color:var(--ink);text-align:left}
+.erklaerung-toggle:hover{background:#eef2f8}
+.erklaerung-toggle .chev{transition:transform .2s;flex-shrink:0;color:var(--acc1)}
+.erklaerung-toggle.open .chev{transform:rotate(180deg)}
+.erklaerung-content{max-height:0;overflow:hidden;transition:max-height .25s ease}
+.erklaerung-content.open{max-height:600px}
+.erklaerung-content p{margin:0;padding:16px 18px;font-size:14px;line-height:1.65;color:var(--muted)}
+@media(max-width:600px){
+  .erklaerung-toggle{font-size:13px;padding:10px 14px}
+  .erklaerung-content p{font-size:13px;padding:12px 14px}
+}
 .nav-zone{position:absolute;top:0;bottom:0;width:30%;cursor:pointer;z-index:2;
   display:flex;align-items:center;opacity:0;transition:opacity .15s}
 .nav-zone:hover{opacity:1}
@@ -460,6 +476,23 @@ var VIDEO_MAP={
   106:{url:'https://www.youtube-nocookie.com/embed/o1mT2XK3q7k',titel:'Gabelstapler — Zusammenfassung'},
 };
 var FLOW_URL='https://default8af25f9034bc4ef4aba22ab6f641d5.01.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/fb55fcfa8b0148c596cf245893335537/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=GzmwnbwEf2VOXD_W4Psll2npTGlmaDcDZrkY2n0HoXs';
+
+/* ---- ERKLÄRUNGSTEXTE ----
+   Foliennummer → zusätzlicher, aufklappbarer Erklärungstext.
+   Wird nur bei vorhandenem Eintrag angezeigt (z.B. nicht bei Titel-/Kapitelfolien). ---- */
+var ERKLAERUNG_MAP={
+  3:'In diesem Kapitel geht es zunächst darum, wann rechtlich überhaupt ein Arbeitsunfall vorliegt. Danach schauen wir uns an, welche rechtlichen Konsequenzen ein Arbeitsunfall für Sie als Fahrer haben kann – strafrechtlich, im Ordnungswidrigkeitenrecht, arbeitsrechtlich und beim sogenannten Regress.',
+  4:'Ein Arbeitsunfall im rechtlichen Sinn liegt nur vor, wenn alle drei Voraussetzungen gleichzeitig erfüllt sind: Es muss sich um eine versicherte Person handeln (z.B. eine Beschäftigte oder ein Beschäftigter), die eine versicherte Tätigkeit ausgeübt hat (also im Rahmen ihrer Arbeit), und dabei tatsächlich körperlich zu Schaden gekommen ist. Fehlt auch nur eine dieser drei Voraussetzungen, handelt es sich rechtlich nicht um einen Arbeitsunfall – auch wenn etwas passiert ist. Das ist wichtig, weil davon abhängt, ob die Berufsgenossenschaft für die Folgen aufkommt.',
+  5:'Diese Zahlen zeigen, wie ernst das Thema ist: über 20.000 Unfälle pro Jahr allein beim Umgang mit Flurförderzeugen in Deutschland, davon etwa 200 mit schweren Verletzungen durch Fallen oder Kippen des Fahrzeugs, und im Schnitt 3 bis 5 tödliche Unfälle allein im Großhandel und in der Lagerei. Insgesamt sterben jährlich 23 Menschen bei Staplerunfällen. Der Gabelstapler ist also kein harmloses Arbeitsmittel, sondern eines der gefährlichsten überhaupt, wenn nicht sorgfältig gefahren wird.',
+  6:'Die Statistik zeigt zwei klare Schwerpunkte, auf die wir im Folgenden genauer eingehen: Anfahrunfälle (der Stapler erfasst eine Person) und Kippunfälle (der Stapler kippt um). Diese beiden Unfallarten sind für den Großteil der schweren und tödlichen Unfälle verantwortlich – deshalb schauen wir uns beide im Detail an.',
+  7:'Diese echten Unfallbeispiele zeigen, wie schnell es zu einem Anfahrunfall kommen kann: ein kurzer Moment der Unachtsamkeit, eine Person im toten Winkel, oder eine spontane Anfahrt ohne vorherigen Blickkontakt – und schon kommt es zur Kollision. Häufigste Ursachen sind Unachtsamkeit, eingeschränkte Sicht und zu wenig Platz. Merken Sie sich: Vor jedem Anfahren erst umschauen, hupen und sicherstellen, dass niemand im Gefahrenbereich steht.',
+  8:'Kippunfälle passieren zwar seltener als Anfahrunfälle, enden aber besonders oft tödlich – über die Hälfte aller tödlichen Staplerunfälle sind Kippunfälle. Die häufigsten Ursachen sind: Fahren mit angehobener Last (der Schwerpunkt verschiebt sich nach oben, der Stapler wird instabiler), unebener Untergrund und zu schnelles Fahren in Kurven. Deshalb gilt: Last beim Fahren immer absenken, in Kurven langsam fahren und auf den Zustand des Bodens achten.',
+  9:'Ein Arbeitsunfall kann für Sie mehrere rechtliche Konsequenzen gleichzeitig nach sich ziehen, die unabhängig voneinander greifen können: strafrechtliche Folgen (z.B. bei grober Fahrlässigkeit), Bußgelder nach dem Ordnungswidrigkeitenrecht, arbeitsrechtliche Konsequenzen durch Ihren Arbeitgeber, und im schlimmsten Fall Regressforderungen der Berufsgenossenschaft. Auf den folgenden Folien schauen wir uns jede dieser vier Kategorien einzeln an.',
+  10:'Strafrechtlich wird es nur dann brenzlig, wenn drei Dinge zusammenkommen: Der Unfall hat zu einer Verletzung oder zum Tod geführt, diesem Unfall lag eine rechtswidrige Handlung zugrunde, und diese Handlung geschah schuldhaft – also fahrlässig oder sogar vorsätzlich. Liegen alle drei Punkte vor, drohen Freiheits- oder Geldstrafe. Normales, vorschriftsmäßiges Fahren, bei dem trotzdem etwas Unvorhergesehenes passiert, führt in der Regel nicht zu strafrechtlichen Konsequenzen.',
+  11:'Das Ordnungswidrigkeitenrecht ist eine Stufe milder als das Strafrecht und soll die Einhaltung von Regeln wie dem Arbeitsschutz sicherstellen. Es reicht hier schon ein fahrlässiger oder vorsätzlicher Verstoß gegen eine bußgeldbewährte Vorschrift – z.B. eine Unfallverhütungsvorschrift der Berufsgenossenschaft –, um ein Bußgeld zu riskieren. Es muss dafür noch nicht einmal jemand zu Schaden gekommen sein; der reine Regelverstoß reicht bereits aus.',
+  12:'Verstoßen Sie gegen arbeitsvertragliche Pflichten (z.B. gegen betriebliche Sicherheitsvorschriften), kann Ihr Arbeitgeber unabhängig von Straf- oder Bußgeldverfahren arbeitsrechtlich reagieren. Die möglichen Stufen reichen von einer einfachen Ermahnung über eine Abmahnung und Verwarnung bis hin zur Kündigung – je nach Schwere und Häufigkeit des Verstoßes.',
+  13:'Regress bedeutet: Die Berufsgenossenschaft übernimmt normalerweise die Kosten eines Arbeitsunfalls, unabhängig davon, wer schuld war. Nur wenn Sie den Unfall grob fahrlässig verursacht haben, kann die BG diese Kosten im Nachhinein von Ihnen zurückfordern. Das nach dem BGB übliche Schadenersatz-Prinzip, bei dem der Verursacher direkt haftet, gilt hier normalerweise nicht – außer bei vorsätzlich verursachten Unfällen.'
+};
 
 /* ---- TRAGLASTDIAGRAMM ---- */
 var SINGLE_MAX=function(x){return Math.round(3000-5*(x-500));};
@@ -1159,9 +1192,18 @@ function render(){
   }
 
   if(s.type==='folie'){
+    var erklaerung=ERKLAERUNG_MAP[s.fn];
     host.innerHTML='<div class="slidebox">'+
       '<img src="'+ORDNER+'/Folie'+s.fn+'.PNG" alt="Folie '+s.fn+'">'+
-      '</div>';
+      '</div>'+
+      (erklaerung?(
+        '<div class="erklaerung-box">'+
+          '<button class="erklaerung-toggle" id="erklTgl" onclick="toggleErklaerung()">'+
+            '<span>💡 Erklärung anzeigen</span><span class="chev">▾</span>'+
+          '</button>'+
+          '<div class="erklaerung-content" id="erklCont"><p>'+erklaerung+'</p></div>'+
+        '</div>'
+      ):'');
     counter.textContent=T.folie+' '+s.fn+' / '+TOTAL_FOLIEN;
   }
   else if(s.type==='video'){
@@ -1311,6 +1353,14 @@ function kapitelAbschliessen(knr,kname){
 var quizTimer=null;
 function next(){if(quizTimer){clearTimeout(quizTimer);quizTimer=null;}if(cur<STEPS.length-1){cur++;render();saveProgress();}}
 function prev(){if(quizTimer){clearTimeout(quizTimer);quizTimer=null;}if(cur>0){cur--;render();saveProgress();}}
+function toggleErklaerung(){
+  var tgl=document.getElementById('erklTgl');
+  var cont=document.getElementById('erklCont');
+  if(!tgl||!cont) return;
+  var open=cont.classList.toggle('open');
+  tgl.classList.toggle('open',open);
+  tgl.querySelector('span').textContent=open?'💡 Erklärung ausblenden':'💡 Erklärung anzeigen';
+}
 function restart(){cur=0;answered={};score=0;kapitelAbgeschlossen={};render();}
 
 document.addEventListener('keydown',function(e){
