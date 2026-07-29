@@ -112,6 +112,15 @@ button{font-family:inherit;cursor:pointer}
 .slide-card{background:var(--card);border-radius:var(--r);box-shadow:var(--shadow);
   overflow:hidden;animation:fin .28s ease}
 .slide-img-full{width:100%;display:block;border-radius:var(--r) var(--r) 0 0}
+/* ERKLÄRUNGS-KASTEN (immer eingeblendet, unter der Folie) */
+.erklaerung-box{background:var(--card);border-top:1px solid var(--line)}
+.erklaerung-label{display:flex;align-items:center;gap:8px;padding:12px 20px 0;font-size:14px;
+  font-weight:700;color:var(--lasi-d)}
+.erklaerung-content p{margin:0;padding:10px 20px 20px;font-size:17px;line-height:1.75;color:var(--ink)}
+@media(max-width:600px){
+  .erklaerung-label{font-size:13px;padding:10px 14px 0}
+  .erklaerung-content p{font-size:15px;padding:8px 14px 16px}
+}
 .slide-footer{display:flex;align-items:center;gap:8px;padding:10px 16px;
   border-top:1px solid var(--line);background:#fafbfc;flex-wrap:wrap}
 .slide-nr{font-size:11px;color:var(--muted);background:var(--line);
@@ -362,6 +371,21 @@ const KAPITEL = [
   }
 ];
 
+/* ── ERKLÄRUNGSTEXTE (Foliennummer → Text) ── */
+const ERKLAERUNG_DE = {
+  4:'Diese Legende begleitet Sie durch die gesamte Schulung: Der lila Praxis-Tipp zeigt, worauf im Betrieb konkret zu achten ist. Der blaue Kasten mit Klemmbrett deutet an, wie eine Prüfungsfrage zu diesem Thema aussehen könnte. Grün mit dem "i" liefert interessante Zusatzinformationen, die nicht prüfungsrelevant sind. Rot mit Ausrufezeichen markiert eine echte Gefährdung oder eine Handlung, die Sie unbedingt vermeiden müssen. Und das rote Video-Symbol kennzeichnet ausgewählte YouTube-Videos zum jeweiligen Thema.',
+  5:'Nach VDI 2700 Blatt 5 reicht eine einmalige Unterweisung nicht aus: Mitarbeiterinnen und Mitarbeiter, die mit Ladungssicherungsaufgaben oder deren Kontrolle betraut sind, müssen mindestens alle 3 Jahre nach dieser Richtlinie geschult werden. Dabei werden z.B. physikalische Grundlagen, Eigenschaften der Ladung und die Möglichkeiten der Ladungssicherung sowie deren praktische Durchführung vermittelt. Sicherzustellen, dass diese Schulungspflicht eingehalten wird, ist Aufgabe des "Leiters der Ladearbeit" – der die Schulung auch selbst durchführen darf.',
+  6:'Vier gute Gründe für sorgfältige Ladungssicherung: Erstens Sicherheit für alle – mangelhafte Sicherung gefährdet vor allem unbeteiligte Dritte im Straßenverkehr. Zweitens die Vermeidung von Kapital- und Imageschäden – Unfälle kosten Geld, verzögern Lieferungen und schaden dem Ruf des Unternehmens. Drittens die Vermeidung rechtlicher Konsequenzen – vorschriftsmäßige Ladungssicherung ist gesetzlich gefordert, bei Nichtbeachtung drohen rechtliche Folgen. Und viertens Ihre eigene Verantwortung: Auch wenn die Ladung durch Dritte vorbereitet und gesichert wird, ändert das nichts an Ihrer eigenen Verantwortung als Fahrer.',
+  10:'Dieser reale Fall zeigt, wie schnell aus verlorener Ladung ein Großschaden wird: Ein Lkw-Fahrer verlor auf der Autobahn bei Hagen rund 800 Getränkekisten, die über Stunden die Auffahrt blockierten. Verletzt wurde bei diesem Unfall zufällig niemand – das ist aber reines Glück, kein Verdienst der Ladungssicherung.',
+  11:'Auch bei besonders schweren Lasten versagt Ladungssicherung: Ein Sattelauflieger geriet in Schräglage, zwei jeweils neun Tonnen schwere Betonteile durchbrachen die Seitenwand. Ein Teil beschädigte die Fahrbahn auf 15 Metern Länge, der Gesamtschaden lag bei mindestens 50.000 Euro – zur Bergung musste ein Schwerlastkran anrücken. Das zeigt: Auch scheinbar "unbewegliche" Lasten brauchen fachgerechte Sicherung.',
+  12:'Auch dieser Fall – ein acht Tonnen schweres Bauteil musste nach dem Ladungsverlust mit einem Kran auf einen Ersatz-Lkw gehoben werden – macht deutlich, welchen Aufwand und welche Kosten ein einziger Ladungssicherungsmangel nach sich ziehen kann, ganz unabhängig davon, ob dabei Personen verletzt werden.',
+  13:'Sechs weit verbreitete Irrtümer, die immer wieder zu Unfällen führen: "Schwere Ladung sichert sich selbst" – falsch, sie rutscht und kippt trotzdem. "Die Fahrt geht nur um die Ecke" – die Gefährdung besteht auf jeder Strecke, zu jeder Zeit. "Stirn- und Bodenwände reichen aus" – eine rutschende Ladung kann diese leicht zerstören. "Vorausschauendes Fahren reicht" – niemand kann spielende Kinder oder Gefahren hinter einer Kurve vorhersehen. "Mir ist noch nie was passiert" – fast täglich liegt verlorene Ladung auf der Fahrbahn, unangekündigt. Und "jeder Gurt hält zwei Tonnen" – ein in eine Curtainsider-Plane verarbeitetes Gurtsystem hält durch die Vernietung oft nur noch bis zu 400 kg.',
+  14:'Ladungssicherung dient nicht nur dem Selbstschutz: Sie schützt Fahrer und Beifahrer, andere Verkehrsteilnehmer, das Fahrzeug selbst, die Ladung vor Beschädigung, die Infrastruktur (Straßen, Leitplanken) vor Beschädigung, hilft Staus durch verlorene Ladung zu vermeiden, schützt vor rechtlichen Konsequenzen und Rechtsstreitigkeiten, vermeidet Imageschäden für das Unternehmen – und sichert damit letztlich auch Arbeitsplätze.',
+  15:'Mögliche Gefährdungen bei mangelhafter Ladungssicherung reichen weit über das reine Verrutschen hinaus: Ladung kann verrutschen, umfallen, hin- und herrollen oder als Geschoss umherfliegen; sie kann beim Be- und Entladen herabfallen, herausfallen oder kippen, es drohen Absturz von der Ladefläche, verlorene Ladung auf der Fahrbahn, Überladung des Fahrzeugs, ungleichmäßige Lastverteilung, ungeeignete Transportbehälter, Zurrgurte über scharfen Kanten, beschädigte Behälter mit auslaufendem Transportgut sowie psychische Belastung der Fahrer und körperliche Belastung für Be- und Entlader.',
+  16:'Die Folgen unzureichender Ladungssicherung reichen von Verletzungen bei Fahrer, Beifahrer oder anderen Verkehrsteilnehmern über bleibende Körperschäden bis hin zum Tod, Beschädigung oder Verlust der Ladung selbst, Lieferverzug mit Kosten und Kundenverlust sowie Imageschaden für das Unternehmen, bis hin zu konkreten Forderungen wie Bußgeldern und Schadenersatz.',
+  17:'Für den Ernstfall gelten fünf Grundregeln: Unbedingt Ruhe bewahren, dann gedanklich die Reihenfolge durchgehen – Situation erkennen, weitere Schritte planen (Eigen- und Drittschutz geht immer vor), überlegt und entschlossen handeln. Danach den Unfall über die 112 melden (wo, was, wie viele Verletzte, welche Verletzungsart), soweit möglich Erste Hilfe leisten und weitere Maßnahmen wie Absicherung der Unfallstelle organisieren. Zuspruch und Beistand für Betroffene sind dabei ebenfalls wichtig.'
+};
+
 /* ── STEPS ── */
 let STEPS = [];
 function buildSteps(){
@@ -550,8 +574,11 @@ function renderFolie(host,s){
   const nextStep=STEPS[cur+1];
   const isLast=nextStep&&nextStep.type==='quiz';
 
+  const erkl=ERKLAERUNG_DE[fn];
+  const erklHtml=erkl?`<div class="erklaerung-box"><div class="erklaerung-label">💡 Erklärung</div><div class="erklaerung-content"><p>${erkl}</p></div></div>`:'';
   host.innerHTML=`<div class="slide-card">
     <img class="slide-img-full" src="${imgUrl}" loading="lazy" alt="Folie ${fn}">
+    ${erklHtml}
     <div class="slide-footer">
       <span class="slide-nr">Folie ${fn}</span>
       <span style="flex:1"></span>
