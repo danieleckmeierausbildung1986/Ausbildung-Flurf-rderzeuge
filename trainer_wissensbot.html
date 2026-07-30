@@ -87,8 +87,23 @@ textarea:focus{outline:none;border-color:var(--blue);background:#fff}
   padding:20px 22px;display:none;
 }
 .answer-box .answer-label{font-size:11px;font-weight:700;color:var(--blue-d);text-transform:uppercase;letter-spacing:.6px;margin-bottom:10px}
-.answer-box .answer-text{font-size:15px;color:var(--ink);white-space:pre-wrap}
+.answer-box .answer-text{font-size:15px;color:var(--ink)}
 .answer-box .answer-sources{margin-top:14px;font-size:12.5px;color:var(--muted)}
+
+.answer-text .answer-heading{
+  font-size:13.5px;font-weight:800;color:var(--blue-d);text-transform:uppercase;letter-spacing:.4px;
+  border-left:3px solid var(--blue);padding-left:10px;margin:18px 0 8px;
+}
+.answer-text .answer-heading:first-child{margin-top:0}
+.answer-text .answer-p{margin-bottom:10px}
+.answer-text .answer-list{margin:0 0 10px 20px}
+.answer-text .answer-list li{margin-bottom:4px}
+.answer-text .answer-quote{
+  border-left:3px solid #cddcf4;background:#fff;border-radius:0 8px 8px 0;
+  padding:10px 14px;margin:8px 0;color:var(--muted);font-style:italic;
+}
+.answer-text .answer-gap{height:2px}
+.answer-text strong{color:var(--navy)}
 
 .hint{font-size:12.5px;color:var(--muted);margin-top:18px;text-align:center}
 
@@ -155,6 +170,43 @@ footer{text-align:center;padding:24px;font-size:13px;color:var(--muted);border-t
 </footer>
 
 <script>
+// ── Antwort-Formatierung: einfaches Markdown in HTML umwandeln ──
+function escapeHtml(str){
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+function inlineFormat(str){
+  return str.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+}
+function renderAntwortMarkdown(text){
+  var lines = escapeHtml(text).split(/\r?\n/);
+  var html = '';
+  var inList = false;
+  lines.forEach(function(line){
+    var trimmed = line.trim();
+    var headingMatch = trimmed.match(/^#{1,6}\s+(.*)$/);
+    var bulletMatch = trimmed.match(/^[-*]\s+(.*)$/);
+    var quoteMatch = trimmed.match(/^&gt;\s?(.*)$/);
+
+    if(headingMatch){
+      if(inList){ html += '</ul>'; inList = false; }
+      html += '<div class="answer-heading">' + inlineFormat(headingMatch[1]) + '</div>';
+    } else if(bulletMatch){
+      if(!inList){ html += '<ul class="answer-list">'; inList = true; }
+      html += '<li>' + inlineFormat(bulletMatch[1]) + '</li>';
+    } else if(quoteMatch){
+      if(inList){ html += '</ul>'; inList = false; }
+      html += '<div class="answer-quote">' + inlineFormat(quoteMatch[1]) + '</div>';
+    } else if(trimmed === ''){
+      if(inList){ html += '</ul>'; inList = false; }
+    } else {
+      if(inList){ html += '</ul>'; inList = false; }
+      html += '<p class="answer-p">' + inlineFormat(trimmed) + '</p>';
+    }
+  });
+  if(inList){ html += '</ul>'; }
+  return html;
+}
+
 // ── Zugriffsschutz: nur eingeloggte Trainer ──────────────────────
 var trainerAuth = null;
 try { trainerAuth = JSON.parse(sessionStorage.getItem('trainerAuth') || 'null'); } catch(e){}
@@ -262,7 +314,7 @@ async function frageStellen(){
       body: JSON.stringify({ thema: aktuellesThema, frage: frage })
     });
     var data = await res.json();
-    document.getElementById('answerText').textContent = data.antwort || 'Keine Antwort erhalten.';
+    document.getElementById('answerText').innerHTML = data.antwort ? renderAntwortMarkdown(data.antwort) : 'Keine Antwort erhalten.';
     document.getElementById('answerSources').textContent = data.quellen ? ('Quelle(n): ' + data.quellen) : '';
     answerBox.style.display = 'block';
   } catch(e){
