@@ -215,6 +215,14 @@ footer{text-align:center;padding:24px;font-size:13px;color:var(--muted);border-t
             <span class="calc-toggle" id="zurrToggleIcon">▾</span>
           </div>
           <div class="calc-sub-body" id="zurrBody" style="display:none">
+          <div class="fld" style="margin-bottom:14px">
+            <label>Zu sichernde Richtung</label>
+            <select id="calcRichtungNieder" onchange="berechneZurrmittel()">
+              <option value="0.8">Bremsen, nach vorne (cₓ = 0,8)</option>
+              <option value="0.5">Beschleunigen, nach hinten (cₓ = 0,5)</option>
+              <option value="0.5">Kurvenfahrt, zur Seite (cₓ = 0,5)</option>
+            </select>
+          </div>
           <div class="calc-grid">
             <div class="fld" style="margin-bottom:0">
               <label>Reibbeiwert μ</label>
@@ -514,7 +522,7 @@ function berechneZurrmittel(){
     return;
   }
 
-  var cx = 0.8; // ungünstigster Fall: Bremsen nach vorne
+  var cx = parseFloat(document.getElementById('calcRichtungNieder').value);
   var alphaRad = alphaGrad * Math.PI / 180;
   var zaehler = aktuelleFG * (cx - mu);
 
@@ -534,7 +542,7 @@ function berechneZurrmittel(){
   var n = zaehler / nenner;
   var nAufgerundet = Math.ceil(n);
   document.getElementById('calcZurrAnzahl').textContent = nAufgerundet + ' (rechnerisch ' + n.toLocaleString('de-DE',{maximumFractionDigits:2}) + ')';
-  hint.textContent = 'Berechnet für Niederzurren, ungünstigster Fall Bremsen (cₓ=0,8), Vorspannkraftverlust mit Faktor 2 berücksichtigt. Ergebnis auf ganze Zurrmittel aufgerundet. Orientierungshilfe — im Zweifel zusätzlich die Originalquelle prüfen.';
+  hint.textContent = 'Berechnet für Niederzurren in der gewählten Richtung (cₓ=' + cx.toLocaleString('de-DE') + '), Vorspannkraftverlust mit Faktor 2 berücksichtigt. Ergebnis auf ganze Zurrmittel aufgerundet. Orientierungshilfe — im Zweifel zusätzlich die Originalquelle prüfen.';
   box.style.display = 'block';
 }
 
