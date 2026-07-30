@@ -45,11 +45,23 @@ nav{
 .topic-btn:hover{border-color:var(--blue-l)}
 .topic-btn.active{border-color:var(--blue);background:var(--blue-xl);color:var(--blue-d)}
 
+.ta-wrap{position:relative}
 textarea{
-  width:100%;padding:14px 16px;border:2px solid var(--line);border-radius:12px;
+  width:100%;padding:14px 52px 14px 16px;border:2px solid var(--line);border-radius:12px;
   font-size:15px;font-family:inherit;background:#fafbfc;color:var(--ink);resize:vertical;min-height:100px;
 }
 textarea:focus{outline:none;border-color:var(--blue);background:#fff}
+
+.mic-btn{
+  position:absolute;top:10px;right:10px;width:34px;height:34px;border-radius:50%;
+  border:1.5px solid var(--line);background:#fff;color:var(--muted);cursor:pointer;
+  display:flex;align-items:center;justify-content:center;transition:all .15s;padding:0;
+}
+.mic-btn:hover{border-color:var(--blue);color:var(--blue)}
+.mic-btn svg{width:17px;height:17px;fill:currentColor}
+.mic-btn.listening{border-color:#dc2626;color:#fff;background:#dc2626;animation:pulse 1.2s ease-in-out infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(220,38,38,.45)}50%{box-shadow:0 0 0 8px rgba(220,38,38,0)}}
+.mic-hint{font-size:11.5px;color:var(--muted);margin-top:6px;min-height:14px}
 
 .ask-btn{
   width:100%;padding:14px;border:none;border-radius:12px;
@@ -108,7 +120,13 @@ footer{text-align:center;padding:24px;font-size:13px;color:var(--muted);border-t
 
     <div class="fld">
       <label>Deine Frage</label>
-      <textarea id="frageInput" placeholder="z.B. Wie hoch darf ein Lastschutzgitter mindestens sein?"></textarea>
+      <div class="ta-wrap">
+        <textarea id="frageInput" placeholder="z.B. Wie hoch darf ein Lastschutzgitter mindestens sein?"></textarea>
+        <button type="button" class="mic-btn" id="micBtn" onclick="toggleSpracheingabe()" title="Frage per Spracheingabe diktieren">
+          <svg viewBox="0 0 24 24"><path d="M12 14a3 3 0 0 0 3-3V6a3 3 0 0 0-6 0v5a3 3 0 0 0 3 3zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.92V21h2v-3.08A7 7 0 0 0 19 11h-2z"/></svg>
+        </button>
+      </div>
+      <div class="mic-hint" id="micHint"></div>
     </div>
 
     <button class="ask-btn" id="askBtn" onclick="frageStellen()">Jetzt fragen →</button>
@@ -140,6 +158,76 @@ if(!trainerAuth || !trainerAuth.name){
 var WISSENSBOT_FRAGE_URL = 'https://default8af25f9034bc4ef4aba22ab6f641d5.01.environment.api.powerplatform.com:443/powerautomate/automations/direct/cu/13/workflows/a037220d51ff468a888f3eeeba60e6db/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=gZ72Szl1Ia3_WXpCGo-bb7tqAUnHtgwfhOD1RtmIaNg';
 
 var aktuellesThema = 'Flurförderzeuge';
+
+// ── Spracheingabe ─────────────────────────────────────────────
+var SpeechRecognitionImpl = window.SpeechRecognition || window.webkitSpeechRecognition;
+var erkennung = null;
+var hoertZu = false;
+var frageVorSpracheingabe = '';
+
+if(SpeechRecognitionImpl){
+  erkennung = new SpeechRecognitionImpl();
+  erkennung.lang = 'de-DE';
+  erkennung.continuous = true;
+  erkennung.interimResults = true;
+
+  erkennung.onresult = function(event){
+    var endgueltig = '';
+    var zwischen = '';
+    for(var i = 0; i < event.results.length; i++){
+      if(event.results[i].isFinal){ endgueltig += event.results[i][0].transcript; }
+      else { zwischen += event.results[i][0].transcript; }
+    }
+    var trenner = frageVorSpracheingabe && !/\s$/.test(frageVorSpracheingabe) ? ' ' : '';
+    document.getElementById('frageInput').value = frageVorSpracheingabe + trenner + endgueltig + zwischen;
+  };
+
+  erkennung.onerror = function(event){
+    var hintEl = document.getElementById('micHint');
+    if(event.error === 'not-allowed' || event.error === 'service-not-allowed'){
+      hintEl.textContent = 'Mikrofon-Zugriff wurde verweigert. Bitte in den Browser-Einstellungen erlauben.';
+    } else if(event.error === 'no-speech'){
+      hintEl.textContent = '';
+    } else {
+      hintEl.textContent = 'Spracheingabe fehlgeschlagen. Bitte erneut versuchen.';
+    }
+    beendeSpracheingabe();
+  };
+
+  erkennung.onend = function(){
+    beendeSpracheingabe();
+  };
+} else {
+  document.addEventListener('DOMContentLoaded', function(){
+    var micBtn = document.getElementById('micBtn');
+    micBtn.disabled = true;
+    micBtn.style.opacity = '.4';
+    micBtn.style.cursor = 'not-allowed';
+    micBtn.title = 'Spracheingabe wird von diesem Browser nicht unterstützt';
+  });
+}
+
+function beendeSpracheingabe(){
+  hoertZu = false;
+  document.getElementById('micBtn').classList.remove('listening');
+}
+
+function toggleSpracheingabe(){
+  if(!erkennung) return;
+  if(hoertZu){
+    erkennung.stop();
+    return;
+  }
+  frageVorSpracheingabe = document.getElementById('frageInput').value.trim();
+  document.getElementById('micHint').textContent = '';
+  hoertZu = true;
+  document.getElementById('micBtn').classList.add('listening');
+  try{
+    erkennung.start();
+  } catch(e){
+    beendeSpracheingabe();
+  }
+}
 
 function waehleThema(btn){
   document.querySelectorAll('.topic-btn').forEach(function(b){ b.classList.remove('active'); });
