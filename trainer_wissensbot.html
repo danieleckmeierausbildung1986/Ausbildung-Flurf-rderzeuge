@@ -39,6 +39,10 @@ nav{
 .fld label{display:block;font-size:11px;font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px}
 
 .topic-picker{display:flex;gap:10px;flex-wrap:wrap}
+.topic-switch-link{
+  display:block;margin-top:10px;background:none;border:none;padding:0;
+  color:var(--blue);font-size:13px;font-weight:600;cursor:pointer;text-decoration:underline;font-family:inherit;
+}
 .topic-btn{
   flex:1;min-width:200px;padding:14px;border-radius:12px;border:2px solid var(--line);
   background:#fff;color:var(--ink);font-size:17px;font-weight:700;cursor:pointer;font-family:inherit;
@@ -184,6 +188,7 @@ footer{text-align:center;padding:24px;font-size:13px;color:var(--muted);border-t
         <button type="button" class="topic-btn active" data-topic="Flurförderzeuge" onclick="waehleThema(this)"><img class="topic-btn-icon" src="logos/logo_flurfoerderzeuge_thema.png" alt="Flurförderzeuge"></button>
         <button type="button" class="topic-btn" data-topic="LaSi" onclick="waehleThema(this)"><img class="topic-btn-icon" src="logos/logo_ladungssicherung_thema.png" alt="Ladungssicherung"></button>
       </div>
+      <button type="button" class="topic-switch-link" id="topicSwitchLink" style="display:none" onclick="zeigeBeideThemen()">↔ Anderes Thema wählen</button>
     </div>
 
     <div class="calc-box" id="calcBox">
@@ -425,10 +430,19 @@ function toggleSpracheingabe(){
 }
 
 function waehleThema(btn){
-  document.querySelectorAll('.topic-btn').forEach(function(b){ b.classList.remove('active'); });
+  document.querySelectorAll('.topic-btn').forEach(function(b){
+    b.classList.remove('active');
+    b.style.display = (b === btn) ? 'flex' : 'none';
+  });
   btn.classList.add('active');
   aktuellesThema = btn.getAttribute('data-topic');
   document.getElementById('calcBox').style.display = (aktuellesThema === 'LaSi') ? 'block' : 'none';
+  document.getElementById('topicSwitchLink').style.display = 'block';
+}
+
+function zeigeBeideThemen(){
+  document.querySelectorAll('.topic-btn').forEach(function(b){ b.style.display = 'flex'; });
+  document.getElementById('topicSwitchLink').style.display = 'none';
 }
 
 // ── Ladungssicherungs-Rechner ─────────────────────────────────
