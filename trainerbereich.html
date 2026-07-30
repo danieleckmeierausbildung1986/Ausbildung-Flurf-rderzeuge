@@ -63,11 +63,16 @@ body::before{
   display:block;font-size:11px;font-weight:700;color:var(--navy);
   text-transform:uppercase;letter-spacing:.6px;margin-bottom:7px
 }
-.lf input{
+.lf input,.lf select{
   width:100%;padding:13px 16px;border:2px solid var(--line);border-radius:12px;
   font-size:16px;background:#fafbfc;transition:border-color .15s;color:var(--ink);
+  font-family:inherit;
 }
-.lf input:focus{outline:none;border-color:var(--blue);background:#fff}
+.lf select{appearance:none;-webkit-appearance:none;cursor:pointer;
+  background-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="%2368788f"><path d="M7 10l5 5 5-5z"/></svg>');
+  background-repeat:no-repeat;background-position:right 14px center;padding-right:42px;
+}
+.lf input:focus,.lf select:focus{outline:none;border-color:var(--blue);background-color:#fff}
 .pw-wrap{position:relative}
 .pw-wrap input{padding-right:48px}
 .pw-eye{
@@ -109,8 +114,11 @@ body::before{
     <div class="login-body">
       <div class="lf">
         <label>Benutzername</label>
-        <input type="text" id="benutzername" placeholder="z.B. Trainer01" autocomplete="off"
-          onkeydown="if(event.key==='Enter')document.getElementById('passwort').focus()">
+        <select id="benutzername" onchange="document.getElementById('passwort').focus()">
+          <option value="" disabled selected>Bitte wählen…</option>
+          <option value="Trainer01">Trainer01</option>
+          <option value="Trainer02">Trainer02</option>
+        </select>
       </div>
       <div class="lf">
         <label>Passwort</label>
