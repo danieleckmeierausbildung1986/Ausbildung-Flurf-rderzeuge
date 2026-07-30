@@ -191,7 +191,7 @@ footer{text-align:center;padding:24px;font-size:13px;color:var(--muted);border-t
           <div class="calc-grid">
             <div class="fld" style="margin-bottom:0">
               <label>Reibbeiwert μ</label>
-              <input type="number" id="calcMu" placeholder="z.B. 0,3" step="0.05" min="0" max="1" oninput="berechneZurrmittel()">
+              <input type="number" id="calcMu" placeholder="z.B. 0,3" step="0.05" min="0" max="1" oninput="berechneZurrmittel(); berechneDirektzurren();">
             </div>
             <div class="fld" style="margin-bottom:0">
               <label>Vorspannkraft F<sub>STF</sub> (daN)</label>
@@ -206,6 +206,36 @@ footer{text-align:center;padding:24px;font-size:13px;color:var(--muted);border-t
             <div class="calc-row calc-base"><span>Benötigte Anzahl Zurrmittel</span><span id="calcZurrAnzahl">–</span></div>
           </div>
           <p class="calc-hint" id="calcZurrHint"></p>
+        </div>
+
+        <div class="calc-sub">
+          <div class="calc-sub-title">Anzahl Zurrmittel berechnen (Direktzurren)</div>
+          <div class="fld" style="margin-bottom:10px">
+            <label>Zu sichernde Richtung</label>
+            <select id="calcRichtung" onchange="berechneDirektzurren()">
+              <option value="0.8">Bremsen, nach vorne (cₓ = 0,8)</option>
+              <option value="0.5">Beschleunigen, nach hinten (cₓ = 0,5)</option>
+              <option value="0.5">Kurvenfahrt, zur Seite (cₓ = 0,5)</option>
+            </select>
+          </div>
+          <div class="calc-grid">
+            <div class="fld" style="margin-bottom:0">
+              <label>Zulässige Zugkraft LC (daN)</label>
+              <input type="number" id="calcLc" placeholder="z.B. 2500" min="0" oninput="berechneDirektzurren()">
+            </div>
+            <div class="fld" style="margin-bottom:0">
+              <label>Vertikalwinkel α (Grad)</label>
+              <input type="number" id="calcAlphaDirekt" placeholder="z.B. 45" min="0" max="90" value="45" oninput="berechneDirektzurren()">
+            </div>
+            <div class="fld" style="margin-bottom:0">
+              <label>Horizontalwinkel β (Grad)</label>
+              <input type="number" id="calcBeta" placeholder="z.B. 0" min="0" max="90" value="0" oninput="berechneDirektzurren()">
+            </div>
+          </div>
+          <div class="calc-result" id="calcDirektResult" style="display:none;margin-top:12px">
+            <div class="calc-row calc-base"><span>Benötigte Anzahl Zurrmittel</span><span id="calcDirektAnzahl">–</span></div>
+          </div>
+          <p class="calc-hint" id="calcDirektHint"></p>
         </div>
       </div>
     </div>
@@ -383,6 +413,7 @@ function berechneLaSi(){
     resultBox.style.display = 'none';
     aktuelleFG = 0;
     berechneZurrmittel();
+    berechneDirektzurren();
     return;
   }
   var fg = gewicht * 9.81 / 10; // Gewichtskraft in daN (g = 9,81 m/s²)
@@ -393,6 +424,7 @@ function berechneLaSi(){
   document.getElementById('calcKurve').textContent = (fg*0.5).toLocaleString('de-DE',{maximumFractionDigits:1}) + ' daN';
   resultBox.style.display = 'block';
   berechneZurrmittel();
+  berechneDirektzurren();
 }
 
 function berechneZurrmittel(){
@@ -429,6 +461,45 @@ function berechneZurrmittel(){
   var nAufgerundet = Math.ceil(n);
   document.getElementById('calcZurrAnzahl').textContent = nAufgerundet + ' (rechnerisch ' + n.toLocaleString('de-DE',{maximumFractionDigits:2}) + ')';
   hint.textContent = 'Berechnet für Niederzurren, ungünstigster Fall Bremsen (cₓ=0,8), Vorspannkraftverlust mit Faktor 2 berücksichtigt. Ergebnis auf ganze Zurrmittel aufgerundet. Orientierungshilfe — im Zweifel zusätzlich die Originalquelle prüfen.';
+  box.style.display = 'block';
+}
+
+function berechneDirektzurren(){
+  var box = document.getElementById('calcDirektResult');
+  var hint = document.getElementById('calcDirektHint');
+  var cx = parseFloat(document.getElementById('calcRichtung').value);
+  var mu = parseFloat(document.getElementById('calcMu').value);
+  var lc = parseFloat(document.getElementById('calcLc').value);
+  var alphaGrad = parseFloat(document.getElementById('calcAlphaDirekt').value);
+  var betaGrad = parseFloat(document.getElementById('calcBeta').value);
+
+  if(!aktuelleFG || !mu || !lc || isNaN(alphaGrad) || isNaN(betaGrad)){
+    box.style.display = 'none';
+    hint.textContent = '';
+    return;
+  }
+
+  var alphaRad = alphaGrad * Math.PI / 180;
+  var betaRad = betaGrad * Math.PI / 180;
+  var zaehler = aktuelleFG * (cx - mu);
+
+  if(zaehler <= 0){
+    document.getElementById('calcDirektAnzahl').textContent = '0';
+    hint.textContent = 'Die Reibung allein reicht laut Berechnung bereits aus (μ ≥ cₓ der gewählten Richtung). Zusätzliche Zurrmittel sind rechnerisch nicht erforderlich — trotzdem im Zweifel prüfen.';
+    box.style.display = 'block';
+    return;
+  }
+
+  var nenner = lc * (Math.cos(alphaRad) * Math.cos(betaRad) + mu * Math.sin(alphaRad));
+  if(nenner <= 0){
+    box.style.display = 'none';
+    return;
+  }
+
+  var n = zaehler / nenner;
+  var nAufgerundet = Math.ceil(n);
+  document.getElementById('calcDirektAnzahl').textContent = nAufgerundet + ' (rechnerisch ' + n.toLocaleString('de-DE',{maximumFractionDigits:2}) + ')';
+  hint.textContent = 'Berechnet für Direktzurren in der gewählten Richtung. α = Vertikalwinkel, β = Horizontalwinkel der Zurrmittel zur Ladefläche. Ergebnis auf ganze Zurrmittel aufgerundet. Orientierungshilfe — im Zweifel zusätzlich die Originalquelle prüfen.';
   box.style.display = 'block';
 }
 
