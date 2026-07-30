@@ -202,7 +202,15 @@ footer{text-align:center;padding:24px;font-size:13px;color:var(--muted);border-t
           <div class="calc-grid">
             <div class="fld" style="margin-bottom:0">
               <label>Reibbeiwert μ</label>
-              <input type="number" id="calcMu" placeholder="z.B. 0,3" step="0.05" min="0" max="1" oninput="berechneZurrmittel(); berechneDirektzurren();">
+              <select id="calcMu" onchange="handleMuChange()">
+                <option value="0.2">0,2 – Holz/Metall, glatt &amp; trocken</option>
+                <option value="0.3" selected>0,3 – Holz/Holz, trocken (Standardwert ohne Nachweis)</option>
+                <option value="0.45">0,45 – raue Ladefläche</option>
+                <option value="0.6">0,6 – Antirutschmatte (rutschhemmendes Material)</option>
+                <option value="0.7">0,7 – Hochreibwert-Matte</option>
+                <option value="custom">Eigener Wert…</option>
+              </select>
+              <input type="number" id="calcMuCustom" placeholder="z.B. 0,35" step="0.01" min="0" max="1" style="display:none;margin-top:10px" oninput="berechneZurrmittel(); berechneDirektzurren();">
             </div>
             <div class="fld" style="margin-bottom:0">
               <label>Vorspannkraft F<sub>STF</sub> (daN)</label>
@@ -438,10 +446,26 @@ function berechneLaSi(){
   berechneDirektzurren();
 }
 
+function getMuValue(){
+  var sel = document.getElementById('calcMu');
+  if(sel.value === 'custom'){
+    return parseFloat(document.getElementById('calcMuCustom').value);
+  }
+  return parseFloat(sel.value);
+}
+
+function handleMuChange(){
+  var sel = document.getElementById('calcMu');
+  var custom = document.getElementById('calcMuCustom');
+  custom.style.display = (sel.value === 'custom') ? 'block' : 'none';
+  berechneZurrmittel();
+  berechneDirektzurren();
+}
+
 function berechneZurrmittel(){
   var box = document.getElementById('calcZurrResult');
   var hint = document.getElementById('calcZurrHint');
-  var mu = parseFloat(document.getElementById('calcMu').value);
+  var mu = getMuValue();
   var stf = parseFloat(document.getElementById('calcStf').value);
   var alphaGrad = parseFloat(document.getElementById('calcAlpha').value);
 
@@ -479,7 +503,7 @@ function berechneDirektzurren(){
   var box = document.getElementById('calcDirektResult');
   var hint = document.getElementById('calcDirektHint');
   var cx = parseFloat(document.getElementById('calcRichtung').value);
-  var mu = parseFloat(document.getElementById('calcMu').value);
+  var mu = getMuValue();
   var lc = parseFloat(document.getElementById('calcLc').value);
   var alphaGrad = parseFloat(document.getElementById('calcAlphaDirekt').value);
   var betaGrad = parseFloat(document.getElementById('calcBeta').value);
