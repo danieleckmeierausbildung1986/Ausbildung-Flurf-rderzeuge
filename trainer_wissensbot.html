@@ -193,21 +193,29 @@ footer{text-align:center;padding:24px;font-size:13px;color:var(--muted);border-t
 
     <div class="calc-box" id="calcBox">
       <div class="calc-header" onclick="toggleCalc()">
-        <span>🧮 Ladungssicherungs-Rechner: Massenkräfte berechnen</span>
+        <span>🧮 Ladungssicherungsrechner</span>
         <span class="calc-toggle" id="calcToggleIcon">▾</span>
       </div>
       <div class="calc-body" id="calcBody" style="display:none">
-        <div class="fld" style="margin-bottom:0">
-          <label>Gewicht der Ladung (kg)</label>
-          <input type="number" id="calcGewicht" placeholder="z.B. 1000" min="0" oninput="berechneLaSi()">
+        <div class="calc-sub" style="margin-top:0;padding-top:0;border-top:none">
+          <div class="calc-sub-header" onclick="toggleSubCalc('massen')">
+            <span>Massenkräfte berechnen</span>
+            <span class="calc-toggle" id="massenToggleIcon">▾</span>
+          </div>
+          <div class="calc-sub-body" id="massenBody" style="display:none">
+            <div class="fld" style="margin-bottom:0">
+              <label>Gewicht der Ladung (kg)</label>
+              <input type="number" id="calcGewicht" placeholder="z.B. 1000" min="0" oninput="berechneLaSi()">
+            </div>
+            <div class="calc-result" id="calcResult" style="display:none">
+              <div class="calc-row calc-base"><span>Gewichtskraft (F<sub>G</sub>)</span><span id="calcFG">–</span></div>
+              <div class="calc-row"><span>Bremsen, nach vorne (0,8 × F<sub>G</sub>)</span><span id="calcBremsen">–</span></div>
+              <div class="calc-row"><span>Beschleunigen, nach hinten (0,5 × F<sub>G</sub>)</span><span id="calcBeschleunigen">–</span></div>
+              <div class="calc-row"><span>Kurvenfahrt / Ausweichen, zur Seite (0,5 × F<sub>G</sub>)</span><span id="calcKurve">–</span></div>
+            </div>
+            <p class="calc-hint">Berechnung der im normalen Fahrbetrieb auftretenden Massenkräfte anhand der Standard-Sicherungsfaktoren. Dient als Orientierungshilfe für die Ladungssicherung — im Zweifel zusätzlich die Originalquelle prüfen.</p>
+          </div>
         </div>
-        <div class="calc-result" id="calcResult" style="display:none">
-          <div class="calc-row calc-base"><span>Gewichtskraft (F<sub>G</sub>)</span><span id="calcFG">–</span></div>
-          <div class="calc-row"><span>Bremsen, nach vorne (0,8 × F<sub>G</sub>)</span><span id="calcBremsen">–</span></div>
-          <div class="calc-row"><span>Beschleunigen, nach hinten (0,5 × F<sub>G</sub>)</span><span id="calcBeschleunigen">–</span></div>
-          <div class="calc-row"><span>Kurvenfahrt / Ausweichen, zur Seite (0,5 × F<sub>G</sub>)</span><span id="calcKurve">–</span></div>
-        </div>
-        <p class="calc-hint">Berechnung der im normalen Fahrbetrieb auftretenden Massenkräfte anhand der Standard-Sicherungsfaktoren. Dient als Orientierungshilfe für die Ladungssicherung — im Zweifel zusätzlich die Originalquelle prüfen.</p>
 
         <div class="calc-sub">
           <div class="calc-sub-header" onclick="toggleSubCalc('zurr')">
