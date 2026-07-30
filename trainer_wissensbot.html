@@ -145,6 +145,11 @@ textarea:focus{outline:none;border-color:var(--blue);background:#fff}
 .calc-hint{font-size:13.5px;color:var(--muted);margin-top:14px;line-height:1.6}
 .calc-sub{margin-top:24px;padding-top:22px;border-top:1px dashed var(--line)}
 .calc-sub-title{font-size:15px;font-weight:700;color:var(--navy);margin-bottom:14px}
+.calc-sub-header{
+  display:flex;align-items:center;justify-content:space-between;cursor:pointer;
+  font-size:15px;font-weight:700;color:var(--navy);
+}
+.calc-sub-body{margin-top:16px}
 .calc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:4px}
 @media(max-width:560px){.calc-grid{grid-template-columns:1fr}}
 
@@ -200,7 +205,11 @@ footer{text-align:center;padding:24px;font-size:13px;color:var(--muted);border-t
         <p class="calc-hint">Berechnung der im normalen Fahrbetrieb auftretenden Massenkräfte anhand der Standard-Sicherungsfaktoren. Dient als Orientierungshilfe für die Ladungssicherung — im Zweifel zusätzlich die Originalquelle prüfen.</p>
 
         <div class="calc-sub">
-          <div class="calc-sub-title">Anzahl Zurrmittel berechnen (Niederzurren)</div>
+          <div class="calc-sub-header" onclick="toggleSubCalc('zurr')">
+            <span>Anzahl Zurrmittel berechnen (Niederzurren)</span>
+            <span class="calc-toggle" id="zurrToggleIcon">▾</span>
+          </div>
+          <div class="calc-sub-body" id="zurrBody" style="display:none">
           <div class="calc-grid">
             <div class="fld" style="margin-bottom:0">
               <label>Reibbeiwert μ</label>
@@ -227,10 +236,15 @@ footer{text-align:center;padding:24px;font-size:13px;color:var(--muted);border-t
             <div class="calc-row calc-base"><span>Benötigte Anzahl Zurrmittel</span><span id="calcZurrAnzahl">–</span></div>
           </div>
           <p class="calc-hint" id="calcZurrHint"></p>
+          </div>
         </div>
 
         <div class="calc-sub">
-          <div class="calc-sub-title">Anzahl Zurrmittel berechnen (Direktzurren)</div>
+          <div class="calc-sub-header" onclick="toggleSubCalc('direkt')">
+            <span>Anzahl Zurrmittel berechnen (Direktzurren)</span>
+            <span class="calc-toggle" id="direktToggleIcon">▾</span>
+          </div>
+          <div class="calc-sub-body" id="direktBody" style="display:none">
           <div class="fld" style="margin-bottom:10px">
             <label>Zu sichernde Richtung</label>
             <select id="calcRichtung" onchange="berechneDirektzurren()">
@@ -257,6 +271,7 @@ footer{text-align:center;padding:24px;font-size:13px;color:var(--muted);border-t
             <div class="calc-row calc-base"><span>Benötigte Anzahl Zurrmittel</span><span id="calcDirektAnzahl">–</span></div>
           </div>
           <p class="calc-hint" id="calcDirektHint"></p>
+          </div>
         </div>
       </div>
     </div>
@@ -420,6 +435,14 @@ function waehleThema(btn){
 function toggleCalc(){
   var body = document.getElementById('calcBody');
   var icon = document.getElementById('calcToggleIcon');
+  var offen = body.style.display !== 'none';
+  body.style.display = offen ? 'none' : 'block';
+  icon.classList.toggle('open', !offen);
+}
+
+function toggleSubCalc(id){
+  var body = document.getElementById(id + 'Body');
+  var icon = document.getElementById(id + 'ToggleIcon');
   var offen = body.style.display !== 'none';
   body.style.display = offen ? 'none' : 'block';
   icon.classList.toggle('open', !offen);
