@@ -42,10 +42,12 @@ nav{
 .topic-btn{
   flex:1;min-width:150px;padding:14px 12px;border-radius:12px;border:2px solid var(--line);
   background:#fff;color:var(--ink);font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;
+  display:flex;align-items:center;justify-content:center;gap:8px;
   transition:all .15s;text-align:center;
 }
 .topic-btn:hover{border-color:var(--blue-l)}
 .topic-btn.active{border-color:var(--blue);background:var(--blue-xl);color:var(--blue-d)}
+.topic-btn-icon{width:26px;height:26px;border-radius:50%;object-fit:cover;flex-shrink:0}
 
 .ta-wrap{position:relative}
 textarea{
@@ -174,7 +176,7 @@ footer{text-align:center;padding:24px;font-size:13px;color:var(--muted);border-t
     <div class="fld">
       <label>Themenbereich</label>
       <div class="topic-picker" id="topicPicker">
-        <button type="button" class="topic-btn active" data-topic="Flurförderzeuge" onclick="waehleThema(this)">🚜 Flurförderzeuge</button>
+        <button type="button" class="topic-btn active" data-topic="Flurförderzeuge" onclick="waehleThema(this)"><img class="topic-btn-icon" src="logos/logo_flurfoerderzeuge_thema.png" alt=""> Flurförderzeuge</button>
         <button type="button" class="topic-btn" data-topic="LaSi" onclick="waehleThema(this)">📦 Ladungssicherung</button>
       </div>
     </div>
