@@ -107,6 +107,30 @@ textarea:focus{outline:none;border-color:var(--blue);background:#fff}
 
 .hint{font-size:12.5px;color:var(--muted);margin-top:18px;text-align:center}
 
+.calc-box{border:2px solid var(--line);border-radius:14px;margin-bottom:22px;overflow:hidden;display:none}
+.calc-header{
+  display:flex;align-items:center;justify-content:space-between;padding:14px 18px;
+  background:#fafbfc;cursor:pointer;font-size:14.5px;font-weight:700;color:var(--navy);
+}
+.calc-header:hover{background:var(--blue-xl)}
+.calc-toggle{color:var(--muted);transition:transform .15s}
+.calc-toggle.open{transform:rotate(180deg)}
+.calc-body{padding:18px 18px 20px;border-top:1px solid var(--line)}
+.calc-result{
+  margin-top:14px;border:1px solid var(--line);border-radius:12px;overflow:hidden;
+}
+.calc-row{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  padding:11px 16px;font-size:13.5px;color:var(--ink);border-bottom:1px solid var(--line);background:#fff;
+}
+.calc-row:last-child{border-bottom:none}
+.calc-row span:first-child{color:var(--muted)}
+.calc-row span:last-child{font-weight:800;font-variant-numeric:tabular-nums;color:var(--navy)}
+.calc-row.calc-base{background:var(--blue-xl)}
+.calc-row.calc-base span:first-child{color:var(--blue-d);font-weight:700}
+.calc-row.calc-base span:last-child{color:var(--blue-d)}
+.calc-hint{font-size:12px;color:var(--muted);margin-top:12px;line-height:1.5}
+
 footer{text-align:center;padding:24px;font-size:13px;color:var(--muted);border-top:1px solid var(--line);background:#fff;margin-top:40px}
 </style>
 </head>
@@ -137,6 +161,26 @@ footer{text-align:center;padding:24px;font-size:13px;color:var(--muted);border-t
       <div class="topic-picker" id="topicPicker">
         <button type="button" class="topic-btn active" data-topic="Flurförderzeuge" onclick="waehleThema(this)">🚜 Flurförderzeuge</button>
         <button type="button" class="topic-btn" data-topic="LaSi" onclick="waehleThema(this)">📦 Ladungssicherung</button>
+      </div>
+    </div>
+
+    <div class="calc-box" id="calcBox">
+      <div class="calc-header" onclick="toggleCalc()">
+        <span>🧮 Ladungssicherungs-Rechner: Massenkräfte berechnen</span>
+        <span class="calc-toggle" id="calcToggleIcon">▾</span>
+      </div>
+      <div class="calc-body" id="calcBody" style="display:none">
+        <div class="fld" style="margin-bottom:0">
+          <label>Gewicht der Ladung (kg)</label>
+          <input type="number" id="calcGewicht" placeholder="z.B. 1000" min="0" oninput="berechneLaSi()">
+        </div>
+        <div class="calc-result" id="calcResult" style="display:none">
+          <div class="calc-row calc-base"><span>Gewichtskraft (F<sub>G</sub>)</span><span id="calcFG">–</span></div>
+          <div class="calc-row"><span>Bremsen, nach vorne (0,8 × F<sub>G</sub>)</span><span id="calcBremsen">–</span></div>
+          <div class="calc-row"><span>Beschleunigen, nach hinten (0,5 × F<sub>G</sub>)</span><span id="calcBeschleunigen">–</span></div>
+          <div class="calc-row"><span>Kurvenfahrt / Ausweichen, zur Seite (0,5 × F<sub>G</sub>)</span><span id="calcKurve">–</span></div>
+        </div>
+        <p class="calc-hint">Berechnung der im normalen Fahrbetrieb auftretenden Massenkräfte anhand der Standard-Sicherungsfaktoren. Dient als Orientierungshilfe für die Ladungssicherung — im Zweifel zusätzlich die Originalquelle prüfen.</p>
       </div>
     </div>
 
@@ -292,6 +336,31 @@ function waehleThema(btn){
   document.querySelectorAll('.topic-btn').forEach(function(b){ b.classList.remove('active'); });
   btn.classList.add('active');
   aktuellesThema = btn.getAttribute('data-topic');
+  document.getElementById('calcBox').style.display = (aktuellesThema === 'LaSi') ? 'block' : 'none';
+}
+
+// ── Ladungssicherungs-Rechner ─────────────────────────────────
+function toggleCalc(){
+  var body = document.getElementById('calcBody');
+  var icon = document.getElementById('calcToggleIcon');
+  var offen = body.style.display !== 'none';
+  body.style.display = offen ? 'none' : 'block';
+  icon.classList.toggle('open', !offen);
+}
+
+function berechneLaSi(){
+  var gewicht = parseFloat(document.getElementById('calcGewicht').value);
+  var resultBox = document.getElementById('calcResult');
+  if(!gewicht || gewicht <= 0){
+    resultBox.style.display = 'none';
+    return;
+  }
+  var fg = gewicht * 9.81 / 10; // Gewichtskraft in daN (g = 9,81 m/s²)
+  document.getElementById('calcFG').textContent = fg.toLocaleString('de-DE',{maximumFractionDigits:1}) + ' daN';
+  document.getElementById('calcBremsen').textContent = (fg*0.8).toLocaleString('de-DE',{maximumFractionDigits:1}) + ' daN';
+  document.getElementById('calcBeschleunigen').textContent = (fg*0.5).toLocaleString('de-DE',{maximumFractionDigits:1}) + ' daN';
+  document.getElementById('calcKurve').textContent = (fg*0.5).toLocaleString('de-DE',{maximumFractionDigits:1}) + ' daN';
+  resultBox.style.display = 'block';
 }
 
 async function frageStellen(){
