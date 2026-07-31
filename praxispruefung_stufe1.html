@@ -197,6 +197,7 @@ body{
           </div>
         </div>
         <div class="err-box" id="loginErrBox"></div>
+        <pre id="debugInfo" style="display:none;margin-top:14px;padding:12px;background:#f5f7fa;border:1px solid var(--line);border-radius:10px;font-size:11px;color:var(--muted);white-space:pre-wrap;word-break:break-all"></pre>
       </div>
       <div class="nav-row">
         <a class="nav-btn back" href="praxispruefung_start.html" style="text-decoration:none;display:inline-block">← Zurück</a>
@@ -484,11 +485,31 @@ function renderPrueflingeDropdown(){
   });
   if(gefiltert.length === 0){
     sel.innerHTML = '<option value="">Keine anstehenden Prüflinge gefunden</option>';
+    zeigeDebugInfo();
     return;
   }
+  document.getElementById('debugInfo').style.display = 'none';
   sel.innerHTML = '<option value="">Bitte auswählen…</option>' + gefiltert.map(function(p){
     return '<option value="' + p.registrierungsnummer + '">' + p.nachname + ', ' + p.vorname + ' (' + p.registrierungsnummer + ')</option>';
   }).join('');
+}
+
+// TEMPORÄR zur Fehlersuche (Prüfling erscheint nicht bei Nachprüfung) — kann nach Klärung
+// des praxis_status-Feldnamens wieder entfernt werden.
+function zeigeDebugInfo(){
+  var box = document.getElementById('debugInfo');
+  if(!box) return;
+  if(!Array.isArray(PRUEFLINGE) || PRUEFLINGE.length === 0){
+    box.textContent = 'Debug: Der Flow liefert 0 Datensätze insgesamt (gefilterte Liste ist leer, weil die Rohliste bereits leer ist).';
+  } else {
+    var zeilen = PRUEFLINGE.map(function(p){
+      var raw = p.praxis_status;
+      if(raw && typeof raw === 'object') raw = JSON.stringify(raw);
+      return (p.registrierungsnummer || '?') + ' – ' + (p.nachname || '') + ' ' + (p.vorname || '') + ' – praxis_status: ' + JSON.stringify(raw);
+    });
+    box.textContent = 'Debug: ' + PRUEFLINGE.length + ' Datensätze insgesamt (Felder im ersten: ' + Object.keys(PRUEFLINGE[0]).join(', ') + ')\n' + zeilen.join('\n');
+  }
+  box.style.display = 'block';
 }
 
 function onPrueflingChange(){
