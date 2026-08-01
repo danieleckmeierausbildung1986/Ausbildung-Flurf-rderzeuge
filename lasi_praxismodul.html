@@ -584,6 +584,7 @@ let selEquip=new Set(),equipConfirmed=false,equipScoreOk=null;
 let pruefAntw={},pruefScoreOk=null;
 let calcAntw=null,correctN_P4=null;
 let activeView='top';
+let critResult=null;
 
 function mkGrid(){grid=Array.from({length:ROWS},()=>Array(COLS).fill(null));}
 function canPlace(c,r,cw,ch,ex=null){if(c<0||r<0||c+cw>COLS||r+ch>ROWS)return false;for(let rr=r;rr<r+ch;rr++)for(let cc=c;cc<c+cw;cc++)if(grid[rr][cc]&&grid[rr][cc]!==ex)return false;return true;}
@@ -824,7 +825,66 @@ function initP5(){
   if(!cv1Bound){initCV1();cv1Bound=true;}else{drawCV1();}
   bldPal();updStats();updFill();showSub(1);
 }
-function initP6(){setTimeout(drawCvAusw,100);}
+function initP6(){
+  critResult=computeCriteria();
+  const sc=critResult.crit.filter(c=>c.ok).length,total=critResult.crit.length;
+  const pct=total>0?sc/total:0,best=pct>=0.75;
+  const fb=document.getElementById('fb3');
+  fb.className=`m-fb ${best?'ok':'no'} show`;
+  fb.innerHTML=best?`<strong>✓ Sehr gut!</strong> ${sc}/${total} Kriterien erfüllt.`:`<strong>✗ Noch nicht optimal.</strong> ${sc}/${total} Kriterien erfüllt. Sieh dir die Markierungen und die Liste unten an.`;
+  setTimeout(drawCvAusw,100);
+}
+
+// ── Konsolidierte Bewertung: einmal berechnen, von drawCvAusw() (Canvas-Badges)
+// und der Kriterien-Liste gemeinsam genutzt (vorher zweimal separat berechnet). ──
+function computeCriteria(){
+  const fv=spa.fz;
+  let sumG=0,sumM=0;
+  spa.g.forEach(g=>{const p=spp[g.id];if(p){const cx=(p.col+g.cw/2)/COLS;sumG+=g.gw;sumM+=g.gw*cx;}});
+  const sp_r=sumG>0?sumM/sumG:0.5;
+  const haA=Math.max(0,Math.min(1,(sp_r-fv.va)/(fv.ha-fv.va)));
+  const ha=sumG*haA,va=sumG-ha,fzG=sumG+8000,va_p=(va/fzG)*100;
+
+  const crit=[];
+  crit.push({id:'nutzlast',ok:sumG<=fv.nl,label:'Nutzlast',
+    detail:sumG<=fv.nl?`✓ ${sumG.toLocaleString('de-DE')} kg – zulässige Nutzlast ${fv.nl.toLocaleString('de-DE')} kg eingehalten`:`✗ ${sumG.toLocaleString('de-DE')} kg überschreitet die zulässige Nutzlast von ${fv.nl.toLocaleString('de-DE')} kg`,
+    anchor:null});
+  crit.push({id:'schwerpunkt',ok:sp_r>=spa.sp[0]&&sp_r<=spa.sp[1],label:'Schwerpunkt',
+    detail:(sp_r>=spa.sp[0]&&sp_r<=spa.sp[1])?`✓ Schwerpunkt bei ${(sp_r*100).toFixed(0)}% – im Idealbereich`:`✗ Schwerpunkt bei ${(sp_r*100).toFixed(0)}% – Idealbereich ${spa.sp[0]*100}–${spa.sp[1]*100}%`,
+    anchor:{typ:'sp'}});
+  crit.push({id:'lenkachse',ok:va_p>=20,label:'Lenkachse',
+    detail:va_p>=20?`✓ Lenkachse ${va_p.toFixed(1)}% – ok`:`✗ Lenkachse ${va_p.toFixed(1)}% – mind. 20% erforderlich (§37 DGUV Vo70)`,
+    anchor:{typ:'achse',v:fv.va,txt:va_p.toFixed(0)+'%'}});
+  crit.push({id:'hinterachse',ok:ha<=fv.mh,label:'Hinterachse',
+    detail:ha<=fv.mh?`✓ Hinterachse ${(ha/1000).toFixed(1)}t – ok`:`✗ Hinterachse ${(ha/1000).toFixed(1)}t – max ${(fv.mh/1000)}t (§34 StVZO)`,
+    anchor:{typ:'achse',v:fv.ha,txt:(ha/1000).toFixed(1)+'t'}});
+
+  detLuecken.forEach(l=>{
+    const mats=lueckenMat[l.id]||[];
+    const hatR=mats.some(k=>l.ok.includes(k));
+    const hatF=mats.some(k=>l.falsch.includes(k));
+    const ok=mats.length>0&&hatR&&!hatF;
+    crit.push({id:'gap_'+l.id,ok,label:l.tit,
+      detail:ok?`✓ Korrekt gesichert mit: ${mats.map(k=>LASI.find(x=>x.id===k)?.n||k).join(', ')}`:`✗ ${mats.length===0?'Keine Sicherung!':'Falsche Sicherung: '+mats.map(k=>LASI.find(x=>x.id===k)?.n||k).join(', ')}`,
+      anchor:l.cols?{typ:'gap',cols:l.cols,mat:mats[0]}:null});
+  });
+
+  if(equipScoreOk!==null)crit.push({id:'zurrmittel_wahl',ok:equipScoreOk,label:'Zurrmittel-Auswahl (Phase ②)',
+    detail:equipScoreOk?'✓ Passende Zurrmittel für diese Ladung ausgewählt.':'✗ Auswahl war nicht optimal.',anchor:null});
+  if(pruefScoreOk!==null)crit.push({id:'zurrmittel_pruef',ok:pruefScoreOk,label:'Zurrmittel-Prüfung (Phase ③)',
+    detail:pruefScoreOk?'✓ Zustand der Zurrmittel richtig eingeschätzt.':'✗ Nicht alle Zurrmittel richtig eingeschätzt.',anchor:null});
+  if(calcAntw){
+    const berechnungOk=Math.abs(calcAntw.n-calcAntw.correctN)<=1;
+    crit.push({id:'berechnung',ok:berechnungOk,label:'Berechnung (Phase ④)',
+      detail:berechnungOk?`✓ Deine Schätzung (${calcAntw.n}) passt zum Rechenwert (${calcAntw.correctN}).`:`✗ Deine Schätzung (${calcAntw.n}) weicht vom Rechenwert (${calcAntw.correctN}) ab.`,anchor:null});
+    const platziert=countPlatzierteZurrmittel();
+    const mengeOk=Math.abs(platziert-calcAntw.correctN)<=1;
+    crit.push({id:'zurrmittel_menge',ok:mengeOk,label:'Platzierte Menge',
+      detail:mengeOk?`✓ Platzierte Zurrmittel (${platziert}) entsprechen der Berechnung (${calcAntw.correctN}).`:`✗ Platzierte Zurrmittel (${platziert}) weichen von der Berechnung (${calcAntw.correctN}) ab.`,anchor:null});
+  }
+
+  return {crit,sumG,sp_r,ha,va,va_p,fv};
+}
 
 const PHASES=[
   {id:'pz1',pill:'ph1',label:'① Ladung ansehen',init:initP1},
@@ -985,7 +1045,7 @@ function drawCV2(){
 
 // ── AUSWERTUNGS-CANVAS ──
 function drawCvAusw(){
-  cvA=document.getElementById('cvAusw');if(!cvA||!spa)return;
+  cvA=document.getElementById('cvAusw');if(!cvA||!spa||!critResult)return;
   ctxA=cvA.getContext('2d');
   sizeCanvas(cvA,cvA.parentElement,0.48,640);
   const c=ctxA;
@@ -1007,7 +1067,7 @@ function drawCvAusw(){
   c.font='16px sans-serif';c.textAlign='center';c.fillText('🚛',tr.x-PADX.l/2+3,tr.y+tr.h/2+5);
 
   // Achslinien
-  const fv=spa.fz;
+  const fv=critResult.fv;
   [fv.va,fv.ha].forEach(v=>{const ax=tr.x+v*tr.w;c.strokeStyle='rgba(0,0,0,0.15)';c.lineWidth=1;c.setLineDash([4,3]);c.beginPath();c.moveTo(ax,tr.y);c.lineTo(ax,tr.y+tr.h);c.stroke();c.setLineDash([]);c.fillStyle='#68788f';c.font='9px sans-serif';c.textAlign='center';c.fillText(v===fv.va?'VA':'HA',ax,tr.y+tr.h+14);});
 
   // Güter zeichnen
@@ -1020,89 +1080,54 @@ function drawCvAusw(){
     c.font='8px sans-serif';c.fillStyle='rgba(255,255,255,.85)';c.fillText(g.gw+'kg',x+gw/2,y+gh/2+13);
   });
 
-  // ── Fehler-Overlays ──
+  // ── Fehler-Overlays: aus critResult.crit, jeder Eintrag mit anchor bekommt ein Badge ──
   let annotNr=1;
-  const annotations=[];
-
-  // 1. Lücken: richtig gesichert = grün, falsch/offen = rot
-  detLuecken.forEach(l=>{
-    const mats=lueckenMat[l.id]||[];
-    const hatR=mats.some(k=>l.ok.includes(k));
-    const hatF=mats.some(k=>l.falsch.includes(k));
-    const ok=mats.length>0&&hatR&&!hatF;
-    const cols=l.cols||(l.typ==='quer_seite'?null:[]);
-    if(!cols)return;
-    const x1=tr.x+Math.min(...cols)*cW,x2=tr.x+(Math.max(...cols)+1)*cW;
-    c.fillStyle=ok?'rgba(26,158,110,0.25)':'rgba(192,57,43,0.3)';
-    c.fillRect(x1,tr.y,x2-x1,tr.h);
-    c.strokeStyle=ok?'#1a9e6e':'#c0392b';c.lineWidth=2.5;c.setLineDash([5,3]);
-    c.strokeRect(x1,tr.y,x2-x1,tr.h);c.setLineDash([]);
-    // Nummer-Badge
-    const bx=x1+(x2-x1)/2,by=tr.y+tr.h/2;
-    c.fillStyle=ok?'#1a9e6e':'#c0392b';
-    c.beginPath();c.arc(bx,by,12,0,Math.PI*2);c.fill();
-    c.fillStyle='#fff';c.font='bold 11px sans-serif';c.textAlign='center';
-    c.fillText(annotNr,bx,by+4);
-    // LaSi-Material anzeigen wenn gesetzt
-    if(mats.length>0){
-      const m=LASI.find(x=>x.id===mats[0]);
-      if(m){c.fillStyle=ok?'#1a9e6e':'#c0392b';c.font='bold 8px sans-serif';c.fillText(m.ic+' '+m.n.slice(0,8),bx,by+20);}
+  critResult.crit.forEach(cr=>{
+    if(!cr.anchor)return;
+    const a=cr.anchor;
+    if(a.typ==='gap'){
+      const x1=tr.x+Math.min(...a.cols)*cW,x2=tr.x+(Math.max(...a.cols)+1)*cW;
+      c.fillStyle=cr.ok?'rgba(26,158,110,0.25)':'rgba(192,57,43,0.3)';
+      c.fillRect(x1,tr.y,x2-x1,tr.h);
+      c.strokeStyle=cr.ok?'#1a9e6e':'#c0392b';c.lineWidth=2.5;c.setLineDash([5,3]);
+      c.strokeRect(x1,tr.y,x2-x1,tr.h);c.setLineDash([]);
+      const bx=x1+(x2-x1)/2,by=tr.y+tr.h/2;
+      c.fillStyle=cr.ok?'#1a9e6e':'#c0392b';
+      c.beginPath();c.arc(bx,by,12,0,Math.PI*2);c.fill();
+      c.fillStyle='#fff';c.font='bold 11px sans-serif';c.textAlign='center';
+      c.fillText(annotNr,bx,by+4);
+      if(a.mat){const m=LASI.find(x=>x.id===a.mat);if(m){c.fillStyle=cr.ok?'#1a9e6e':'#c0392b';c.font='bold 8px sans-serif';c.fillText(m.ic+' '+m.n.slice(0,8),bx,by+20);}}
+    } else if(a.typ==='sp'){
+      const spx=tr.x+critResult.sp_r*tr.w;
+      c.fillStyle='rgba(245,166,35,0.12)';c.fillRect(tr.x+spa.sp[0]*tr.w,tr.y,(spa.sp[1]-spa.sp[0])*tr.w,tr.h);
+      c.strokeStyle='#f5a623';c.lineWidth=3;c.setLineDash([5,3]);
+      c.beginPath();c.moveTo(spx,tr.y);c.lineTo(spx,tr.y+tr.h);c.stroke();c.setLineDash([]);
+      c.fillStyle='#f5a623';c.font='bold 9px sans-serif';c.textAlign='center';c.fillText('SP',spx,tr.y-8);
+      c.fillStyle=cr.ok?'#1a9e6e':'#f5a623';
+      c.beginPath();c.arc(spx,tr.y-20,11,0,Math.PI*2);c.fill();
+      c.fillStyle='#fff';c.font='bold 10px sans-serif';c.fillText(annotNr,spx,tr.y-16);
+    } else if(a.typ==='achse'){
+      const ax=tr.x+a.v*tr.w;
+      c.fillStyle=cr.ok?'#1a9e6e':'#c0392b';
+      c.beginPath();c.arc(ax,tr.y+tr.h+30,11,0,Math.PI*2);c.fill();
+      c.fillStyle='#fff';c.font='bold 10px sans-serif';c.textAlign='center';c.fillText(annotNr,ax,tr.y+tr.h+34);
+      c.fillStyle=cr.ok?'#1a9e6e':'#c0392b';c.font='bold 8px sans-serif';c.fillText(a.txt,ax,tr.y+tr.h+46);
     }
-    annotations.push({nr:annotNr,ok,label:l.tit,detail:ok?`✓ Korrekt gesichert mit: ${mats.map(k=>LASI.find(x=>x.id===k)?.n||k).join(', ')}`:`✗ ${mats.length===0?'Keine Sicherung!':'Falsche Sicherung: '+mats.map(k=>LASI.find(x=>x.id===k)?.n||k).join(', ')}`});
+    cr.nr=annotNr;
     annotNr++;
   });
 
-  // 2. Achslasten-Fehler: Pfeil + Markierung
-  let sumG=0,sumM=0;
-  spa.g.forEach(g=>{const p=spp[g.id];if(p){const cx=(p.col+g.cw/2)/COLS;sumG+=g.gw;sumM+=g.gw*cx;}});
-  const sp_r=sumG>0?sumM/sumG:0.5;
-  const haA=Math.max(0,Math.min(1,(sp_r-fv.va)/(fv.ha-fv.va)));
-  const ha=sumG*haA,va=sumG-ha,fzG=sumG+8000,va_p=(va/fzG)*100;
-
-  // Schwerpunkt markieren
-  const spx=tr.x+sp_r*tr.w;
-  const spOk=sp_r>=spa.sp[0]&&sp_r<=spa.sp[1];
-  c.fillStyle='rgba(245,166,35,0.12)';c.fillRect(tr.x+spa.sp[0]*tr.w,tr.y,(spa.sp[1]-spa.sp[0])*tr.w,tr.h);
-  c.strokeStyle='#f5a623';c.lineWidth=3;c.setLineDash([5,3]);
-  c.beginPath();c.moveTo(spx,tr.y);c.lineTo(spx,tr.y+tr.h);c.stroke();c.setLineDash([]);
-  c.fillStyle='#f5a623';c.font='bold 9px sans-serif';c.textAlign='center';c.fillText('SP',spx,tr.y-8);
-  // SP-Badge
-  c.fillStyle=spOk?'#1a9e6e':'#f5a623';
-  c.beginPath();c.arc(spx,tr.y-20,11,0,Math.PI*2);c.fill();
-  c.fillStyle='#fff';c.font='bold 10px sans-serif';c.fillText(annotNr,spx,tr.y-16);
-  annotations.push({nr:annotNr,ok:spOk,label:'Schwerpunkt',detail:spOk?`✓ SP bei ${(sp_r*100).toFixed(0)}% – im Idealbereich`:`✗ SP bei ${(sp_r*100).toFixed(0)}% – Idealbereich: ${spa.sp[0]*100}–${spa.sp[1]*100}%`});
-  annotNr++;
-
-  // Lenkachse – Markierung an VA
-  const vaOk=va_p>=20;
-  const axVx=tr.x+fv.va*tr.w;
-  c.fillStyle=vaOk?'#1a9e6e':'#c0392b';
-  c.beginPath();c.arc(axVx,tr.y+tr.h+30,11,0,Math.PI*2);c.fill();
-  c.fillStyle='#fff';c.font='bold 10px sans-serif';c.textAlign='center';c.fillText(annotNr,axVx,tr.y+tr.h+34);
-  c.fillStyle=vaOk?'#1a9e6e':'#c0392b';c.font='bold 8px sans-serif';c.fillText(va_p.toFixed(0)+'%',axVx,tr.y+tr.h+46);
-  annotations.push({nr:annotNr,ok:vaOk,label:'Lenkachse',detail:vaOk?`✓ Lenkachse ${va_p.toFixed(1)}% – ok`:`✗ Lenkachse ${va_p.toFixed(1)}% – mind. 20% erforderlich (§37 DGUV Vo70)`});
-  annotNr++;
-
-  // Hinterachse
-  const haOk=ha<=fv.mh;
-  const axHx=tr.x+fv.ha*tr.w;
-  c.fillStyle=haOk?'#1a9e6e':'#c0392b';
-  c.beginPath();c.arc(axHx,tr.y+tr.h+30,11,0,Math.PI*2);c.fill();
-  c.fillStyle='#fff';c.font='bold 10px sans-serif';c.textAlign='center';c.fillText(annotNr,axHx,tr.y+tr.h+34);
-  c.fillStyle=haOk?'#1a9e6e':'#c0392b';c.font='bold 8px sans-serif';c.fillText((ha/1000).toFixed(1)+'t',axHx,tr.y+tr.h+46);
-  annotations.push({nr:annotNr,ok:haOk,label:'Hinterachse',detail:haOk?`✓ Hinterachse ${(ha/1000).toFixed(1)}t – ok`:`✗ Hinterachse ${(ha/1000).toFixed(1)}t – max ${(fv.mh/1000)}t (§34 StVZO)`});
-
-  // ── Legende + Kriterien-Liste ──
+  // ── Legende + Kriterien-Liste (alle Kriterien, auch ohne Canvas-Badge) ──
   const leg=document.getElementById('legende');
-  leg.innerHTML=`<div class="leg-item"><div class="leg-dot" style="background:#1a9e6e"></div>Korrekt</div><div class="leg-item"><div class="leg-dot" style="background:#c0392b"></div>Fehler / offen</div><div class="leg-item"><div class="leg-dot" style="background:#f5a623"></div>Schwerpunkt</div><div class="leg-item" style="font-size:10px;color:var(--muted)">① ② ... = Annotationen</div>`;
+  leg.innerHTML=`<div class="leg-item"><div class="leg-dot" style="background:#1a9e6e"></div>Korrekt</div><div class="leg-item"><div class="leg-dot" style="background:#c0392b"></div>Fehler / offen</div><div class="leg-item"><div class="leg-dot" style="background:#f5a623"></div>Schwerpunkt</div><div class="leg-item" style="font-size:10px;color:var(--muted)">① ② ... = Annotationen auf dem Lkw</div>`;
 
   const ckList=document.getElementById('ckList');
-  ckList.innerHTML=annotations.map(a=>`
-    <div class="ck-item ${a.ok?'ok':'no'}">
-      <div class="ck-icon">${a.ok?'✅':'❌'}</div>
+  ckList.innerHTML=critResult.crit.map(cr=>`
+    <div class="ck-item ${cr.ok?'ok':'no'}">
+      <div class="ck-icon">${cr.ok?'✅':'❌'}</div>
       <div class="ck-txt">
-        <div class="ck-lbl">${a.nr} ${a.label}</div>
-        <div class="ck-sub">${a.detail}</div>
+        <div class="ck-lbl">${cr.nr?cr.nr+' ':''}${cr.label}</div>
+        <div class="ck-sub">${cr.detail}</div>
       </div>
     </div>`).join('');
 
@@ -1115,13 +1140,11 @@ function updStats(){if(!spa)return;const placed=Object.keys(spp).length,tot=spa.
 
 // Auswerten
 function ausw(){
-  let allOk=true;
   detLuecken.forEach(l=>{
     const mats=lueckenMat[l.id]||[];
     const hatR=mats.some(k=>l.ok.includes(k));
     const hatF=mats.some(k=>l.falsch.includes(k));
     const ok=mats.length>0&&hatR&&!hatF;
-    if(!ok)allOk=false;
     const card=document.getElementById('lcard-'+l.id);
     const lcfb=document.getElementById('lcfb-'+l.id);
     const lcp=document.getElementById('lcp-'+l.id);
@@ -1129,16 +1152,7 @@ function ausw(){
     if(lcp)lcp.innerHTML=mats.length===0?'<span style="font-size:9px;color:var(--no);font-weight:700">⚠️ Keine Sicherung!</span>':mats.map((mid,idx)=>{const m=LASI.find(x=>x.id===mid);if(!m)return'';return`<div class="lc-mat-tag ${l.ok.includes(mid)?'ok-tag':'no-tag'}" onclick="rmMat('${l.id}',${idx})">${m.ic} ${m.n} ${l.ok.includes(mid)?'✓':'✗'} ✕</div>`;}).join('');
     if(lcfb){lcfb.style.display='block';const rk=mats.find(k=>l.ok.includes(k));const fk=mats.find(k=>l.falsch.includes(k));lcfb.innerHTML=mats.length===0?'⚠️ Lücke offen!':ok?`✓ ${LASI.find(x=>x.id===rk)?.erkl||''}`:`✗ ${LASI.find(x=>x.id===fk)?.n||''} ungeeignet. ${LASI.find(x=>x.id===fk)?.erkl||''}`;lcfb.style.color=ok?'var(--ok)':'var(--no)';}
   });
-  let sumG=0,sumM=0;spa.g.forEach(g=>{const p=spp[g.id];if(p){const cx=(p.col+g.cw/2)/COLS;sumG+=g.gw;sumM+=g.gw*cx;}});
-  const sp_r=sumG>0?sumM/sumG:0.5,fv=spa.fz;const haA=Math.max(0,Math.min(1,(sp_r-fv.va)/(fv.ha-fv.va)));
-  const ha=sumG*haA,va=sumG-ha,fzG=sumG+8000,va_p=(va/fzG)*100,pct=fillPct();
-  const cks=[
-    {ok:sumG<=fv.nl},{ok:va_p>=20},{ok:ha<=fv.mh},{ok:sp_r>=spa.sp[0]&&sp_r<=spa.sp[1]},{ok:allOk}
-  ];
-  const sc=cks.filter(c=>c.ok).length,best=sc>=4;
   goPhase(6);
-  document.getElementById('fb3').className=`m-fb ${best?'ok':'no'} show`;
-  document.getElementById('fb3').innerHTML=best?`<strong>✓ Sehr gut!</strong> ${sc}/5 Kriterien erfüllt – Lkw korrekt beladen und gesichert.`:`<strong>✗ Noch nicht optimal.</strong> ${sc}/5 Kriterien. Sieh dir die Markierungen auf dem Lkw an.`;
 }
 
 // Beim ersten Aufruf direkt das Szenario-Auswahlmenü zeigen (kein Auto-Start)
