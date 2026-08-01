@@ -415,6 +415,7 @@ const MODUL_HTML = `
         <!-- P2: Lücken sichern -->
         <div id="p2" class="hidden">
           <div style="font-size:9px;font-weight:700;color:var(--lasi);text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px">Ladefläche – rote Lücken sichern</div>
+          <div class="m-fb show" id="zurrZaehler" style="margin:0 0 8px"></div>
           <div class="p2wrap">
             <div class="lasi-pal">
               <div class="lasi-pal-title">🧰 LaSi-Material</div>
@@ -634,7 +635,7 @@ function leere(){spp={};lueckenMat={};palDrag=null;canDrag=null;dragPrev=null;la
 // ── Sub-Navigation innerhalb Phase ⑤ (Platzieren ↔ Lücken sichern) ──
 function showSub(p){
   ['p1','p2'].forEach((id,i)=>document.getElementById(id).classList.toggle('hidden',i+1!==p));
-  if(p===2){initCV2();bldLasiPal();renderLuecken();}
+  if(p===2){initCV2();bldLasiPal();renderLuecken();updZurrZaehler();}
 }
 
 // ── Phasen-Leiste (6 Schritte) ──
@@ -869,9 +870,30 @@ function renderLuecken(){
     c.appendChild(div);
   });
 }
-function rMats(lid,mats){if(mats.length===0)return'<span style="font-size:9px;color:var(--muted);font-style:italic">← Material ziehen</span>';return mats.map(mid=>{const m=LASI.find(x=>x.id===mid);if(!m)return'';return`<div class="lc-mat-tag neu" onclick="rmMat('${lid}','${mid}')">${m.ic} ${m.n} ✕</div>`;}).join('');}
-function rmMat(lid,mid){lueckenMat[lid]=(lueckenMat[lid]||[]).filter(x=>x!==mid);document.getElementById('lcp-'+lid).innerHTML=rMats(lid,lueckenMat[lid]);const card=document.getElementById('lcard-'+lid);if(card){card.className='luecke-card';const f=document.getElementById('lcfb-'+lid);if(f)f.style.display='none';}drawCV2();}
-function dropLC(lid){if(!lasiDrag)return;if(!(lueckenMat[lid]||[]).includes(lasiDrag.id)){if(!lueckenMat[lid])lueckenMat[lid]=[];lueckenMat[lid].push(lasiDrag.id);}document.getElementById('lcp-'+lid).innerHTML=rMats(lid,lueckenMat[lid]);drawCV2();}
+function isZurrmittelTyp(id){return id==='niederzurren'||id==='direktzurren';}
+function countPlatzierteZurrmittel(){
+  if(!spa||!spa.calc)return 0;
+  let n=0;
+  Object.values(lueckenMat).forEach(arr=>{(arr||[]).forEach(mid=>{if(mid===spa.calc.methode)n++;});});
+  return n;
+}
+function updZurrZaehler(){
+  const el=document.getElementById('zurrZaehler');
+  if(!el||!spa||!spa.calc)return;
+  const n=countPlatzierteZurrmittel();
+  const methLabel=spa.calc.methode==='direktzurren'?'Direktzurren':'Niederzurren';
+  if(calcAntw){
+    const passt=Math.abs(n-calcAntw.correctN)<=1;
+    el.className='m-fb '+(passt?'ok':'warn')+' show';
+    el.textContent=`Platzierte Zurrmittel (${methLabel}): ${n} — berechnetes Ziel aus Phase ④: ${calcAntw.correctN}`;
+  } else {
+    el.className='m-fb show';
+    el.textContent=`Platzierte Zurrmittel (${methLabel}): ${n} (Berechnung aus Phase ④ noch nicht durchgeführt)`;
+  }
+}
+function rMats(lid,mats){if(mats.length===0)return'<span style="font-size:9px;color:var(--muted);font-style:italic">← Material ziehen</span>';return mats.map((mid,idx)=>{const m=LASI.find(x=>x.id===mid);if(!m)return'';return`<div class="lc-mat-tag neu" onclick="rmMat('${lid}',${idx})">${m.ic} ${m.n} ✕</div>`;}).join('');}
+function rmMat(lid,idx){const arr=lueckenMat[lid]||[];arr.splice(idx,1);document.getElementById('lcp-'+lid).innerHTML=rMats(lid,arr);const card=document.getElementById('lcard-'+lid);if(card){card.className='luecke-card';const f=document.getElementById('lcfb-'+lid);if(f)f.style.display='none';}drawCV2();updZurrZaehler();}
+function dropLC(lid){if(!lasiDrag)return;const arr=lueckenMat[lid]||(lueckenMat[lid]=[]);if(isZurrmittelTyp(lasiDrag.id)||!arr.includes(lasiDrag.id))arr.push(lasiDrag.id);document.getElementById('lcp-'+lid).innerHTML=rMats(lid,arr);drawCV2();updZurrZaehler();}
 
 // Ghost
 function mkG(lbl,ic,col,x,y){if(ghost)ghost.remove();ghost=document.createElement('div');ghost.style.cssText=`position:fixed;pointer-events:none;z-index:9999;background:${col}ee;border-radius:7px;padding:5px 9px;color:#fff;font-size:10px;font-weight:700;text-align:center;transform:translate(-50%,-50%);white-space:nowrap;box-shadow:0 3px 12px rgba(0,0,0,.28)`;ghost.textContent=ic+' '+lbl;document.body.appendChild(ghost);mvG(x,y);}
@@ -895,7 +917,7 @@ function onMUL(e){document.removeEventListener('mousemove',onMML);document.remov
 function sDLasiT(e,m){e.preventDefault();lasiDrag=m;const t=e.touches[0];document.getElementById('lm'+m.id)?.classList.add('dragging-lasi');mkG(m.n,m.ic,m.f,t.clientX,t.clientY);document.addEventListener('touchmove',onTML,{passive:false});document.addEventListener('touchend',onTEL);}
 function onTML(e){e.preventDefault();if(!lasiDrag)return;const t=e.touches[0];mvG(t.clientX,t.clientY);if(cv2){const rect=cv2.getBoundingClientRect();lasiHover={px:(t.clientX-rect.left)*(cv2.width/rect.width),py:(t.clientY-rect.top)*(cv2.height/rect.height)};}drawCV2();}
 function onTEL(e){document.removeEventListener('touchmove',onTML);document.removeEventListener('touchend',onTEL);if(!lasiDrag)return;document.getElementById('lm'+lasiDrag.id)?.classList.remove('dragging-lasi');const t=e.changedTouches[0];if(cv2){const rect=cv2.getBoundingClientRect();const px=t.clientX-rect.left,py=t.clientY-rect.top;if(px>=0&&px<=rect.width&&py>=0&&py<=rect.height){dropLasiCV((px/rect.width)*cv2.width,(py/rect.height)*cv2.height);}}const cards=document.querySelectorAll('.luecke-card');cards.forEach(card=>{const r=card.getBoundingClientRect();if(t.clientX>=r.left&&t.clientX<=r.right&&t.clientY>=r.top&&t.clientY<=r.bottom){dropLC(card.id.replace('lcard-',''));}});rmG();lasiDrag=null;lasiHover=null;drawCV2();}
-function dropLasiCV(px,py){if(!lasiDrag||!detLuecken.length)return;const tr=gTR(cv2),cW=tr.w/COLS;const col=Math.floor((px-tr.x)/cW);const l=detLuecken.find(l=>l.cols&&l.cols.includes(col))||detLuecken[0];if(l){if(!(lueckenMat[l.id]||[]).includes(lasiDrag.id)){if(!lueckenMat[l.id])lueckenMat[l.id]=[];lueckenMat[l.id].push(lasiDrag.id);}document.getElementById('lcp-'+l.id).innerHTML=rMats(l.id,lueckenMat[l.id]);}}
+function dropLasiCV(px,py){if(!lasiDrag||!detLuecken.length)return;const tr=gTR(cv2),cW=tr.w/COLS;const col=Math.floor((px-tr.x)/cW);const l=detLuecken.find(l=>l.cols&&l.cols.includes(col))||detLuecken[0];if(l){const arr=lueckenMat[l.id]||(lueckenMat[l.id]=[]);if(isZurrmittelTyp(lasiDrag.id)||!arr.includes(lasiDrag.id))arr.push(lasiDrag.id);document.getElementById('lcp-'+l.id).innerHTML=rMats(l.id,arr);updZurrZaehler();}}
 
 // Canvas auf CV1 verschieben
 function gutAt(px,py){const tr=gTR(cv1),cW=tr.w/COLS,cH=tr.h/ROWS;const col=Math.floor((px-tr.x)/cW),row=Math.floor((py-tr.y)/cH);const id=grid[Math.max(0,Math.min(ROWS-1,row))]?.[Math.max(0,Math.min(COLS-1,col))];return id?spa.g.find(g=>g.id===id):null;}
@@ -1104,7 +1126,7 @@ function ausw(){
     const lcfb=document.getElementById('lcfb-'+l.id);
     const lcp=document.getElementById('lcp-'+l.id);
     if(card)card.className='luecke-card '+(ok?'ok':'nok');
-    if(lcp)lcp.innerHTML=mats.length===0?'<span style="font-size:9px;color:var(--no);font-weight:700">⚠️ Keine Sicherung!</span>':mats.map(mid=>{const m=LASI.find(x=>x.id===mid);if(!m)return'';return`<div class="lc-mat-tag ${l.ok.includes(mid)?'ok-tag':'no-tag'}" onclick="rmMat('${l.id}','${mid}')">${m.ic} ${m.n} ${l.ok.includes(mid)?'✓':'✗'} ✕</div>`;}).join('');
+    if(lcp)lcp.innerHTML=mats.length===0?'<span style="font-size:9px;color:var(--no);font-weight:700">⚠️ Keine Sicherung!</span>':mats.map((mid,idx)=>{const m=LASI.find(x=>x.id===mid);if(!m)return'';return`<div class="lc-mat-tag ${l.ok.includes(mid)?'ok-tag':'no-tag'}" onclick="rmMat('${l.id}',${idx})">${m.ic} ${m.n} ${l.ok.includes(mid)?'✓':'✗'} ✕</div>`;}).join('');
     if(lcfb){lcfb.style.display='block';const rk=mats.find(k=>l.ok.includes(k));const fk=mats.find(k=>l.falsch.includes(k));lcfb.innerHTML=mats.length===0?'⚠️ Lücke offen!':ok?`✓ ${LASI.find(x=>x.id===rk)?.erkl||''}`:`✗ ${LASI.find(x=>x.id===fk)?.n||''} ungeeignet. ${LASI.find(x=>x.id===fk)?.erkl||''}`;lcfb.style.color=ok?'var(--ok)':'var(--no)';}
   });
   let sumG=0,sumM=0;spa.g.forEach(g=>{const p=spp[g.id];if(p){const cx=(p.col+g.cw/2)/COLS;sumG+=g.gw;sumM+=g.gw*cx;}});
