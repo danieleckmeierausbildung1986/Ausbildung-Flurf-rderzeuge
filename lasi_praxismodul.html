@@ -325,7 +325,7 @@ const ZUGANGSPRUEFUNG_URL = 'https://default8af25f9034bc4ef4aba22ab6f641d5.01.en
 
 const MODUL_HTML = `
 <div class="m-card">
-  <div class="m-chd"><h2>🎮 Ladespiel mit Auswertungs-Bild</h2><p>Phase 1: Güter platzieren · Phase 2: Lücken sichern · Phase 3: Lkw mit Fehlermarkierungen</p></div>
+  <div class="m-chd"><h2>🚛 Ladungssicherung – Praxistraining</h2><p>Sechs Schritte: von der Ladung ansehen bis zur fertigen Auswertung</p></div>
   <div class="m-cbody">
 
     <div id="spsel">
@@ -342,9 +342,12 @@ const MODUL_HTML = `
         <button class="m-btn out sm" onclick="rstSpiel()">← Szenarien</button>
       </div>
       <div class="phase-bar">
-        <div class="ps act" id="ph1">① Güter platzieren</div>
-        <div class="ps" id="ph2">② Lücken sichern</div>
-        <div class="ps" id="ph3">③ Auswertung</div>
+        <div class="ps act" id="ph1">① Ladung ansehen</div>
+        <div class="ps" id="ph2">② Zurrmittel wählen</div>
+        <div class="ps" id="ph3">③ Zurrmittel prüfen</div>
+        <div class="ps" id="ph4">④ Berechnen</div>
+        <div class="ps" id="ph5">⑤ Platzieren &amp; sichern</div>
+        <div class="ps" id="ph6">⑥ Auswertung</div>
       </div>
       <div style="background:#f4f7fc;border-radius:7px;padding:8px 11px;font-size:11px;line-height:1.5;border-left:3px solid #2b6cb0;color:var(--navy);margin-bottom:8px" id="sptask"></div>
       <div style="display:flex;align-items:center;gap:7px;margin-bottom:6px">
@@ -354,43 +357,70 @@ const MODUL_HTML = `
       </div>
       <div class="stats-row" id="statsrow"></div>
 
-      <!-- P1 -->
-      <div id="p1">
-        <div style="font-size:9px;font-weight:700;color:var(--lasi);text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px">Ladefläche</div>
-        <div id="cv1wrap"><canvas id="cv1" style="border-radius:8px;display:block;width:100%;touch-action:none"></canvas></div>
-        <div style="margin:3px 0 7px;font-size:9px;color:var(--muted)">Gut ziehen → rastet ein · Bereits platzierte Güter verschiebbar</div>
-        <div style="font-size:9px;font-weight:700;color:var(--lasi);text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px">Verfügbare Güter</div>
-        <div class="palette-wrap" id="pal1"></div>
-        <div style="display:flex;gap:6px;flex-wrap:wrap">
-          <button class="m-btn safety" id="btnP2" onclick="goP2()" style="display:none">Weiter: Lücken sichern →</button>
-          <button class="m-btn out" onclick="leere()">Zurücksetzen</button>
-        </div>
-        <div class="m-fb" id="fb1"></div>
+      <!-- PZ1: Ladung ansehen -->
+      <div id="pz1">
+        <div class="m-fb warn show" style="margin-top:0">🚧 Inhalt folgt in Kürze.</div>
+        <button class="m-btn" onclick="goPhase(2)">Weiter →</button>
       </div>
 
-      <!-- P2 -->
-      <div id="p2" class="hidden">
-        <div style="font-size:9px;font-weight:700;color:var(--lasi);text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px">Ladefläche – rote Lücken sichern</div>
-        <div class="p2wrap">
-          <div class="lasi-pal">
-            <div class="lasi-pal-title">🧰 LaSi-Material</div>
-            <div id="lasiPal"></div>
-          </div>
-          <div>
-            <div id="cv2wrap"><canvas id="cv2" style="border-radius:8px;display:block;width:100%;touch-action:none"></canvas></div>
-            <div style="margin-top:2px;font-size:9px;color:var(--muted)">Material auf rote Lücken ziehen · ✕ zum Entfernen</div>
-            <div class="luecken-info" id="lueckenInfo"></div>
-          </div>
-        </div>
-        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px">
-          <button class="m-btn" onclick="ausw()">Auswertung ✓</button>
-          <button class="m-btn out" onclick="goP1()">← Zurück</button>
-        </div>
-        <div class="m-fb" id="fb2"></div>
+      <!-- PZ2: Zurrmittel wählen -->
+      <div id="pz2" class="hidden">
+        <div class="m-fb warn show" style="margin-top:0">🚧 Inhalt folgt in Kürze.</div>
+        <button class="m-btn" onclick="goPhase(3)">Weiter →</button>
       </div>
 
-      <!-- P3: AUSWERTUNG mit Canvas -->
-      <div id="p3" class="hidden">
+      <!-- PZ3: Zurrmittel prüfen -->
+      <div id="pz3" class="hidden">
+        <div class="m-fb warn show" style="margin-top:0">🚧 Inhalt folgt in Kürze.</div>
+        <button class="m-btn" onclick="goPhase(4)">Weiter →</button>
+      </div>
+
+      <!-- PZ4: Berechnen -->
+      <div id="pz4" class="hidden">
+        <div class="m-fb warn show" style="margin-top:0">🚧 Inhalt folgt in Kürze.</div>
+        <button class="m-btn" onclick="goPhase(5)">Weiter →</button>
+      </div>
+
+      <!-- PZ5: Platzieren & sichern -->
+      <div id="pz5" class="hidden">
+        <!-- P1: Güter platzieren -->
+        <div id="p1">
+          <div style="font-size:9px;font-weight:700;color:var(--lasi);text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px">Ladefläche</div>
+          <div id="cv1wrap"><canvas id="cv1" style="border-radius:8px;display:block;width:100%;touch-action:none"></canvas></div>
+          <div style="margin:3px 0 7px;font-size:9px;color:var(--muted)">Gut ziehen → rastet ein · Bereits platzierte Güter verschiebbar</div>
+          <div style="font-size:9px;font-weight:700;color:var(--lasi);text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px">Verfügbare Güter</div>
+          <div class="palette-wrap" id="pal1"></div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap">
+            <button class="m-btn safety" id="btnP2" onclick="goP2()" style="display:none">Weiter: Lücken sichern →</button>
+            <button class="m-btn out" onclick="leere()">Zurücksetzen</button>
+          </div>
+          <div class="m-fb" id="fb1"></div>
+        </div>
+
+        <!-- P2: Lücken sichern -->
+        <div id="p2" class="hidden">
+          <div style="font-size:9px;font-weight:700;color:var(--lasi);text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px">Ladefläche – rote Lücken sichern</div>
+          <div class="p2wrap">
+            <div class="lasi-pal">
+              <div class="lasi-pal-title">🧰 LaSi-Material</div>
+              <div id="lasiPal"></div>
+            </div>
+            <div>
+              <div id="cv2wrap"><canvas id="cv2" style="border-radius:8px;display:block;width:100%;touch-action:none"></canvas></div>
+              <div style="margin-top:2px;font-size:9px;color:var(--muted)">Material auf rote Lücken ziehen · ✕ zum Entfernen</div>
+              <div class="luecken-info" id="lueckenInfo"></div>
+            </div>
+          </div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px">
+            <button class="m-btn" onclick="ausw()">Auswertung ✓</button>
+            <button class="m-btn out" onclick="goP1()">← Zurück</button>
+          </div>
+          <div class="m-fb" id="fb2"></div>
+        </div>
+      </div>
+
+      <!-- PZ6: Auswertung mit Canvas -->
+      <div id="pz6" class="hidden">
         <!-- Ergebnis-Banner -->
         <div class="m-fb show" id="fb3" style="margin-top:0;font-size:14px"></div>
 
@@ -413,7 +443,7 @@ const MODUL_HTML = `
         </div>
 
         <div style="display:flex;gap:6px;flex-wrap:wrap">
-          <button class="m-btn out sm" onclick="leere();showP(1)">Nochmal</button>
+          <button class="m-btn out sm" onclick="leere();goPhase(5)">Nochmal</button>
           <button class="m-btn sm" onclick="rstSpiel()">Anderes Szenario</button>
         </div>
       </div>
@@ -506,13 +536,15 @@ let spa=null,grid=null,spp={},lueckenMat={};
 let palDrag=null,lasiDrag=null,canDrag=null,ghost=null,dragPrev=null,lasiHover=null;
 let cv1=null,ctx1=null,cv2=null,ctx2=null,cvA=null,ctxA=null;
 let detLuecken=[],auswCks=[];
+let cv1Bound=false;
 
 function mkGrid(){grid=Array.from({length:ROWS},()=>Array(COLS).fill(null));}
 function canPlace(c,r,cw,ch,ex=null){if(c<0||r<0||c+cw>COLS||r+ch>ROWS)return false;for(let rr=r;rr<r+ch;rr++)for(let cc=c;cc<c+cw;cc++)if(grid[rr][cc]&&grid[rr][cc]!==ex)return false;return true;}
 function placeGrid(id,c,r,cw,ch){for(let rr=r;rr<r+ch;rr++)for(let cc=c;cc<c+cw;cc++)grid[rr][cc]=id;}
 function removeGrid(id){for(let r=0;r<ROWS;r++)for(let c=0;c<COLS;c++)if(grid[r][c]===id)grid[r][c]=null;}
 function snapPos(px,py,cw,ch,cv,ex=null){const tr=gTR(cv);const cW=tr.w/COLS,cH=tr.h/ROWS;let col=Math.round((px-tr.x)/cW-cw/2),row=Math.round((py-tr.y)/cH-ch/2);col=Math.max(0,Math.min(COLS-cw,col));row=Math.max(0,Math.min(ROWS-ch,row));return{col,row,fits:canPlace(col,row,cw,ch,ex)};}
-function gTR(cv){return{x:PAD.l,y:PAD.t,w:cv.width-PAD.l-PAD.r,h:cv.height-PAD.t-PAD.b};}
+function gTR(cv,pad=PAD){return{x:pad.l,y:pad.t,w:cv.width-pad.l-pad.r,h:cv.height-pad.t-pad.b};}
+function sizeCanvas(cv,wrapEl,aspect,fallbackW){const W=(wrapEl&&wrapEl.clientWidth)||fallbackW,H=Math.round(W*aspect);cv.width=W;cv.height=H;cv.style.height=H+'px';return{W,H};}
 function fillPct(){let u=0;for(let r=0;r<ROWS;r++)for(let c=0;c<COLS;c++)if(grid[r][c])u++;return Math.round(u/(ROWS*COLS)*100);}
 
 function erkenneLuecken(){
@@ -541,29 +573,56 @@ function addLL(arr,cols){
 
 function stSpiel(i){
   spa=SZP[i];spp={};lueckenMat={};palDrag=null;lasiDrag=null;canDrag=null;dragPrev=null;lasiHover=null;
-  mkGrid();detLuecken=[];auswCks=[];
+  mkGrid();detLuecken=[];auswCks=[];cv1Bound=false;
   document.getElementById('spsel').classList.add('hidden');
   document.getElementById('spgame').classList.remove('hidden');
   document.getElementById('sptit').textContent=spa.t;
   document.getElementById('sptask').textContent=spa.auf;
   document.getElementById('fb1').className='m-fb';
   document.getElementById('btnP2').style.display='none';
-  showP(1);bldPal();initCV1();updStats();updFill();
+  showP(1);
 }
 function rstSpiel(){const sel=document.getElementById('spsel'),game=document.getElementById('spgame');if(sel)sel.classList.remove('hidden');if(game)game.classList.add('hidden');spa=null;}
 function leere(){spp={};lueckenMat={};palDrag=null;canDrag=null;dragPrev=null;lasiHover=null;mkGrid();detLuecken=[];document.getElementById('fb1').className='m-fb';document.getElementById('btnP2').style.display='none';bldPal();drawCV1();updStats();updFill();}
 
-function showP(p){
-  ['p1','p2','p3'].forEach((id,i)=>document.getElementById(id).classList.toggle('hidden',i+1!==p));
-  ['ph1','ph2','ph3'].forEach((id,i)=>{const el=document.getElementById(id);el.className='ps'+(i+1===p?' act':i+1<p?' done':'');});
+// ── Sub-Navigation innerhalb Phase ⑤ (Platzieren ↔ Lücken sichern) ──
+function showSub(p){
+  ['p1','p2'].forEach((id,i)=>document.getElementById(id).classList.toggle('hidden',i+1!==p));
   if(p===2){initCV2();bldLasiPal();renderLuecken();}
-  if(p===3){setTimeout(drawCvAusw,100);}
 }
+
+// ── Phasen-Leiste (6 Schritte) ──
+function initP1(){}
+function initP2(){}
+function initP3(){}
+function initP4(){}
+function initP5(){
+  if(!cv1Bound){initCV1();cv1Bound=true;}else{drawCV1();}
+  bldPal();updStats();updFill();showSub(1);
+}
+function initP6(){setTimeout(drawCvAusw,100);}
+
+const PHASES=[
+  {id:'pz1',pill:'ph1',label:'① Ladung ansehen',init:initP1},
+  {id:'pz2',pill:'ph2',label:'② Zurrmittel wählen',init:initP2},
+  {id:'pz3',pill:'ph3',label:'③ Zurrmittel prüfen',init:initP3},
+  {id:'pz4',pill:'ph4',label:'④ Berechnen',init:initP4},
+  {id:'pz5',pill:'ph5',label:'⑤ Platzieren & sichern',init:initP5},
+  {id:'pz6',pill:'ph6',label:'⑥ Auswertung',init:initP6},
+];
+
+function showP(p){
+  PHASES.forEach((ph,i)=>document.getElementById(ph.id).classList.toggle('hidden',i+1!==p));
+  PHASES.forEach((ph,i)=>{const el=document.getElementById(ph.pill);el.className='ps'+(i+1===p?' act':i+1<p?' done':'');});
+  const entry=PHASES[p-1];
+  if(entry&&entry.init)entry.init();
+}
+function goPhase(target){showP(target);}
 function goP2(){
   if(Object.keys(spp).length<spa.g.length){document.getElementById('fb1').className='m-fb warn show';document.getElementById('fb1').textContent=`⚠️ Noch ${spa.g.length-Object.keys(spp).length} Güter nicht platziert.`;return;}
-  detLuecken=erkenneLuecken();detLuecken.forEach(l=>{if(!lueckenMat[l.id])lueckenMat[l.id]=[];});showP(2);
+  detLuecken=erkenneLuecken();detLuecken.forEach(l=>{if(!lueckenMat[l.id])lueckenMat[l.id]=[];});showSub(2);
 }
-function goP1(){showP(1);}
+function goP1(){showSub(1);}
 
 function bldPal(){
   const c=document.getElementById('pal1');c.innerHTML='';
@@ -617,7 +676,7 @@ function dropLasiCV(px,py){if(!lasiDrag||!detLuecken.length)return;const tr=gTR(
 
 // Canvas auf CV1 verschieben
 function gutAt(px,py){const tr=gTR(cv1),cW=tr.w/COLS,cH=tr.h/ROWS;const col=Math.floor((px-tr.x)/cW),row=Math.floor((py-tr.y)/cH);const id=grid[Math.max(0,Math.min(ROWS-1,row))]?.[Math.max(0,Math.min(COLS-1,col))];return id?spa.g.find(g=>g.id===id):null;}
-function initCV1(){cv1=document.getElementById('cv1');ctx1=cv1.getContext('2d');const W=document.getElementById('cv1wrap').clientWidth||610,H=Math.round(W*0.3);cv1.width=W;cv1.height=H;cv1.style.height=H+'px';cv1.addEventListener('mousedown',cv1MD);cv1.addEventListener('touchstart',cv1TS,{passive:false});drawCV1();}
+function initCV1(){cv1=document.getElementById('cv1');ctx1=cv1.getContext('2d');sizeCanvas(cv1,document.getElementById('cv1wrap'),0.3,610);cv1.addEventListener('mousedown',cv1MD);cv1.addEventListener('touchstart',cv1TS,{passive:false});drawCV1();}
 function cv1MD(e){const rect=cv1.getBoundingClientRect();const px=(e.clientX-rect.left)*(cv1.width/rect.width),py=(e.clientY-rect.top)*(cv1.height/rect.height);const g=gutAt(px,py);if(!g)return;canDrag={g,sc:spp[g.id].col,sr:spp[g.id].row};removeGrid(g.id);document.addEventListener('mousemove',cv1MM);document.addEventListener('mouseup',cv1MU);}
 function cv1MM(e){if(!canDrag)return;const rect=cv1.getBoundingClientRect();const px=(e.clientX-rect.left)*(cv1.width/rect.width),py=(e.clientY-rect.top)*(cv1.height/rect.height);const s=snapPos(px,py,canDrag.g.cw,canDrag.g.ch,cv1,canDrag.g.id);dragPrev={...s,cw:canDrag.g.cw,ch:canDrag.g.ch,g:canDrag.g};drawCV1();}
 function cv1MU(e){document.removeEventListener('mousemove',cv1MM);document.removeEventListener('mouseup',cv1MU);if(!canDrag)return;const g=canDrag.g;const rect=cv1.getBoundingClientRect();const px=(e.clientX-rect.left)*(cv1.width/rect.width),py=(e.clientY-rect.top)*(cv1.height/rect.height);const s=snapPos(px,py,g.cw,g.ch,cv1);if(s.fits){spp[g.id]={col:s.col,row:s.row};placeGrid(g.id,s.col,s.row,g.cw,g.ch);}else{spp[g.id]={col:canDrag.sc,row:canDrag.sr};placeGrid(g.id,canDrag.sc,canDrag.sr,g.cw,g.ch);}canDrag=null;dragPrev=null;drawCV1();updStats();updFill();}
@@ -625,7 +684,7 @@ function cv1TS(e){e.preventDefault();const t=e.touches[0];const rect=cv1.getBoun
 function cv1TM(e){e.preventDefault();if(!canDrag)return;const t=e.touches[0];const rect=cv1.getBoundingClientRect();const px=(t.clientX-rect.left)*(cv1.width/rect.width),py=(t.clientY-rect.top)*(cv1.height/rect.height);const s=snapPos(px,py,canDrag.g.cw,canDrag.g.ch,cv1,canDrag.g.id);dragPrev={...s,cw:canDrag.g.cw,ch:canDrag.g.ch,g:canDrag.g};drawCV1();}
 function cv1TE(e){cv1.removeEventListener('touchmove',cv1TM);cv1.removeEventListener('touchend',cv1TE);if(!canDrag)return;const g=canDrag.g;const t=e.changedTouches[0];const rect=cv1.getBoundingClientRect();const px=(t.clientX-rect.left)*(cv1.width/rect.width),py=(t.clientY-rect.top)*(cv1.height/rect.height);const s=snapPos(px,py,g.cw,g.ch,cv1);if(s.fits){spp[g.id]={col:s.col,row:s.row};placeGrid(g.id,s.col,s.row,g.cw,g.ch);}else{spp[g.id]={col:canDrag.sc,row:canDrag.sr};placeGrid(g.id,canDrag.sc,canDrag.sr,g.cw,g.ch);}canDrag=null;dragPrev=null;drawCV1();updStats();updFill();}
 
-function initCV2(){cv2=document.getElementById('cv2');ctx2=cv2.getContext('2d');const W=document.getElementById('cv2wrap').clientWidth||380,H=Math.round(W*0.3);cv2.width=W;cv2.height=H;cv2.style.height=H+'px';drawCV2();}
+function initCV2(){cv2=document.getElementById('cv2');ctx2=cv2.getContext('2d');sizeCanvas(cv2,document.getElementById('cv2wrap'),0.3,380);drawCV2();}
 
 // ── DRAW BASE ──
 function drawBase(cv,ctx){
@@ -683,15 +742,13 @@ function drawCV2(){
 function drawCvAusw(){
   cvA=document.getElementById('cvAusw');if(!cvA||!spa)return;
   ctxA=cvA.getContext('2d');
-  const W=cvA.parentElement.clientWidth||640;
-  const H=Math.round(W*0.48);
-  cvA.width=W;cvA.height=H;cvA.style.height=H+'px';
+  sizeCanvas(cvA,cvA.parentElement,0.48,640);
   const c=ctxA;
   const PADX={l:50,r:14,t:30,b:60};
-  const tr={x:PADX.l,y:PADX.t,w:W-PADX.l-PADX.r,h:H-PADX.t-PADX.b};
+  const tr=gTR(cvA,PADX);
   const cW=tr.w/COLS,cH=tr.h/ROWS;
 
-  c.clearRect(0,0,W,H);
+  c.clearRect(0,0,cvA.width,cvA.height);
 
   // Ladefläche Hintergrund
   c.fillStyle='#e0ede0';c.beginPath();c.roundRect(tr.x,tr.y,tr.w,tr.h,7);c.fill();
@@ -834,7 +891,7 @@ function ausw(){
     {ok:sumG<=fv.nl},{ok:va_p>=20},{ok:ha<=fv.mh},{ok:sp_r>=spa.sp[0]&&sp_r<=spa.sp[1]},{ok:allOk}
   ];
   const sc=cks.filter(c=>c.ok).length,best=sc>=4;
-  showP(3);
+  goPhase(6);
   document.getElementById('fb3').className=`m-fb ${best?'ok':'no'} show`;
   document.getElementById('fb3').innerHTML=best?`<strong>✓ Sehr gut!</strong> ${sc}/5 Kriterien erfüllt – Lkw korrekt beladen und gesichert.`:`<strong>✗ Noch nicht optimal.</strong> ${sc}/5 Kriterien. Sieh dir die Markierungen auf dem Lkw an.`;
 }
@@ -856,6 +913,8 @@ window.stSpiel=stSpiel;
 window.rstSpiel=rstSpiel;
 window.leere=leere;
 window.showP=showP;
+window.showSub=showSub;
+window.goPhase=goPhase;
 window.goP2=goP2;
 window.goP1=goP1;
 window.bldPal=bldPal;
