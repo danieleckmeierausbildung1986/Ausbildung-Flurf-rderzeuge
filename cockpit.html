@@ -281,6 +281,20 @@ nav{
 
       <div class="card">
         <div class="card-hd">
+          <div class="stripe green"></div>
+          <h2>Schulungen — Anmeldungen</h2>
+          <span class="count">live · Liste „Zahlungen"</span>
+        </div>
+        <div class="card-bd" style="padding-top:12px">
+          <div class="biz-loading" id="kursLoading">Lade Anmeldedaten …</div>
+          <div id="kursContent" style="display:none">
+            <div id="kursBars"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-hd">
           <div class="stripe amber"></div>
           <h2>Bekannte technische Baustelle</h2>
         </div>
@@ -361,7 +375,7 @@ function renderZahlungen(rows){
   if(relevant.length === 0) relevant = rows; // Fallback, falls Jahr-Feld leer/anders gepflegt ist
 
   var umsatzGesamt = 0, umsatzBezahlt = 0, offenCount = 0;
-  var teilnehmer = {}, rechnungen = {}, kursSumme = {};
+  var teilnehmer = {}, rechnungen = {}, kursSumme = {}, kursCount = {};
 
   relevant.forEach(function(r){
     var betrag = Number(r.Betrag) || 0;
@@ -372,6 +386,7 @@ function renderZahlungen(rows){
     if(r.Title) teilnehmer[r.Title] = true;
     if(r.Rechnungsnummer) rechnungen[r.Rechnungsnummer] = true;
     kursSumme[kurs] = (kursSumme[kurs] || 0) + betrag;
+    kursCount[kurs] = (kursCount[kurs] || 0) + 1;
   });
 
   var offenBetrag = umsatzGesamt - umsatzBezahlt;
@@ -406,6 +421,20 @@ function renderZahlungen(rows){
 
   document.getElementById('bizLoading').style.display = 'none';
   document.getElementById('bizContent').style.display = 'block';
+
+  var anmeldungenGesamt = relevant.length;
+  var kursListeCount = Object.keys(kursCount).sort(function(a,b){ return kursCount[b]-kursCount[a]; });
+  var kursBarsHtml = kursListeCount.map(function(kurs, i){
+    var n = kursCount[kurs];
+    var pct = anmeldungenGesamt > 0 ? Math.round((n/anmeldungenGesamt)*100) : 0;
+    return '<div class="bar-row">' +
+      '<div class="bar-label"><span class="k">' + kurs + '</span><span class="v mono">' + n + ' Anmeldung' + (n===1?'':'en') + '</span></div>' +
+      '<div class="bar-track"><div class="bar-fill" style="width:' + pct + '%;background:' + barColors[i % barColors.length] + '"></div></div>' +
+    '</div>';
+  }).join('') + '<div class="kv-row" style="margin-top:12px;border-top:1px solid var(--line);padding-top:10px"><span class="k">Anmeldungen gesamt (' + jahr + ')</span><span class="v mono">' + anmeldungenGesamt + '</span></div>';
+  document.getElementById('kursBars').innerHTML = kursBarsHtml;
+  document.getElementById('kursLoading').style.display = 'none';
+  document.getElementById('kursContent').style.display = 'block';
 
   setDial('dialRevenue', Math.min(1, umsatzGesamt / 5000));
   document.getElementById('dialRevenueNum').textContent = umsatzGesamt >= 1000
