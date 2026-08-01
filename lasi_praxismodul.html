@@ -202,6 +202,9 @@ button{font-family:inherit;cursor:pointer}
 .m-fb.show{display:block}
 .spcard{background:#f4fbf7;border:1.5px solid var(--line);border-radius:12px;padding:22px;cursor:pointer;transition:all .15s;text-align:center;font-size:16px}
 .spcard:hover{border-color:var(--lasi);background:#e6f5ec;transform:translateY(-1px)}
+.spcard.selected{border-color:var(--lasi);background:#e6f5ec}
+.spcard.correct{border-color:var(--ok)!important;background:var(--okbg)!important}
+.spcard.wrong{border-color:var(--no)!important;background:var(--nobg)!important}
 .phase-bar{display:flex;gap:8px;margin-bottom:14px}
 .ps{flex:1;padding:13px 8px;border-radius:9px;border:1.5px solid var(--line);text-align:center;font-size:16px;font-weight:700;color:var(--muted);background:#fff;transition:all .2s}
 .ps.act{border-color:var(--lasi);background:var(--lasi);color:#fff}
@@ -359,14 +362,20 @@ const MODUL_HTML = `
 
       <!-- PZ1: Ladung ansehen -->
       <div id="pz1">
-        <div class="m-fb warn show" style="margin-top:0">🚧 Inhalt folgt in Kürze.</div>
+        <div style="font-size:9px;font-weight:700;color:var(--lasi);text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px">Fahrzeugdaten</div>
+        <div class="stats-row" id="p1vehicle"></div>
+        <div style="font-size:9px;font-weight:700;color:var(--lasi);text-transform:uppercase;letter-spacing:.5px;margin:10px 0 3px">Zu ladende Güter</div>
+        <div class="palette-wrap" id="p1goods"></div>
         <button class="m-btn" onclick="goPhase(2)">Weiter →</button>
       </div>
 
       <!-- PZ2: Zurrmittel wählen -->
       <div id="pz2" class="hidden">
-        <div class="m-fb warn show" style="margin-top:0">🚧 Inhalt folgt in Kürze.</div>
-        <button class="m-btn" onclick="goPhase(3)">Weiter →</button>
+        <div style="font-size:9px;font-weight:700;color:var(--lasi);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">Welche Zurrmittel würdest du für diese Ladung einsetzen?</div>
+        <div style="display:grid;gap:8px;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));margin-bottom:10px" id="p2equip"></div>
+        <button class="m-btn out sm" id="p2confirmBtn" onclick="confirmEquip()">Auswahl bestätigen</button>
+        <div class="m-fb" id="p2fb"></div>
+        <button class="m-btn" onclick="goPhase(3)" style="margin-top:12px">Weiter →</button>
       </div>
 
       <!-- PZ3: Zurrmittel prüfen -->
@@ -377,8 +386,13 @@ const MODUL_HTML = `
 
       <!-- PZ4: Berechnen -->
       <div id="pz4" class="hidden">
-        <div class="m-fb warn show" style="margin-top:0">🚧 Inhalt folgt in Kürze.</div>
-        <button class="m-btn" onclick="goPhase(5)">Weiter →</button>
+        <div style="font-size:9px;font-weight:700;color:var(--lasi);text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px">Zurrmittel berechnen</div>
+        <div class="stats-row" id="p4info"></div>
+        <div style="display:grid;gap:10px;grid-template-columns:1fr 1fr;margin:12px 0" id="p4form"></div>
+        <button class="m-btn out sm" onclick="berechneP4()">Berechnen</button>
+        <div class="m-fb" id="p4result"></div>
+        <div id="p4guessWrap"></div>
+        <button class="m-btn" onclick="goPhase(5)" style="margin-top:12px">Weiter →</button>
       </div>
 
       <!-- PZ5: Platzieren & sichern -->
@@ -507,29 +521,35 @@ const COLS=12,ROWS=4;
 const PAD={l:46,r:9,t:20,b:18};
 
 const LASI=[
-  {id:'airbag',n:'Stausack (Airbag)',ic:'💨',f:'#8e44ad',ok_typen:['längs_vorne','längs_mitte','längs_hinten'],erkl:'Stausäcke (0,1–0,4 bar) passen sich individuell an. Ideal für druckempfindliche Ladung. (BGI 649)'},
-  {id:'stauholz',n:'Stauholz / Kantholz',ic:'🪵',f:'#8B4513',ok_typen:['längs_vorne','längs_mitte','längs_hinten'],erkl:'Schließt Längs-Lücken formschlüssig. (VDI 2700, BGI 649)'},
-  {id:'leerpalette',n:'Leerpalette',ic:'🏗️',f:'#6d4c41',ok_typen:['längs_vorne','längs_mitte','längs_hinten'],erkl:'Leerpaletten hochkant als Lückenfüller. (BGI 649)'},
-  {id:'sperrstange',n:'Sperrstange',ic:'🔒',f:'#555',ok_typen:['längs_vorne','längs_mitte','quer_seite'],erkl:'Bildet formschlüssige Ladeabteilungen. (VDI 2700, DIN EN 12642)'},
-  {id:'antirutsch',n:'Antirutschmatte',ic:'🟥',f:'#c0392b',ok_typen:['reibung_boden'],erkl:'Erhöht μ auf 0,60. Reduziert Gurtanzahl. (VDI 2700 Bl.5)'},
-  {id:'niederzurren',n:'Niederzurren',ic:'🔗',f:'#1a7a4a',ok_typen:['quer_seite','reibung_boden'],erkl:'Min. 2 Gurte, Winkel ≥30°. (§22 StVO, VDI 2700)'},
-  {id:'direktzurren',n:'Direktzurren',ic:'⛓️',f:'#2b6cb0',ok_typen:['quer_seite','reibung_boden','schwer'],erkl:'LC wirkt direkt. Diagonalzurren 4 Gurte. (DIN EN 12195-2)'},
-  {id:'keil',n:'Keile / Unterlegkeile',ic:'📐',f:'#d97706',ok_typen:['rund_rollen'],erkl:'Sichern runde Ladung gegen Wegrollen. (VDI 2700 Bl.9)'},
+  {id:'airbag',n:'Stausack (Airbag)',ic:'💨',f:'#8e44ad',erkl:'Stausäcke (0,1–0,4 bar) passen sich individuell an. Ideal für druckempfindliche Ladung. (BGI 649)'},
+  {id:'stauholz',n:'Stauholz / Kantholz',ic:'🪵',f:'#8B4513',erkl:'Schließt Längs-Lücken formschlüssig. (VDI 2700, BGI 649)'},
+  {id:'leerpalette',n:'Leerpalette',ic:'🏗️',f:'#6d4c41',erkl:'Leerpaletten hochkant als Lückenfüller. (BGI 649)'},
+  {id:'sperrstange',n:'Sperrstange',ic:'🔒',f:'#555',erkl:'Bildet formschlüssige Ladeabteilungen. (VDI 2700, DIN EN 12642)'},
+  {id:'antirutsch',n:'Antirutschmatte',ic:'🟥',f:'#c0392b',erkl:'Erhöht μ auf 0,60. Reduziert Gurtanzahl. (VDI 2700 Bl.5)'},
+  {id:'niederzurren',n:'Niederzurren',ic:'🔗',f:'#1a7a4a',erkl:'Min. 2 Gurte, Winkel ≥30°. (§22 StVO, VDI 2700)'},
+  {id:'direktzurren',n:'Direktzurren',ic:'⛓️',f:'#2b6cb0',erkl:'LC wirkt direkt. Diagonalzurren 4 Gurte. (DIN EN 12195-2)'},
+  {id:'keil',n:'Keile / Unterlegkeile',ic:'📐',f:'#d97706',erkl:'Sichern runde Ladung gegen Wegrollen. (VDI 2700 Bl.9)'},
 ];
 
 const SZP=[
   {t:'Szenario 1: Palettenware',fz:{nl:7500,va:0.2,ha:0.8,mh:10000},
    auf:'Sechs Paletten auf 12t-Lkw. Platziere sie und sichere alle entstehenden Lücken.',
    g:[{id:'B1',n:'900kg',ic:'📦',gw:900,cw:3,ch:2,f:'#c0392b'},{id:'B2',n:'800kg',ic:'📦',gw:800,cw:3,ch:2,f:'#c0392b'},{id:'B3',n:'700kg',ic:'📦',gw:700,cw:3,ch:2,f:'#d97706'},{id:'B4',n:'600kg',ic:'📦',gw:600,cw:3,ch:2,f:'#d97706'},{id:'B5',n:'500kg',ic:'📦',gw:500,cw:3,ch:2,f:'#1a7a4a'},{id:'B6',n:'450kg',ic:'📦',gw:450,cw:3,ch:2,f:'#1a7a4a'}],
-   sp:[0.35,0.65],tipps:['Lücken zur Stirnwand: formschlüssig schließen (§22 StVO)','Lücken hinten: formschlüssig oder Direktzurren','Antirutschmatte unter jede Palette empfohlen']},
+   sp:[0.35,0.65],tipps:['Lücken zur Stirnwand: formschlüssig schließen (§22 StVO)','Lücken hinten: formschlüssig oder Direktzurren','Antirutschmatte unter jede Palette empfohlen'],
+   korrekt_zurrmittel:['niederzurren','airbag','stauholz','antirutsch'],falsch_zurrmittel:['keil','direktzurren'],
+   calc:{richtung:'bremsen',mu:0.3,stf:400,alpha:90,methode:'niederzurren'}},
   {t:'Szenario 2: Maschinen',fz:{nl:24000,va:0.15,ha:0.75,mh:16000},
    auf:'Fünf Maschinenteile auf 18t-Sattelzug. Güter füllen Breite nicht vollständig. Seitenlücken sichern.',
    g:[{id:'A1',n:'Maschine A\n3.000kg',ic:'⚙️',gw:3000,cw:4,ch:2,f:'#2b6cb0'},{id:'A2',n:'Maschine B\n2.500kg',ic:'⚙️',gw:2500,cw:4,ch:2,f:'#2b6cb0'},{id:'A3',n:'Anbauteil\n800kg',ic:'🔧',gw:800,cw:2,ch:2,f:'#1a7a4a'},{id:'A4',n:'Ersatzteile\n600kg',ic:'📦',gw:600,cw:2,ch:2,f:'#d97706'},{id:'A5',n:'Werkzeug\n400kg',ic:'🧰',gw:400,cw:2,ch:2,f:'#d97706'}],
-   sp:[0.4,0.65],tipps:['Seitliche Lücken: Direktzurren bevorzugen','Stahl/Stahl μ=0,25: Antirutschmatte!','Maschinen über Hinterachse (§37 DGUV Vo70)']},
+   sp:[0.4,0.65],tipps:['Seitliche Lücken: Direktzurren bevorzugen','Stahl/Stahl μ=0,25: Antirutschmatte!','Maschinen über Hinterachse (§37 DGUV Vo70)'],
+   korrekt_zurrmittel:['direktzurren','antirutsch','sperrstange'],falsch_zurrmittel:['keil','airbag'],
+   calc:{richtung:'kurve',mu:0.25,lc:2500,alphaDirekt:45,beta:0,methode:'direktzurren'}},
   {t:'Szenario 3: Gemischte Ladung',fz:{nl:24000,va:0.15,ha:0.75,mh:16000},
    auf:'Coil + Paletten + Kartonage. Alle entstehenden Lücken richtig sichern.',
    g:[{id:'C1',n:'Coil 5t',ic:'🔄',gw:5000,cw:3,ch:4,f:'#2b6cb0'},{id:'C2',n:'Holzpal.\n900kg',ic:'🪵',gw:900,cw:2,ch:2,f:'#d97706'},{id:'C3',n:'Holzpal.\n800kg',ic:'🪵',gw:800,cw:2,ch:2,f:'#d97706'},{id:'C4',n:'Karton\n600kg',ic:'📦',gw:600,cw:2,ch:2,f:'#1a7a4a'},{id:'C5',n:'Karton\n550kg',ic:'📦',gw:550,cw:2,ch:2,f:'#1a7a4a'},{id:'C6',n:'Gestell\n300kg',ic:'🗂️',gw:300,cw:1,ch:4,f:'#68788f'}],
-   sp:[0.4,0.65],tipps:['Coil: Direktzurren durch Auge (DIN EN 12195-3)','Lücken vorne/hinten: Stauholz oder Airbag','Alle Richtungen sichern (§22 StVO)']}
+   sp:[0.4,0.65],tipps:['Coil: Direktzurren durch Auge (DIN EN 12195-3)','Lücken vorne/hinten: Stauholz oder Airbag','Alle Richtungen sichern (§22 StVO)'],
+   korrekt_zurrmittel:['airbag','stauholz','direktzurren','leerpalette'],falsch_zurrmittel:['keil'],
+   calc:{richtung:'bremsen',mu:0.3,stf:400,alpha:90,methode:'niederzurren'}}
 ];
 
 let spa=null,grid=null,spp={},lueckenMat={};
@@ -537,6 +557,10 @@ let palDrag=null,lasiDrag=null,canDrag=null,ghost=null,dragPrev=null,lasiHover=n
 let cv1=null,ctx1=null,cv2=null,ctx2=null,cvA=null,ctxA=null;
 let detLuecken=[],auswCks=[];
 let cv1Bound=false;
+let selEquip=new Set(),equipConfirmed=false,equipScoreOk=null;
+let pruefAntw={},pruefScoreOk=null;
+let calcAntw=null,correctN_P4=null;
+let activeView='top';
 
 function mkGrid(){grid=Array.from({length:ROWS},()=>Array(COLS).fill(null));}
 function canPlace(c,r,cw,ch,ex=null){if(c<0||r<0||c+cw>COLS||r+ch>ROWS)return false;for(let rr=r;rr<r+ch;rr++)for(let cc=c;cc<c+cw;cc++)if(grid[rr][cc]&&grid[rr][cc]!==ex)return false;return true;}
@@ -592,10 +616,151 @@ function showSub(p){
 }
 
 // ── Phasen-Leiste (6 Schritte) ──
-function initP1(){}
-function initP2(){}
+function initP1(){
+  if(!spa)return;
+  const fv=spa.fz;
+  const sumG=spa.g.reduce((s,g)=>s+g.gw,0);
+  document.getElementById('p1vehicle').innerHTML=
+    `<div class="stat"><div class="stat-n">${(fv.nl/1000).toLocaleString('de-DE')}t</div><div class="stat-l">Nutzlast</div></div>`+
+    `<div class="stat"><div class="stat-n">${(fv.mh/1000).toLocaleString('de-DE')}t</div><div class="stat-l">Max. Hinterachse</div></div>`+
+    `<div class="stat"><div class="stat-n">${spa.g.length}</div><div class="stat-l">Güter</div></div>`+
+    `<div class="stat"><div class="stat-n">${sumG.toLocaleString('de-DE')}</div><div class="stat-l">kg gesamt</div></div>`;
+  const c=document.getElementById('p1goods');
+  c.innerHTML=spa.g.map(g=>`<div class="pgut" style="cursor:default"><span style="font-size:14px">${g.ic}</span><span style="white-space:pre;text-align:center;line-height:1.2;font-size:9px">${g.n}</span></div>`).join('');
+}
+function initP2(){
+  if(!spa)return;
+  selEquip=new Set();equipConfirmed=false;equipScoreOk=null;
+  document.getElementById('p2fb').className='m-fb';
+  renderEquip();
+}
+function renderEquip(){
+  const c=document.getElementById('p2equip');
+  c.innerHTML=LASI.map(m=>{
+    const sel=selEquip.has(m.id);
+    let cls='spcard'+(sel?' selected':'');
+    let badge='';
+    if(equipConfirmed){
+      const correct=spa.korrekt_zurrmittel.includes(m.id);
+      const wrongPick=sel&&spa.falsch_zurrmittel.includes(m.id);
+      if(correct){cls+=' correct';badge=`<span style="float:right;color:var(--ok);font-weight:800">✓</span>`;}
+      else if(wrongPick){cls+=' wrong';badge=`<span style="float:right;color:var(--no);font-weight:800">✗</span>`;}
+    }
+    return `<div class="${cls}" ${equipConfirmed?'':`onclick="toggleEquip('${m.id}')"`} style="text-align:left;padding:12px">
+      <div style="font-size:18px;margin-bottom:4px">${m.ic}${badge}</div>
+      <div style="font-size:11px;font-weight:700;color:var(--navy)">${m.n}</div>
+      ${equipConfirmed?`<div style="font-size:9px;color:var(--muted);margin-top:4px">${m.erkl}</div>`:''}
+    </div>`;
+  }).join('');
+}
+function toggleEquip(id){
+  if(equipConfirmed)return;
+  if(selEquip.has(id))selEquip.delete(id);else selEquip.add(id);
+  renderEquip();
+}
+function confirmEquip(){
+  if(!spa||equipConfirmed)return;
+  equipConfirmed=true;
+  const hatAlleKorrekt=spa.korrekt_zurrmittel.every(id=>selEquip.has(id));
+  const hatKeinFalsches=[...selEquip].every(id=>!spa.falsch_zurrmittel.includes(id));
+  equipScoreOk=hatAlleKorrekt&&hatKeinFalsches;
+  renderEquip();
+  const fb=document.getElementById('p2fb');
+  fb.className='m-fb '+(equipScoreOk?'ok':'no')+' show';
+  fb.textContent=equipScoreOk?'✓ Gute Auswahl für diese Ladung.':'✗ Nicht optimal – grün markierte Karten wären richtig gewesen, rot markierte waren eine Fehlauswahl.';
+}
 function initP3(){}
-function initP4(){}
+const P4_CX={bremsen:0.8,beschleunigen:0.5,kurve:0.5};
+const P4_CX_LABEL={bremsen:'Bremsen, nach vorne (cₓ = 0,8)',beschleunigen:'Beschleunigen, nach hinten (cₓ = 0,5)',kurve:'Kurvenfahrt, zur Seite (cₓ = 0,5)'};
+const P4_MU_OPTS=[[0.2,'0,2 – glatt/trocken'],[0.25,'0,25 – Stahl/Stahl'],[0.3,'0,3 – Standard'],[0.45,'0,45 – rau'],[0.6,'0,6 – Antirutschmatte'],[0.7,'0,7 – Hochreibwert']];
+function fld(label,inner){return `<div><label style="display:block;font-size:9px;font-weight:700;color:var(--navy);margin-bottom:4px">${label}</label>${inner}</div>`;}
+const P4_INPUT_STYLE='width:100%;padding:8px;border:1.5px solid var(--line);border-radius:8px;font-size:12px';
+
+function initP4(){
+  if(!spa)return;
+  const c=spa.calc;
+  const sumG=spa.g.reduce((s,g)=>s+g.gw,0);
+  const fg=sumG*9.81/10;
+  document.getElementById('p4info').innerHTML=
+    `<div class="stat"><div class="stat-n">${sumG.toLocaleString('de-DE')}</div><div class="stat-l">kg Ladung</div></div>`+
+    `<div class="stat"><div class="stat-n">${fg.toLocaleString('de-DE',{maximumFractionDigits:0})}</div><div class="stat-l">daN Gewichtskraft</div></div>`+
+    `<div class="stat"><div class="stat-n">${c.methode==='direktzurren'?'Direktzurren':'Niederzurren'}</div><div class="stat-l">Methode</div></div>`;
+
+  let html=fld('Zu sichernde Richtung',`<div style="font-size:11px;font-weight:700;color:var(--navy);padding:8px 0">${P4_CX_LABEL[c.richtung]}</div>`);
+  html+=fld('Reibbeiwert μ',`<select id="p4mu" style="${P4_INPUT_STYLE}">${P4_MU_OPTS.map(([v,l])=>`<option value="${v}" ${c.mu===v?'selected':''}>${l}</option>`).join('')}</select>`);
+  if(c.methode==='niederzurren'){
+    html+=fld('Vorspannkraft F_STF (daN)',`<input type="number" id="p4stf" value="${c.stf}" style="${P4_INPUT_STYLE}">`);
+    html+=fld('Anlegewinkel α (Grad)',`<input type="number" id="p4alpha" value="${c.alpha}" style="${P4_INPUT_STYLE}">`);
+  } else {
+    html+=fld('Zulässige Zugkraft LC (daN)',`<input type="number" id="p4lc" value="${c.lc}" style="${P4_INPUT_STYLE}">`);
+    html+=fld('Vertikalwinkel α (Grad)',`<input type="number" id="p4alpha" value="${c.alphaDirekt}" style="${P4_INPUT_STYLE}">`);
+    html+=fld('Horizontalwinkel β (Grad)',`<input type="number" id="p4beta" value="${c.beta}" style="${P4_INPUT_STYLE}">`);
+  }
+  document.getElementById('p4form').innerHTML=html;
+  document.getElementById('p4result').className='m-fb';
+  document.getElementById('p4guessWrap').innerHTML='';
+  calcAntw=null;correctN_P4=null;
+}
+
+// Formeln 1:1 aus trainer_wissensbot.html portiert (reine Funktionen, keine Auth-/Netzwerk-Abhängigkeit)
+function berechneNiederzurren(fg,cx,mu,stf,alphaGrad){
+  const alphaRad=alphaGrad*Math.PI/180;
+  const zaehler=fg*(cx-mu);
+  if(zaehler<=0)return 0;
+  const nenner=2*mu*stf*Math.sin(alphaRad);
+  if(!(nenner>0))return null;
+  return Math.ceil(zaehler/nenner);
+}
+function berechneDirektzurren(fg,cx,mu,lc,alphaGrad,betaGrad){
+  const alphaRad=alphaGrad*Math.PI/180,betaRad=betaGrad*Math.PI/180;
+  const zaehler=fg*(cx-mu);
+  if(zaehler<=0)return 0;
+  const nenner=lc*(Math.cos(alphaRad)*Math.cos(betaRad)+mu*Math.sin(alphaRad));
+  if(!(nenner>0))return null;
+  return Math.ceil(zaehler/nenner);
+}
+
+function berechneP4(){
+  if(!spa)return;
+  const c=spa.calc;
+  const sumG=spa.g.reduce((s,g)=>s+g.gw,0);
+  const fg=sumG*9.81/10;
+  const cx=P4_CX[c.richtung];
+  const mu=parseFloat(document.getElementById('p4mu').value);
+  let n;
+  if(c.methode==='niederzurren'){
+    const stf=parseFloat(document.getElementById('p4stf').value);
+    const alpha=parseFloat(document.getElementById('p4alpha').value);
+    n=berechneNiederzurren(fg,cx,mu,stf,alpha);
+  } else {
+    const lc=parseFloat(document.getElementById('p4lc').value);
+    const alpha=parseFloat(document.getElementById('p4alpha').value);
+    const beta=parseFloat(document.getElementById('p4beta').value);
+    n=berechneDirektzurren(fg,cx,mu,lc,alpha,beta);
+  }
+  const box=document.getElementById('p4result');
+  if(n===null||isNaN(n)){box.className='m-fb no show';box.textContent='Bitte gültige Werte eingeben.';return;}
+  correctN_P4=n;
+  box.className='m-fb ok show';
+  box.innerHTML=`Rechnerisch benötigt: <strong>${n} Zurrmittel</strong>.`;
+  document.getElementById('p4guessWrap').innerHTML=
+    `<label style="display:block;font-size:9px;font-weight:700;color:var(--navy);margin:10px 0 4px">Deine Schätzung: Wie viele Zurrmittel würdest du verwenden?</label>
+     <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">
+       <input type="number" id="p4guess" style="width:80px;${P4_INPUT_STYLE}">
+       <button class="m-btn out sm" onclick="pruefeP4()">Prüfen</button>
+     </div>
+     <div class="m-fb" id="p4guessFb"></div>`;
+}
+function pruefeP4(){
+  const guessEl=document.getElementById('p4guess');
+  const guess=parseInt(guessEl.value,10);
+  if(isNaN(guess))return;
+  const ok=Math.abs(guess-correctN_P4)<=1;
+  calcAntw={n:guess,correctN:correctN_P4,methode:spa.calc.methode};
+  const fb=document.getElementById('p4guessFb');
+  fb.className='m-fb '+(ok?'ok':'no')+' show';
+  fb.textContent=ok?`✓ Passt (rechnerisch ${correctN_P4}).`:`✗ Rechnerisch werden ${correctN_P4} Zurrmittel benötigt.`;
+}
 function initP5(){
   if(!cv1Bound){initCV1();cv1Bound=true;}else{drawCV1();}
   bldPal();updStats();updFill();showSub(1);
@@ -915,6 +1080,10 @@ window.leere=leere;
 window.showP=showP;
 window.showSub=showSub;
 window.goPhase=goPhase;
+window.berechneP4=berechneP4;
+window.pruefeP4=pruefeP4;
+window.toggleEquip=toggleEquip;
+window.confirmEquip=confirmEquip;
 window.goP2=goP2;
 window.goP1=goP1;
 window.bldPal=bldPal;
