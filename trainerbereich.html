@@ -172,6 +172,21 @@ body::before{
           <div class="lib-sub">Fragen zu Vorschriften &amp; Gesetzestexten stellen — Antwort aus der Trainer-Wissensdatenbank</div>
         </div>
       </a>
+      <a class="lib-card" href="cockpit.html" id="cockpitCard" style="display:none">
+        <div class="lib-icon" style="background:linear-gradient(135deg,#16243f,#0d2d80)">
+          <svg viewBox="0 0 100 100" style="width:64px;height:64px">
+            <circle cx="50" cy="50" r="38" fill="none" stroke="rgba(255,255,255,.18)" stroke-width="8"/>
+            <circle cx="50" cy="50" r="38" fill="none" stroke="#2e75cc" stroke-width="8" stroke-linecap="round"
+              stroke-dasharray="178.8 238.4" transform="rotate(-90 50 50)"/>
+            <circle cx="50" cy="50" r="38" fill="none" stroke="#f5a623" stroke-width="8" stroke-linecap="round"
+              stroke-dasharray="35.8 238.4" stroke-dashoffset="-178.8" transform="rotate(-90 50 50)"/>
+          </svg>
+        </div>
+        <div class="lib-info">
+          <div class="lib-title">Cockpit</div>
+          <div class="lib-sub">Geschäftszahlen, Baufortschritt und offene Baustellen auf einen Blick</div>
+        </div>
+      </a>
     </div>
     <div class="footer-area">
       <button class="back-btn" onclick="doLogout()" style="cursor:pointer">↩ Abmelden</button>
@@ -182,10 +197,11 @@ body::before{
 <script>
 var TRAINER_LOGIN_URL = 'https://2bb3195223a7efb1a05e6e69ad5c54.4c.environment.api.powerplatform.com:443/powerautomate/automations/direct/cu/07/workflows/eeeae616f91747c0815cb9bb3658123d/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=J5mCAy661-nlm_1dUqrozgHH47b3r1VSw3Cr_g88_70';
 
-function showTools(name){
+function showTools(name, benutzername){
   document.getElementById('loginCard').style.display = 'none';
   document.getElementById('toolsCard').style.display = 'block';
   document.getElementById('greetName').textContent = name ? ('Hallo, ' + name + '!') : '';
+  document.getElementById('cockpitCard').style.display = (benutzername === 'Trainer01') ? '' : 'none';
 }
 
 function doLogout(){
@@ -227,7 +243,7 @@ async function doLogin(){
     var data = await res.json();
     if(data && data.zugang === true){
       sessionStorage.setItem('trainerAuth', JSON.stringify({ benutzername: benutzername, name: data.name || '' }));
-      showTools(data.name);
+      showTools(data.name, benutzername);
     } else {
       errEl.textContent = 'Benutzername oder Passwort falsch.';
     }
@@ -244,7 +260,7 @@ async function doLogin(){
   if(raw){
     try{
       var auth = JSON.parse(raw);
-      showTools(auth.name);
+      showTools(auth.name, auth.benutzername);
     }catch(e){ sessionStorage.removeItem('trainerAuth'); }
   }
 })();
