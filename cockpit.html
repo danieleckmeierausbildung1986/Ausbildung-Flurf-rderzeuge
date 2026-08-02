@@ -167,10 +167,53 @@ nav{
     </div>
   </div>
 
-  <div class="grid">
+  <div style="display:flex;flex-direction:column;gap:16px">
 
-    <!-- Linke Spalte -->
-    <div style="display:flex;flex-direction:column;gap:16px">
+      <div class="card">
+        <div class="card-hd tabs-hd">
+          <div class="tabs">
+            <button type="button" class="tab-btn active" data-tab="abrechnung" onclick="showTab('abrechnung')">Abrechnung</button>
+            <button type="button" class="tab-btn" data-tab="schulungen" onclick="showTab('schulungen')">Schulungen</button>
+            <button type="button" class="tab-btn" data-tab="lop" onclick="showTab('lop')">LoP-Liste</button>
+          </div>
+        </div>
+        <div class="card-bd" style="padding-top:12px">
+
+          <div class="tab-panel active" id="tab-abrechnung">
+            <div class="biz-loading" id="bizLoading">Lade Zahlungsdaten …</div>
+            <div class="biz-error" id="bizError">Zahlungsdaten konnten nicht geladen werden. Bitte Seite neu laden.</div>
+            <div id="bizContent" style="display:none">
+              <div class="rev-hero">
+                <div class="rev-num mono" id="bizUmsatz">–</div>
+                <div class="rev-sub" id="bizJahr">Umsatz bisher</div>
+              </div>
+              <div class="rev-status" id="bizStatus"></div>
+
+              <div class="kv-row"><span class="k">Teilnehmer</span><span class="v mono" id="bizTeilnehmer">–</span></div>
+              <div class="kv-row"><span class="k">Kursbuchungen</span><span class="v mono" id="bizBuchungen">–</span></div>
+              <div class="kv-row"><span class="k">Rechnungen</span><span class="v mono" id="bizRechnungen">–</span></div>
+
+              <div style="margin-top:16px" id="bizBars"></div>
+            </div>
+          </div>
+
+          <div class="tab-panel" id="tab-schulungen">
+            <div class="biz-loading" id="kursLoading">Lade Anmeldedaten …</div>
+            <div id="kursContent" style="display:none">
+              <div id="kursBars"></div>
+            </div>
+          </div>
+
+          <div class="tab-panel" id="tab-lop">
+            <div class="biz-loading" id="lopLoading">Lade offene Posten …</div>
+            <div id="lopContent" style="display:none">
+              <div class="kv-row"><span class="k">Offen gesamt</span><span class="v mono" id="lopSumme">–</span></div>
+              <div style="margin-top:8px" id="lopList"></div>
+            </div>
+          </div>
+
+        </div>
+      </div>
 
       <div class="card">
         <div class="card-hd">
@@ -278,59 +321,6 @@ nav{
           </div>
         </div>
       </div>
-
-    </div>
-
-    <!-- Rechte Spalte -->
-    <div style="display:flex;flex-direction:column;gap:16px">
-
-      <div class="card">
-        <div class="card-hd tabs-hd">
-          <div class="tabs">
-            <button type="button" class="tab-btn active" data-tab="abrechnung" onclick="showTab('abrechnung')">Abrechnung</button>
-            <button type="button" class="tab-btn" data-tab="schulungen" onclick="showTab('schulungen')">Schulungen</button>
-            <button type="button" class="tab-btn" data-tab="lop" onclick="showTab('lop')">LoP-Liste</button>
-          </div>
-        </div>
-        <div class="card-bd" style="padding-top:12px">
-
-          <div class="tab-panel active" id="tab-abrechnung">
-            <div class="biz-loading" id="bizLoading">Lade Zahlungsdaten …</div>
-            <div class="biz-error" id="bizError">Zahlungsdaten konnten nicht geladen werden. Bitte Seite neu laden.</div>
-            <div id="bizContent" style="display:none">
-              <div class="rev-hero">
-                <div class="rev-num mono" id="bizUmsatz">–</div>
-                <div class="rev-sub" id="bizJahr">Umsatz bisher</div>
-              </div>
-              <div class="rev-status" id="bizStatus"></div>
-
-              <div class="kv-row"><span class="k">Teilnehmer</span><span class="v mono" id="bizTeilnehmer">–</span></div>
-              <div class="kv-row"><span class="k">Kursbuchungen</span><span class="v mono" id="bizBuchungen">–</span></div>
-              <div class="kv-row"><span class="k">Rechnungen</span><span class="v mono" id="bizRechnungen">–</span></div>
-
-              <div style="margin-top:16px" id="bizBars"></div>
-            </div>
-          </div>
-
-          <div class="tab-panel" id="tab-schulungen">
-            <div class="biz-loading" id="kursLoading">Lade Anmeldedaten …</div>
-            <div id="kursContent" style="display:none">
-              <div id="kursBars"></div>
-            </div>
-          </div>
-
-          <div class="tab-panel" id="tab-lop">
-            <div class="biz-loading" id="lopLoading">Lade offene Posten …</div>
-            <div id="lopContent" style="display:none">
-              <div class="kv-row"><span class="k">Offen gesamt</span><span class="v mono" id="lopSumme">–</span></div>
-              <div style="margin-top:8px" id="lopList"></div>
-            </div>
-          </div>
-
-        </div>
-      </div>
-
-    </div>
 
   </div>
 
