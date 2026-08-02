@@ -194,6 +194,9 @@ nav{
               <div class="kv-row"><span class="k">Rechnungen</span><span class="v mono" id="bizRechnungen">–</span></div>
 
               <div style="margin-top:16px" id="bizBars"></div>
+
+              <div class="kv-row" style="margin-top:16px;border-top:1px solid var(--line);padding-top:14px"><span class="k">Offene Posten</span><span class="v mono" id="lopSumme">–</span></div>
+              <div style="margin-top:8px" id="lopList"></div>
             </div>
           </div>
 
@@ -205,13 +208,7 @@ nav{
           </div>
 
           <div class="tab-panel" id="tab-lop">
-            <div class="biz-loading" id="lopLoading">Lade offene Posten …</div>
-            <div id="lopContent" style="display:none">
-              <div class="kv-row"><span class="k">Offen gesamt</span><span class="v mono" id="lopSumme">–</span></div>
-              <div style="margin-top:8px" id="lopList"></div>
-            </div>
-
-            <div style="display:flex;flex-direction:column;gap:16px;margin-top:20px">
+            <div style="display:flex;flex-direction:column;gap:16px">
 
               <div class="card">
                 <div class="card-hd">
@@ -472,8 +469,6 @@ function renderZahlungen(rows){
       '</div>';
     }).join('');
   }
-  document.getElementById('lopLoading').style.display = 'none';
-  document.getElementById('lopContent').style.display = 'block';
 
   setDial('dialRevenue', Math.min(1, umsatzGesamt / 5000));
   document.getElementById('dialRevenueNum').textContent = umsatzGesamt >= 1000
