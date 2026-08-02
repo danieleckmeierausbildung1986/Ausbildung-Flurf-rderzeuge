@@ -97,6 +97,19 @@ nav{
 .biz-loading{padding:20px 2px;text-align:center;color:var(--muted);font-size:13px}
 .biz-error{padding:14px 2px;color:var(--red);font-size:12.5px;line-height:1.6;display:none}
 
+.tabs-hd{padding:10px 10px 0 18px}
+.tabs{display:flex;gap:2px;flex:1}
+.tab-btn{background:none;border:none;font:inherit;font-size:13px;font-weight:700;color:var(--muted);padding:9px 12px;border-radius:8px 8px 0 0;cursor:pointer;border-bottom:2.5px solid transparent}
+.tab-btn:hover:not(.active){color:var(--ink)}
+.tab-btn.active{color:var(--blue);border-bottom-color:var(--blue)}
+.tab-panel{display:none}
+.tab-panel.active{display:block}
+
+.lop-empty{padding:20px 2px;text-align:center;color:var(--muted);font-size:13px}
+.lop-row{display:flex;gap:10px;align-items:center;padding:11px 0;border-bottom:1px solid var(--line)}
+.lop-row:last-child{border-bottom:none}
+.lop-amt{margin-left:auto;font-weight:700;color:var(--ink);white-space:nowrap;padding-left:10px}
+
 .foot{margin-top:22px;text-align:center;font-size:11.5px;color:var(--muted-d)}
 </style>
 </head>
@@ -249,50 +262,6 @@ nav{
         </div>
       </div>
 
-    </div>
-
-    <!-- Rechte Spalte -->
-    <div style="display:flex;flex-direction:column;gap:16px">
-
-      <div class="card">
-        <div class="card-hd">
-          <div class="stripe blue"></div>
-          <h2>Geschäftszahlen</h2>
-          <span class="count">live · Liste „Zahlungen"</span>
-        </div>
-        <div class="card-bd" style="padding-top:12px">
-          <div class="biz-loading" id="bizLoading">Lade Zahlungsdaten …</div>
-          <div class="biz-error" id="bizError">Zahlungsdaten konnten nicht geladen werden. Bitte Seite neu laden.</div>
-          <div id="bizContent" style="display:none">
-            <div class="rev-hero">
-              <div class="rev-num mono" id="bizUmsatz">–</div>
-              <div class="rev-sub" id="bizJahr">Umsatz bisher</div>
-            </div>
-            <div class="rev-status" id="bizStatus"></div>
-
-            <div class="kv-row"><span class="k">Teilnehmer</span><span class="v mono" id="bizTeilnehmer">–</span></div>
-            <div class="kv-row"><span class="k">Kursbuchungen</span><span class="v mono" id="bizBuchungen">–</span></div>
-            <div class="kv-row"><span class="k">Rechnungen</span><span class="v mono" id="bizRechnungen">–</span></div>
-
-            <div style="margin-top:16px" id="bizBars"></div>
-          </div>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="card-hd">
-          <div class="stripe green"></div>
-          <h2>Schulungen — Anmeldungen</h2>
-          <span class="count">live · Liste „Zahlungen"</span>
-        </div>
-        <div class="card-bd" style="padding-top:12px">
-          <div class="biz-loading" id="kursLoading">Lade Anmeldedaten …</div>
-          <div id="kursContent" style="display:none">
-            <div id="kursBars"></div>
-          </div>
-        </div>
-      </div>
-
       <div class="card">
         <div class="card-hd">
           <div class="stripe amber"></div>
@@ -307,6 +276,57 @@ nav{
               <span class="tag crit">Kostentreiber</span>
             </div>
           </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Rechte Spalte -->
+    <div style="display:flex;flex-direction:column;gap:16px">
+
+      <div class="card">
+        <div class="card-hd tabs-hd">
+          <div class="tabs">
+            <button type="button" class="tab-btn active" data-tab="abrechnung" onclick="showTab('abrechnung')">Abrechnung</button>
+            <button type="button" class="tab-btn" data-tab="schulungen" onclick="showTab('schulungen')">Schulungen</button>
+            <button type="button" class="tab-btn" data-tab="lop" onclick="showTab('lop')">LoP-Liste</button>
+          </div>
+        </div>
+        <div class="card-bd" style="padding-top:12px">
+
+          <div class="tab-panel active" id="tab-abrechnung">
+            <div class="biz-loading" id="bizLoading">Lade Zahlungsdaten …</div>
+            <div class="biz-error" id="bizError">Zahlungsdaten konnten nicht geladen werden. Bitte Seite neu laden.</div>
+            <div id="bizContent" style="display:none">
+              <div class="rev-hero">
+                <div class="rev-num mono" id="bizUmsatz">–</div>
+                <div class="rev-sub" id="bizJahr">Umsatz bisher</div>
+              </div>
+              <div class="rev-status" id="bizStatus"></div>
+
+              <div class="kv-row"><span class="k">Teilnehmer</span><span class="v mono" id="bizTeilnehmer">–</span></div>
+              <div class="kv-row"><span class="k">Kursbuchungen</span><span class="v mono" id="bizBuchungen">–</span></div>
+              <div class="kv-row"><span class="k">Rechnungen</span><span class="v mono" id="bizRechnungen">–</span></div>
+
+              <div style="margin-top:16px" id="bizBars"></div>
+            </div>
+          </div>
+
+          <div class="tab-panel" id="tab-schulungen">
+            <div class="biz-loading" id="kursLoading">Lade Anmeldedaten …</div>
+            <div id="kursContent" style="display:none">
+              <div id="kursBars"></div>
+            </div>
+          </div>
+
+          <div class="tab-panel" id="tab-lop">
+            <div class="biz-loading" id="lopLoading">Lade offene Posten …</div>
+            <div id="lopContent" style="display:none">
+              <div class="kv-row"><span class="k">Offen gesamt</span><span class="v mono" id="lopSumme">–</span></div>
+              <div style="margin-top:8px" id="lopList"></div>
+            </div>
+          </div>
+
         </div>
       </div>
 
@@ -346,6 +366,11 @@ setDial('dialRisk', 1/3);
 
 // ── Live-Geschäftszahlen aus der SharePoint-Liste "Zahlungen" ──
 var COCKPIT_ZAHLUNGEN_URL = 'https://default8af25f9034bc4ef4aba22ab6f641d5.01.environment.api.powerplatform.com:443/powerautomate/automations/direct/cu/16/workflows/d55969e9e5fb467ba7ef988f63e08a4a/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=XP6hu54hF5siUCjMjuSNErnSF0C99shxMqA8zzo2iyk';
+
+function showTab(name){
+  document.querySelectorAll('.tab-btn').forEach(function(b){ b.classList.toggle('active', b.dataset.tab === name); });
+  document.querySelectorAll('.tab-panel').forEach(function(p){ p.classList.toggle('active', p.id === 'tab-' + name); });
+}
 
 function choiceVal(field){
   if(field && typeof field === 'object') return field.Value;
@@ -435,6 +460,26 @@ function renderZahlungen(rows){
   document.getElementById('kursBars').innerHTML = kursBarsHtml;
   document.getElementById('kursLoading').style.display = 'none';
   document.getElementById('kursContent').style.display = 'block';
+
+  var offen = relevant.filter(function(r){ return choiceVal(r.Zahlungsstatus) !== 'Bezahlt'; })
+    .sort(function(a,b){ return (a.Zahlungsdatum||'').localeCompare(b.Zahlungsdatum||''); });
+  document.getElementById('lopSumme').textContent = euro(offenBetrag) + ' (' + offen.length + ' Position' + (offen.length===1?'':'en') + ')';
+  if(offen.length === 0){
+    document.getElementById('lopList').innerHTML = '<div class="lop-empty">✓ Keine offenen Posten — alles bezahlt.</div>';
+  } else {
+    document.getElementById('lopList').innerHTML = offen.map(function(r){
+      var wer = [r.Vorname, r.Name].filter(Boolean).join(' ') || r.Title || 'Unbekannt';
+      var kurs = choiceVal(r.Kurs) || 'Unbekannt';
+      var sub = 'Rechnung ' + (r.Rechnungsnummer || '–') + (r.Zahlungsdatum ? ' · ' + r.Zahlungsdatum : '');
+      return '<div class="lop-row">' +
+        '<div class="chip open">€</div>' +
+        '<div class="task-txt"><div class="task-t">' + wer + ' — ' + kurs + '</div><div class="task-s">' + sub + '</div></div>' +
+        '<div class="lop-amt mono">' + euro(Number(r.Betrag) || 0) + '</div>' +
+      '</div>';
+    }).join('');
+  }
+  document.getElementById('lopLoading').style.display = 'none';
+  document.getElementById('lopContent').style.display = 'block';
 
   setDial('dialRevenue', Math.min(1, umsatzGesamt / 5000));
   document.getElementById('dialRevenueNum').textContent = umsatzGesamt >= 1000
