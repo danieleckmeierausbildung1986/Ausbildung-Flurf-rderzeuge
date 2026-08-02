@@ -210,115 +210,119 @@ nav{
               <div class="kv-row"><span class="k">Offen gesamt</span><span class="v mono" id="lopSumme">–</span></div>
               <div style="margin-top:8px" id="lopList"></div>
             </div>
+
+            <div style="display:flex;flex-direction:column;gap:16px;margin-top:20px">
+
+              <div class="card">
+                <div class="card-hd">
+                  <div class="stripe amber"></div>
+                  <h2>Offene Baustellen</h2>
+                  <span class="count">3</span>
+                </div>
+                <div class="card-bd">
+                  <div class="task">
+                    <div class="chip open">!</div>
+                    <div class="task-txt">
+                      <div class="task-t">Überwachungs-Flow für hängende „Anmeldung HP"-Läufe</div>
+                      <div class="task-s">Erkennt automatisch, wenn eine Registrierung im Flow stecken bleibt.</div>
+                      <span class="tag warn">Technisch</span>
+                    </div>
+                  </div>
+                  <div class="task">
+                    <div class="chip open">!</div>
+                    <div class="task-txt">
+                      <div class="task-t">Terminkoordination auf Microsoft Bookings umstellen</div>
+                      <div class="task-s">Löst die bisherige manuelle Terminanfragen-Logik ab.</div>
+                      <span class="tag info">Prozess</span>
+                    </div>
+                  </div>
+                  <div class="task">
+                    <div class="chip open">!</div>
+                    <div class="task-txt">
+                      <div class="task-t">E-Learning-Inhalte überarbeiten</div>
+                      <div class="task-s">Aufklappbare Erklärungstexte ergänzen, responsives Layout prüfen.</div>
+                      <span class="tag info">Inhalt</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="card">
+                <div class="card-hd">
+                  <div class="stripe green"></div>
+                  <h2>Ladungssicherung — Praxismodul</h2>
+                  <span class="count">live</span>
+                </div>
+                <div class="card-bd">
+                  <div class="task">
+                    <div class="chip done">✓</div>
+                    <div class="task-txt">
+                      <div class="task-t">6-Phasen-Umbau abgeschlossen und live</div>
+                      <div class="task-s">Ladung ansehen → Zurrmittel wählen → prüfen → berechnen → platzieren &amp; sichern → Auswertung.</div>
+                    </div>
+                  </div>
+                  <div class="task">
+                    <div class="chip open">!</div>
+                    <div class="task-txt">
+                      <div class="task-t">Wartet auf Feedback zu den einzelnen Phasen</div>
+                      <div class="task-s">„Ist okay, aber noch nicht so wie ich es will" — konkrete Anmerkungen stehen noch aus.</div>
+                      <span class="tag warn">Braucht dich</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="card">
+                <div class="card-hd">
+                  <div class="stripe blue"></div>
+                  <h2>Zuletzt erledigt</h2>
+                  <span class="count">Auswahl</span>
+                </div>
+                <div class="card-bd">
+                  <div class="task">
+                    <div class="chip done">✓</div>
+                    <div class="task-txt">
+                      <div class="task-t">Praxisprüfung Stufe 1: Nachprüfungs-Filter repariert</div>
+                      <div class="task-s">Durchgefallene Prüflinge erschienen nicht mehr in der Nachprüfungs-Liste.</div>
+                    </div>
+                  </div>
+                  <div class="task">
+                    <div class="chip done">✓</div>
+                    <div class="task-txt">
+                      <div class="task-t">Trainer-Chatbot (Wissensassistent)</div>
+                      <div class="task-s">Frontend und Power-Automate-Flow gebaut, Modell auf Haiku 4.5 umgestellt.</div>
+                    </div>
+                  </div>
+                  <div class="task">
+                    <div class="chip done">✓</div>
+                    <div class="task-txt">
+                      <div class="task-t">Stripe-Zahlungsanbindung</div>
+                      <div class="task-s">Payment Links mit QR-Code für schnelle Zahlung.</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="card">
+                <div class="card-hd">
+                  <div class="stripe amber"></div>
+                  <h2>Bekannte technische Baustelle</h2>
+                </div>
+                <div class="card-bd">
+                  <div class="task">
+                    <div class="chip crit">€</div>
+                    <div class="task-txt">
+                      <div class="task-t">Wissensassistent-Kosten über Zielwert</div>
+                      <div class="task-s">Aktuell ca. 0,25 € pro Frage (Haiku 4.5, PDF-Bilder als Wissensquelle). Ziel: 0,01 €. Umstieg auf textbasierte Wissensbasis würde Kosten grob um Faktor 50 senken.</div>
+                      <span class="tag crit">Kostentreiber</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
           </div>
 
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="card-hd">
-          <div class="stripe amber"></div>
-          <h2>Offene Baustellen</h2>
-          <span class="count">3</span>
-        </div>
-        <div class="card-bd">
-          <div class="task">
-            <div class="chip open">!</div>
-            <div class="task-txt">
-              <div class="task-t">Überwachungs-Flow für hängende „Anmeldung HP"-Läufe</div>
-              <div class="task-s">Erkennt automatisch, wenn eine Registrierung im Flow stecken bleibt.</div>
-              <span class="tag warn">Technisch</span>
-            </div>
-          </div>
-          <div class="task">
-            <div class="chip open">!</div>
-            <div class="task-txt">
-              <div class="task-t">Terminkoordination auf Microsoft Bookings umstellen</div>
-              <div class="task-s">Löst die bisherige manuelle Terminanfragen-Logik ab.</div>
-              <span class="tag info">Prozess</span>
-            </div>
-          </div>
-          <div class="task">
-            <div class="chip open">!</div>
-            <div class="task-txt">
-              <div class="task-t">E-Learning-Inhalte überarbeiten</div>
-              <div class="task-s">Aufklappbare Erklärungstexte ergänzen, responsives Layout prüfen.</div>
-              <span class="tag info">Inhalt</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="card-hd">
-          <div class="stripe green"></div>
-          <h2>Ladungssicherung — Praxismodul</h2>
-          <span class="count">live</span>
-        </div>
-        <div class="card-bd">
-          <div class="task">
-            <div class="chip done">✓</div>
-            <div class="task-txt">
-              <div class="task-t">6-Phasen-Umbau abgeschlossen und live</div>
-              <div class="task-s">Ladung ansehen → Zurrmittel wählen → prüfen → berechnen → platzieren &amp; sichern → Auswertung.</div>
-            </div>
-          </div>
-          <div class="task">
-            <div class="chip open">!</div>
-            <div class="task-txt">
-              <div class="task-t">Wartet auf Feedback zu den einzelnen Phasen</div>
-              <div class="task-s">„Ist okay, aber noch nicht so wie ich es will" — konkrete Anmerkungen stehen noch aus.</div>
-              <span class="tag warn">Braucht dich</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="card-hd">
-          <div class="stripe blue"></div>
-          <h2>Zuletzt erledigt</h2>
-          <span class="count">Auswahl</span>
-        </div>
-        <div class="card-bd">
-          <div class="task">
-            <div class="chip done">✓</div>
-            <div class="task-txt">
-              <div class="task-t">Praxisprüfung Stufe 1: Nachprüfungs-Filter repariert</div>
-              <div class="task-s">Durchgefallene Prüflinge erschienen nicht mehr in der Nachprüfungs-Liste.</div>
-            </div>
-          </div>
-          <div class="task">
-            <div class="chip done">✓</div>
-            <div class="task-txt">
-              <div class="task-t">Trainer-Chatbot (Wissensassistent)</div>
-              <div class="task-s">Frontend und Power-Automate-Flow gebaut, Modell auf Haiku 4.5 umgestellt.</div>
-            </div>
-          </div>
-          <div class="task">
-            <div class="chip done">✓</div>
-            <div class="task-txt">
-              <div class="task-t">Stripe-Zahlungsanbindung</div>
-              <div class="task-s">Payment Links mit QR-Code für schnelle Zahlung.</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="card-hd">
-          <div class="stripe amber"></div>
-          <h2>Bekannte technische Baustelle</h2>
-        </div>
-        <div class="card-bd">
-          <div class="task">
-            <div class="chip crit">€</div>
-            <div class="task-txt">
-              <div class="task-t">Wissensassistent-Kosten über Zielwert</div>
-              <div class="task-s">Aktuell ca. 0,25 € pro Frage (Haiku 4.5, PDF-Bilder als Wissensquelle). Ziel: 0,01 €. Umstieg auf textbasierte Wissensbasis würde Kosten grob um Faktor 50 senken.</div>
-              <span class="tag crit">Kostentreiber</span>
-            </div>
-          </div>
         </div>
       </div>
 
