@@ -53,6 +53,24 @@ nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.95);backdrop-
 .soon{padding:20px 18px;color:var(--muted);font-size:13.5px}
 .soon .tag{display:inline-block;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;background:var(--blue-xl);color:var(--blue);border-radius:20px;padding:2px 9px;margin-left:8px}
 
+.k2-block{border-bottom:1px solid var(--line)}
+.k2-block:last-child{border-bottom:none}
+.k2-name{font-size:14.5px;font-weight:700;color:var(--ink);padding:14px 18px 2px}
+.k2-row{display:flex;align-items:center;gap:14px;padding:10px 18px;flex-wrap:wrap}
+.k2-row .k-info{flex:1;min-width:200px}
+.k2-geraet{font-size:12.5px;font-weight:700;color:var(--navy);margin-bottom:4px}
+
+.tabs-row{display:flex;gap:14px;margin-top:22px;flex-wrap:wrap}
+.tabbtn{flex:1;min-width:150px;border:none;border-radius:14px;padding:16px 18px;cursor:pointer;color:#fff;text-align:center;box-shadow:var(--shadow-sm);transition:transform .15s,box-shadow .15s,opacity .15s}
+.tabbtn:hover{transform:translateY(-2px)}
+.tabbtn.active{opacity:1;box-shadow:0 6px 20px rgba(0,0,0,.18)}
+.tabbtn:not(.active){opacity:.68}
+.tabbtn-title{display:block;font-size:15px;font-weight:800}
+.tabbtn-sub{display:block;font-size:12px;font-weight:600;margin-top:3px;opacity:.9}
+.tab-stufe1{background:linear-gradient(135deg,var(--blue-l),var(--blue-d))}
+.tab-stufe2{background:linear-gradient(135deg,#8a5cf0,#4a2c8f)}
+.tab-lasi{background:linear-gradient(135deg,var(--amber-l),#a8630a)}
+
 .footer-area{margin-top:24px;text-align:center}
 .refresh-btn{background:#fff;border:1.5px solid var(--line);border-radius:10px;padding:9px 18px;font-size:13px;font-weight:600;color:var(--muted);cursor:pointer}
 .refresh-btn:hover{color:var(--blue);border-color:var(--blue)}
@@ -72,11 +90,12 @@ nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.95);backdrop-
   <h1>Nachprüfung freigeben</h1>
   <p>Teilnehmer, die eine Theorieprüfung nicht bestanden haben, nach Schulung sortiert. Nach der Freigabe kann der Teilnehmer die jeweilige Prüfung erneut ablegen.</p>
 
-  <div id="kurse"></div>
+  <div class="tabs-row" id="tabsRow"></div>
 
   <div class="card">
-    <div class="card-hd"><h2>Stufe 2</h2></div>
-    <div class="soon">Kommt bald — je Gerät (Schubmast / Kommissionierer / Schmalgang) getrennt.<span class="tag">in Vorbereitung</span></div>
+    <div id="panel-stufe1" class="panel"><div id="liste-stufe1"><div class="loading">Lade Kandidaten …</div></div></div>
+    <div id="panel-stufe2" class="panel" style="display:none"><div id="liste-stufe2"><div class="loading">Lade Kandidaten …</div></div></div>
+    <div id="panel-lasi" class="panel" style="display:none"><div id="liste-lasi"><div class="loading">Lade Kandidaten …</div></div></div>
   </div>
 
   <div class="footer-area">
@@ -93,21 +112,39 @@ if(!trainerAuth || !trainerAuth.name){
 
 var KURSE = [
   {
-    id: 'lasi',
-    label: 'Ladungssicherung',
-    kandidatenUrl: 'https://default8af25f9034bc4ef4aba22ab6f641d5.01.environment.api.powerplatform.com:443/powerautomate/automations/direct/cu/27/workflows/f8abc77896ce4e1fb9ce3cb2a79d7472/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=tfHHthw7HH-NSToWwmBN-ZzCwkPfOmVW_iZeAevRE94',
-    freigebenUrl: 'https://default8af25f9034bc4ef4aba22ab6f641d5.01.environment.api.powerplatform.com:443/powerautomate/automations/direct/cu/09/workflows/899642d4b48c4fa8b054fd0665772d86/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=fnOVA5LQVjL4Ul-gKVH3Ps5hD_DNH6NeoxclTQn8kEc',
-    freigabeKeyword: 'lasi',
-    hinweis: 'Danach kann die Prüfung unter pruefung_lasi.html erneut abgelegt werden.'
-  },
-  {
     id: 'stufe1',
     label: 'Stufe 1',
     kandidatenUrl: 'https://default8af25f9034bc4ef4aba22ab6f641d5.01.environment.api.powerplatform.com:443/powerautomate/automations/direct/cu/29/workflows/5d63a07b65f8404aaa5930c2a9d83188/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=MVWcaQtNpEb8AeRaXmckiFcBrgjVC-F5t3_Y-6XuoM0',
     freigebenUrl: 'https://default8af25f9034bc4ef4aba22ab6f641d5.01.environment.api.powerplatform.com:443/powerautomate/automations/direct/cu/27/workflows/960c1e24589343d0b22dc6d3d476262b/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=djb5cZClYIdAhMChmAbOj7-08DYQZ-tsRFXvq5SEsJU',
     freigabeKeyword: 'stufe1',
     hinweis: 'Danach kann die Theorieprüfung Stufe 1 erneut abgelegt werden.'
+  },
+  {
+    id: 'lasi',
+    label: 'Ladungssicherung',
+    kandidatenUrl: 'https://default8af25f9034bc4ef4aba22ab6f641d5.01.environment.api.powerplatform.com:443/powerautomate/automations/direct/cu/27/workflows/f8abc77896ce4e1fb9ce3cb2a79d7472/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=tfHHthw7HH-NSToWwmBN-ZzCwkPfOmVW_iZeAevRE94',
+    freigebenUrl: 'https://default8af25f9034bc4ef4aba22ab6f641d5.01.environment.api.powerplatform.com:443/powerautomate/automations/direct/cu/09/workflows/899642d4b48c4fa8b054fd0665772d86/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=fnOVA5LQVjL4Ul-gKVH3Ps5hD_DNH6NeoxclTQn8kEc',
+    freigabeKeyword: 'lasi',
+    hinweis: 'Danach kann die Prüfung unter pruefung_lasi.html erneut abgelegt werden.'
   }
+];
+
+var STUFE2 = {
+  id: 'stufe2',
+  label: 'Stufe 2',
+  kandidatenUrl: 'https://default8af25f9034bc4ef4aba22ab6f641d5.01.environment.api.powerplatform.com:443/powerautomate/automations/direct/cu/31/workflows/ea57067d6c694d7cb2e3dc65e74f85c7/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=tIDdSZQUNaeHciKccI-y0Mgvn3NuhxZCO8MD-8QHfoM',
+  freigebenUrl: 'https://default8af25f9034bc4ef4aba22ab6f641d5.01.environment.api.powerplatform.com:443/powerautomate/automations/direct/cu/08/workflows/8ebed716db904116be6f37ffaf40bb56/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=ATkACcvEfRYi-H5lmpsg2yotFfgt6NIriPw8Zi6KJbY',
+  geraete: [
+    { id:'schubmast', label:'Schubmaststapler', statusInc:['status'], statusExc:['kommission','schmalgang'], freigebInc:['schubmast','freigeg'] },
+    { id:'kommissionierer', label:'Kommissionierer', statusInc:['kommission','status'], statusExc:[], freigebInc:['kommission','freigeg'] },
+    { id:'schmalgang', label:'Schmalgang', statusInc:['schmalgang','status'], statusExc:[], freigebInc:['schmalgang','freigeg'] }
+  ]
+};
+
+var TAB_ORDER = [
+  { id:'stufe1', label:'Stufe 1' },
+  { id:'stufe2', label:'Stufe 2' },
+  { id:'lasi', label:'Ladungssicherung' }
 ];
 
 function choiceVal(field){
@@ -126,17 +163,36 @@ function findVal(row, keywords){
   return key ? choiceVal(row[key]) : undefined;
 }
 
-function buildKursCard(kurs){
-  var el = document.createElement('div');
-  el.className = 'card';
-  el.innerHTML =
-    '<div class="card-hd"><h2>' + kurs.label + '</h2><span class="count" id="anzahl-' + kurs.id + '">–</span></div>' +
-    '<div id="liste-' + kurs.id + '"><div class="loading">Lade Kandidaten …</div></div>';
-  return el;
+// wie findVal, aber mit Ausschluss-Stichwörtern — nötig, weil z.B. das
+// Schubmast-Statusfeld "Status_Theorie" heißt (kein Geräte-Präfix), während
+// Kommissionierer/Schmalgang ihr Präfix im Feldnamen tragen.
+function findVal2(row, include, exclude){
+  var keys = Object.keys(row || {});
+  var key = keys.find(function(k){
+    var lk = k.toLowerCase();
+    var inc = include.every(function(w){ return lk.indexOf(w) !== -1; });
+    var exc = (exclude || []).some(function(w){ return lk.indexOf(w) !== -1; });
+    return inc && !exc;
+  });
+  return key ? choiceVal(row[key]) : undefined;
 }
 
-var kurseContainer = document.getElementById('kurse');
-KURSE.forEach(function(kurs){ kurseContainer.appendChild(buildKursCard(kurs)); });
+var tabsRow = document.getElementById('tabsRow');
+TAB_ORDER.forEach(function(t, i){
+  var btn = document.createElement('button');
+  btn.className = 'tabbtn tab-' + t.id + (i === 0 ? ' active' : '');
+  btn.id = 'tabbtn-' + t.id;
+  btn.onclick = function(){ selectTab(t.id); };
+  btn.innerHTML = '<span class="tabbtn-title">' + t.label + '</span><span class="tabbtn-sub" id="tabsub-' + t.id + '">Lade …</span>';
+  tabsRow.appendChild(btn);
+});
+
+function selectTab(id){
+  TAB_ORDER.forEach(function(t){
+    document.getElementById('tabbtn-' + t.id).classList.toggle('active', t.id === id);
+    document.getElementById('panel-' + t.id).style.display = (t.id === id) ? 'block' : 'none';
+  });
+}
 
 async function ladeKandidatenFuer(kurs){
   var liste = document.getElementById('liste-' + kurs.id);
@@ -148,11 +204,12 @@ async function ladeKandidatenFuer(kurs){
     renderKandidaten(kurs, rows);
   } catch(e){
     liste.innerHTML = '<div class="error">Kandidaten konnten nicht geladen werden. Bitte Seite neu laden.</div>';
+    document.getElementById('tabsub-' + kurs.id).textContent = 'Fehler';
   }
 }
 
 function renderKandidaten(kurs, rows){
-  document.getElementById('anzahl-' + kurs.id).textContent = rows.length;
+  document.getElementById('tabsub-' + kurs.id).textContent = rows.length === 0 ? 'Keine offen' : rows.length + ' offen';
   var liste = document.getElementById('liste-' + kurs.id);
   if(rows.length === 0){
     liste.innerHTML = '<div class="empty">✓ Aktuell niemand mit offener Nachprüfung.</div>';
@@ -196,8 +253,79 @@ async function freigeben(kursId, regnr, btn){
   }
 }
 
+async function ladeKandidatenStufe2(){
+  var liste = document.getElementById('liste-stufe2');
+  liste.innerHTML = '<div class="loading">Lade Kandidaten …</div>';
+  try{
+    var res = await fetch(STUFE2.kandidatenUrl, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({}) });
+    var rows = await res.json();
+    if(!Array.isArray(rows)) rows = [];
+    renderKandidatenStufe2(rows);
+  } catch(e){
+    liste.innerHTML = '<div class="error">Kandidaten konnten nicht geladen werden. Bitte Seite neu laden.</div>';
+    document.getElementById('tabsub-stufe2').textContent = 'Fehler';
+  }
+}
+
+function renderKandidatenStufe2(rows){
+  var liste = document.getElementById('liste-stufe2');
+  var blocks = [];
+  var offeneGeraete = 0;
+
+  rows.forEach(function(r){
+    var regnr = r.Title || r.Registrierungsnummer || '';
+    var name = (r.Vorname_Teilnehmer || '') + ' ' + (r.Name_Teilnehmer || '');
+    var rowsHtml = STUFE2.geraete.map(function(g){
+      var status = findVal2(r, g.statusInc, g.statusExc);
+      if(status !== 'nicht Bestanden') return '';
+      var freigegeben = findVal2(r, g.freigebInc, []);
+      var istFrei = freigegeben === 'Ja' || freigegeben === true || freigegeben === 'True';
+      if(!istFrei) offeneGeraete++;
+      return '<div class="k2-row" data-regnr="' + regnr + '" data-geraet="' + g.id + '">' +
+        '<div class="k-info">' +
+          '<div class="k2-geraet">' + g.label + '</div>' +
+          '<div class="k-status ' + (istFrei ? 'frei' : 'offen') + '">' + (istFrei ? 'Nachprüfung freigegeben' : 'Wartet auf Freigabe') + '</div>' +
+        '</div>' +
+        '<button class="btn ' + (istFrei ? 'done' : 'primary') + '" onclick="freigebenStufe2(\'' + g.id + '\',\'' + regnr + '\', this)" ' + (istFrei ? 'disabled' : '') + '>' +
+          (istFrei ? '✓ Freigegeben' : 'Nachprüfung freigeben') +
+        '</button>' +
+      '</div>';
+    }).join('');
+    if(rowsHtml){
+      blocks.push('<div class="k2-block"><div class="k2-name">' + name + ' <span style="color:var(--muted);font-weight:500">(' + regnr + ')</span></div>' + rowsHtml + '</div>');
+    }
+  });
+
+  document.getElementById('tabsub-stufe2').textContent = offeneGeraete === 0 ? 'Keine offen' : offeneGeraete + ' offen';
+
+  if(blocks.length === 0){
+    liste.innerHTML = '<div class="empty">✓ Aktuell niemand mit offener Nachprüfung.</div>';
+    return;
+  }
+  liste.innerHTML = blocks.join('');
+}
+
+async function freigebenStufe2(geraetId, regnr, btn){
+  var g = STUFE2.geraete.find(function(x){ return x.id === geraetId; });
+  if(!confirm('Nachprüfung (Stufe 2 – ' + g.label + ') für Registrierungsnummer ' + regnr + ' freigeben?\n\nDanach kann die Theorieprüfung für ' + g.label + ' erneut abgelegt werden.')) return;
+  btn.disabled = true;
+  btn.textContent = 'Wird freigegeben …';
+  try{
+    await fetch(STUFE2.freigebenUrl, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ regnr: regnr, geraet: geraetId }) });
+    btn.className = 'btn done';
+    btn.textContent = '✓ Freigegeben';
+    var status = btn.closest('.k2-row').querySelector('.k-status');
+    status.className = 'k-status frei';
+    status.textContent = 'Nachprüfung freigegeben';
+  } catch(e){
+    btn.disabled = false;
+    btn.textContent = 'Fehler – erneut versuchen';
+  }
+}
+
 function ladeAlle(){
   KURSE.forEach(ladeKandidatenFuer);
+  ladeKandidatenStufe2();
 }
 
 if(trainerAuth && trainerAuth.name){
