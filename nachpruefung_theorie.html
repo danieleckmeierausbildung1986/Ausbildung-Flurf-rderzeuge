@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>LaSi-Nachprüfung freigeben – ProDrive Akademie Niederbayern</title>
+<title>Theorie-Nachprüfungen – ProDrive Akademie Niederbayern</title>
 <style>
 :root{
   --blue:#1a4fa8;--blue-l:#2e75cc;--blue-d:#0d2d80;--blue-xl:#e8f0fb;
@@ -25,7 +25,7 @@ nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.95);backdrop-
 .page{max-width:900px;margin:0 auto;padding:26px 24px 70px}
 .head-eyebrow{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--blue-l);margin-bottom:6px}
 .head h1{font-size:24px;font-weight:800;color:var(--navy);margin:0 0 6px}
-.head p{font-size:13.5px;color:var(--muted);max-width:560px}
+.head p{font-size:13.5px;color:var(--muted);max-width:620px}
 
 .card{background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow-sm);overflow:hidden;margin-top:20px}
 .card-hd{display:flex;align-items:center;gap:10px;padding:16px 18px;border-bottom:1px solid var(--line)}
@@ -50,6 +50,9 @@ nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.95);backdrop-
 .btn.primary:disabled{background:var(--line);color:var(--muted);cursor:not-allowed}
 .btn.done{background:var(--okbg);color:var(--green)}
 
+.soon{padding:20px 18px;color:var(--muted);font-size:13.5px}
+.soon .tag{display:inline-block;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;background:var(--blue-xl);color:var(--blue);border-radius:20px;padding:2px 9px;margin-left:8px}
+
 .footer-area{margin-top:24px;text-align:center}
 .refresh-btn{background:#fff;border:1.5px solid var(--line);border-radius:10px;padding:9px 18px;font-size:13px;font-weight:600;color:var(--muted);cursor:pointer}
 .refresh-btn:hover{color:var(--blue);border-color:var(--blue)}
@@ -59,28 +62,25 @@ nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.95);backdrop-
 
 <nav>
   <div class="nav-inner">
-    <div class="nav-title">🔓 LaSi-Nachprüfung freigeben</div>
+    <div class="nav-title">🔓 Theorie-Nachprüfungen</div>
     <a class="nav-back" href="trainerbereich.html">← Zurück zum Trainerbereich</a>
   </div>
 </nav>
 
 <div class="page">
-  <div class="head-eyebrow">Ladungssicherung · Theorieprüfung</div>
+  <div class="head-eyebrow">Theorieprüfungen · alle Schulungen</div>
   <h1>Nachprüfung freigeben</h1>
-  <p>Teilnehmer, die die Theorieprüfung Ladungssicherung nicht bestanden haben. Nach der Freigabe kann der Teilnehmer die Prüfung unter <strong>pruefung_lasi.html</strong> erneut ablegen.</p>
+  <p>Teilnehmer, die eine Theorieprüfung nicht bestanden haben, nach Schulung sortiert. Nach der Freigabe kann der Teilnehmer die jeweilige Prüfung erneut ablegen.</p>
+
+  <div id="kurse"></div>
 
   <div class="card">
-    <div class="card-hd">
-      <h2>Nicht bestanden</h2>
-      <span class="count" id="anzahl">–</span>
-    </div>
-    <div id="liste">
-      <div class="loading" id="loading">Lade Kandidaten …</div>
-    </div>
+    <div class="card-hd"><h2>Stufe 2</h2></div>
+    <div class="soon">Kommt bald — je Gerät (Schubmast / Kommissionierer / Schmalgang) getrennt.<span class="tag">in Vorbereitung</span></div>
   </div>
 
   <div class="footer-area">
-    <button class="refresh-btn" onclick="ladeKandidaten()">↻ Liste aktualisieren</button>
+    <button class="refresh-btn" onclick="ladeAlle()">↻ Alle Listen aktualisieren</button>
   </div>
 </div>
 
@@ -91,30 +91,69 @@ if(!trainerAuth || !trainerAuth.name){
   window.location.replace('trainerbereich.html');
 }
 
-var KANDIDATEN_URL = 'https://default8af25f9034bc4ef4aba22ab6f641d5.01.environment.api.powerplatform.com:443/powerautomate/automations/direct/cu/27/workflows/f8abc77896ce4e1fb9ce3cb2a79d7472/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=tfHHthw7HH-NSToWwmBN-ZzCwkPfOmVW_iZeAevRE94';
-var FREIGEBEN_URL = 'https://default8af25f9034bc4ef4aba22ab6f641d5.01.environment.api.powerplatform.com:443/powerautomate/automations/direct/cu/09/workflows/899642d4b48c4fa8b054fd0665772d86/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=fnOVA5LQVjL4Ul-gKVH3Ps5hD_DNH6NeoxclTQn8kEc';
+var KURSE = [
+  {
+    id: 'lasi',
+    label: 'Ladungssicherung',
+    kandidatenUrl: 'https://default8af25f9034bc4ef4aba22ab6f641d5.01.environment.api.powerplatform.com:443/powerautomate/automations/direct/cu/27/workflows/f8abc77896ce4e1fb9ce3cb2a79d7472/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=tfHHthw7HH-NSToWwmBN-ZzCwkPfOmVW_iZeAevRE94',
+    freigebenUrl: 'https://default8af25f9034bc4ef4aba22ab6f641d5.01.environment.api.powerplatform.com:443/powerautomate/automations/direct/cu/09/workflows/899642d4b48c4fa8b054fd0665772d86/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=fnOVA5LQVjL4Ul-gKVH3Ps5hD_DNH6NeoxclTQn8kEc',
+    freigabeKeyword: 'lasi',
+    hinweis: 'Danach kann die Prüfung unter pruefung_lasi.html erneut abgelegt werden.'
+  },
+  {
+    id: 'stufe1',
+    label: 'Stufe 1',
+    kandidatenUrl: 'https://default8af25f9034bc4ef4aba22ab6f641d5.01.environment.api.powerplatform.com:443/powerautomate/automations/direct/cu/29/workflows/5d63a07b65f8404aaa5930c2a9d83188/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=MVWcaQtNpEb8AeRaXmckiFcBrgjVC-F5t3_Y-6XuoM0',
+    freigebenUrl: 'https://default8af25f9034bc4ef4aba22ab6f641d5.01.environment.api.powerplatform.com:443/powerautomate/automations/direct/cu/27/workflows/960c1e24589343d0b22dc6d3d476262b/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=djb5cZClYIdAhMChmAbOj7-08DYQZ-tsRFXvq5SEsJU',
+    freigabeKeyword: 'stufe1',
+    hinweis: 'Danach kann die Theorieprüfung Stufe 1 erneut abgelegt werden.'
+  }
+];
 
 function choiceVal(field){
   if(field && typeof field === 'object') return field.Value;
   return field;
 }
 
-async function ladeKandidaten(){
-  var liste = document.getElementById('liste');
+// SharePoint kürzt/verändert interne Feldnamen manchmal — deshalb Suche nach
+// Schlüsselwörtern statt exaktem Feldnamen zu erwarten.
+function findVal(row, keywords){
+  var keys = Object.keys(row || {});
+  var key = keys.find(function(k){
+    var lk = k.toLowerCase();
+    return keywords.every(function(w){ return lk.indexOf(w) !== -1; });
+  });
+  return key ? choiceVal(row[key]) : undefined;
+}
+
+function buildKursCard(kurs){
+  var el = document.createElement('div');
+  el.className = 'card';
+  el.innerHTML =
+    '<div class="card-hd"><h2>' + kurs.label + '</h2><span class="count" id="anzahl-' + kurs.id + '">–</span></div>' +
+    '<div id="liste-' + kurs.id + '"><div class="loading">Lade Kandidaten …</div></div>';
+  return el;
+}
+
+var kurseContainer = document.getElementById('kurse');
+KURSE.forEach(function(kurs){ kurseContainer.appendChild(buildKursCard(kurs)); });
+
+async function ladeKandidatenFuer(kurs){
+  var liste = document.getElementById('liste-' + kurs.id);
   liste.innerHTML = '<div class="loading">Lade Kandidaten …</div>';
   try{
-    var res = await fetch(KANDIDATEN_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({}) });
+    var res = await fetch(kurs.kandidatenUrl, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({}) });
     var rows = await res.json();
     if(!Array.isArray(rows)) rows = [];
-    renderKandidaten(rows);
+    renderKandidaten(kurs, rows);
   } catch(e){
     liste.innerHTML = '<div class="error">Kandidaten konnten nicht geladen werden. Bitte Seite neu laden.</div>';
   }
 }
 
-function renderKandidaten(rows){
-  document.getElementById('anzahl').textContent = rows.length;
-  var liste = document.getElementById('liste');
+function renderKandidaten(kurs, rows){
+  document.getElementById('anzahl-' + kurs.id).textContent = rows.length;
+  var liste = document.getElementById('liste-' + kurs.id);
   if(rows.length === 0){
     liste.innerHTML = '<div class="empty">✓ Aktuell niemand mit offener Nachprüfung.</div>';
     return;
@@ -124,27 +163,28 @@ function renderKandidaten(rows){
     var name = (r.Vorname_Teilnehmer || '') + ' ' + (r.Name_Teilnehmer || '');
     var datum = r.Datum_Pruefung || '–';
     var punkte = (r.Punkte_Theorie !== undefined && r.Punkte_Theorie !== null) ? r.Punkte_Theorie : '–';
-    var freigegeben = choiceVal(r.pruefung_lasi_freigegeben);
+    var freigegeben = findVal(r, [kurs.freigabeKeyword, 'freigeg']);
     var istFrei = freigegeben === 'Ja' || freigegeben === true || freigegeben === 'True';
     return '<div class="kandidat" data-regnr="' + regnr + '">' +
       '<div class="k-info">' +
         '<div class="k-name">' + name + ' <span style="color:var(--muted);font-weight:500">(' + regnr + ')</span></div>' +
-        '<div class="k-meta">Prüfung am ' + datum + ' · ' + punkte + ' / 20 Punkte</div>' +
+        '<div class="k-meta">Prüfung am ' + datum + ' · ' + punkte + ' Punkte</div>' +
         '<div class="k-status ' + (istFrei ? 'frei' : 'offen') + '">' + (istFrei ? 'Nachprüfung freigegeben' : 'Wartet auf Freigabe') + '</div>' +
       '</div>' +
-      '<button class="btn ' + (istFrei ? 'done' : 'primary') + '" onclick="freigeben(\'' + regnr + '\', this)" ' + (istFrei ? 'disabled' : '') + '>' +
+      '<button class="btn ' + (istFrei ? 'done' : 'primary') + '" onclick="freigeben(\'' + kurs.id + '\',\'' + regnr + '\', this)" ' + (istFrei ? 'disabled' : '') + '>' +
         (istFrei ? '✓ Freigegeben' : 'Nachprüfung freigeben') +
       '</button>' +
     '</div>';
   }).join('');
 }
 
-async function freigeben(regnr, btn){
-  if(!confirm('Nachprüfung für Registrierungsnummer ' + regnr + ' freigeben?\n\nDer Teilnehmer kann die Theorieprüfung dann erneut ablegen.')) return;
+async function freigeben(kursId, regnr, btn){
+  var kurs = KURSE.find(function(k){ return k.id === kursId; });
+  if(!confirm('Nachprüfung (' + kurs.label + ') für Registrierungsnummer ' + regnr + ' freigeben?\n\n' + kurs.hinweis)) return;
   btn.disabled = true;
   btn.textContent = 'Wird freigegeben …';
   try{
-    await fetch(FREIGEBEN_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ regnr: regnr }) });
+    await fetch(kurs.freigebenUrl, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ regnr: regnr }) });
     btn.className = 'btn done';
     btn.textContent = '✓ Freigegeben';
     var status = btn.closest('.kandidat').querySelector('.k-status');
@@ -156,8 +196,12 @@ async function freigeben(regnr, btn){
   }
 }
 
+function ladeAlle(){
+  KURSE.forEach(ladeKandidatenFuer);
+}
+
 if(trainerAuth && trainerAuth.name){
-  ladeKandidaten();
+  ladeAlle();
 }
 </script>
 </body>
