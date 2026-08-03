@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>LaSi-Nachprüfung freigeben – ProDrive Akademie Niederbayern</title>
+<style>
+:root{
+  --blue:#1a4fa8;--blue-l:#2e75cc;--blue-d:#0d2d80;--blue-xl:#e8f0fb;
+  --navy:#16243f;--muted:#5a6a7a;--line:#e3e8f0;--ink:#1a2330;--bg:#f7f9fb;
+  --green:#1a7a4a;--green-l:#2ea865;--okbg:#e8f7f2;
+  --amber:#c9820f;--amber-l:#f5a623;--redbg:#fdecea;--red:#c0392b;
+  --shadow-sm:0 2px 8px rgba(0,0,0,.08);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"Segoe UI",system-ui,sans-serif;color:var(--ink);background:var(--bg);line-height:1.6}
+a{text-decoration:none;color:inherit}
+
+nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.95);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);padding:0 24px}
+.nav-inner{max-width:900px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:64px;gap:16px}
+.nav-title{font-size:15px;font-weight:700;color:var(--navy)}
+.nav-back{display:inline-flex;align-items:center;gap:8px;padding:8px 16px;border-radius:10px;font-size:13.5px;font-weight:600;color:var(--muted);border:1.5px solid var(--line);background:#fff}
+.nav-back:hover{color:var(--ink);border-color:var(--navy)}
+
+.page{max-width:900px;margin:0 auto;padding:26px 24px 70px}
+.head-eyebrow{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--blue-l);margin-bottom:6px}
+.head h1{font-size:24px;font-weight:800;color:var(--navy);margin:0 0 6px}
+.head p{font-size:13.5px;color:var(--muted);max-width:560px}
+
+.card{background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow-sm);overflow:hidden;margin-top:20px}
+.card-hd{display:flex;align-items:center;gap:10px;padding:16px 18px;border-bottom:1px solid var(--line)}
+.card-hd h2{font-size:14.5px;font-weight:700;color:var(--navy);margin:0;flex:1}
+.card-hd .count{font-size:11px;color:var(--muted);background:var(--bg);border:1px solid var(--line);border-radius:20px;padding:2px 9px;font-weight:600}
+
+.loading,.empty,.error{padding:40px 20px;text-align:center;color:var(--muted);font-size:14px}
+.error{color:var(--red)}
+
+.kandidat{display:flex;align-items:center;gap:14px;padding:16px 18px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.kandidat:last-child{border-bottom:none}
+.k-info{flex:1;min-width:220px}
+.k-name{font-size:14.5px;font-weight:700;color:var(--ink)}
+.k-meta{font-size:12.5px;color:var(--muted);margin-top:2px}
+.k-status{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;padding:3px 9px;border-radius:20px;margin-top:6px;display:inline-block}
+.k-status.offen{background:var(--redbg);color:var(--red)}
+.k-status.frei{background:var(--okbg);color:var(--green)}
+
+.btn{padding:10px 18px;border-radius:10px;border:none;font-size:13.5px;font-weight:700;cursor:pointer;transition:all .15s;white-space:nowrap}
+.btn.primary{background:var(--blue);color:#fff}
+.btn.primary:hover{background:var(--blue-d)}
+.btn.primary:disabled{background:var(--line);color:var(--muted);cursor:not-allowed}
+.btn.done{background:var(--okbg);color:var(--green)}
+
+.footer-area{margin-top:24px;text-align:center}
+.refresh-btn{background:#fff;border:1.5px solid var(--line);border-radius:10px;padding:9px 18px;font-size:13px;font-weight:600;color:var(--muted);cursor:pointer}
+.refresh-btn:hover{color:var(--blue);border-color:var(--blue)}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <div class="nav-title">🔓 LaSi-Nachprüfung freigeben</div>
+    <a class="nav-back" href="trainerbereich.html">← Zurück zum Trainerbereich</a>
+  </div>
+</nav>
+
+<div class="page">
+  <div class="head-eyebrow">Ladungssicherung · Theorieprüfung</div>
+  <h1>Nachprüfung freigeben</h1>
+  <p>Teilnehmer, die die Theorieprüfung Ladungssicherung nicht bestanden haben. Nach der Freigabe kann der Teilnehmer die Prüfung unter <strong>pruefung_lasi.html</strong> erneut ablegen.</p>
+
+  <div class="card">
+    <div class="card-hd">
+      <h2>Nicht bestanden</h2>
+      <span class="count" id="anzahl">–</span>
+    </div>
+    <div id="liste">
+      <div class="loading" id="loading">Lade Kandidaten …</div>
+    </div>
+  </div>
+
+  <div class="footer-area">
+    <button class="refresh-btn" onclick="ladeKandidaten()">↻ Liste aktualisieren</button>
+  </div>
+</div>
+
+<script>
+var trainerAuth = null;
+try { trainerAuth = JSON.parse(sessionStorage.getItem('trainerAuth') || 'null'); } catch(e){}
+if(!trainerAuth || !trainerAuth.name){
+  window.location.replace('trainerbereich.html');
+}
+
+var KANDIDATEN_URL = 'https://default8af25f9034bc4ef4aba22ab6f641d5.01.environment.api.powerplatform.com:443/powerautomate/automations/direct/cu/27/workflows/f8abc77896ce4e1fb9ce3cb2a79d7472/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=tfHHthw7HH-NSToWwmBN-ZzCwkPfOmVW_iZeAevRE94';
+var FREIGEBEN_URL = 'https://default8af25f9034bc4ef4aba22ab6f641d5.01.environment.api.powerplatform.com:443/powerautomate/automations/direct/cu/09/workflows/899642d4b48c4fa8b054fd0665772d86/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=fnOVA5LQVjL4Ul-gKVH3Ps5hD_DNH6NeoxclTQn8kEc';
+
+function choiceVal(field){
+  if(field && typeof field === 'object') return field.Value;
+  return field;
+}
+
+async function ladeKandidaten(){
+  var liste = document.getElementById('liste');
+  liste.innerHTML = '<div class="loading">Lade Kandidaten …</div>';
+  try{
+    var res = await fetch(KANDIDATEN_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({}) });
+    var rows = await res.json();
+    if(!Array.isArray(rows)) rows = [];
+    renderKandidaten(rows);
+  } catch(e){
+    liste.innerHTML = '<div class="error">Kandidaten konnten nicht geladen werden. Bitte Seite neu laden.</div>';
+  }
+}
+
+function renderKandidaten(rows){
+  document.getElementById('anzahl').textContent = rows.length;
+  var liste = document.getElementById('liste');
+  if(rows.length === 0){
+    liste.innerHTML = '<div class="empty">✓ Aktuell niemand mit offener Nachprüfung.</div>';
+    return;
+  }
+  liste.innerHTML = rows.map(function(r){
+    var regnr = r.Title || r.Registrierungsnummer || '';
+    var name = (r.Vorname_Teilnehmer || '') + ' ' + (r.Name_Teilnehmer || '');
+    var datum = r.Datum_Pruefung || '–';
+    var punkte = (r.Punkte_Theorie !== undefined && r.Punkte_Theorie !== null) ? r.Punkte_Theorie : '–';
+    var freigegeben = choiceVal(r.pruefung_lasi_freigegeben);
+    var istFrei = freigegeben === 'Ja' || freigegeben === true || freigegeben === 'True';
+    return '<div class="kandidat" data-regnr="' + regnr + '">' +
+      '<div class="k-info">' +
+        '<div class="k-name">' + name + ' <span style="color:var(--muted);font-weight:500">(' + regnr + ')</span></div>' +
+        '<div class="k-meta">Prüfung am ' + datum + ' · ' + punkte + ' / 20 Punkte</div>' +
+        '<div class="k-status ' + (istFrei ? 'frei' : 'offen') + '">' + (istFrei ? 'Nachprüfung freigegeben' : 'Wartet auf Freigabe') + '</div>' +
+      '</div>' +
+      '<button class="btn ' + (istFrei ? 'done' : 'primary') + '" onclick="freigeben(\'' + regnr + '\', this)" ' + (istFrei ? 'disabled' : '') + '>' +
+        (istFrei ? '✓ Freigegeben' : 'Nachprüfung freigeben') +
+      '</button>' +
+    '</div>';
+  }).join('');
+}
+
+async function freigeben(regnr, btn){
+  if(!confirm('Nachprüfung für Registrierungsnummer ' + regnr + ' freigeben?\n\nDer Teilnehmer kann die Theorieprüfung dann erneut ablegen.')) return;
+  btn.disabled = true;
+  btn.textContent = 'Wird freigegeben …';
+  try{
+    await fetch(FREIGEBEN_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ regnr: regnr }) });
+    btn.className = 'btn done';
+    btn.textContent = '✓ Freigegeben';
+    var status = btn.closest('.kandidat').querySelector('.k-status');
+    status.className = 'k-status frei';
+    status.textContent = 'Nachprüfung freigegeben';
+  } catch(e){
+    btn.disabled = false;
+    btn.textContent = 'Fehler – erneut versuchen';
+  }
+}
+
+if(trainerAuth && trainerAuth.name){
+  ladeKandidaten();
+}
+</script>
+</body>
+</html>
