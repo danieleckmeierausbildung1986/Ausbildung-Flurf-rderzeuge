@@ -55,14 +55,22 @@ body{
 .q-body{padding:38px 44px 32px}
 .q-num{font-size:12px;font-weight:700;letter-spacing:.5px;color:var(--green);text-transform:uppercase;margin-bottom:8px}
 .q-text{font-size:19px;font-weight:700;color:var(--navy);line-height:1.5;margin-bottom:24px}
-.opts{display:flex;flex-direction:column;gap:10px}
+.opts{display:flex;flex-direction:column;gap:12px}
 .opt{
-  display:flex;align-items:flex-start;gap:12px;border:1.5px solid var(--line);border-radius:12px;
-  padding:13px 16px;cursor:pointer;transition:all .15s;font-size:14.5px;color:var(--ink);line-height:1.5;
+  display:flex;align-items:center;gap:14px;border:2px solid var(--line);border-radius:14px;
+  padding:18px 18px;cursor:pointer;transition:all .12s;font-size:15.5px;color:var(--ink);line-height:1.5;
+  -webkit-tap-highlight-color:transparent;user-select:none;min-height:56px;
 }
 .opt:hover{border-color:var(--green-l)}
+.opt:active{transform:scale(.98);background:#fafaf8}
 .opt.sel{border-color:var(--green);background:#eef4fc}
-.opt input{margin-top:2px;accent-color:var(--green);flex-shrink:0;width:17px;height:17px}
+.opt input{display:none}
+.opt .check{
+  flex-shrink:0;width:26px;height:26px;border-radius:8px;border:2px solid var(--line);
+  display:flex;align-items:center;justify-content:center;transition:all .12s;background:#fff;
+}
+.opt.sel .check{background:var(--green);border-color:var(--green)}
+.opt.sel .check::after{content:'✓';color:#fff;font-size:16px;font-weight:800;line-height:1}
 .q-image{display:block;max-width:100%;border:1.5px solid var(--line);border-radius:12px;margin-bottom:18px}
 .num-field{margin-bottom:4px}
 .num-field label{display:block;font-size:12.5px;font-weight:700;color:var(--navy);margin-bottom:8px}
@@ -526,7 +534,7 @@ function renderQuestion(){
     f.opts.forEach(function(txt, i){
       var lbl = document.createElement('label');
       lbl.className = 'opt' + (answers[f.num] === i ? ' sel' : '');
-      lbl.innerHTML = '<input type="radio" name="qopt" ' + (answers[f.num] === i ? 'checked' : '') + '><span>' + txt + '</span>';
+      lbl.innerHTML = '<input type="radio" name="qopt" ' + (answers[f.num] === i ? 'checked' : '') + '><span class="check"></span><span>' + txt + '</span>';
       lbl.addEventListener('click', function(){
         answers[f.num] = i;
         Array.prototype.forEach.call(opts.querySelectorAll('.opt'), function(o){ o.classList.remove('sel'); });
