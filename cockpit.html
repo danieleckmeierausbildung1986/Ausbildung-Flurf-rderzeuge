@@ -194,6 +194,13 @@ nav{position:sticky;top:0;z-index:100;background:rgba(10,8,5,.9);backdrop-filter
           </div>
           <div class="kv-row" style="margin-top:14px;border-top:1px solid var(--border);padding-top:12px"><span class="k">Anmeldungen gesamt</span><span class="v mono" id="anmeldGesamt">–</span></div>
         </div>
+
+        <div class="card" style="margin-top:16px">
+          <div class="card-head"><span class="card-h">Bestehensquote</span><span class="card-tag">live</span></div>
+          <div class="biz-loading" id="bqLoading">Lade Prüfungsergebnisse …</div>
+          <div class="biz-error" id="bqError" style="display:none">Bestehensquote konnte nicht geladen werden.</div>
+          <div id="bqContent" style="display:none"></div>
+        </div>
       </div>
     </div>
 
@@ -434,8 +441,96 @@ function renderZahlungen(rows){
     new Date().toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'}) + ' Uhr';
 }
 
+// ── Bestehensquote aus Stufe1/Stufe2/LaSi-Prüfungslisten ──
+var COCKPIT_BESTEHENSQUOTE_URL = 'https://default8af25f9034bc4ef4aba22ab6f641d5.01.environment.api.powerplatform.com:443/powerautomate/automations/direct/cu/02/workflows/d60945c3024e42b899c53bb24fe400df/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=4FknMPC1BHnk7D--WO04sSvIkuNkiWGsVljiNqQ_8zA';
+
+// SharePoint kürzt/verändert interne Feldnamen manchmal (z.B. "Schubmast_gebucht0" statt
+// "Schubmast_gebucht", "Pruefung_Kommissionierer_Freigeg" statt "...Freigegeben"). Deshalb wird
+// hier nach Schlüsselwörtern im Feldnamen gesucht statt ein exakter Name erwartet.
+function findVal(row, keywords){
+  var keys = Object.keys(row || {});
+  var key = keys.find(function(k){
+    var lk = k.toLowerCase();
+    return keywords.every(function(w){ return lk.indexOf(w) !== -1; });
+  });
+  return key ? choiceVal(row[key]) : undefined;
+}
+
+function quoteHtml(label, bestanden, gesamt){
+  if(gesamt === 0){
+    return '<div class="kv-row"><span class="k">'+label+'</span><span class="v" style="color:var(--muted);font-weight:500">noch keine Ergebnisse</span></div>';
+  }
+  var pct = Math.round((bestanden/gesamt)*100);
+  return '<div class="kv-row"><span class="k">'+label+'</span><span class="v mono">'+bestanden+' / '+gesamt+' · '+pct+'%</span></div>';
+}
+
+async function ladeBestehensquote(){
+  try{
+    var res = await fetch(COCKPIT_BESTEHENSQUOTE_URL, {
+      method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({})
+    });
+    var data = await res.json();
+    renderBestehensquote(data || {});
+  } catch(e){
+    document.getElementById('bqLoading').style.display = 'none';
+    document.getElementById('bqError').style.display = 'block';
+  }
+}
+
+function renderBestehensquote(data){
+  var stufe1 = Array.isArray(data.stufe1) ? data.stufe1 : [];
+  var stufe2 = Array.isArray(data.stufe2) ? data.stufe2 : [];
+  var lasi   = Array.isArray(data.lasi)   ? data.lasi   : [];
+
+  // Stufe 1: ein Statusfeld je Zeile
+  var s1Gesamt = 0, s1Bestanden = 0;
+  stufe1.forEach(function(r){
+    var status = findVal(r, ['statuspraxis']);
+    if(status){ s1Gesamt++; if(status === 'Bestanden') s1Bestanden++; }
+  });
+
+  // Stufe 2: je Gerät ein eigenes Bestanden-Feld, nur zählen wenn freigegeben/geprüft
+  var geraete = [
+    {label:'Schubmast', kw:'schubmast'},
+    {label:'Kommissionierer', kw:'kommission'},
+    {label:'Schmalgang', kw:'schmalgang'}
+  ];
+  var s2 = geraete.map(function(g){
+    var gesamt = 0, bestanden = 0;
+    stufe2.forEach(function(r){
+      var freigegeben = findVal(r, [g.kw, 'freigeg']);
+      var best = findVal(r, [g.kw, 'bestand']);
+      if(freigegeben === 'Ja' || best !== undefined){
+        gesamt++;
+        if(best === 'Ja' || best === true || best === 'Bestanden') bestanden++;
+      }
+    });
+    return {label:g.label, gesamt:gesamt, bestanden:bestanden};
+  });
+
+  // LaSi: Theorie-Status, bei Nachprüfung zählt das bessere Ergebnis
+  var lGesamt = 0, lBestanden = 0;
+  lasi.forEach(function(r){
+    var status = findVal(r, ['status_theorie']) || findVal(r, ['status','theorie']);
+    var nach = findVal(r, ['status_nachpruefung']) || findVal(r, ['status','nachpruefung']);
+    if(status){
+      lGesamt++;
+      if(status === 'Bestanden' || nach === 'Bestanden') lBestanden++;
+    }
+  });
+
+  var html = quoteHtml('Stufe 1', s1Bestanden, s1Gesamt);
+  s2.forEach(function(g){ html += quoteHtml('Stufe 2 · ' + g.label, g.bestanden, g.gesamt); });
+  html += quoteHtml('Ladungssicherung', lBestanden, lGesamt);
+
+  document.getElementById('bqContent').innerHTML = html;
+  document.getElementById('bqLoading').style.display = 'none';
+  document.getElementById('bqContent').style.display = 'block';
+}
+
 if(trainerAuth && trainerAuth.name && trainerAuth.benutzername === 'Trainer01'){
   ladeZahlungen();
+  ladeBestehensquote();
 }
 </script>
 </body>
