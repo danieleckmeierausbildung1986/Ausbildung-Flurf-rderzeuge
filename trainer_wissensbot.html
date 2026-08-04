@@ -540,7 +540,12 @@ function berechneZurrmittel(){
   var alphaGrad = parseFloat(document.getElementById('calcAlpha').value);
   var kFaktor = parseFloat(document.getElementById('calcKfaktor').value);
 
-  if(!aktuelleFG || !mu || !stf || !alphaGrad || !kFaktor){
+  if(!aktuelleFG){
+    box.style.display = 'none';
+    hint.textContent = 'Bitte zuerst oben unter „Massenkräfte berechnen" das Ladungsgewicht eintragen.';
+    return;
+  }
+  if(!mu || !stf || !alphaGrad || !kFaktor){
     box.style.display = 'none';
     hint.textContent = '';
     return;
@@ -582,7 +587,12 @@ function berechneDirektzurren(){
   var betaGrad = parseFloat(document.getElementById('calcBeta').value);
   var cz = parseFloat(document.getElementById('calcCz').value);
 
-  if(!aktuelleFG || !mu || !lc || isNaN(alphaGrad) || isNaN(betaGrad) || isNaN(cz)){
+  if(!aktuelleFG){
+    box.style.display = 'none';
+    hint.textContent = 'Bitte zuerst oben unter „Massenkräfte berechnen" das Ladungsgewicht eintragen.';
+    return;
+  }
+  if(!mu || !lc || isNaN(alphaGrad) || isNaN(betaGrad) || isNaN(cz)){
     box.style.display = 'none';
     hint.textContent = '';
     return;
