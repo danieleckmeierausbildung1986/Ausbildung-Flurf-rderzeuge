@@ -553,7 +553,7 @@ function berechneZurrmittel(){
 
   var cx = parseFloat(document.getElementById('calcRichtungNieder').value);
   var alphaRad = alphaGrad * Math.PI / 180;
-  var zaehler = aktuelleFG * (cx - mu) * kFaktor;
+  var zaehler = aktuelleFG * (cx - mu);
 
   if(zaehler <= 0){
     document.getElementById('calcZurrAnzahl').textContent = '0';
@@ -562,7 +562,7 @@ function berechneZurrmittel(){
     return;
   }
 
-  var nenner = 2 * mu * stf * Math.sin(alphaRad);
+  var nenner = kFaktor * mu * stf * Math.sin(alphaRad);
   if(nenner <= 0){
     box.style.display = 'none';
     return;
@@ -571,7 +571,7 @@ function berechneZurrmittel(){
   var n = zaehler / nenner;
   var nAufgerundet = Math.ceil(n);
   document.getElementById('calcZurrAnzahl').textContent = nAufgerundet + ' (rechnerisch ' + n.toLocaleString('de-DE',{maximumFractionDigits:2}) + ')';
-  hint.textContent = 'Berechnet für Niederzurren in der gewählten Richtung (cₓ=' + cx.toLocaleString('de-DE') + '), Vorspannkraftverlust mit Faktor 2 und K-Faktor ' + kFaktor.toLocaleString('de-DE') + ' berücksichtigt (VDI 2700:2014). Ergebnis auf ganze Zurrmittel aufgerundet. Orientierungshilfe — im Zweifel zusätzlich die Originalquelle prüfen.';
+  hint.textContent = 'Berechnet für Niederzurren in der gewählten Richtung (cₓ=' + cx.toLocaleString('de-DE') + '), K-Faktor ' + kFaktor.toLocaleString('de-DE') + ' berücksichtigt (VDI 2700:2014). Ergebnis auf ganze Zurrmittel aufgerundet. Orientierungshilfe — im Zweifel zusätzlich die Originalquelle prüfen.';
   box.style.display = 'block';
 }
 
