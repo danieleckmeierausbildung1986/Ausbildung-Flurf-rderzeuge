@@ -164,6 +164,25 @@ textarea:focus{outline:none;border-color:var(--blue);background:#fff}
 .calc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:4px}
 @media(max-width:560px){.calc-grid{grid-template-columns:1fr}}
 
+.fld label{display:flex;align-items:center;gap:6px}
+.info-btn{
+  display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;
+  width:16px;height:16px;border-radius:50%;border:1.5px solid var(--muted);
+  color:var(--muted);background:#fff;font-size:10px;font-weight:800;font-style:italic;
+  cursor:pointer;padding:0;line-height:1;font-family:Georgia,'Times New Roman',serif;
+}
+.info-btn:hover,.info-btn.active{border-color:var(--blue);color:var(--blue)}
+.info-text{
+  display:none;font-size:12.5px;font-weight:400;text-transform:none;letter-spacing:normal;
+  color:var(--ink);background:var(--blue-xl);border-radius:8px;padding:9px 11px;margin:8px 0;line-height:1.55;
+}
+.info-text.open{display:block}
+
+.calc-sub.locked{opacity:.55}
+.calc-sub.locked .calc-sub-header{cursor:not-allowed}
+.lock-note{font-size:11px;font-weight:600;color:var(--muted);margin-left:8px;display:none}
+.calc-sub.locked .lock-note{display:inline}
+
 footer{text-align:center;padding:24px;font-size:13px;color:var(--muted);border-top:1px solid var(--line);background:#fff;margin-top:40px}
 </style>
 </head>
@@ -211,7 +230,8 @@ footer{text-align:center;padding:24px;font-size:13px;color:var(--muted);border-t
           </div>
           <div class="calc-sub-body" id="massenBody" style="display:none">
             <div class="fld" style="margin-bottom:0">
-              <label>Gewicht der Ladung (kg)</label>
+              <label>Gewicht der Ladung (kg) <button type="button" class="info-btn" onclick="toggleInfo('gewicht',event)">i</button></label>
+              <div class="info-text" id="info-gewicht">Das tatsächliche Gewicht der zu sichernden Ladung laut Lieferschein, Wiegeschein oder Typenschild.</div>
               <input type="number" id="calcGewicht" placeholder="z.B. 1000" min="0" oninput="berechneLaSi()">
             </div>
             <div class="calc-result" id="calcResult" style="display:none">
@@ -224,14 +244,15 @@ footer{text-align:center;padding:24px;font-size:13px;color:var(--muted);border-t
           </div>
         </div>
 
-        <div class="calc-sub type-zurr">
+        <div class="calc-sub type-zurr locked">
           <div class="calc-sub-header" onclick="toggleSubCalc('zurr')">
-            <span>Anzahl Zurrmittel berechnen (Niederzurren)</span>
+            <span>Anzahl Zurrmittel berechnen (Niederzurren)<span class="lock-note" id="zurrLockNote">🔒 zuerst Gewicht eintragen</span></span>
             <span class="calc-toggle" id="zurrToggleIcon">▾</span>
           </div>
           <div class="calc-sub-body" id="zurrBody" style="display:none">
           <div class="fld" style="margin-bottom:14px">
-            <label>Zu sichernde Richtung</label>
+            <label>Zu sichernde Richtung <button type="button" class="info-btn" onclick="toggleInfo('richtungNieder',event)">i</button></label>
+            <div class="info-text" id="info-richtungNieder">Legt fest, welcher Beschleunigungsfaktor (cₓ) verwendet wird — abhängig davon, in welche Richtung die Ladung während der Fahrt am stärksten belastet wird (Bremsen wirkt am stärksten nach vorne).</div>
             <select id="calcRichtungNieder" onchange="berechneZurrmittel()">
               <option value="0.8">Bremsen, nach vorne (cₓ = 0,8)</option>
               <option value="0.5">Beschleunigen, nach hinten (cₓ = 0,5)</option>
@@ -240,7 +261,8 @@ footer{text-align:center;padding:24px;font-size:13px;color:var(--muted);border-t
           </div>
           <div class="calc-grid">
             <div class="fld" style="margin-bottom:0">
-              <label>Reibbeiwert μ</label>
+              <label>Reibbeiwert μ <button type="button" class="info-btn" onclick="toggleInfo('mu',event)">i</button></label>
+              <div class="info-text" id="info-mu">Der Gleitreibungsbeiwert zwischen Ladung und Ladefläche. Ohne Nachweis (Messung oder Herstellerangabe) ist der Standardwert 0,3 (Holz/Holz, trocken) anzusetzen.</div>
               <select id="calcMu" onchange="handleMuChange()">
                 <option value="0.2">0,2 – Holz/Metall, glatt &amp; trocken</option>
                 <option value="0.3" selected>0,3 – Holz/Holz, trocken (Standardwert ohne Nachweis)</option>
@@ -252,15 +274,18 @@ footer{text-align:center;padding:24px;font-size:13px;color:var(--muted);border-t
               <input type="number" id="calcMuCustom" placeholder="z.B. 0,35" step="0.01" min="0" max="1" style="display:none;margin-top:10px" oninput="berechneZurrmittel(); berechneDirektzurren();">
             </div>
             <div class="fld" style="margin-bottom:0">
-              <label>Vorspannkraft F<sub>STF</sub> (daN)</label>
+              <label>Vorspannkraft F<sub>STF</sub> (daN) <button type="button" class="info-btn" onclick="toggleInfo('stf',event)">i</button></label>
+              <div class="info-text" id="info-stf">Die vom Hersteller angegebene Standard-Spannkraft (Normhandkraft) des verwendeten Zurrgurts — steht auf dem Etikett/der Kennzeichnung am Gurt.</div>
               <input type="number" id="calcStf" placeholder="z.B. 400" min="0" oninput="berechneZurrmittel()">
             </div>
             <div class="fld" style="margin-bottom:0">
-              <label>Anlegewinkel α (Grad)</label>
+              <label>Anlegewinkel α (Grad) <button type="button" class="info-btn" onclick="toggleInfo('alpha',event)">i</button></label>
+              <div class="info-text" id="info-alpha">Der vertikale Winkel, in dem der Zurrgurt zur Ladefläche verläuft. 90° bedeutet senkrecht (optimale Wirkung), kleinere Winkel verringern die Wirksamkeit.</div>
               <input type="number" id="calcAlpha" placeholder="z.B. 90" min="1" max="90" value="90" oninput="berechneZurrmittel()">
             </div>
             <div class="fld" style="margin-bottom:0">
-              <label>K-Faktor (Vorspannkraftverlust)</label>
+              <label>K-Faktor (Vorspannkraftverlust) <button type="button" class="info-btn" onclick="toggleInfo('kfaktor',event)">i</button></label>
+              <div class="info-text" id="info-kfaktor">Sicherheitsfaktor nach VDI 2700:2014 für den Vorspannkraftverlust über die Zeit (z. B. durch Setzen der Ladung, Temperaturschwankungen, Materialrelaxation). Typischer Wert: 1,5 — im Zweifel Originalquelle prüfen.</div>
               <input type="number" id="calcKfaktor" placeholder="z.B. 1,5" step="0.1" min="1" value="1.5" oninput="berechneZurrmittel()">
             </div>
           </div>
@@ -271,14 +296,15 @@ footer{text-align:center;padding:24px;font-size:13px;color:var(--muted);border-t
           </div>
         </div>
 
-        <div class="calc-sub type-direkt">
+        <div class="calc-sub type-direkt locked">
           <div class="calc-sub-header" onclick="toggleSubCalc('direkt')">
-            <span>Anzahl Zurrmittel berechnen (Direktzurren / Diagonalzurren)</span>
+            <span>Anzahl Zurrmittel berechnen (Direktzurren / Diagonalzurren)<span class="lock-note" id="direktLockNote">🔒 zuerst Gewicht eintragen</span></span>
             <span class="calc-toggle" id="direktToggleIcon">▾</span>
           </div>
           <div class="calc-sub-body" id="direktBody" style="display:none">
           <div class="fld" style="margin-bottom:10px">
-            <label>Zu sichernde Richtung</label>
+            <label>Zu sichernde Richtung <button type="button" class="info-btn" onclick="toggleInfo('richtungDirekt',event)">i</button></label>
+            <div class="info-text" id="info-richtungDirekt">Legt fest, welcher Beschleunigungsfaktor verwendet wird und ob der Horizontalwinkel β als cosβ (Bremsen, längs) oder sinβ (Beschleunigen/Kurvenfahrt, quer) in die Formel eingeht.</div>
             <select id="calcRichtung" onchange="berechneDirektzurren()">
               <option value="0.8" data-achse="laengs">Bremsen, nach vorne (cₓ = 0,8)</option>
               <option value="0.5" data-achse="quer">Beschleunigen, nach hinten (c_y = 0,5)</option>
@@ -287,19 +313,23 @@ footer{text-align:center;padding:24px;font-size:13px;color:var(--muted);border-t
           </div>
           <div class="calc-grid">
             <div class="fld" style="margin-bottom:0">
-              <label>Zulässige Zugkraft LC (daN)</label>
+              <label>Zulässige Zugkraft LC (daN) <button type="button" class="info-btn" onclick="toggleInfo('lc',event)">i</button></label>
+              <div class="info-text" id="info-lc">Die vom Hersteller angegebene Lashing Capacity (zulässige Zugkraft in Gurtlängsrichtung) des Zurrgurts — steht auf dem Etikett/der Kennzeichnung am Gurt.</div>
               <input type="number" id="calcLc" placeholder="z.B. 2500" min="0" oninput="berechneDirektzurren()">
             </div>
             <div class="fld" style="margin-bottom:0">
-              <label>Vertikalwinkel α (Grad)</label>
+              <label>Vertikalwinkel α (Grad) <button type="button" class="info-btn" onclick="toggleInfo('alphaDirekt',event)">i</button></label>
+              <div class="info-text" id="info-alphaDirekt">Der Winkel zwischen Zurrmittel und Ladefläche in der Seitenansicht (von der Seite gesehen).</div>
               <input type="number" id="calcAlphaDirekt" placeholder="z.B. 45" min="0" max="90" value="45" oninput="berechneDirektzurren()">
             </div>
             <div class="fld" style="margin-bottom:0">
-              <label>Horizontalwinkel β (Grad)</label>
+              <label>Horizontalwinkel β (Grad) <button type="button" class="info-btn" onclick="toggleInfo('beta',event)">i</button></label>
+              <div class="info-text" id="info-beta">Der Winkel zwischen Zurrmittel und Fahrzeuglängsachse in der Draufsicht (von oben gesehen). 0° bedeutet parallel zur Fahrtrichtung.</div>
               <input type="number" id="calcBeta" placeholder="z.B. 0" min="0" max="90" value="0" oninput="berechneDirektzurren()">
             </div>
             <div class="fld" style="margin-bottom:0">
-              <label>Vertikalfaktor c<sub>z</sub></label>
+              <label>Vertikalfaktor c<sub>z</sub> <button type="button" class="info-btn" onclick="toggleInfo('cz',event)">i</button></label>
+              <div class="info-text" id="info-cz">Faktor für die vertikale Komponente der Ladungssicherung nach VDI 2700:2014. Standardwert i. d. R. 1,0 — im Zweifel Originalquelle prüfen.</div>
               <input type="number" id="calcCz" placeholder="z.B. 1,0" step="0.1" min="0" value="1" oninput="berechneDirektzurren()">
             </div>
           </div>
@@ -485,12 +515,28 @@ function toggleCalc(){
   icon.classList.toggle('open', !offen);
 }
 
+function toggleInfo(id, ev){
+  if(ev) ev.stopPropagation();
+  var el = document.getElementById('info-' + id);
+  if(el) el.classList.toggle('open');
+}
+
 function toggleSubCalc(id){
   var body = document.getElementById(id + 'Body');
+  if(body.closest('.calc-sub').classList.contains('locked')) return;
   var icon = document.getElementById(id + 'ToggleIcon');
   var offen = body.style.display !== 'none';
   body.style.display = offen ? 'none' : 'block';
   icon.classList.toggle('open', !offen);
+}
+
+function setGesperrt(id, gesperrt){
+  var sub = document.getElementById(id + 'Body').closest('.calc-sub');
+  sub.classList.toggle('locked', gesperrt);
+  if(gesperrt){
+    document.getElementById(id + 'Body').style.display = 'none';
+    document.getElementById(id + 'ToggleIcon').classList.remove('open');
+  }
 }
 
 var aktuelleFG = 0;
@@ -501,6 +547,8 @@ function berechneLaSi(){
   if(!gewicht || gewicht <= 0){
     resultBox.style.display = 'none';
     aktuelleFG = 0;
+    setGesperrt('zurr', true);
+    setGesperrt('direkt', true);
     berechneZurrmittel();
     berechneDirektzurren();
     return;
@@ -512,6 +560,8 @@ function berechneLaSi(){
   document.getElementById('calcBeschleunigen').textContent = (fg*0.5).toLocaleString('de-DE',{maximumFractionDigits:1}) + ' daN';
   document.getElementById('calcKurve').textContent = (fg*0.5).toLocaleString('de-DE',{maximumFractionDigits:1}) + ' daN';
   resultBox.style.display = 'block';
+  setGesperrt('zurr', false);
+  setGesperrt('direkt', false);
   berechneZurrmittel();
   berechneDirektzurren();
 }
