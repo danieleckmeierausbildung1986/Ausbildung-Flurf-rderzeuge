@@ -167,40 +167,41 @@ var STUFE2_NACH = {
   ]
 };
 
-// ── Erstprüfung: NOCH EINZURICHTEN ──────────────────────────────
-// kandidatenUrl muss eine Liste von Kandidaten liefern, deren E-Learning
-// vollständig abgeschlossen ist (serverseitig gefiltert), jeweils
-// { regnr, vorname, nachname, freigegeben }.
-// freigebenUrl erhält { regnr } und setzt das Freigabe-Feld auf 'Ja'.
+// ── Erstprüfung ──────────────────────────────────────────────────
+// freigebenUrl ist identisch mit der Nachprüfung — beide setzen dasselbe
+// Freigabe-Feld, das die Prüfungsseiten (pruefung_stufe1/2/lasi.html) beim
+// Start prüfen. kandidatenUrl (noch zu bauen) muss serverseitig auf
+// "gebucht, noch nicht freigegeben, noch keine Prüfung abgelegt" filtern,
+// jeweils Zeilen im selben Format wie die Nachprüfungs-Kandidatenlisten.
 var KURSE_ERST = [
   {
     id: 'stufe1',
     label: 'Stufe 1',
     kandidatenUrl: 'DEIN_FLOW_URL_HIER',
-    freigebenUrl: 'DEIN_FLOW_URL_HIER',
+    freigebenUrl: KURSE_NACH[0].freigebenUrl,
     hinweis: 'Danach kann der Teilnehmer die Theorieprüfung Stufe 1 ablegen.'
   },
   {
     id: 'lasi',
     label: 'Ladungssicherung',
     kandidatenUrl: 'DEIN_FLOW_URL_HIER',
-    freigebenUrl: 'DEIN_FLOW_URL_HIER',
+    freigebenUrl: KURSE_NACH[1].freigebenUrl,
     hinweis: 'Danach kann der Teilnehmer die Prüfung unter pruefung_lasi.html ablegen.'
   }
 ];
 
-// Erstprüfung Stufe 2: kandidatenUrl liefert eine Zeile pro
-// (Teilnehmer, Gerät) das einsatzbereit ist: { regnr, vorname, nachname, geraet, freigegeben }.
-// freigebenUrl erhält { regnr, geraet }.
+// Erstprüfung Stufe 2: gleiche Datenform wie STUFE2_NACH — eine Zeile pro
+// Kandidat mit allen 3 Geräten als Spalten. kandidatenUrl (noch zu bauen)
+// filtert serverseitig auf "gebucht, noch nicht freigegeben, kein Ergebnis".
 var STUFE2_ERST = {
   id: 'stufe2',
   label: 'Stufe 2',
   kandidatenUrl: 'DEIN_FLOW_URL_HIER',
-  freigebenUrl: 'DEIN_FLOW_URL_HIER',
+  freigebenUrl: STUFE2_NACH.freigebenUrl,
   geraete: [
-    { id:'schubmast', label:'Schubmaststapler' },
-    { id:'kommissionierer', label:'Kommissionierer' },
-    { id:'schmalgang', label:'Schmalgang' }
+    { id:'schubmast', label:'Schubmaststapler', gebuchtInc:['schubmast','gebucht'], freigebInc:['schubmast','freigeg'] },
+    { id:'kommissionierer', label:'Kommissionierer', gebuchtInc:['kommission','gebucht'], freigebInc:['kommission','freigeg'] },
+    { id:'schmalgang', label:'Schmalgang', gebuchtInc:['schmalgang','gebucht'], freigebInc:['schmalgang','freigeg'] }
   ]
 };
 
@@ -449,10 +450,11 @@ function renderKandidatenErst(kurs, rows){
     var name = (r.vorname || r.Vorname_Teilnehmer || '') + ' ' + (r.nachname || r.Name_Teilnehmer || '');
     var freigegebenRaw = r.freigegeben !== undefined ? r.freigegeben : findVal(r, ['freigeg']);
     var istFrei = freigegebenRaw === 'Ja' || freigegebenRaw === true || freigegebenRaw === 'True';
+    var format = findVal(r, [kurs.id, 'schulung']) || '';
     return '<div class="kandidat" data-regnr="' + regnr + '">' +
       '<div class="k-info">' +
         '<div class="k-name">' + name + ' <span style="color:var(--muted);font-weight:500">(' + regnr + ')</span></div>' +
-        '<div class="k-meta">E-Learning vollständig abgeschlossen (≥80%)</div>' +
+        '<div class="k-meta">' + (format || 'Schulungsform unbekannt') + '</div>' +
         '<div class="k-status ' + (istFrei ? 'frei' : 'offen') + '">' + (istFrei ? 'Erstprüfung freigegeben' : 'Bereit — wartet auf Freigabe') + '</div>' +
       '</div>' +
       '<button class="btn ' + (istFrei ? 'done' : 'primary') + '" onclick="freigebenErst(\'' + kurs.id + '\',\'' + regnr + '\', this)" ' + (istFrei ? 'disabled' : '') + '>' +
@@ -500,40 +502,43 @@ async function ladeKandidatenErstStufe2(){
   }
 }
 
-// Erwartet eine Zeile pro (Teilnehmer, Gerät): { regnr, vorname, nachname, geraet, freigegeben }
+// Erwartet dieselbe Zeilenform wie STUFE2_NACH: eine Zeile pro Kandidat,
+// mit allen 3 Geräten als eigene Spalten (z.B. Schubmast_gebucht,
+// Pruefung_Schubmast_Freigegeben, ...). Der Kandidaten-Flow filtert
+// serverseitig bereits auf "gebucht & noch nicht freigegeben & kein
+// Prüfungsergebnis" — hier wird nur noch je Gerät angezeigt, ob es in der
+// Zeile überhaupt gebucht ist.
 function renderKandidatenErstStufe2(rows){
   var liste = document.getElementById('liste-erst-stufe2');
-  var byRegnr = {};
-  var order = [];
-  rows.forEach(function(r){
-    var regnr = r.regnr || r.Title || '';
-    if(!byRegnr[regnr]){ byRegnr[regnr] = { name:(r.vorname||'')+' '+(r.nachname||''), regnr:regnr, geraete:[] }; order.push(regnr); }
-    byRegnr[regnr].geraete.push(r);
-  });
+  var blocks = [];
+  var bereiteGeraete = 0;
 
-  var offeneGeraete = 0;
-  var blocks = order.map(function(regnr){
-    var g = byRegnr[regnr];
-    var rowsHtml = g.geraete.map(function(r){
-      var geraetId = r.geraet || '';
-      var geraetLabel = (STUFE2_ERST.geraete.find(function(x){ return x.id === geraetId; }) || {label:geraetId}).label;
-      var freigegebenRaw = r.freigegeben !== undefined ? r.freigegeben : findVal(r, ['freigeg']);
-      var istFrei = freigegebenRaw === 'Ja' || freigegebenRaw === true || freigegebenRaw === 'True';
-      if(!istFrei) offeneGeraete++;
-      return '<div class="k2-row" data-regnr="' + regnr + '" data-geraet="' + geraetId + '">' +
+  rows.forEach(function(r){
+    var regnr = r.Title || r.Registrierungsnummer || '';
+    var name = (r.Vorname_Teilnehmer || '') + ' ' + (r.Name_Teilnehmer || '');
+    var rowsHtml = STUFE2_ERST.geraete.map(function(g){
+      var gebucht = findVal2(r, g.gebuchtInc, []);
+      var istGebucht = gebucht === 'Yes' || gebucht === true || gebucht === 1 || gebucht === 'Ja';
+      if(!istGebucht) return '';
+      var freigegeben = findVal2(r, g.freigebInc, []);
+      var istFrei = freigegeben === 'Ja' || freigegeben === true || freigegeben === 'True';
+      bereiteGeraete++;
+      return '<div class="k2-row" data-regnr="' + regnr + '" data-geraet="' + g.id + '">' +
         '<div class="k-info">' +
-          '<div class="k2-geraet">' + geraetLabel + '</div>' +
+          '<div class="k2-geraet">' + g.label + '</div>' +
           '<div class="k-status ' + (istFrei ? 'frei' : 'offen') + '">' + (istFrei ? 'Erstprüfung freigegeben' : 'Bereit — wartet auf Freigabe') + '</div>' +
         '</div>' +
-        '<button class="btn ' + (istFrei ? 'done' : 'primary') + '" onclick="freigebenErstStufe2(\'' + geraetId + '\',\'' + regnr + '\', this)" ' + (istFrei ? 'disabled' : '') + '>' +
+        '<button class="btn ' + (istFrei ? 'done' : 'primary') + '" onclick="freigebenErstStufe2(\'' + g.id + '\',\'' + regnr + '\', this)" ' + (istFrei ? 'disabled' : '') + '>' +
           (istFrei ? '✓ Freigegeben' : 'Erstprüfung freigeben') +
         '</button>' +
       '</div>';
     }).join('');
-    return '<div class="k2-block"><div class="k2-name">' + g.name + ' <span style="color:var(--muted);font-weight:500">(' + g.regnr + ')</span></div>' + rowsHtml + '</div>';
+    if(rowsHtml){
+      blocks.push('<div class="k2-block"><div class="k2-name">' + name + ' <span style="color:var(--muted);font-weight:500">(' + regnr + ')</span></div>' + rowsHtml + '</div>');
+    }
   });
 
-  document.getElementById('tabsub-erst-stufe2').textContent = offeneGeraete === 0 ? 'Keiner bereit' : offeneGeraete + ' bereit';
+  document.getElementById('tabsub-erst-stufe2').textContent = bereiteGeraete === 0 ? 'Keiner bereit' : bereiteGeraete + ' bereit';
 
   if(blocks.length === 0){
     liste.innerHTML = '<div class="empty">✓ Aktuell niemand bereit für die Erstprüfung.</div>';
