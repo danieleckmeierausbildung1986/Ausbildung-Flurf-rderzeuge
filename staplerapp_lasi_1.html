@@ -76,6 +76,9 @@ button{font-family:inherit;cursor:pointer}
 .snum{width:23px;height:23px;border-radius:50%;background:var(--line);color:var(--muted);
   font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
 .sidebar-item.active .snum{background:var(--lasi);color:#fff}
+.sidebar-item.done .snum{background:var(--ok);color:#fff}
+.sidebar-item.done.active .snum{background:var(--ok)}
+.sidebar-item.done .scnt{color:var(--ok)}
 .stxt{flex:1}.stitle{line-height:1.3}.scnt{font-size:11px;color:var(--muted);font-weight:400;margin-top:2px}
 .scrim{display:none}
 
@@ -278,6 +281,7 @@ const IMG_BASE = 'https://danieleckmeierausbildung1986.github.io/Ausbildung-Flur
 const PORTAL_URL = 'https://danieleckmeierausbildung1986.github.io/Ausbildung-Flurf-rderzeuge/';
 const ZUGANGSPRUEFUNG_URL = 'https://default8af25f9034bc4ef4aba22ab6f641d5.01.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/7058b6c8090842748465472db6085773/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=nxepIsGToa5my_-oIW5ZR5c3CQLtufN5DwNvM-qG1G4';
 const LERNFORTSCHRITT_URL = 'https://default8af25f9034bc4ef4aba22ab6f641d5.01.environment.api.powerplatform.com:443/powerautomate/automations/direct/cu/02/workflows/84eeed409f3147b88317c0471bed6b97/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=zoIb4wZafLlKK50-Oz66Q25ickLybhFPw7V79aeFMhQ';
+const LERNFORTSCHRITT_ABRUFEN_URL = 'https://default8af25f9034bc4ef4aba22ab6f641d5.01.environment.api.powerplatform.com:443/powerautomate/automations/direct/cu/00/workflows/9c869fdafc54495984e57eb4c02db27e/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=BCn5dV66g3m-az0GtV6dJss1NQE_oIr1V7y1n7finrw';
 const WA_NR = '4916096877039';
 const MAIL = 'danieleckmeier@ausbildung1986.onmicrosoft.com';
 
@@ -562,6 +566,7 @@ async function startApp(nr, vorname, nachname){
       return;
     }
   } catch(e){}
+  await ladeVorhandenenFortschritt(nr);
   overlay.style.display = 'none';
   document.getElementById('login').classList.add('hidden');
   document.getElementById('app').classList.remove('hidden');
@@ -572,18 +577,42 @@ async function startApp(nr, vorname, nachname){
   goStep(0);
 }
 
+/* ── FORTSCHRITT AUS SHAREPOINT ÜBERNEHMEN (mehrtägige Schulung) ── */
+async function ladeVorhandenenFortschritt(nr){
+  try{
+    const res = await fetch(LERNFORTSCHRITT_ABRUFEN_URL, {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ regnr: nr })
+    });
+    const data = await res.json();
+    if(!data) return;
+    KAPITEL.forEach((k,ki)=>{
+      let v = data['Kapitel_'+(ki+1)];
+      if(v && typeof v === 'object') v = v.Value;
+      if(v === true || v === 'Ja' || v === 'true'){
+        kapitelAbgeschlossen[ki] = true;
+        let scoreVal = data['Kapitel_'+(ki+1)+'_Score'];
+        if(scoreVal && typeof scoreVal === 'object') scoreVal = scoreVal.Value;
+        const richtig = (typeof scoreVal === 'number') ? Math.round(scoreVal/100*k.quiz.length) : k.quiz.length;
+        quizState[ki] = { qi: k.quiz.length, score: richtig };
+      }
+    });
+  } catch(e){}
+}
+
 /* ── SIDEBAR ── */
 function buildSidebar(){
   const list = document.getElementById('sidebarList');
   list.innerHTML = '';
   KAPITEL.forEach((k,ki)=>{
     const chIdx = STEPS.findIndex(s=>s.type==='chapter'&&s.ki===ki);
+    const done = !!kapitelAbgeschlossen[ki];
     const div = document.createElement('div');
-    div.className='sidebar-item'+(isInChapter(ki)?' active':'');
+    div.className='sidebar-item'+(isInChapter(ki)?' active':'')+(done?' done':'');
     div.id='si-'+ki;
-    div.innerHTML=`<div class="snum">${ki+1}</div>
+    div.innerHTML=`<div class="snum">${done?'✓':ki+1}</div>
       <div class="stxt"><div class="stitle">${k.title}</div>
-      <div class="scnt">${k.folien.length} Folien · ${k.quiz.length} Fragen</div></div>`;
+      <div class="scnt">${done?'Abgeschlossen':k.folien.length+' Folien · '+k.quiz.length+' Fragen'}</div></div>`;
     div.onclick=()=>{goStep(chIdx);closeSidebar();};
     list.appendChild(div);
   });
