@@ -772,7 +772,7 @@ function renderQuiz(host,ki){
   const k=KAPITEL[ki];
   if(qs.qi>=k.quiz.length){
     const pct=Math.round(qs.score/k.quiz.length*100);
-    const pass=pct>=70;
+    const pass=pct>=80;
     const done=!!kapitelAbgeschlossen[ki];
     host.innerHTML=`<div class="quiz-card"><div class="quiz-result">
       <div class="qr-icon ${pass?'ok':'no'}">${pass?'✓':'✗'}</div>
