@@ -380,6 +380,64 @@ var _urlKursSpId   = '';
   });
 })();
 
+// Schulungsauswahl eines Angebots per URL-Parameter vorauswählen
+// (Link "Angebot annehmen" aus der Angebots-E-Mail).
+// Erwartetes Format: ?schulungen=[{"modul":"stufe1","format":"flex"},...]
+// modul-Werte wie in angebot.html (stufe1, schubmast, kommissionierer, schmalgang, lasi, training),
+// format-Werte wie in angebot.html (flex, online, praesenz) oder direkt Elearning/Online/Präsenz.
+// Läuft erst nach DOMContentLoaded, da dispatchEvent('change') sonst vor den
+// change-Listenern weiter unten im Skript ausgeführt würde und wirkungslos bliebe.
+document.addEventListener('DOMContentLoaded', function(){
+  var params = new URLSearchParams(window.location.search);
+  var raw = params.get('schulungen');
+  if(!raw) return;
+  var MODUL_ZU_KURS = {
+    stufe1:'stufe1', stufe2:'stufe2', lasi:'lasi', training:'training',
+    schubmast:'stufe2', kommissionierer:'stufe2', schmalgang:'stufe2'
+  };
+  var MODUL_ZU_GERAET = {schubmast:'schubmast', kommissionierer:'komm', schmalgang:'schmal'};
+  var FORMAT_ZU_SEL = {
+    flex:'Elearning', elearning:'Elearning',
+    online:'Online',
+    praesenz:'Präsenz', 'präsenz':'Präsenz'
+  };
+  function checkKurs(id){
+    var ck = document.getElementById('ck-' + id);
+    if(!ck) return;
+    if(!ck.checked){ ck.checked = true; ck.dispatchEvent(new Event('change')); }
+  }
+  try{
+    var list = JSON.parse(raw);
+    if(!Array.isArray(list)) return;
+    var geraeteIds = [], stufe2Format = '';
+    list.forEach(function(item){
+      var modul = item && (item.modul || item.modId || item.id);
+      if(!modul) return;
+      var format = FORMAT_ZU_SEL[String(item.format || '').toLowerCase()] || '';
+      if(modul in MODUL_ZU_GERAET){
+        geraeteIds.push(MODUL_ZU_GERAET[modul]);
+        if(format) stufe2Format = format;
+      }
+      var kurs = MODUL_ZU_KURS[modul] || modul;
+      checkKurs(kurs);
+      var sel = document.getElementById('sel-' + kurs);
+      if(sel && format) sel.value = format;
+      var block = document.getElementById('block-' + kurs);
+      if(block) block.classList.add('active');
+    });
+    geraeteIds.forEach(checkKurs);
+    if(stufe2Format){
+      var sel2 = document.getElementById('sel-stufe2');
+      if(sel2) sel2.value = stufe2Format;
+    }
+    if(list.length){
+      var firstKurs = MODUL_ZU_KURS[list[0].modul] || list[0].modul;
+      var firstBlock = document.getElementById('block-' + firstKurs);
+      if(firstBlock) firstBlock.scrollIntoView({behavior:'smooth', block:'center'});
+    }
+  }catch(e){}
+});
+
 // ── Kontakttyp (Privat/Gewerblich) ─────────────────────────────
 function setKontaktTyp(t){
   kontaktTyp = t;
