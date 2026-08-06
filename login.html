@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ProDrive Akademie Niederbayern – E-Learning</title>
+<style>
+:root{
+  --bg:#0a1628;--bg2:#0d2040;--card:#fff;
+  --green:#1a4fa8;--green-l:#2e75cc;--green-d:#0d2d80;
+  --navy:#16243f;--safety:#f5a623;--safety-d:#d4880f;
+  --muted:#68788f;--line:#e3e8f0;--ink:#1a2330;
+  --shadow:0 8px 40px rgba(0,0,0,.25);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:"Segoe UI",system-ui,sans-serif;
+  min-height:100vh;
+  background:var(--bg);
+  display:flex;align-items:center;justify-content:center;
+  padding:20px;
+}
+body::before{
+  content:'';position:fixed;inset:0;
+  background:
+    radial-gradient(ellipse 80% 60% at 20% 20%, rgba(26,79,168,.25) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 80% at 80% 80%, rgba(13,45,128,.3) 0%, transparent 60%);
+  pointer-events:none;z-index:0;
+}
+.container{position:relative;z-index:1;width:100%;max-width:480px;}
+
+/* Sprachumschalter */
+.lang-switcher{
+  display:flex;justify-content:center;gap:8px;
+  margin-bottom:18px;
+}
+.lang-btn{
+  padding:5px 14px;border-radius:20px;border:2px solid rgba(255,255,255,.3);
+  background:transparent;color:rgba(255,255,255,.6);
+  font-size:13px;font-weight:700;cursor:pointer;
+  transition:all .15s;letter-spacing:.5px;
+}
+.lang-btn:hover{border-color:rgba(255,255,255,.7);color:#fff}
+.lang-btn.active{
+  background:#fff;color:var(--green-d);
+  border-color:#fff;
+}
+
+.logo-area{text-align:center;margin-bottom:28px;animation:fadeDown .5s ease both}
+.logo-icon{
+  width:76px;height:76px;border-radius:20px;
+  background:linear-gradient(135deg,var(--green),var(--green-l));
+  display:flex;align-items:center;justify-content:center;
+  margin:0 auto 18px;
+  box-shadow:0 8px 32px rgba(26,122,74,.4);
+}
+.logo-icon svg{width:40px;height:40px;fill:#fff}
+.logo-tile{
+  display:inline-block;background:#fff;border-radius:18px;padding:14px 22px;
+  margin:0 auto 18px;box-shadow:0 8px 32px rgba(26,122,74,.4);
+}
+.logo-tile img{display:block;width:100%;max-width:260px;height:auto;margin:0 auto}
+.logo-area h1{color:#fff;font-size:25px;font-weight:700;margin-bottom:6px;letter-spacing:.2px}
+.welcome-line{color:#fff;font-size:15px;font-weight:600;margin-bottom:6px;opacity:.92}
+.logo-area p{color:rgba(255,255,255,.55);font-size:13px;line-height:1.5;max-width:340px;margin:0 auto}
+.card{
+  background:#fff;border-radius:20px;
+  box-shadow:var(--shadow);overflow:hidden;
+  animation:fadeUp .5s ease .1s both;
+}
+.card-body{padding:28px 30px 30px}
+.card-intro{font-size:13px;color:var(--muted);text-align:center;margin-bottom:20px;line-height:1.5}
+.lf{margin-bottom:16px}
+.lf label{
+  display:block;font-size:11px;font-weight:700;
+  color:var(--navy);text-transform:uppercase;
+  letter-spacing:.6px;margin-bottom:7px
+}
+.lf input{
+  width:100%;padding:13px 16px;
+  border:2px solid var(--line);border-radius:12px;
+  font-size:16px;background:#fafbfc;
+  transition:border-color .15s;color:var(--ink);
+}
+.lf input:focus{outline:none;border-color:var(--green);background:#fff}
+.login-btn{
+  width:100%;padding:14px;border:none;border-radius:12px;
+  background:linear-gradient(135deg,var(--green),var(--green-d));
+  color:#fff;font-size:15px;font-weight:700;cursor:pointer;
+  transition:opacity .15s;letter-spacing:.3px;
+}
+.login-btn:hover{opacity:.9}
+.login-btn:disabled{opacity:.6;cursor:not-allowed}
+.lerr{color:#c0392b;font-size:13px;margin-top:10px;text-align:center;min-height:18px;}
+.lhint{font-size:11px;color:var(--muted);text-align:center;margin-top:10px;}
+.module-area{animation:fadeUp .4s ease both}
+.greeting{text-align:center;padding:24px 24px 16px;border-bottom:1px solid var(--line);}
+.greeting-name{font-size:20px;font-weight:700;color:var(--navy);margin-bottom:4px}
+.greeting-sub{font-size:13px;color:var(--muted)}
+.tab-row{display:flex;gap:6px;padding:16px 24px 0}
+.tab-btn{
+  flex:1;padding:10px 8px;border:none;border-radius:10px;background:transparent;
+  color:var(--muted);font-size:13px;font-weight:700;cursor:pointer;transition:all .15s;
+}
+.tab-btn.active{background:var(--green);color:#fff}
+.tab-btn:not(.active):hover{background:#f1f4f8;color:var(--ink)}
+.exam-tile{
+  display:block;border-radius:14px;overflow:hidden;border:1.5px solid var(--line);
+  position:relative;transition:all .15s;
+}
+.exam-tile img{display:block;width:100%;height:auto}
+a.exam-tile:hover{border-color:var(--green);transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.12)}
+.exam-tile.disabled{cursor:default;opacity:.85}
+.exam-tile-badge{
+  position:absolute;top:10px;right:10px;background:rgba(22,36,63,.85);color:#fff;
+  font-size:11px;font-weight:700;padding:5px 12px;border-radius:20px;letter-spacing:.3px;
+}
+.modules{padding:20px 24px 24px;display:flex;flex-direction:column;gap:12px}
+.module-btn{
+  display:flex;align-items:center;gap:16px;
+  padding:16px 18px;border-radius:14px;border:none;
+  cursor:pointer;text-align:left;transition:all .15s;
+  text-decoration:none;width:100%;
+}
+.module-btn.stufe1{background:linear-gradient(135deg,#1e3a6b,#2b6cb0);color:#fff}
+.module-btn.stufe2{background:linear-gradient(135deg,#2d1b6b,#5b3db0);color:#fff}
+.module-btn.lasi{background:linear-gradient(135deg,var(--green-d),var(--green));color:#fff}
+.module-btn:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.2)}
+.mod-icon{
+  width:46px;height:46px;border-radius:12px;
+  background:rgba(255,255,255,.2);
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+.mod-icon svg{width:24px;height:24px;fill:#fff}
+.mod-info{flex:1}
+.mod-title{font-size:15px;font-weight:700;margin-bottom:2px}
+.mod-sub{font-size:12px;opacity:.7}
+.mod-arrow{font-size:18px;opacity:.7;flex-shrink:0}
+.no-modules{text-align:center;padding:28px 20px;color:var(--muted);font-size:14px;line-height:1.6}
+.spinner{
+  width:22px;height:22px;border:3px solid rgba(255,255,255,.3);
+  border-top-color:#fff;border-radius:50%;
+  animation:spin .7s linear infinite;display:inline-block;vertical-align:middle;
+}
+.back-btn{
+  display:block;width:100%;padding:11px;border:2px solid var(--line);
+  border-radius:12px;background:#fff;color:var(--muted);
+  font-size:14px;font-weight:600;cursor:pointer;margin-top:12px;
+  transition:all .15s;text-align:center;
+}
+.back-btn:hover{border-color:var(--green);color:var(--green)}
+@keyframes fadeDown{from{opacity:0;transform:translateY(-12px)}to{opacity:1;transform:none}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+@keyframes spin{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- Sprachumschalter -->
+  <div class="lang-switcher">
+    <button class="lang-btn active" id="btn-de" onclick="setLang('de')">🇩🇪 DE</button>
+    <button class="lang-btn" id="btn-en" onclick="setLang('en')">🇬🇧 EN</button>
+    <button class="lang-btn" id="btn-pl" onclick="setLang('pl')">🇵🇱 PL</button>
+    <button class="lang-btn" id="btn-ro" onclick="setLang('ro')">🇷🇴 RO</button>
+    <button class="lang-btn" id="btn-sq" onclick="setLang('sq')">🇦🇱 SQ</button>
+  </div>
+
+  <div class="logo-area">
+    <div class="logo-tile">
+      <img src="logos/logo_teilnehmerzugang_full.png" alt="Teilnehmerzugang – ProDrive Akademie Niederbayern">
+    </div>
+    <div class="welcome-line" id="txt-welcome" style="font-size:26px;font-weight:800;margin-bottom:10px"></div>
+    <p id="txt-sub"></p>
+  </div>
+
+  <div class="card" id="loginCard">
+    <div class="card-body">
+      <div class="card-intro" id="txt-intro"></div>
+      <div class="lf">
+        <label id="txt-label"></label>
+        <input type="text" id="regnr" placeholder="2025-001" autocomplete="off"
+          onkeydown="if(event.key==='Enter')document.getElementById('vorname').focus()">
+      </div>
+      <div class="lf">
+        <label id="txt-label-vorname"></label>
+        <input type="text" id="vorname" placeholder="Max" autocomplete="off"
+          onkeydown="if(event.key==='Enter')document.getElementById('nachname').focus()">
+      </div>
+      <div class="lf">
+        <label id="txt-label-nachname"></label>
+        <input type="text" id="nachname" placeholder="Mustermann" autocomplete="off"
+          onkeydown="if(event.key==='Enter')doLogin()">
+      </div>
+      <button class="login-btn" id="loginBtn" onclick="doLogin()"></button>
+      <div class="lerr" id="lerr"></div>
+      <div class="lhint" id="txt-hint"></div>
+      <a class="back-btn" id="txt-back-home-login" href="index.html" style="display:block;margin-top:14px;text-decoration:none;box-sizing:border-box"></a>
+    </div>
+  </div>
+
+  <div class="card" id="moduleCard" style="display:none">
+    <div class="module-area">
+      <div class="greeting">
+        <div class="greeting-name" id="greetName">Willkommen</div>
+        <div class="greeting-sub" id="txt-choose"></div>
+      </div>
+      <div class="tab-row">
+        <button class="tab-btn active" id="tabLearning" onclick="switchTab('learning')">E-Learning</button>
+        <button class="tab-btn" id="tabExams" onclick="switchTab('exams')">Gebuchte Theorieprüfungen</button>
+      </div>
+      <div class="modules" id="moduleListLearning"></div>
+      <div class="modules" id="moduleListExams" style="display:none"></div>
+      <div style="padding:0 24px 20px;display:flex;flex-direction:column;gap:8px">
+        <button class="back-btn" id="txt-back" onclick="goBack()"></button>
+        <a class="back-btn" id="txt-back-home-modules" href="index.html" style="text-decoration:none;box-sizing:border-box"></a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── Übersetzungen ──────────────────────────────────────────────
+const TRANSLATIONS = {
+  de: {
+    title:        'ProDrive Akademie Niederbayern',
+    welcome:      'Schön, dass Sie da sind!',
+    sub:          'Ihre Ausbildung rund um Flurförderzeuge und Ladungssicherung – nach DGUV 308-001 & VDI 2700.',
+    intro:        'Bitte melden Sie sich mit Ihrer Registriernummer, Vor- und Nachnamen an.',
+    label:        'Registriernummer',
+    labelVorname: 'Vorname',
+    labelNachname: 'Nachname',
+    loginBtn:     'Anmelden →',
+    hint:         'Format: 2025-001 – erhalten Sie von Ihrem Ausbilder',
+    choose:       'Bitte wählen Sie Ihre Schulung',
+    back:         '← Zurück zur Anmeldung',
+    backHome:     '← Zurück zur ProDrive Startseite',
+    noModules:    'Für diese Registriernummer sind keine E-Learning-Module gebucht.<br>Bitte wenden Sie sich an Ihren Ausbilder.',
+    errEmpty:     'Bitte Registriernummer eingeben.',
+    errEmptyName: 'Bitte Vor- und Nachnamen eingeben.',
+    errFormat:    'Ungültig. Format: 2025-001',
+    errNotFound:  'Registriernummer, Vor- oder Nachname stimmen nicht überein. Bitte Ausbilder kontaktieren.',
+    errConn:      'Verbindungsfehler. Bitte erneut versuchen.',
+    hallo:        'Hallo, ',
+    badgeAbgeschlossen: 'Abgeschlossen ✓',
+    badgeBereitsBestanden: 'Bereits bestanden',
+    badgeNochNichtFreigegeben: 'Noch nicht freigegeben',
+    mod: {
+      stufe1:     { title: 'Stapler Stufe 1',    sub: 'DGUV Grundsatz 308-001' },
+      stufe2:     { title: 'Stapler Stufe 2',    sub: 'DGUV Grundsatz 308-001' },
+      lasi:       { title: 'Ladungssicherung',   sub: 'VDI 2700 ff. · DGUV 308-009' },
+    }
+  },
+  en: {
+    title:        'ProDrive Akademie Niederbayern',
+    welcome:      'Great to have you here!',
+    sub:          'Your training on industrial trucks and load securing – acc. to DGUV 308-001 & VDI 2700.',
+    intro:        'Please log in with your registration number, first and last name.',
+    label:        'Registration Number',
+    labelVorname: 'First name',
+    labelNachname: 'Last name',
+    loginBtn:     'Log in →',
+    hint:         'Format: 2025-001 – provided by your instructor',
+    choose:       'Please select your training module',
+    back:         '← Back to login',
+    backHome:     '← Back to ProDrive homepage',
+    noModules:    'No e-learning modules are booked for this registration number.<br>Please contact your instructor.',
+    errEmpty:     'Please enter your registration number.',
+    errEmptyName: 'Please enter your first and last name.',
+    errFormat:    'Invalid format. Example: 2025-001',
+    errNotFound:  'Registration number, first or last name do not match. Please contact your instructor.',
+    errConn:      'Connection error. Please try again.',
+    hallo:        'Hello, ',
+    badgeAbgeschlossen: 'Completed ✓',
+    badgeBereitsBestanden: 'Already passed',
+    badgeNochNichtFreigegeben: 'Not yet approved',
+    mod: {
+      stufe1:     { title: 'Forklift Level 1',   sub: 'DGUV Principle 308-001' },
+      stufe2:     { title: 'Forklift Level 2',   sub: 'DGUV Principle 308-001' },
+      lasi:       { title: 'Load Securing',      sub: 'VDI 2700 ff. · DGUV 308-009' },
+    }
+  },
+  pl: {
+    title:        'Witamy na platformie e-learningowej',
+    welcome:      'Cieszymy się, że jesteś!',
+    sub:          'Szkolenie z wózków jezdniowych i mocowania ładunków – zgodnie z DGUV 308-001 i VDI 2700.',
+    intro:        'Proszę zalogować się numerem rejestracyjnym, imieniem i nazwiskiem.',
+    label:        'Numer rejestracyjny',
+    labelVorname: 'Imię',
+    labelNachname: 'Nazwisko',
+    loginBtn:     'Zaloguj →',
+    hint:         'Format: 2025-001 – podany przez instruktora',
+    choose:       'Proszę wybrać moduł szkoleniowy',
+    back:         '← Powrót do logowania',
+    backHome:     '← Powrót do strony głównej ProDrive',
+    noModules:    'Dla tego numeru rejestracyjnego nie są zarezerwowane żadne moduły e-learning.<br>Proszę skontaktować się z instruktorem.',
+    errEmpty:     'Proszę podać numer rejestracyjny.',
+    errEmptyName: 'Proszę podać imię i nazwisko.',
+    errFormat:    'Nieprawidłowy format. Przykład: 2025-001',
+    errNotFound:  'Numer rejestracyjny, imię lub nazwisko nie pasują. Proszę skontaktować się z instruktorem.',
+    errConn:      'Błąd połączenia. Proszę spróbować ponownie.',
+    hallo:        'Cześć, ',
+    badgeAbgeschlossen: 'Ukończono ✓',
+    badgeBereitsBestanden: 'Już zdane',
+    badgeNochNichtFreigegeben: 'Jeszcze niezatwierdzone',
+    mod: {
+      stufe1:     { title: 'Wózek widłowy – poziom 1', sub: 'DGUV Zasada 308-001' },
+      stufe2:     { title: 'Wózek widłowy – poziom 2', sub: 'DGUV Zasada 308-001' },
+      lasi:       { title: 'Mocowanie ładunków',       sub: 'VDI 2700 ff. · DGUV 308-009' },
+    }
+  },
+  ro: {
+    title:        'Bun venit pe platforma e-learning',
+    welcome:      'Ne bucurăm că ești aici!',
+    sub:          'Instruire pentru stivuitoare și securizarea sarcinii – conform DGUV 308-001 și VDI 2700.',
+    intro:        'Vă rugăm să vă autentificați cu numărul de înregistrare, prenumele și numele.',
+    label:        'Număr de înregistrare',
+    labelVorname: 'Prenume',
+    labelNachname: 'Nume',
+    loginBtn:     'Autentificare →',
+    hint:         'Format: 2025-001 – furnizat de instructor',
+    choose:       'Vă rugăm selectați modulul de instruire',
+    back:         '← Înapoi la autentificare',
+    backHome:     '← Înapoi la pagina principală ProDrive',
+    noModules:    'Pentru acest număr de înregistrare nu sunt rezervate module e-learning.<br>Vă rugăm contactați instructorul.',
+    errEmpty:     'Vă rugăm introduceți numărul de înregistrare.',
+    errEmptyName: 'Vă rugăm introduceți prenumele și numele.',
+    errFormat:    'Format invalid. Exemplu: 2025-001',
+    errNotFound:  'Numărul de înregistrare, prenumele sau numele nu se potrivesc. Vă rugăm contactați instructorul.',
+    errConn:      'Eroare de conexiune. Vă rugăm încercați din nou.',
+    hallo:        'Bună, ',
+    badgeAbgeschlossen: 'Finalizat ✓',
+    badgeBereitsBestanden: 'Deja promovat',
+    badgeNochNichtFreigegeben: 'Neaprobat încă',
+    mod: {
+      stufe1:     { title: 'Stivuitor – nivelul 1', sub: 'Principiu DGUV 308-001' },
+      stufe2:     { title: 'Stivuitor – nivelul 2', sub: 'Principiu DGUV 308-001' },
+      lasi:       { title: 'Securizarea sarcinii',  sub: 'VDI 2700 ff. · DGUV 308-009' },
+    }
+  },
+  sq: {
+    title:        'Mirë se vini në platformën e-learning',
+    welcome:      'Gëzohemi që jeni këtu!',
+    sub:          'Trajnim për karikues industrialë dhe sigurimin e ngarkesës – sipas DGUV 308-001 dhe VDI 2700.',
+    intro:        'Ju lutemi hyni me numrin e regjistrimit, emrin dhe mbiemrin tuaj.',
+    label:        'Numri i regjistrimit',
+    labelVorname: 'Emri',
+    labelNachname: 'Mbiemri',
+    loginBtn:     'Hyrje →',
+    hint:         'Format: 2025-001 – dhënë nga instruktori',
+    choose:       'Ju lutemi zgjidhni modulin e trajnimit',
+    back:         '← Kthehu te hyrja',
+    backHome:     '← Kthehu te faqja kryesore ProDrive',
+    noModules:    'Për këtë numër regjistrimi nuk janë rezervuar module e-learning.<br>Ju lutemi kontaktoni instruktorin.',
+    errEmpty:     'Ju lutemi vendosni numrin e regjistrimit.',
+    errEmptyName: 'Ju lutemi vendosni emrin dhe mbiemrin.',
+    errFormat:    'Format i pavlefshëm. Shembull: 2025-001',
+    errNotFound:  'Numri i regjistrimit, emri ose mbiemri nuk përputhen. Ju lutemi kontaktoni instruktorin.',
+    errConn:      'Gabim lidhjeje. Ju lutemi provoni përsëri.',
+    hallo:        'Përshëndetje, ',
+    badgeAbgeschlossen: 'Përfunduar ✓',
+    badgeBereitsBestanden: 'Kaluar tashmë',
+    badgeNochNichtFreigegeben: 'Ende pa miratuar',
+    mod: {
+      stufe1:     { title: 'Ngarkues – niveli 1', sub: 'Parimi DGUV 308-001' },
+      stufe2:     { title: 'Ngarkues – niveli 2', sub: 'Parimi DGUV 308-001' },
+      lasi:       { title: 'Sigurimi i ngarkesës', sub: 'VDI 2700 ff. · DGUV 308-009' },
+    }
+  }
+};
+
+// ── Sprachverwaltung ───────────────────────────────────────────
+let currentLang = 'de';
+
+function setLang(lang){
+  currentLang = lang;
+  sessionStorage.setItem('lang', lang);
+  document.documentElement.lang = lang;
+
+  // Buttons
+  ['de','en','pl','ro','sq'].forEach(l => {
+    const b = document.getElementById('btn-'+l);
+    if(b) b.classList.toggle('active', lang === l);
+  });
+
+  const t = TRANSLATIONS[lang];
+
+  // Statische Texte
+  document.title = t.title;
+  document.getElementById('txt-welcome').textContent  = t.welcome;
+  document.getElementById('txt-sub').textContent      = t.sub;
+  document.getElementById('txt-intro').textContent    = t.intro;
+  document.getElementById('txt-label').textContent    = t.label;
+  document.getElementById('txt-label-vorname').textContent   = t.labelVorname;
+  document.getElementById('txt-label-nachname').textContent  = t.labelNachname;
+  document.getElementById('loginBtn').textContent     = t.loginBtn;
+  document.getElementById('txt-hint').textContent     = t.hint;
+  document.getElementById('txt-choose').textContent   = t.choose;
+  document.getElementById('txt-back').textContent     = t.back;
+  document.getElementById('txt-back-home-login').textContent   = t.backHome;
+  document.getElementById('txt-back-home-modules').textContent = t.backHome;
+
+  // Modulkarte neu rendern falls sichtbar
+  if(document.getElementById('moduleCard').style.display !== 'none' && Object.keys(currentData).length){
+    showModules(currentData);
+  }
+}
+
+// ── App-Status ─────────────────────────────────────────────────
+let currentRegnr = '';
+let currentData  = {};
+
+function goBack(){
+  currentRegnr = '';
+  currentData  = {};
+  document.getElementById('moduleCard').style.display = 'none';
+  document.getElementById('loginCard').style.display  = 'block';
+  document.getElementById('lerr').textContent = '';
+}
+
+const FLOW_URL = 'https://default8af25f9034bc4ef4aba22ab6f641d5.01.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/7058b6c8090842748465472db6085773/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=nxepIsGToa5my_-oIW5ZR5c3CQLtufN5DwNvM-qG1G4';
+
+const BASE = 'https://danieleckmeierausbildung1986.github.io/Ausbildung-Flurf-rderzeuge/';
+
+async function doLogin(){
+  const val      = document.getElementById('regnr').value.trim();
+  const vorname  = document.getElementById('vorname').value.trim();
+  const nachname = document.getElementById('nachname').value.trim();
+  const errEl = document.getElementById('lerr');
+  const t    = TRANSLATIONS[currentLang];
+  errEl.textContent = '';
+
+  if(!val){ errEl.textContent = t.errEmpty; return; }
+  if(!/^\d{4}-\d{3,4}$/.test(val)){ errEl.textContent = t.errFormat; return; }
+  if(!vorname || !nachname){ errEl.textContent = t.errEmptyName; return; }
+
+  await pruefeUndZeige(val, vorname, nachname, false);
+}
+
+async function pruefeUndZeige(val, vorname, nachname, silent){
+  const errEl = document.getElementById('lerr');
+  const btn   = document.getElementById('loginBtn');
+  const t     = TRANSLATIONS[currentLang];
+  btn.innerHTML = '<span class="spinner"></span>';
+  btn.disabled  = true;
+
+  try {
+    const res  = await fetch(FLOW_URL, {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ registrierungsnummer: val, vorname: vorname, nachname: nachname })
+    });
+    const data = await res.json();
+
+    if(data && data.zugang === true){
+      currentRegnr = val;
+      currentData  = data;
+      sessionStorage.setItem('authRegnr', val);
+      sessionStorage.setItem('authVorname', vorname);
+      sessionStorage.setItem('authNachname', nachname);
+      showModules(data);
+    } else if(!silent){
+      errEl.textContent = data.grund || t.errNotFound;
+    }
+  } catch(e){
+    if(!silent) errEl.textContent = t.errConn;
+  } finally {
+    btn.textContent = t.loginBtn;
+    btn.disabled    = false;
+  }
+}
+
+// Auto-Login: nur wenn diese Registriernummer bereits in dieser Sitzung
+// mit Vor-/Nachname erfolgreich angemeldet wurde (verhindert reines
+// Erraten der Registriernummer über die URL).
+(function(){
+  const params = new URLSearchParams(window.location.search);
+
+  // Sprache aus URL oder sessionStorage
+  const urlLang = params.get('lang');
+  const storedLang = sessionStorage.getItem('lang');
+  setLang(urlLang || storedLang || 'de');
+
+  const nr = params.get('regnr');
+  const authRegnr = sessionStorage.getItem('authRegnr');
+  const authVorname = sessionStorage.getItem('authVorname');
+  const authNachname = sessionStorage.getItem('authNachname');
+
+  if(nr && /^\d{4}-\d{3,4}$/.test(nr)){
+    document.getElementById('regnr').value = nr;
+    if(authRegnr === nr && authVorname && authNachname){
+      document.getElementById('vorname').value = authVorname;
+      document.getElementById('nachname').value = authNachname;
+      pruefeUndZeige(nr, authVorname, authNachname, true);
+    }
+  }
+})();
+
+function showModules(data){
+  document.getElementById('loginCard').style.display  = 'none';
+  document.getElementById('moduleCard').style.display = 'block';
+
+  const t    = TRANSLATIONS[currentLang];
+  const name = (data.vorname || '') + ' ' + (data.nachname || '');
+  document.getElementById('greetName').textContent = t.hallo + name.trim() + '!';
+  document.getElementById('txt-choose').textContent = t.choose;
+
+  const list = document.getElementById('moduleListLearning');
+  const examList = document.getElementById('moduleListExams');
+  list.innerHTML = '';
+  examList.innerHTML = '';
+  let count = 0;
+  let examCount = 0;
+  const langParam = '&lang=' + currentLang;
+  const logoLangs = ['pl','ro','sq'];
+  function logoImg(base, ext){
+    const suffix = logoLangs.includes(currentLang) ? '_' + currentLang : '';
+    return 'logos/' + base + suffix + '.' + ext;
+  }
+
+  function getSF(val){
+    if(!val) return '';
+    var str;
+    if(typeof val === 'object' && val.Value) str = val.Value;
+    else if(typeof val === 'string'){
+      try{ var o=JSON.parse(val); str = (o && o.Value) ? o.Value : val; }catch(e){ str = val; }
+    } else str = String(val);
+    return str.toLowerCase().replace(/-/g,'');
+  }
+  const s1form = getSF(data.stufe1_schulungsform || data.Stufe1_Schulungsform);
+  const s2form = getSF(data.stufe2_schulungsform || data.Stufe2_Schulungsform);
+  const lform  = getSF(data.lasi_schulungsform   || data.LaSi_Schulungsform);
+
+  if(data.stufe1 && s1form === 'elearning'){
+    const s1Abgeschlossen = getSF(data.pruefung_stufe1_freigegeben) === 'geschlossen';
+    if(s1Abgeschlossen){
+      list.innerHTML += `
+        <div class="exam-tile disabled">
+          <img src="${BASE}${logoImg('logo_ausbildung_stufe1','jpg')}" alt="${t.mod.stufe1.title}" style="filter:grayscale(1) brightness(1.15)">
+          <span class="exam-tile-badge">${t.badgeAbgeschlossen}</span>
+        </div>`;
+    } else {
+      list.innerHTML += `
+        <a class="exam-tile" href="${BASE}staplerapp_stufe1.html?regnr=${encodeURIComponent(currentRegnr)}${langParam}">
+          <img src="${BASE}${logoImg('logo_ausbildung_stufe1','jpg')}" alt="${t.mod.stufe1.title}">
+        </a>`;
+    }
+    count++;
+  }
+
+  // Die Theorieprüfung läuft immer über diese Plattform, unabhängig von der Schulungsform
+  // (auch bei Präsenz/Online meldet sich der Teilnehmer hier zur Prüfung an).
+  if(data.stufe1){
+    const s1Freigegeben = data.pruefung_stufe1_freigegeben === true || data.pruefung_stufe1_freigegeben === 'True' || getSF(data.pruefung_stufe1_freigegeben) === 'ja';
+    const s1Geschlossen = getSF(data.pruefung_stufe1_freigegeben) === 'geschlossen';
+    if(s1Freigegeben){
+      examList.innerHTML += `
+        <a class="exam-tile" href="${BASE}pruefung_stufe1.html?regnr=${encodeURIComponent(currentRegnr)}${langParam}">
+          <img src="${BASE}${logoImg('logo_pruefung_stufe1','png')}" alt="Theorieprüfung Stufe 1">
+        </a>`;
+    } else {
+      examList.innerHTML += `
+        <div class="exam-tile disabled">
+          <img src="${BASE}${logoImg('logo_pruefung_stufe1','png')}" alt="Theorieprüfung Stufe 1" style="filter:grayscale(1) brightness(1.15)">
+          <span class="exam-tile-badge">${s1Geschlossen ? t.badgeBereitsBestanden : t.badgeNochNichtFreigegeben}</span>
+        </div>`;
+    }
+    examCount++;
+  }
+
+  if(data.stufe2 && s2form === 'elearning'){
+    const s2data = {
+      regnr:           currentRegnr,
+      vorname:         data.vorname,
+      nachname:        data.nachname,
+      lang:            currentLang,
+      schubmast:       data.schubmast_gebucht       === true || data.schubmast_gebucht       === 'Ja' || data.schubmast_gebucht       === 'True',
+      kommissionierer: data.kommissionierer_gebucht === true || data.kommissionierer_gebucht === 'Ja' || data.kommissionierer_gebucht === 'True',
+      schmalgang:      data.schmalgang_gebucht       === true || data.schmalgang_gebucht       === 'Ja' || data.schmalgang_gebucht       === 'True',
+      schubmastGeschlossen:       getSF(data.pruefung_schubmast_freigegeben) === 'geschlossen',
+      kommissiererGeschlossen:    getSF(data.pruefung_kommissionierer_freigegeben) === 'geschlossen',
+      schmalgangGeschlossen:      getSF(data.pruefung_schmalgang_freigegeben) === 'geschlossen'
+    };
+    const s2AllAbgeschlossen =
+      (!s2data.schubmast       || getSF(data.pruefung_schubmast_freigegeben) === 'geschlossen') &&
+      (!s2data.kommissionierer || getSF(data.pruefung_kommissionierer_freigegeben) === 'geschlossen') &&
+      (!s2data.schmalgang      || getSF(data.pruefung_schmalgang_freigegeben) === 'geschlossen') &&
+      (s2data.schubmast || s2data.kommissionierer || s2data.schmalgang);
+    if(s2AllAbgeschlossen){
+      list.innerHTML += `
+        <div class="exam-tile disabled">
+          <img src="${BASE}${logoImg('logo_ausbildung_stufe2','jpg')}" alt="${t.mod.stufe2.title}" style="filter:grayscale(1) brightness(1.15)">
+          <span class="exam-tile-badge">${t.badgeAbgeschlossen}</span>
+        </div>`;
+    } else {
+      list.innerHTML += `
+        <div class="exam-tile" style="cursor:pointer" onclick='goStufe2(${JSON.stringify(s2data)})'>
+          <img src="${BASE}${logoImg('logo_ausbildung_stufe2','jpg')}" alt="${t.mod.stufe2.title}">
+        </div>`;
+    }
+    count++;
+  }
+
+  // Die Theorieprüfung läuft immer über diese Plattform, unabhängig von der Schulungsform.
+  if(data.stufe2){
+    const s2data = {
+      regnr:           currentRegnr,
+      vorname:         data.vorname,
+      nachname:        data.nachname,
+      lang:            currentLang,
+      schubmast:       data.schubmast_gebucht       === true || data.schubmast_gebucht       === 'Ja' || data.schubmast_gebucht       === 'True',
+      kommissionierer: data.kommissionierer_gebucht === true || data.kommissionierer_gebucht === 'Ja' || data.kommissionierer_gebucht === 'True',
+      schmalgang:      data.schmalgang_gebucht       === true || data.schmalgang_gebucht       === 'Ja' || data.schmalgang_gebucht       === 'True',
+      schubmastGeschlossen:       getSF(data.pruefung_schubmast_freigegeben) === 'geschlossen',
+      kommissiererGeschlossen:    getSF(data.pruefung_kommissionierer_freigegeben) === 'geschlossen',
+      schmalgangGeschlossen:      getSF(data.pruefung_schmalgang_freigegeben) === 'geschlossen'
+    };
+    const s2AllAbgeschlossen =
+      (!s2data.schubmast       || getSF(data.pruefung_schubmast_freigegeben) === 'geschlossen') &&
+      (!s2data.kommissionierer || getSF(data.pruefung_kommissionierer_freigegeben) === 'geschlossen') &&
+      (!s2data.schmalgang      || getSF(data.pruefung_schmalgang_freigegeben) === 'geschlossen') &&
+      (s2data.schubmast || s2data.kommissionierer || s2data.schmalgang);
+    if(s2AllAbgeschlossen){
+      examList.innerHTML += `
+        <div class="exam-tile disabled">
+          <img src="${BASE}${logoImg('logo_pruefung_stufe2','jpg')}" alt="Theorieprüfung Stufe 2" style="filter:grayscale(1) brightness(1.15)">
+          <span class="exam-tile-badge">${t.badgeBereitsBestanden}</span>
+        </div>`;
+    } else {
+      examList.innerHTML += `
+        <div class="exam-tile" style="cursor:pointer" onclick='goPruefungStufe2(${JSON.stringify(s2data)})'>
+          <img src="${BASE}${logoImg('logo_pruefung_stufe2','jpg')}" alt="Theorieprüfung Stufe 2">
+        </div>`;
+    }
+    examCount++;
+  }
+
+  if(data.lasi){
+    list.innerHTML += `
+      <a class="exam-tile" href="${BASE}lasi_auswahl.html?regnr=${encodeURIComponent(currentRegnr)}${langParam}">
+        <img src="${BASE}${logoImg('lasi_header','jpg')}" alt="Ausbildung Ladungssicherung">
+      </a>`;
+    count++;
+  }
+
+  // Die Theorieprüfung läuft immer über diese Plattform, unabhängig von der Schulungsform.
+  if(data.lasi){
+    const lasiFreigegeben = data.pruefung_lasi_freigegeben === true || data.pruefung_lasi_freigegeben === 'True' || getSF(data.pruefung_lasi_freigegeben) === 'ja';
+    const lasiGeschlossen = getSF(data.pruefung_lasi_freigegeben) === 'geschlossen';
+    if(lasiFreigegeben){
+      examList.innerHTML += `
+        <a class="exam-tile" href="${BASE}pruefung_lasi.html?regnr=${encodeURIComponent(currentRegnr)}${langParam}">
+          <img src="${BASE}${logoImg('logo_pruefung_lasi','jpg')}" alt="Theorieprüfung Ladungssicherung">
+        </a>`;
+    } else {
+      examList.innerHTML += `
+        <div class="exam-tile disabled">
+          <img src="${BASE}${logoImg('logo_pruefung_lasi','jpg')}" alt="Theorieprüfung Ladungssicherung" style="filter:grayscale(1) brightness(1.15)">
+          <span class="exam-tile-badge">${lasiGeschlossen ? t.badgeBereitsBestanden : t.badgeNochNichtFreigegeben}</span>
+        </div>`;
+    }
+    examCount++;
+  }
+
+  if(count === 0){
+    list.innerHTML = `<div class="no-modules">${t.noModules}</div>`;
+  }
+  if(examCount === 0){
+    examList.innerHTML = `<div class="no-modules">Aktuell sind keine Theorieprüfungen für Sie freigeschaltet.</div>`;
+  }
+}
+
+function switchTab(tab){
+  document.getElementById('tabLearning').classList.toggle('active', tab === 'learning');
+  document.getElementById('tabExams').classList.toggle('active', tab === 'exams');
+  document.getElementById('moduleListLearning').style.display = tab === 'learning' ? 'flex' : 'none';
+  document.getElementById('moduleListExams').style.display = tab === 'exams' ? 'flex' : 'none';
+}
+
+function goStufe2(data){
+  data._ts = Date.now();
+  sessionStorage.setItem('stufe2data', JSON.stringify(data));
+  window.location.href = BASE + 'staplerapp_stufe2_auswahl.html';
+}
+
+function goPruefungStufe2(data){
+  data._ts = Date.now();
+  sessionStorage.setItem('pruefungstufe2data', JSON.stringify(data));
+  window.location.href = BASE + 'pruefung_stufe2_auswahl.html';
+}
+</script>
+</body>
+</html>

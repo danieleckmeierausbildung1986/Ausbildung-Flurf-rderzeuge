@@ -393,7 +393,7 @@ function goBack(){
 function zurueckZurStartseite(){
   var params = [];
   if(regnr) params.push('regnr=' + encodeURIComponent(regnr));
-  window.location.href = BASE + 'index.html' + (params.length ? '?' + params.join('&') : '');
+  window.location.href = BASE + 'login.html' + (params.length ? '?' + params.join('&') : '');
 }
 
 function goNext(){

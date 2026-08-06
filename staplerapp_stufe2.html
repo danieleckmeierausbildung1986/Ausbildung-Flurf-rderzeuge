@@ -269,7 +269,7 @@ var geraetAbgeschlossen = false;
     method:'POST', headers:{'Content-Type':'application/json'},
     body: JSON.stringify({ registrierungsnummer: nr, vorname: authVorname, nachname: authNachname })
   }).then(function(res){ return res.json(); }).then(function(data){
-    var backBtn = '<button onclick="window.location.href=\'index.html' + (nr?'?regnr='+encodeURIComponent(nr):'') + '\'" style="padding:12px 28px;border:none;border-radius:12px;background:#fff;color:#0d4a24;font-weight:700;font-size:14px;cursor:pointer;font-family:inherit">&larr; Zur&uuml;ck zur Startseite</button>';
+    var backBtn = '<button onclick="window.location.href=\'login.html' + (nr?'?regnr='+encodeURIComponent(nr):'') + '\'" style="padding:12px 28px;border:none;border-radius:12px;background:#fff;color:#0d4a24;font-weight:700;font-size:14px;cursor:pointer;font-family:inherit">&larr; Zur&uuml;ck zur Startseite</button>';
     if(!(data && data.zugang === true)){
       content.innerHTML = '<div style="max-width:420px"><div style="font-size:40px;margin-bottom:12px">&#x1F512;</div><div style="font-size:18px;font-weight:700;margin-bottom:8px">Zugriff nicht m&ouml;glich</div><div style="font-size:14px;color:rgba(255,255,255,.75);line-height:1.6;margin-bottom:20px">Bitte melden Sie sich zuerst auf der Startseite mit Ihrer Registriernummer, Vor- und Nachnamen an.</div>' + backBtn + '</div>';
       return;
