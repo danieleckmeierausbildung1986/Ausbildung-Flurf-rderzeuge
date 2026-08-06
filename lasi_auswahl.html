@@ -120,7 +120,7 @@ function getRegnrFromUrl(){
 
 function goBack(){
   const nr = getRegnrFromUrl();
-  window.location.href = BASE + 'index.html' + (nr ? '?regnr=' + encodeURIComponent(nr) : '');
+  window.location.href = BASE + 'login.html' + (nr ? '?regnr=' + encodeURIComponent(nr) : '');
 }
 
 function renderChoices(data, nr){
@@ -152,7 +152,7 @@ function renderChoices(data, nr){
 
 async function init(){
   const nr = getRegnrFromUrl();
-  const loginUrl = BASE + 'index.html' + (nr ? '?regnr=' + encodeURIComponent(nr) : '');
+  const loginUrl = BASE + 'login.html' + (nr ? '?regnr=' + encodeURIComponent(nr) : '');
   if(!nr){ window.location.href = loginUrl; return; }
 
   const authRegnr = sessionStorage.getItem('authRegnr');

@@ -127,7 +127,7 @@ const GERAETE = [
 let currentRegnr = '', currentVorname = '', currentNachname = '', isTrainer = false;
 
 function goBack(){
-  window.location.href = BASE + 'homepage.html';
+  window.location.href = BASE + 'index.html';
 }
 
 function zeigeFehler(text){
@@ -216,7 +216,7 @@ function showLibrary(){
   if(nrToUse === authRegnr && authVorname && authNachname){
     pruefeUndZeige(authRegnr, authVorname, authNachname);
   } else {
-    window.location.href = BASE + 'index.html' + (nrToUse ? '?regnr=' + encodeURIComponent(nrToUse) : '');
+    window.location.href = BASE + 'login.html' + (nrToUse ? '?regnr=' + encodeURIComponent(nrToUse) : '');
   }
 })();
 </script>

@@ -212,7 +212,7 @@ function geraeteBild(key){
 
 function goBack(){
   const nr = getRegnrFromUrl();
-  window.location.href = BASE + 'index.html' + (nr ? '?regnr=' + encodeURIComponent(nr) : '');
+  window.location.href = BASE + 'login.html' + (nr ? '?regnr=' + encodeURIComponent(nr) : '');
 }
 
 function isBooked(val){
@@ -257,7 +257,7 @@ function renderDevices(data, T){
 async function init(){
   const raw = sessionStorage.getItem('stufe2data');
   const nr = getRegnrFromUrl();
-  const loginUrl = BASE + 'index.html' + (nr ? '?regnr=' + encodeURIComponent(nr) : '');
+  const loginUrl = BASE + 'login.html' + (nr ? '?regnr=' + encodeURIComponent(nr) : '');
 
   if(!raw){ window.location.href = loginUrl; return; }
 
