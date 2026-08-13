@@ -317,6 +317,11 @@ footer{
         Ich habe die <a href="index.html#datenschutz" target="_blank" rel="noopener">Datenschutzerklärung</a> zur Kenntnis genommen und willige in die Verarbeitung meiner Daten ein.
       </label>
 
+      <label class="af-consent">
+        <input type="checkbox" id="ck-widerruf" required>
+        Ich habe die <a href="index.html#widerruf" target="_blank" rel="noopener">Widerrufsbelehrung</a> zur Kenntnis genommen. Ich verlange ausdrücklich, dass mit der Erbringung der Dienstleistung (Freischaltung des E-Learning-Zugangs) bereits vor Ablauf der Widerrufsfrist begonnen wird, und ich bestätige, dass ich mein Widerrufsrecht bei vollständiger Vertragserfüllung dadurch verliere.
+      </label>
+
       <div id="af-error" class="af-error" style="display:none"></div>
       <button type="submit" class="af-submit">Anmeldung absenden</button>
     </form>
@@ -767,6 +772,13 @@ document.getElementById('anmeldungForm').addEventListener('submit', async functi
     return;
   }
 
+  if(!document.getElementById('ck-widerruf').checked){
+    errEl.textContent = 'Bitte bestätigen Sie die Widerrufsbelehrung, bevor Sie fortfahren.';
+    errEl.style.display = 'block';
+    document.getElementById('ck-widerruf').closest('.af-consent').scrollIntoView({behavior:'smooth', block:'center'});
+    return;
+  }
+
   var schulungen = [];
   if(stufe1)   schulungen.push('Ausbildung Flurförderzeuge Stufe 1');
   if(stufe2)   schulungen.push('Zusatzausbildung Stufe 2');
@@ -809,6 +821,8 @@ document.getElementById('anmeldungForm').addEventListener('submit', async functi
     kurs_sp_id:              _urlKursSpId,
     datenschutz_einwilligung: true,
     datenschutz_version:      '1.0',
+    widerruf_vorzeitiger_beginn: true,
+    widerruf_version:            '1.0',
     ansprechpartner_vorname:  kontaktTyp === 'gewerblich' ? document.getElementById('af-vorname').value.trim() : '',
     ansprechpartner_nachname: kontaktTyp === 'gewerblich' ? document.getElementById('af-nachname').value.trim() : '',
     ansprechpartner_email:    kontaktTyp === 'gewerblich' ? document.getElementById('af-email').value.trim() : '',

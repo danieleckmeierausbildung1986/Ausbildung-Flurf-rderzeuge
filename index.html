@@ -703,6 +703,48 @@ footer a{color:rgba(255,255,255,.4);text-decoration:underline}
   </div>
 </section>
 
+<!-- WIDERRUFSBELEHRUNG -->
+<section class="impressum-section" id="widerruf">
+  <div class="impressum-inner">
+    <div class="imp-toggle" onclick="toggleWiderruf()">
+      <h2>Widerrufsbelehrung</h2>
+      <span class="imp-toggle-arrow" id="wr-arrow">▾</span>
+    </div>
+    <div class="imp-body hidden" id="wr-body" style="grid-template-columns:1fr;max-width:760px">
+      <div class="imp-col" style="font-size:14px;line-height:1.7">
+        <h3>Widerrufsrecht</h3>
+        <p>Sie haben das Recht, binnen vierzehn Tagen ohne Angabe von Gründen diesen Vertrag zu widerrufen.</p>
+        <p>Die Widerrufsfrist beträgt vierzehn Tage ab dem Tag des Vertragsabschlusses.</p>
+        <p>Um Ihr Widerrufsrecht auszuüben, müssen Sie uns (Daniel Eckmeier, Am Schwimmbad 12, 94436 Simbach, Telefon: 0160 96877039, E-Mail: <a href="mailto:info@prodrive-akademie.de">info@prodrive-akademie.de</a>) mittels einer eindeutigen Erklärung (z. B. ein mit der Post versandter Brief oder eine E-Mail) über Ihren Entschluss, diesen Vertrag zu widerrufen, informieren. Sie können dafür das untenstehende Muster-Widerrufsformular verwenden, das jedoch nicht vorgeschrieben ist.</p>
+        <p>Zur Wahrung der Widerrufsfrist reicht es aus, dass Sie die Mitteilung über die Ausübung des Widerrufsrechts vor Ablauf der Widerrufsfrist absenden.</p>
+
+        <h3>Folgen des Widerrufs</h3>
+        <p>Wenn Sie diesen Vertrag widerrufen, haben wir Ihnen alle Zahlungen, die wir von Ihnen erhalten haben, unverzüglich und spätestens binnen vierzehn Tagen ab dem Tag zurückzuzahlen, an dem die Mitteilung über Ihren Widerruf dieses Vertrags bei uns eingegangen ist. Für diese Rückzahlung verwenden wir dasselbe Zahlungsmittel, das Sie bei der ursprünglichen Transaktion eingesetzt haben, es sei denn, mit Ihnen wurde ausdrücklich etwas anderes vereinbart; in keinem Fall werden Ihnen wegen dieser Rückzahlung Entgelte berechnet.</p>
+        <p>Haben Sie verlangt, dass die Dienstleistung (z. B. der Zugang zum E-Learning-Bereich) bereits während der Widerrufsfrist beginnen soll, so haben Sie uns einen angemessenen Betrag zu zahlen, der dem Anteil der bis zu dem Zeitpunkt, zu dem Sie uns von der Ausübung des Widerrufsrechts hinsichtlich dieses Vertrags unterrichten, bereits erbrachten Dienstleistungen im Vergleich zum Gesamtumfang der im Vertrag vorgesehenen Dienstleistungen entspricht.</p>
+
+        <h3>Vorzeitiges Erlöschen des Widerrufsrechts</h3>
+        <p>Ihr Widerrufsrecht erlischt vorzeitig, wenn wir die Dienstleistung vollständig erbracht haben und mit der Ausführung der Dienstleistung erst begonnen haben, nachdem Sie dazu Ihre ausdrückliche Zustimmung gegeben haben und Sie gleichzeitig Ihre Kenntnis davon bestätigt haben, dass Sie Ihr Widerrufsrecht bei vollständiger Vertragserfüllung durch uns verlieren.</p>
+
+        <h3>Muster-Widerrufsformular</h3>
+        <p>(Wenn Sie den Vertrag widerrufen wollen, füllen Sie bitte dieses Formular aus und senden Sie es per Post oder E-Mail zurück.)</p>
+        <p style="background:var(--bg,#f7f9fb);border:1px solid var(--line);border-radius:8px;padding:14px 16px">
+          An Daniel Eckmeier, Am Schwimmbad 12, 94436 Simbach, E-Mail: info@prodrive-akademie.de<br><br>
+          Hiermit widerrufe(n) ich/wir den von mir/uns abgeschlossenen Vertrag über die Erbringung folgender Dienstleistung:<br>
+          ____________________________________________<br><br>
+          Bestellt am: ____________________<br>
+          Name des/der Verbraucher(s): ____________________<br>
+          Registrierungsnummer: ____________________<br>
+          Anschrift des/der Verbraucher(s): ____________________<br>
+          Unterschrift des/der Verbraucher(s) (nur bei Mitteilung auf Papier): ____________________<br>
+          Datum: ____________________
+        </p>
+
+        <p style="color:var(--muted);font-size:12px;margin-top:20px">Stand: Version 1.0, August 2026</p>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- FOOTER -->
 <footer>
   <strong>ProDrive Akademie Niederbayern</strong> &nbsp;·&nbsp;
@@ -710,7 +752,8 @@ footer a{color:rgba(255,255,255,.4);text-decoration:underline}
   Am Schwimmbad 12, 94436 Simbach &nbsp;·&nbsp;
   DGUV 308-001 &nbsp;·&nbsp; VDI 2700 &nbsp;·&nbsp;
   <a href="#impressum" onclick="openImpressum()">Impressum</a> &nbsp;·&nbsp;
-  <a href="#datenschutz" onclick="openDatenschutz()">Datenschutzerklärung</a>
+  <a href="#datenschutz" onclick="openDatenschutz()">Datenschutzerklärung</a> &nbsp;·&nbsp;
+  <a href="#widerruf" onclick="openWiderruf()">Widerrufsbelehrung</a>
 </footer>
 
 <script>
@@ -743,6 +786,20 @@ function openDatenschutz(){
   if(body.classList.contains('hidden')){
     body.classList.remove('hidden');
     document.getElementById('ds-arrow').classList.add('open');
+  }
+}
+function toggleWiderruf(){
+  var body  = document.getElementById('wr-body');
+  var arrow = document.getElementById('wr-arrow');
+  var open  = !body.classList.contains('hidden');
+  body.classList.toggle('hidden', open);
+  arrow.classList.toggle('open', !open);
+}
+function openWiderruf(){
+  var body = document.getElementById('wr-body');
+  if(body.classList.contains('hidden')){
+    body.classList.remove('hidden');
+    document.getElementById('wr-arrow').classList.add('open');
   }
 }
 
