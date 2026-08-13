@@ -59,13 +59,17 @@ body::before{
 .slidebox{position:relative;background:#0d1a2e;display:flex;align-items:center;justify-content:center;
   min-height:200px;}
 .slidebox img{width:100%;height:auto;display:block;max-height:65vh;object-fit:contain;}
-/* ERKLÄRUNGS-KASTEN (immer eingeblendet, unter der Folie) */
+/* ERKLÄRUNGS-KASTEN (aufklappbar, standardmäßig eingeklappt) */
 .erklaerung-box{background:#fff;border:1px solid var(--line);}
-.erklaerung-label{display:flex;align-items:center;gap:8px;padding:12px 20px 0;font-size:14px;
-  font-weight:700;color:var(--acc1)}
+.erklaerung-label{display:flex;align-items:center;gap:8px;padding:12px 20px;font-size:14px;
+  font-weight:700;color:var(--acc1);cursor:pointer;user-select:none}
+.erklaerung-label .chev{margin-left:auto;font-size:12px;transition:transform .2s ease}
+.erklaerung-box.open .erklaerung-label .chev{transform:rotate(180deg)}
+.erklaerung-content{max-height:0;overflow:hidden;transition:max-height .25s ease}
+.erklaerung-box.open .erklaerung-content{max-height:2000px}
 .erklaerung-content p{margin:0;padding:10px 20px 20px;font-size:17px;line-height:1.75;color:var(--ink)}
 @media(max-width:600px){
-  .erklaerung-label{font-size:13px;padding:10px 14px 0}
+  .erklaerung-label{font-size:13px;padding:10px 14px}
   .erklaerung-content p{font-size:15px;padding:8px 14px 16px}
 }
 .nav-zone{position:absolute;top:0;bottom:0;width:30%;cursor:pointer;z-index:2;
@@ -287,7 +291,7 @@ var geraetAbgeschlossen = false;
 /* ---- TEXTE ---- */
 var TXT={
 de:{
-  weiter:'Weiter ›',zurueck:'‹ Zurück',frage:'Frage',von:'von',folie:'Folie',
+  weiter:'Weiter ›',zurueck:'‹ Zurück',frage:'Frage',von:'von',folie:'Folie',erklaerung:'Erklärung',
   richtig:'✓ Richtig!',falsch:'✗ Leider falsch. Richtig: ',
   abschlussPass:'Herzlichen Glückwunsch!',abschlussFail:'Nicht bestanden.',
   abschlussSub:'Sie haben die Sonderausbildung abgeschlossen.',
@@ -301,7 +305,7 @@ de:{
   wg4T:'Nachweis',wg4P:'Dokumentation nach Abschluss'
 },
 ro:{
-  weiter:'Înainte ›',zurueck:'‹ Înapoi',frage:'Întrebarea',von:'din',folie:'Diapozitiv',
+  weiter:'Înainte ›',zurueck:'‹ Înapoi',frage:'Întrebarea',von:'din',folie:'Diapozitiv',erklaerung:'Explicație',
   richtig:'✓ Corect!',falsch:'✗ Din păcate greșit. Corect: ',
   abschlussPass:'Felicitări!',abschlussFail:'Nepromovat.',
   abschlussSub:'Ați finalizat instruirea specială.',
@@ -315,7 +319,7 @@ ro:{
   wg4T:'Dovadă',wg4P:'Documentare după finalizare'
 },
 pl:{
-  weiter:'Dalej ›',zurueck:'‹ Wstecz',frage:'Pytanie',von:'z',folie:'Slajd',
+  weiter:'Dalej ›',zurueck:'‹ Wstecz',frage:'Pytanie',von:'z',folie:'Slajd',erklaerung:'Wyjaśnienie',
   richtig:'✓ Poprawnie!',falsch:'✗ Niestety błędnie. Prawidłowo: ',
   abschlussPass:'Gratulacje!',abschlussFail:'Nie zaliczono.',
   abschlussSub:'Ukończyłeś szkolenie specjalistyczne.',
@@ -329,7 +333,7 @@ pl:{
   wg4T:'Zaświadczenie',wg4P:'Dokumentacja po ukończeniu'
 },
 sq:{
-  weiter:'Tutje ›',zurueck:'‹ Kthehu',frage:'Pyetja',von:'nga',folie:'Sllajd',
+  weiter:'Tutje ›',zurueck:'‹ Kthehu',frage:'Pyetja',von:'nga',folie:'Sllajd',erklaerung:'Shpjegim',
   richtig:'✓ Saktë!',falsch:'✗ Fatkeqësisht gabim. Saktë: ',
   abschlussPass:'Urime!',abschlussFail:'Nuk kaloi.',
   abschlussSub:'Keni përfunduar trajnimin special.',
@@ -746,6 +750,8 @@ function showScreen(id){
   document.getElementById('controls').style.display=(onWelcome||onAbschluss)?'none':'flex';
 }
 
+function toggleErkl(el){var box=el.closest('.erklaerung-box');if(box)box.classList.toggle('open');}
+
 function render(){
   updateProg();
   if(idx<TOTAL){
@@ -755,7 +761,7 @@ function render(){
     var erkl=(ERKL&&ERKL[gerat])?ERKL[gerat][idx+1]:null;
     document.getElementById('erklaerungBox').innerHTML=erkl?(
       '<div class="erklaerung-box">'+
-        '<div class="erklaerung-label">💡 Erklärung</div>'+
+        '<div class="erklaerung-label" onclick="toggleErkl(this)">💡 '+T.erklaerung+'<span class="chev">▾</span></div>'+
         '<div class="erklaerung-content"><p>'+erkl+'</p></div>'+
       '</div>'
     ):'';

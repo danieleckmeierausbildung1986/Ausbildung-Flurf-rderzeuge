@@ -61,13 +61,17 @@ body::before{
   min-height:200px;}
 .slidebox img{width:100%;height:auto;display:block;max-height:65vh;object-fit:contain;}
 
-/* ERKLÄRUNGS-KASTEN (immer eingeblendet, unter der Folie) */
+/* ERKLÄRUNGS-KASTEN (aufklappbar, standardmäßig eingeklappt) */
 .erklaerung-box{background:#fff;border:1px solid var(--line);border-top:none;border-radius:0 0 14px 14px;overflow:hidden}
-.erklaerung-label{display:flex;align-items:center;gap:8px;padding:12px 20px 0;font-size:14px;
-  font-weight:700;color:var(--acc1)}
+.erklaerung-label{display:flex;align-items:center;gap:8px;padding:12px 20px;font-size:14px;
+  font-weight:700;color:var(--acc1);cursor:pointer;user-select:none}
+.erklaerung-label .chev{margin-left:auto;font-size:12px;transition:transform .2s ease}
+.erklaerung-box.open .erklaerung-label .chev{transform:rotate(180deg)}
+.erklaerung-content{max-height:0;overflow:hidden;transition:max-height .25s ease}
+.erklaerung-box.open .erklaerung-content{max-height:2000px}
 .erklaerung-content p{margin:0;padding:10px 20px 20px;font-size:17px;line-height:1.75;color:var(--ink)}
 @media(max-width:600px){
-  .erklaerung-label{font-size:13px;padding:10px 14px 0}
+  .erklaerung-label{font-size:13px;padding:10px 14px}
   .erklaerung-content p{font-size:15px;padding:8px 14px 16px}
 }
 .nav-zone{position:absolute;top:0;bottom:0;width:30%;cursor:pointer;z-index:2;
@@ -287,7 +291,7 @@ var ORDNER='STUFE1_BILDER';
 
 var TXT={
 de:{
-  weiter:'Weiter ›',willkommen:'Willkommen',kapitel:'Kapitel',von:'von',folie:'Folie',
+  weiter:'Weiter ›',willkommen:'Willkommen',kapitel:'Kapitel',von:'von',folie:'Folie',erklaerung:'Erklärung',
   kap:'Kap.',wissensfrage:'Wissensfrage',frage:'Frage',
   allgSub:'Allgemeine Staplerfahrerausbildung &middot; DGUV 308-001',
   welcomeTitel:'Willkommen bei ProDrive Akademie Niederbayern',
@@ -329,7 +333,7 @@ de:{
   mailBody:'Hallo,\n\nich habe eine Frage zur Gabelstapler-Ausbildung.\n\nAktueller Abschnitt: {ctx}\n\nMeine Frage:\n'
 },
 pl:{
-  weiter:'Dalej ›',willkommen:'Witamy',kapitel:'Rozdział',von:'z',folie:'Slajd',
+  weiter:'Dalej ›',willkommen:'Witamy',kapitel:'Rozdział',von:'z',folie:'Slajd',erklaerung:'Wyjaśnienie',
   kap:'Rozdz.',wissensfrage:'Pytanie kontrolne',frage:'Pytanie',
   allgSub:'Ogólne szkolenie operatora wózka &middot; DGUV 308-001',
   welcomeTitel:'Witamy w szkoleniu operatora wózka widłowego',
@@ -371,7 +375,7 @@ pl:{
   mailBody:'Dzień dobry,\n\nmam pytanie dotyczące szkolenia na wózek widłowy.\n\nAktualny dział: {ctx}\n\nMoje pytanie:\n'
 },
 ro:{
-  weiter:'Înainte ›',willkommen:'Bun venit',kapitel:'Capitol',von:'din',folie:'Diapozitiv',
+  weiter:'Înainte ›',willkommen:'Bun venit',kapitel:'Capitol',von:'din',folie:'Diapozitiv',erklaerung:'Explicație',
   kap:'Cap.',wissensfrage:'Întrebare de verificare',frage:'Întrebare',
   allgSub:'Formare generală operator stivuitor &middot; DGUV 308-001',
   welcomeTitel:'Bun venit la instruirea operatorului de stivuitor',
@@ -413,7 +417,7 @@ ro:{
   mailBody:'Bună ziua,\n\nam o întrebare despre instruirea stivuitorului.\n\nSecțiunea curentă: {ctx}\n\nÎntrebarea mea:\n'
 },
 sq:{
-  weiter:'Tutje ›',willkommen:'Mirë se vini',kapitel:'Kapitulli',von:'nga',folie:'Rrëshqitje',
+  weiter:'Tutje ›',willkommen:'Mirë se vini',kapitel:'Kapitulli',von:'nga',folie:'Rrëshqitje',erklaerung:'Shpjegim',
   kap:'Kap.',wissensfrage:'Pyetje kontrolluese',frage:'Pyetja',
   allgSub:'Trajnim i përgjithëshëm operator stivuese · DGUV 308-001',
   welcomeTitel:'Mirë se vini në trajnimin e operatorit të stivueses',
@@ -1153,6 +1157,8 @@ function quizScoreForKapitel(knr){
   return{richtig:richtig,gesamt:gesamt};
 }
 
+function toggleErkl(el){var box=el.closest('.erklaerung-box');if(box)box.classList.toggle('open');}
+
 function render(){
   var s=STEPS[cur];
   pbar.style.width=(cur/(STEPS.length-1)*100)+'%';
@@ -1188,7 +1194,7 @@ function render(){
       '</div>'+
       (erklaerung?(
         '<div class="erklaerung-box">'+
-          '<div class="erklaerung-label">💡 Erklärung</div>'+
+          '<div class="erklaerung-label" onclick="toggleErkl(this)">💡 '+T.erklaerung+'<span class="chev">▾</span></div>'+
           '<div class="erklaerung-content"><p>'+erklaerung+'</p></div>'+
         '</div>'
       ):'');
