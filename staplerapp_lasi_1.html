@@ -115,13 +115,17 @@ button{font-family:inherit;cursor:pointer}
 .slide-card{background:var(--card);border-radius:var(--r);box-shadow:var(--shadow);
   overflow:hidden;animation:fin .28s ease}
 .slide-img-full{width:100%;display:block;border-radius:var(--r) var(--r) 0 0}
-/* ERKLÄRUNGS-KASTEN (immer eingeblendet, unter der Folie) */
+/* ERKLÄRUNGS-KASTEN (aufklappbar, standardmäßig eingeklappt) */
 .erklaerung-box{background:var(--card);border-top:1px solid var(--line)}
-.erklaerung-label{display:flex;align-items:center;gap:8px;padding:12px 20px 0;font-size:14px;
-  font-weight:700;color:var(--lasi-d)}
+.erklaerung-label{display:flex;align-items:center;gap:8px;padding:12px 20px;font-size:14px;
+  font-weight:700;color:var(--lasi-d);cursor:pointer;user-select:none}
+.erklaerung-label .chev{margin-left:auto;font-size:12px;transition:transform .2s ease}
+.erklaerung-box.open .erklaerung-label .chev{transform:rotate(180deg)}
+.erklaerung-content{max-height:0;overflow:hidden;transition:max-height .25s ease}
+.erklaerung-box.open .erklaerung-content{max-height:2000px}
 .erklaerung-content p{margin:0;padding:10px 20px 20px;font-size:17px;line-height:1.75;color:var(--ink)}
 @media(max-width:600px){
-  .erklaerung-label{font-size:13px;padding:10px 14px 0}
+  .erklaerung-label{font-size:13px;padding:10px 14px}
   .erklaerung-content p{font-size:15px;padding:8px 14px 16px}
 }
 .slide-footer{display:flex;align-items:center;gap:8px;padding:10px 16px;
@@ -654,6 +658,8 @@ function goStep(idx){
   window.scrollTo(0,0);
 }
 
+function toggleErkl(el){var box=el.closest('.erklaerung-box');if(box)box.classList.toggle('open');}
+
 function renderFoot(showBack=true,showNext=true,nextLabel='Weiter →'){
   const foot=document.getElementById('foot');
   const s=STEPS[cur];
@@ -726,7 +732,7 @@ function renderFolie(host,s){
   const isLast=nextStep&&nextStep.type==='quiz';
 
   const erkl=ERKLAERUNG_DE[fn];
-  const erklHtml=erkl?`<div class="erklaerung-box"><div class="erklaerung-label">💡 Erklärung</div><div class="erklaerung-content"><p>${erkl}</p></div></div>`:'';
+  const erklHtml=erkl?`<div class="erklaerung-box"><div class="erklaerung-label" onclick="toggleErkl(this)">💡 Erklärung<span class="chev">▾</span></div><div class="erklaerung-content"><p>${erkl}</p></div></div>`:'';
   host.innerHTML=`<div class="slide-card">
     <img class="slide-img-full" src="${imgUrl}" loading="lazy" alt="Folie ${fn}">
     ${erklHtml}
