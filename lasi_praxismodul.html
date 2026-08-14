@@ -236,6 +236,7 @@ button{font-family:inherit;cursor:pointer}
 .luecke-card.nok{border-color:var(--no);background:var(--nobg)}
 .lc-title{font-size:17px;font-weight:700;color:var(--no);margin-bottom:6px}
 .luecke-card.ok .lc-title{color:var(--ok)}
+.luecke-card.luecke-reject{animation:shake .3s;border-color:var(--no);box-shadow:0 0 0 3px var(--nobg)}
 .lc-placed{display:flex;flex-wrap:wrap;gap:6px;min-height:28px;margin-bottom:5px}
 .lc-mat-tag{display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border-radius:7px;font-size:15px;font-weight:700;cursor:pointer}
 .lc-mat-tag.ok-tag{background:var(--okbg);color:var(--ok);border:1px solid var(--ok)}
@@ -620,8 +621,8 @@ function addLL(arr,cols){
   const minC=Math.min(...cols),maxC=Math.max(...cols);
   let typ,tit,beschr,ok,falsch;
   if(minC===0){typ='längs_vorne';tit='Lücke zur Stirnwand';beschr='Lücke vorne. Bei Vollbremsung 0,8×FG nach vorne.';ok=['airbag','stauholz','leerpalette','sperrstange'];falsch=['antirutsch','niederzurren','direktzurren','keil'];}
-  else if(maxC===COLS-1){typ='längs_hinten';tit='Lücke zur Rückwand';beschr='Lücke hinten. Bei Beschleunigung 0,5×FG nach hinten.';ok=['airbag','stauholz','leerpalette','sperrstange'];falsch=['antirutsch','keil'];}
-  else{typ='längs_mitte';tit='Lücke in der Mitte';beschr='Zwischen Gütergruppen. Ladung kann aufeinander rutschen.';ok=['airbag','stauholz','leerpalette','sperrstange'];falsch=['antirutsch','keil'];}
+  else if(maxC===COLS-1){typ='längs_hinten';tit='Lücke zur Rückwand';beschr='Lücke hinten. Bei Beschleunigung 0,5×FG nach hinten.';ok=['airbag','stauholz','leerpalette','sperrstange'];falsch=['antirutsch','niederzurren','keil'];}
+  else{typ='längs_mitte';tit='Lücke in der Mitte';beschr='Zwischen Gütergruppen. Ladung kann aufeinander rutschen.';ok=['airbag','stauholz','leerpalette','sperrstange'];falsch=['antirutsch','niederzurren','keil'];}
   if(!arr.find(l=>l.typ===typ))arr.push({id:typ,typ,cols,tit,beschr,ok,falsch});
 }
 
@@ -941,6 +942,8 @@ function renderLuecken(){
   });
 }
 function isZurrmittelTyp(id){return id==='niederzurren'||id==='direktzurren';}
+function istLueckenGeeignet(matId,lueckeId){const l=detLuecken.find(x=>x.id===lueckeId);return !l||!l.falsch.includes(matId);}
+function rejectLueckenDrop(lid){const card=document.getElementById('lcard-'+lid);if(!card)return;card.classList.add('luecke-reject');setTimeout(()=>card.classList.remove('luecke-reject'),500);}
 function countPlatzierteZurrmittel(){
   if(!spa||!spa.calc)return 0;
   let n=0;
@@ -963,7 +966,7 @@ function updZurrZaehler(){
 }
 function rMats(lid,mats){if(mats.length===0)return'<span style="font-size:9px;color:var(--muted);font-style:italic">← Material ziehen</span>';return mats.map((mid,idx)=>{const m=LASI.find(x=>x.id===mid);if(!m)return'';return`<div class="lc-mat-tag neu" onclick="rmMat('${lid}',${idx})">${m.ic} ${m.n} ✕</div>`;}).join('');}
 function rmMat(lid,idx){const arr=lueckenMat[lid]||[];arr.splice(idx,1);document.getElementById('lcp-'+lid).innerHTML=rMats(lid,arr);const card=document.getElementById('lcard-'+lid);if(card){card.className='luecke-card';const f=document.getElementById('lcfb-'+lid);if(f)f.style.display='none';}redrawActive();updZurrZaehler();}
-function dropLC(lid){if(!lasiDrag)return;const arr=lueckenMat[lid]||(lueckenMat[lid]=[]);if(isZurrmittelTyp(lasiDrag.id)||!arr.includes(lasiDrag.id))arr.push(lasiDrag.id);document.getElementById('lcp-'+lid).innerHTML=rMats(lid,arr);redrawActive();updZurrZaehler();}
+function dropLC(lid){if(!lasiDrag)return;if(!istLueckenGeeignet(lasiDrag.id,lid)){rejectLueckenDrop(lid);return;}const arr=lueckenMat[lid]||(lueckenMat[lid]=[]);if(isZurrmittelTyp(lasiDrag.id)||!arr.includes(lasiDrag.id))arr.push(lasiDrag.id);document.getElementById('lcp-'+lid).innerHTML=rMats(lid,arr);redrawActive();updZurrZaehler();}
 
 // Ghost
 function mkG(lbl,ic,col,x,y){if(ghost)ghost.remove();ghost=document.createElement('div');ghost.style.cssText=`position:fixed;pointer-events:none;z-index:9999;background:${col}ee;border-radius:7px;padding:5px 9px;color:#fff;font-size:10px;font-weight:700;text-align:center;transform:translate(-50%,-50%);white-space:nowrap;box-shadow:0 3px 12px rgba(0,0,0,.28)`;ghost.textContent=ic+' '+lbl;document.body.appendChild(ghost);mvG(x,y);}
@@ -987,7 +990,7 @@ function onMUL(e){document.removeEventListener('mousemove',onMML);document.remov
 function sDLasiT(e,m){e.preventDefault();lasiDrag=m;const t=e.touches[0];document.getElementById('lm'+m.id)?.classList.add('dragging-lasi');mkG(m.n,m.ic,m.f,t.clientX,t.clientY);document.addEventListener('touchmove',onTML,{passive:false});document.addEventListener('touchend',onTEL);}
 function onTML(e){e.preventDefault();if(!lasiDrag)return;const t=e.touches[0];mvG(t.clientX,t.clientY);if(cv2){const rect=cv2.getBoundingClientRect();lasiHover={px:(t.clientX-rect.left)*(cv2.width/rect.width),py:(t.clientY-rect.top)*(cv2.height/rect.height)};}drawCV2();}
 function onTEL(e){document.removeEventListener('touchmove',onTML);document.removeEventListener('touchend',onTEL);if(!lasiDrag)return;document.getElementById('lm'+lasiDrag.id)?.classList.remove('dragging-lasi');const t=e.changedTouches[0];if(cv2){const rect=cv2.getBoundingClientRect();const px=t.clientX-rect.left,py=t.clientY-rect.top;if(px>=0&&px<=rect.width&&py>=0&&py<=rect.height){dropLasiCV((px/rect.width)*cv2.width,(py/rect.height)*cv2.height);}}const cards=document.querySelectorAll('.luecke-card');cards.forEach(card=>{const r=card.getBoundingClientRect();if(t.clientX>=r.left&&t.clientX<=r.right&&t.clientY>=r.top&&t.clientY<=r.bottom){dropLC(card.id.replace('lcard-',''));}});rmG();lasiDrag=null;lasiHover=null;redrawActive();}
-function dropLasiCV(px,py){if(!lasiDrag||!detLuecken.length)return;const tr=gTR(cv2),cW=tr.w/COLS;const col=Math.floor((px-tr.x)/cW);const l=detLuecken.find(l=>l.cols&&l.cols.includes(col))||detLuecken[0];if(l){const arr=lueckenMat[l.id]||(lueckenMat[l.id]=[]);if(isZurrmittelTyp(lasiDrag.id)||!arr.includes(lasiDrag.id))arr.push(lasiDrag.id);document.getElementById('lcp-'+l.id).innerHTML=rMats(l.id,arr);updZurrZaehler();}}
+function dropLasiCV(px,py){if(!lasiDrag||!detLuecken.length)return;const tr=gTR(cv2),cW=tr.w/COLS;const col=Math.floor((px-tr.x)/cW);const l=detLuecken.find(l=>l.cols&&l.cols.includes(col))||detLuecken[0];if(l){if(!istLueckenGeeignet(lasiDrag.id,l.id)){rejectLueckenDrop(l.id);return;}const arr=lueckenMat[l.id]||(lueckenMat[l.id]=[]);if(isZurrmittelTyp(lasiDrag.id)||!arr.includes(lasiDrag.id))arr.push(lasiDrag.id);document.getElementById('lcp-'+l.id).innerHTML=rMats(l.id,arr);updZurrZaehler();}}
 
 // Canvas auf CV1 verschieben
 function gutAt(px,py){const tr=gTR(cv1),cW=tr.w/COLS,cH=tr.h/ROWS;const col=Math.floor((px-tr.x)/cW),row=Math.floor((py-tr.y)/cH);const id=grid[Math.max(0,Math.min(ROWS-1,row))]?.[Math.max(0,Math.min(COLS-1,col))];return id?spa.g.find(g=>g.id===id):null;}
@@ -1029,9 +1032,12 @@ function drawSP(cv,ctx){
   const tr=gTR(cv),c=ctx;let sm=0,sg=0;
   spa.g.forEach(g=>{const p=spp[g.id];if(p){const cx=(p.col+g.cw/2)/COLS;sm+=g.gw*cx;sg+=g.gw;}});
   if(!sg)return;const sp_r=sm/sg,spx=tr.x+sp_r*tr.w;
-  c.fillStyle='rgba(245,166,35,0.08)';c.fillRect(tr.x+spa.sp[0]*tr.w,tr.y,(spa.sp[1]-spa.sp[0])*tr.w,tr.h);
-  c.strokeStyle='#f5a623';c.lineWidth=2;c.setLineDash([4,3]);c.beginPath();c.moveTo(spx,tr.y);c.lineTo(spx,tr.y+tr.h);c.stroke();c.setLineDash([]);
-  c.fillStyle='#f5a623';c.font='bold 7px sans-serif';c.textAlign='center';c.fillText('SP',spx,tr.y-5);
+  const zx=tr.x+spa.sp[0]*tr.w,zw=(spa.sp[1]-spa.sp[0])*tr.w;
+  c.fillStyle='rgba(245,166,35,0.22)';c.fillRect(zx,tr.y,zw,tr.h);
+  c.strokeStyle='rgba(245,166,35,0.7)';c.lineWidth=1;c.setLineDash([3,3]);c.strokeRect(zx,tr.y,zw,tr.h);c.setLineDash([]);
+  c.strokeStyle='#e6890a';c.lineWidth=3;c.setLineDash([4,3]);c.beginPath();c.moveTo(spx,tr.y);c.lineTo(spx,tr.y+tr.h);c.stroke();c.setLineDash([]);
+  c.fillStyle='#e6890a';c.beginPath();c.roundRect(spx-13,tr.y-16,26,13,4);c.fill();
+  c.fillStyle='#fff';c.font='bold 8px sans-serif';c.textAlign='center';c.fillText('SP',spx,tr.y-6);
 }
 
 // ── Seitenansicht / Heckansicht (rein illustrativ, kein Drag & Drop) ──
