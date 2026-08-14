@@ -334,9 +334,9 @@ const MODUL_HTML = `
 
     <div id="spsel">
       <div style="display:grid;gap:8px;grid-template-columns:repeat(auto-fill,minmax(150px,1fr))">
-        <div class="spcard" onclick="stSpiel(0)"><div style="font-size:22px;margin-bottom:4px">📦</div><div style="font-size:11px;font-weight:700;color:var(--navy);margin-bottom:1px">Palettenware</div><div style="font-size:9px;color:var(--muted)">6 Paletten · 12t Lkw</div></div>
-        <div class="spcard" onclick="stSpiel(1)"><div style="font-size:22px;margin-bottom:4px">⚙️</div><div style="font-size:11px;font-weight:700;color:var(--navy);margin-bottom:1px">Maschinen</div><div style="font-size:9px;color:var(--muted)">5 Güter · 18t Sattelzug</div></div>
-        <div class="spcard" onclick="stSpiel(2)"><div style="font-size:22px;margin-bottom:4px">🔄</div><div style="font-size:11px;font-weight:700;color:var(--navy);margin-bottom:1px">Gemischte Ladung</div><div style="font-size:9px;color:var(--muted)">6 Güter · 3 Lücken</div></div>
+        <div class="spcard" onclick="stSpiel(0)"><div style="font-size:22px;margin-bottom:4px">📦</div><div style="font-size:11px;font-weight:700;color:var(--navy);margin-bottom:1px">Palettenware</div><div style="font-size:9px;color:var(--muted)">6 Paletten · 40-Tonner</div></div>
+        <div class="spcard" onclick="stSpiel(1)"><div style="font-size:22px;margin-bottom:4px">⚙️</div><div style="font-size:11px;font-weight:700;color:var(--navy);margin-bottom:1px">Maschinen</div><div style="font-size:9px;color:var(--muted)">5 Güter · 40-Tonner</div></div>
+        <div class="spcard" onclick="stSpiel(2)"><div style="font-size:22px;margin-bottom:4px">🔄</div><div style="font-size:11px;font-weight:700;color:var(--navy);margin-bottom:1px">Gemischte Ladung</div><div style="font-size:9px;color:var(--muted)">6 Güter · 40-Tonner</div></div>
       </div>
     </div>
 
@@ -561,20 +561,20 @@ const PRUEF=[
 ];
 
 const SZP=[
-  {t:'Szenario 1: Palettenware',fz:{nl:7500,va:0.2,ha:0.8,mh:10000},
-   auf:'Sechs Paletten auf 12t-Lkw. Platziere sie und sichere alle entstehenden Lücken.',
+  {t:'Szenario 1: Palettenware',fz:{nl:24000,va:0.15,ha:0.75,mh:16000},
+   auf:'Sechs Paletten auf 40-Tonner (Sattelzug). Platziere sie und sichere alle entstehenden Lücken.',
    g:[{id:'B1',n:'900kg',ic:'📦',gw:900,cw:3,ch:2,gh:3,f:'#c0392b'},{id:'B2',n:'800kg',ic:'📦',gw:800,cw:3,ch:2,gh:3,f:'#c0392b'},{id:'B3',n:'700kg',ic:'📦',gw:700,cw:3,ch:2,gh:3,f:'#d97706'},{id:'B4',n:'600kg',ic:'📦',gw:600,cw:3,ch:2,gh:3,f:'#d97706'},{id:'B5',n:'500kg',ic:'📦',gw:500,cw:3,ch:2,gh:2,f:'#1a7a4a'},{id:'B6',n:'450kg',ic:'📦',gw:450,cw:3,ch:2,gh:2,f:'#1a7a4a'}],
    sp:[0.35,0.65],tipps:['Lücken zur Stirnwand: formschlüssig schließen (§22 StVO)','Lücken hinten: formschlüssig oder Direktzurren','Antirutschmatte unter jede Palette empfohlen'],
    korrekt_zurrmittel:['niederzurren','airbag','stauholz','antirutsch'],falsch_zurrmittel:['keil','direktzurren'],
    calc:{richtung:'bremsen',mu:0.3,stf:400,alpha:90,methode:'niederzurren'}},
   {t:'Szenario 2: Maschinen',fz:{nl:24000,va:0.15,ha:0.75,mh:16000},
-   auf:'Fünf Maschinenteile auf 18t-Sattelzug. Güter füllen Breite nicht vollständig. Seitenlücken sichern.',
+   auf:'Fünf Maschinenteile auf 40-Tonner (Sattelzug). Güter füllen Breite nicht vollständig. Seitenlücken sichern.',
    g:[{id:'A1',n:'Maschine A\n3.000kg',ic:'⚙️',gw:3000,cw:4,ch:2,gh:5,f:'#2b6cb0'},{id:'A2',n:'Maschine B\n2.500kg',ic:'⚙️',gw:2500,cw:4,ch:2,gh:5,f:'#2b6cb0'},{id:'A3',n:'Anbauteil\n800kg',ic:'🔧',gw:800,cw:2,ch:2,gh:2,f:'#1a7a4a'},{id:'A4',n:'Ersatzteile\n600kg',ic:'📦',gw:600,cw:2,ch:2,gh:2,f:'#d97706'},{id:'A5',n:'Werkzeug\n400kg',ic:'🧰',gw:400,cw:2,ch:2,gh:2,f:'#d97706'}],
    sp:[0.4,0.65],tipps:['Seitliche Lücken: Direktzurren bevorzugen','Stahl/Stahl μ=0,25: Antirutschmatte!','Maschinen über Hinterachse (§37 DGUV Vo70)'],
    korrekt_zurrmittel:['direktzurren','antirutsch','sperrstange'],falsch_zurrmittel:['keil','airbag'],
    calc:{richtung:'kurve',mu:0.25,lc:2500,alphaDirekt:45,beta:0,methode:'direktzurren'}},
   {t:'Szenario 3: Gemischte Ladung',fz:{nl:24000,va:0.15,ha:0.75,mh:16000},
-   auf:'Coil + Paletten + Kartonage. Alle entstehenden Lücken richtig sichern.',
+   auf:'Coil + Paletten + Kartonage auf 40-Tonner (Sattelzug). Alle entstehenden Lücken richtig sichern.',
    g:[{id:'C1',n:'Coil 5t',ic:'🔄',gw:5000,cw:3,ch:4,gh:4,f:'#2b6cb0'},{id:'C2',n:'Holzpal.\n900kg',ic:'🪵',gw:900,cw:2,ch:2,gh:2,f:'#d97706'},{id:'C3',n:'Holzpal.\n800kg',ic:'🪵',gw:800,cw:2,ch:2,gh:2,f:'#d97706'},{id:'C4',n:'Karton\n600kg',ic:'📦',gw:600,cw:2,ch:2,gh:2,f:'#1a7a4a'},{id:'C5',n:'Karton\n550kg',ic:'📦',gw:550,cw:2,ch:2,gh:2,f:'#1a7a4a'},{id:'C6',n:'Gestell\n300kg',ic:'🗂️',gw:300,cw:1,ch:4,gh:6,f:'#68788f'}],
    sp:[0.4,0.65],tipps:['Coil: Direktzurren durch Auge (DIN EN 12195-3)','Lücken vorne/hinten: Stauholz oder Airbag','Alle Richtungen sichern (§22 StVO)'],
    korrekt_zurrmittel:['airbag','stauholz','direktzurren','leerpalette'],falsch_zurrmittel:['keil'],
