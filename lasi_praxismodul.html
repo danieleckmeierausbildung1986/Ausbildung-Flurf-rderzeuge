@@ -573,21 +573,28 @@ const PRUEF=[
   {id:'gurt_ok',n:'Zurrgurt A',okStatus:true,
    beschr:'Kennzeichnungsetikett lesbar: LC 2.500 daN, STF 400 daN. Gurtband ohne sichtbare Beschädigung, Ratsche funktioniert leichtgängig.',
    svg:'<svg viewBox="0 0 120 70" width="100%" height="64"><rect x="10" y="30" width="100" height="14" rx="3" fill="#e8a33d" stroke="#8a5a12" stroke-width="1.5"/><rect x="45" y="24" width="26" height="26" rx="3" fill="#888" stroke="#444" stroke-width="1.5"/><rect x="8" y="18" width="20" height="13" rx="2" fill="#fff" stroke="#333" stroke-width="1"/><text x="18" y="27" font-size="6" text-anchor="middle" fill="#333">LC</text></svg>'},
-  {id:'gurt_beschaedigt',n:'Zurrgurt B',okStatus:false,
+  {id:'gurt_beschaedigt',n:'Zurrgurt B',okStatus:false,defekt:'gurtband_beschaedigt',
    beschr:'Gurtband an einer Stelle eingeschnitten (ca. 15% der Breite). Kennzeichnungsetikett vorhanden.',
    grund:'Beschädigtes Gurtband mindert die Tragfähigkeit erheblich — nicht mehr einsatzfähig (DIN EN 12195-2).',
    svg:'<svg viewBox="0 0 120 70" width="100%" height="64"><rect x="10" y="30" width="42" height="14" rx="3" fill="#e8a33d" stroke="#8a5a12" stroke-width="1.5"/><rect x="66" y="30" width="44" height="14" rx="3" fill="#e8a33d" stroke="#8a5a12" stroke-width="1.5"/><path d="M52 28 L59 37 L52 46" fill="none" stroke="#7b1a12" stroke-width="2"/><path d="M66 28 L59 37 L66 46" fill="none" stroke="#7b1a12" stroke-width="2"/><text x="60" y="60" font-size="7" text-anchor="middle" fill="#7b1a12">Einschnitt</text></svg>'},
-  {id:'gurt_ohne_label',n:'Zurrgurt C',okStatus:false,
+  {id:'gurt_ohne_label',n:'Zurrgurt C',okStatus:false,defekt:'kennzeichnung_fehlt',
    beschr:'Kennzeichnungsetikett fehlt bzw. ist unleserlich. Gurtband äußerlich unauffällig.',
    grund:'Ohne lesbares Etikett sind LC/STF nicht nachweisbar — Gurt darf nicht verwendet werden.',
    svg:'<svg viewBox="0 0 120 70" width="100%" height="64"><rect x="10" y="30" width="100" height="14" rx="3" fill="#e8a33d" stroke="#8a5a12" stroke-width="1.5"/><rect x="45" y="24" width="26" height="26" rx="3" fill="#888" stroke="#444" stroke-width="1.5"/><rect x="8" y="18" width="20" height="13" rx="2" fill="#fff" stroke="#c0392b" stroke-width="1.5" stroke-dasharray="2,2"/><line x1="8" y1="18" x2="28" y2="31" stroke="#c0392b" stroke-width="1.5"/><line x1="28" y1="18" x2="8" y2="31" stroke="#c0392b" stroke-width="1.5"/></svg>'},
-  {id:'haken_verbogen',n:'Zurrhaken',okStatus:false,
+  {id:'haken_verbogen',n:'Zurrhaken',okStatus:false,defekt:'metallteile_verformt',
    beschr:'Haken sichtbar verbogen (Aufweitung über 5%), keine Rissbildung erkennbar.',
    grund:'Verformte Haken verlieren Formschluss und Tragfähigkeit — austauschen.',
    svg:'<svg viewBox="0 0 120 70" width="100%" height="64"><path d="M50 12 C50 12 48 38 60 44 C72 50 66 60 54 58" fill="none" stroke="#555" stroke-width="6" stroke-linecap="round"/><path d="M50 12 C36 26 40 48 53 50" fill="none" stroke="#c0392b" stroke-width="2" stroke-dasharray="3,2"/><text x="60" y="66" font-size="7" text-anchor="middle" fill="#7b1a12">verbogen</text></svg>'},
   {id:'matte_ok',n:'Antirutschmatte',okStatus:true,
    beschr:'Oberfläche griffig, keine Risse, keine Ölverschmutzung erkennbar.',
    svg:'<svg viewBox="0 0 120 70" width="100%" height="64"><rect x="15" y="12" width="90" height="46" rx="4" fill="#c0392b" stroke="#7b1a12" stroke-width="1.5"/><g stroke="#7b1a12" stroke-width="0.8" opacity="0.5"><line x1="30" y1="12" x2="30" y2="58"/><line x1="45" y1="12" x2="45" y2="58"/><line x1="60" y1="12" x2="60" y2="58"/><line x1="75" y1="12" x2="75" y2="58"/><line x1="90" y1="12" x2="90" y2="58"/><line x1="15" y1="24" x2="105" y2="24"/><line x1="15" y1="36" x2="105" y2="36"/><line x1="15" y1="48" x2="105" y2="48"/></g></svg>'},
+];
+const DEFEKT_KAT=[
+  {id:'kennzeichnung_fehlt',n:'Kennzeichnung fehlt/unleserlich'},
+  {id:'gurtband_beschaedigt',n:'Gurtband beschädigt (Schnitt/Riss/Abrieb)'},
+  {id:'naehte_beschaedigt',n:'Nähte beschädigt'},
+  {id:'metallteile_verformt',n:'Metallteile verformt/verbogen/rissig'},
+  {id:'verschmutzung',n:'Verschmutzung/Ölfilm mindert Reibwert'},
 ];
 
 const SZP=[
@@ -617,7 +624,7 @@ let cv1=null,ctx1=null,cv2=null,ctx2=null,cvA=null,ctxA=null;
 let detLuecken=[],auswCks=[];
 let cv1Bound=false;
 let selEquip=new Set(),equipConfirmed=false,equipScoreOk=null;
-let pruefAntw={},pruefScoreOk=null;
+let pruefAntw={},pruefPending={},pruefScoreOk=null;
 let calcAntw=null,correctN_P4=null;
 let activeView='top';
 let critResult=null;
@@ -734,40 +741,77 @@ function confirmEquip(){
   fb.textContent=equipScoreOk?'✓ Gute Auswahl für diese Ladung.':'✗ Nicht optimal – grün markierte Karten wären richtig gewesen, rot markierte waren eine Fehlauswahl.';
 }
 function initP3(){
-  pruefAntw={};pruefScoreOk=null;
+  pruefAntw={};pruefPending={};pruefScoreOk=null;
   renderPruef();
+}
+function pruefRichtig(p){
+  const a=pruefAntw[p.id];
+  if(!a)return false;
+  return p.okStatus?a.status===true:(a.status===false&&a.kat===p.defekt);
 }
 function renderPruef(){
   const c=document.getElementById('p3list');
   c.innerHTML=PRUEF.map(p=>{
     const beantwortet=p.id in pruefAntw;
-    const richtigBeantwortet=beantwortet&&pruefAntw[p.id]===p.okStatus;
-    let statusHtml='';
+    const pending=!!pruefPending[p.id];
+    const richtig=pruefRichtig(p);
+    let bodyHtml;
     if(beantwortet){
-      statusHtml=`<div class="m-fb ${richtigBeantwortet?'ok':'no'} show" style="margin-top:8px">${richtigBeantwortet?'✓ Richtig eingeschätzt.':'✗ Falsch eingeschätzt.'} ${p.okStatus?'Dieses Zurrmittel ist einsatzbereit.':(p.grund||'')}</div>`;
+      const a=pruefAntw[p.id];
+      const katLabel=a.kat?(DEFEKT_KAT.find(k=>k.id===a.kat)||{}).n:'';
+      const grundZeile=p.okStatus?'Dieses Zurrmittel ist einsatzbereit.':`${!richtig?`Gewählter Grund: ${katLabel}. `:''}${p.grund||''}`;
+      bodyHtml=`<div class="m-fb ${richtig?'ok':'no'} show" style="margin-top:8px">${richtig?'✓ Richtig eingeschätzt.':'✗ Falsch eingeschätzt.'} ${grundZeile}</div>`;
+    } else if(pending){
+      bodyHtml=`<div style="margin-top:8px">
+        <div style="font-size:10px;font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:.4px;margin-bottom:6px">Was genau ist das Problem?</div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap">
+          ${DEFEKT_KAT.map(k=>`<button class="m-btn out sm" onclick="waehleDefekt('${p.id}','${k.id}')">${k.n}</button>`).join('')}
+        </div>
+        <button class="m-btn out sm" style="margin-top:8px;opacity:.65" onclick="abbrechenPruef('${p.id}')">← Zurück</button>
+      </div>`;
+    } else {
+      bodyHtml=`<div style="display:flex;gap:6px;flex-wrap:wrap">
+        <button class="m-btn sm" onclick="bewertePruef('${p.id}',true)">✅ Einsatzbereit</button>
+        <button class="m-btn out sm" onclick="bewertePruef('${p.id}',false)">❌ Nicht einsatzbereit</button>
+      </div>`;
     }
-    return `<div class="luecke-card ${beantwortet?(richtigBeantwortet?'ok':'nok'):''}" style="border-color:${beantwortet?'':'var(--line)'};background:${beantwortet?'':'#fff'}">
+    return `<div class="luecke-card ${beantwortet?(richtig?'ok':'nok'):''}">
       <div style="display:flex;gap:12px;align-items:flex-start;flex-wrap:wrap">
         <div style="width:110px;flex-shrink:0">${p.svg}</div>
         <div style="flex:1;min-width:180px">
           <div class="lc-title" style="color:var(--navy)">${p.n}</div>
           <div style="font-size:10px;color:var(--muted);line-height:1.5;margin-bottom:8px">${p.beschr}</div>
-          <div style="display:flex;gap:6px;flex-wrap:wrap">
-            <button class="m-btn sm" ${beantwortet?'disabled':''} onclick="bewertePruef('${p.id}',true)">✅ Einsatzbereit</button>
-            <button class="m-btn out sm" ${beantwortet?'disabled':''} onclick="bewertePruef('${p.id}',false)">❌ Nicht einsatzbereit</button>
-          </div>
-          ${statusHtml}
+          ${bodyHtml}
         </div>
       </div>
     </div>`;
   }).join('');
 }
-function bewertePruef(id,antwort){
-  if(id in pruefAntw)return;
-  pruefAntw[id]=antwort;
+function checkPruefDone(){
   if(Object.keys(pruefAntw).length===PRUEF.length){
-    pruefScoreOk=PRUEF.every(p=>pruefAntw[p.id]===p.okStatus);
+    pruefScoreOk=PRUEF.every(pruefRichtig);
   }
+}
+function bewertePruef(id,antwort){
+  if(id in pruefAntw||pruefPending[id])return;
+  if(antwort===false){
+    pruefPending[id]=true;
+    renderPruef();
+    return;
+  }
+  pruefAntw[id]={status:true,kat:null};
+  checkPruefDone();
+  renderPruef();
+}
+function waehleDefekt(id,katId){
+  if(id in pruefAntw)return;
+  pruefAntw[id]={status:false,kat:katId};
+  delete pruefPending[id];
+  checkPruefDone();
+  renderPruef();
+}
+function abbrechenPruef(id){
+  delete pruefPending[id];
   renderPruef();
 }
 const P4_CX={bremsen:0.8,beschleunigen:0.5,kurve:0.5};
@@ -1288,6 +1332,8 @@ window.pruefeP4=pruefeP4;
 window.toggleEquip=toggleEquip;
 window.confirmEquip=confirmEquip;
 window.bewertePruef=bewertePruef;
+window.waehleDefekt=waehleDefekt;
+window.abbrechenPruef=abbrechenPruef;
 window.setView=setView;
 window.goP2=goP2;
 window.goP1=goP1;
