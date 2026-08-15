@@ -666,7 +666,7 @@ function renderFoot(showBack=true,showNext=true,nextLabel='Weiter →'){
   let pageText='';
   if(s.type==='folie'||s.type==='video'){
     const k=KAPITEL[s.ki];
-    pageText=`Folie ${s.fi+1} / ${k.folien.length}`;
+    pageText=`${s.fi+1} / ${k.folien.length} in diesem Kapitel`;
   }
   foot.innerHTML=`
     ${showBack?`<button class="navbtn" onclick="goStep(${cur-1})" ${cur===0?'disabled':''}>← Zurück</button>`:'<div></div>'}
@@ -682,8 +682,8 @@ function render(){
   const crumb=document.getElementById('crumb');
   if(s.type==='welcome'){crumb.textContent='';renderWelcome(host);}
   else if(s.type==='chapter'){crumb.textContent=`Kapitel ${s.ki+1}`;renderChapter(host,s.ki);}
-  else if(s.type==='folie'){crumb.textContent=`Kapitel ${s.ki+1} · Folie ${s.fi+1}`;renderFolie(host,s);}
-  else if(s.type==='video'){crumb.textContent=`Kapitel ${s.ki+1} · Folie ${s.fi+1}`;renderVideo(host,s);}
+  else if(s.type==='folie'){crumb.textContent=`Kapitel ${s.ki+1} · Folie ${s.fn}`;renderFolie(host,s);}
+  else if(s.type==='video'){crumb.textContent=`Kapitel ${s.ki+1} · Folie ${s.fn}`;renderVideo(host,s);}
   else if(s.type==='quiz'){crumb.textContent=`Kapitel ${s.ki+1} · Wissenstest`;renderQuiz(host,s.ki);}
   else if(s.type==='exam'){crumb.textContent='';renderExam(host);}
 }
