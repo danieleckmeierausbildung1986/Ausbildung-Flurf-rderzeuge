@@ -454,7 +454,7 @@ function renderKandidatenErst(kurs, rows){
     return '<div class="kandidat" data-regnr="' + regnr + '">' +
       '<div class="k-info">' +
         '<div class="k-name">' + name + ' <span style="color:var(--muted);font-weight:500">(' + regnr + ')</span></div>' +
-        '<div class="k-meta">' + (format || 'Schulungsform unbekannt') + '</div>' +
+        (kurs.id === 'lasi' ? '' : '<div class="k-meta">' + (format || 'Schulungsform unbekannt') + '</div>') +
         '<div class="k-status ' + (istFrei ? 'frei' : 'offen') + '">' + (istFrei ? 'Erstprüfung freigegeben' : 'Bereit — wartet auf Freigabe') + '</div>' +
       '</div>' +
       '<button class="btn ' + (istFrei ? 'done' : 'primary') + '" onclick="freigebenErst(\'' + kurs.id + '\',\'' + regnr + '\', this)" ' + (istFrei ? 'disabled' : '') + '>' +
