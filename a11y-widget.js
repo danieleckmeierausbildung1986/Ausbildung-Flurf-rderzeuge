@@ -31,6 +31,7 @@
     + 'html.a11y-contrast, html.a11y-contrast body{background:#000 !important;color:#fff !important}'
     + 'html.a11y-contrast *{background-color:transparent !important;background-image:none !important;'
     + 'color:#fff !important;border-color:#fff !important;box-shadow:none !important;text-shadow:none !important}'
+    + 'html.a11y-contrast *::before, html.a11y-contrast *::after{background-image:none !important}'
     + 'html.a11y-contrast body, html.a11y-contrast div, html.a11y-contrast section, html.a11y-contrast header,'
     + 'html.a11y-contrast footer, html.a11y-contrast nav, html.a11y-contrast main, html.a11y-contrast article{'
     + 'background-color:#000 !important;color:#fff !important}'
