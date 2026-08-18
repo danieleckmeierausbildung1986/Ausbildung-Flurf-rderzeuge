@@ -57,6 +57,12 @@ nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.95);backdrop-
 .k2-row .k-info{flex:1;min-width:200px}
 .k2-geraet{font-size:12.5px;font-weight:700;color:var(--navy);margin-bottom:4px}
 
+.geraet-tabs{display:flex;gap:8px;padding:16px 18px 0;flex-wrap:wrap}
+.geraet-tab{padding:8px 16px;border-radius:20px;border:1.5px solid var(--line);background:#fff;
+  font-size:12.5px;font-weight:700;color:var(--muted);cursor:pointer;transition:all .15s}
+.geraet-tab:hover{border-color:var(--blue)}
+.geraet-tab.active{background:var(--navy);color:#fff;border-color:var(--navy)}
+
 /* Äußere Reiter: Erstprüfung / Nachprüfung */
 .mode-row{display:flex;gap:10px;margin-top:20px;background:#fff;border:1px solid var(--line);border-radius:14px;padding:6px;box-shadow:var(--shadow-sm)}
 .modebtn{flex:1;border:none;background:none;border-radius:10px;padding:13px 16px;cursor:pointer;font-size:14.5px;font-weight:700;color:var(--muted);transition:all .15s}
@@ -508,41 +514,75 @@ async function ladeKandidatenErstStufe2(){
 // serverseitig bereits auf "gebucht & noch nicht freigegeben & kein
 // Prüfungsergebnis" — hier wird nur noch je Gerät angezeigt, ob es in der
 // Zeile überhaupt gebucht ist.
-function renderKandidatenErstStufe2(rows){
-  var liste = document.getElementById('liste-erst-stufe2');
-  var bereiteGeraete = 0;
+var stufe2ErstRows = [];
+var activeGeraetErst = null;
 
-  var blocks = STUFE2_ERST.geraete.map(function(g){
-    var rowsHtml = rows.map(function(r){
+function computeGeraeteCounts(rows){
+  var counts = {};
+  STUFE2_ERST.geraete.forEach(function(g){
+    var n = 0;
+    rows.forEach(function(r){
       var gebucht = findVal2(r, g.gebuchtInc, []);
       var istGebucht = gebucht === 'Yes' || gebucht === true || gebucht === 1 || gebucht === 'Ja';
-      if(!istGebucht) return '';
-      var regnr = r.Title || r.Registrierungsnummer || '';
-      var name = (r.Vorname_Teilnehmer || '') + ' ' + (r.Name_Teilnehmer || '');
-      var freigegeben = findVal2(r, g.freigebInc, []);
-      var istFrei = freigegeben === 'Ja' || freigegeben === true || freigegeben === 'True';
-      bereiteGeraete++;
-      return '<div class="k2-row" data-regnr="' + regnr + '" data-geraet="' + g.id + '">' +
-        '<div class="k-info">' +
-          '<div class="k2-geraet">' + name + ' <span style="color:var(--muted);font-weight:500">(' + regnr + ')</span></div>' +
-          '<div class="k-status ' + (istFrei ? 'frei' : 'offen') + '">' + (istFrei ? 'Erstprüfung freigegeben' : 'Bereit — wartet auf Freigabe') + '</div>' +
-        '</div>' +
-        '<button class="btn ' + (istFrei ? 'done' : 'primary') + '" onclick="freigebenErstStufe2(\'' + g.id + '\',\'' + regnr + '\', this)" ' + (istFrei ? 'disabled' : '') + '>' +
-          (istFrei ? '✓ Freigegeben' : 'Erstprüfung freigeben') +
-        '</button>' +
-      '</div>';
-    }).join('');
-    if(!rowsHtml) return '';
-    return '<div class="k2-block"><div class="k2-name">' + g.label + '</div>' + rowsHtml + '</div>';
-  }).filter(function(b){ return b; });
+      if(istGebucht) n++;
+    });
+    counts[g.id] = n;
+  });
+  return counts;
+}
+
+function renderKandidatenErstStufe2(rows){
+  stufe2ErstRows = rows;
+  var counts = computeGeraeteCounts(rows);
+  var bereiteGeraete = Object.keys(counts).reduce(function(s,id){ return s + counts[id]; }, 0);
 
   document.getElementById('tabsub-erst-stufe2').textContent = bereiteGeraete === 0 ? 'Keiner bereit' : bereiteGeraete + ' bereit';
 
-  if(blocks.length === 0){
-    liste.innerHTML = '<div class="empty">✓ Aktuell niemand bereit für die Erstprüfung.</div>';
+  if(bereiteGeraete === 0){
+    document.getElementById('liste-erst-stufe2').innerHTML = '<div class="empty">✓ Aktuell niemand bereit für die Erstprüfung.</div>';
     return;
   }
-  liste.innerHTML = blocks.join('');
+
+  if(!activeGeraetErst || !counts[activeGeraetErst]){
+    activeGeraetErst = STUFE2_ERST.geraete.filter(function(g){ return counts[g.id] > 0; })[0].id;
+  }
+  renderStufe2ErstListe(counts);
+}
+
+function renderStufe2ErstListe(counts){
+  var tabsHtml = STUFE2_ERST.geraete.map(function(g){
+    return '<button type="button" class="geraet-tab' + (g.id === activeGeraetErst ? ' active' : '') + '" onclick="waehleGeraetErst(\'' + g.id + '\')">' +
+      g.label + ' (' + (counts[g.id] || 0) + ')' +
+    '</button>';
+  }).join('');
+
+  var g = STUFE2_ERST.geraete.filter(function(x){ return x.id === activeGeraetErst; })[0];
+  var rowsHtml = stufe2ErstRows.map(function(r){
+    var gebucht = findVal2(r, g.gebuchtInc, []);
+    var istGebucht = gebucht === 'Yes' || gebucht === true || gebucht === 1 || gebucht === 'Ja';
+    if(!istGebucht) return '';
+    var regnr = r.Title || r.Registrierungsnummer || '';
+    var name = (r.Vorname_Teilnehmer || '') + ' ' + (r.Name_Teilnehmer || '');
+    var freigegeben = findVal2(r, g.freigebInc, []);
+    var istFrei = freigegeben === 'Ja' || freigegeben === true || freigegeben === 'True';
+    return '<div class="k2-row" data-regnr="' + regnr + '" data-geraet="' + g.id + '">' +
+      '<div class="k-info">' +
+        '<div class="k2-geraet">' + name + ' <span style="color:var(--muted);font-weight:500">(' + regnr + ')</span></div>' +
+        '<div class="k-status ' + (istFrei ? 'frei' : 'offen') + '">' + (istFrei ? 'Erstprüfung freigegeben' : 'Bereit — wartet auf Freigabe') + '</div>' +
+      '</div>' +
+      '<button class="btn ' + (istFrei ? 'done' : 'primary') + '" onclick="freigebenErstStufe2(\'' + g.id + '\',\'' + regnr + '\', this)" ' + (istFrei ? 'disabled' : '') + '>' +
+        (istFrei ? '✓ Freigegeben' : 'Erstprüfung freigeben') +
+      '</button>' +
+    '</div>';
+  }).join('');
+
+  document.getElementById('liste-erst-stufe2').innerHTML = '<div class="geraet-tabs">' + tabsHtml + '</div>' +
+    (rowsHtml || '<div class="empty">✓ Niemand bereit für ' + g.label + '.</div>');
+}
+
+function waehleGeraetErst(geraetId){
+  activeGeraetErst = geraetId;
+  renderStufe2ErstListe(computeGeraeteCounts(stufe2ErstRows));
 }
 
 async function freigebenErstStufe2(geraetId, regnr, btn){
