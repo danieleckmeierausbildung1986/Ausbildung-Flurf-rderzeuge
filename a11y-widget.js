@@ -41,6 +41,13 @@
     + 'html.a11y-contrast img, html.a11y-contrast svg{filter:contrast(1.3) brightness(1.1)}'
     + 'html.a11y-contrast img[src*="logos/"]{background:#fff !important;padding:8px !important;'
     + 'border-radius:8px !important;filter:none !important}'
+    + 'html.a11y-contrast #pbar, html.a11y-contrast #pb, html.a11y-contrast .progress-bar,'
+    + 'html.a11y-contrast .pbar, html.a11y-contrast .pbar-fill, html.a11y-contrast .ov-pbar{'
+    + 'background:#ffd447 !important}'
+    + 'html.a11y-contrast .progress, html.a11y-contrast .pbar-wrap,'
+    + 'html.a11y-contrast .pbar-bg, html.a11y-contrast .ov-pbar-wrap{'
+    + 'background:rgba(255,255,255,.25) !important}'
+    + 'html.a11y-contrast .a11y-btnish{border:2px solid #fff !important;border-radius:8px !important}'
     + '#a11y-panel.a11y-contrast-panel-safe{background:#fff !important;color:#1a2330 !important}'
     + 'html.a11y-contrast #a11y-btn{background:#fff !important;color:#000 !important;border:2px solid #fff !important}'
     + 'html.a11y-contrast #a11y-panel{background:#111 !important;color:#fff !important;border:2px solid #fff !important}'
@@ -70,6 +77,26 @@
       btn.textContent = on ? '✓ Hoher Kontrast an' : 'Hoher Kontrast';
     }
     localStorage.setItem(STORE_CONTRAST, on ? '1' : '0');
+  }
+
+  function markButtonLinks(root){
+    (root || document).querySelectorAll('a, button').forEach(function(el){
+      if(el.id === 'a11y-btn' || el.classList.contains('a11y-btnish')) return;
+      var cs = getComputedStyle(el);
+      var isBlockish = cs.display !== 'inline';
+      var hasPadding = parseFloat(cs.paddingTop) > 2 || parseFloat(cs.paddingLeft) > 4;
+      if(isBlockish || hasPadding) el.classList.add('a11y-btnish');
+    });
+  }
+
+  function watchForNewButtons(){
+    var pending = false;
+    var observer = new MutationObserver(function(){
+      if(pending) return;
+      pending = true;
+      setTimeout(function(){ pending = false; markButtonLinks(); }, 150);
+    });
+    observer.observe(document.body, { childList: true, subtree: true });
   }
 
   function build(){
@@ -132,6 +159,9 @@
       applyScale(scaleIdx);
       applyContrast(false);
     });
+
+    markButtonLinks();
+    watchForNewButtons();
   }
 
   injectStyle();
