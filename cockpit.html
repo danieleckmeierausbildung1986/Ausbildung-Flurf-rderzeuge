@@ -129,6 +129,7 @@ nav{position:sticky;top:0;z-index:100;background:rgba(10,8,5,.9);backdrop-filter
       <button type="button" class="tab-btn active" data-tab="abrechnung" onclick="showTab('abrechnung')">Abrechnung</button>
       <button type="button" class="tab-btn" data-tab="schulungen" onclick="showTab('schulungen')">Schulungen</button>
       <button type="button" class="tab-btn" data-tab="lop" onclick="showTab('lop')">LoP-Liste</button>
+      <button type="button" class="tab-btn" data-tab="behoerden" onclick="showTab('behoerden')">Behörden</button>
     </div>
   </div>
   <div class="tab-body">
@@ -264,6 +265,24 @@ nav{position:sticky;top:0;z-index:100;background:rgba(10,8,5,.9);backdrop-filter
           <div class="lop-row">
             <div class="chip err">€</div>
             <div class="task-t-wrap"><div class="task-t">Wissensassistent-Kosten über Zielwert</div><div class="task-s">Aktuell ca. 0,25 € pro Frage (Haiku 4.5, PDF-Bilder als Wissensquelle). Ziel: 0,01 €. Umstieg auf textbasierte Wissensbasis würde Kosten grob um Faktor 50 senken.</div><span class="tag err">Kostentreiber</span></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="tab-panel" id="tab-behoerden">
+      <div class="status-grid">
+
+        <div class="card">
+          <div class="card-head"><span class="card-h">Offene Anfragen</span><span class="count-badge">2</span></div>
+          <div class="lop-row">
+            <div class="chip warn">!</div>
+            <div class="task-t-wrap"><div class="task-t">BG Verkehr — Zuständigkeit klären</div><div class="task-s">Rückfrage geschickt, ob BG Verkehr überhaupt zuständiger Unfallversicherungsträger für Flurförderzeug-/Ladungssicherungsausbildung ist (kein Gewerbezweig/Betriebsmittel im Fragebogen passt). Betriebsfragebogen wartet, bis Zuständigkeit geklärt ist.</div><span class="tag warn">Wartet auf Antwort</span></div>
+          </div>
+          <div class="lop-row">
+            <div class="chip warn">!</div>
+            <div class="task-t-wrap"><div class="task-t">Regierung von Niederbayern — §4 Nr. 21 UStG Bescheinigung</div><div class="task-s">Anfrage vom 14.08. zur Umsatzsteuerbefreiung als Bildungsträger. Noch keine Rückmeldung — evtl. wegen Sommerferien/Urlaubszeit, bei Bedarf Ende August/Anfang September nachhaken.</div><span class="tag warn">Wartet auf Antwort</span></div>
           </div>
         </div>
 
