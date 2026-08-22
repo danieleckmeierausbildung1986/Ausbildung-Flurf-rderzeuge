@@ -325,16 +325,7 @@ function showTab(name){
 
 // ── Kundenakquise: Zeitarbeitsfirmen Niederbayern ──
 var AKQUISE_FIRMEN = [
-  { region: 'Top-Priorität — bereits Kundenkontakt vor Ort', items: [
-    { id: 'prostaff', name: 'ProStaff GmbH', ort: 'Traunstein · aktiv bei Kunden in Simbach a. Inn (z.B. Knauf)', tel: '0861 9098040', email: null, hinweis: 'Bereits vor Ort bei Knauf Simbach — direkter Anknüpfungspunkt' },
-  ]},
-  { region: 'Rottal-Inn — direkte Nähe zu Simbach', items: [
-    { id: 'peso', name: 'PESO-Service GmbH', ort: 'Schießstättgasse 1, 84307 Eggenfelden', tel: '0851 204244-0', email: 'info@peso-service.de' },
-    { id: 'ihs', name: 'IHS GmbH Personaldienstleistungen', ort: 'Rennbahnstr. 7–9, 84323 Massing', tel: '08724 9662-0', email: null },
-    { id: 'carpediem-pfk', name: 'Carpe Diem Personalberatung GmbH', ort: 'NL Pfarrkirchen, Max-Breiherr-Str. 32, 84347 Pfarrkirchen', tel: '08561 98654', email: null, hinweis: 'Zuordnung zur Unternehmensgruppe vor Kontakt telefonisch prüfen' },
-    { id: 'alphaconsult-egg', name: 'AlphaConsult KG', ort: 'Eggenfelden · Zuständigkeit über NL Regensburg/Ostbayern', tel: '0171 6707445', email: 'info.regensburg@alphaconsult.org' },
-  ]},
-  { region: 'Landau an der Isar', items: [
+  { region: 'Landau an der Isar — direkte Nähe', items: [
     { id: 'greenjobs', name: 'Greenjobs Personal GmbH', ort: 'Zwischen den Bächen 10, 94405 Landau a.d. Isar', tel: '0176 82415717', email: 'info@greenjobsgmbh.de' },
     { id: 'unique-landau', name: 'Unique Personalservice GmbH', ort: 'Harburger Straße 7, 94405 Landau a.d. Isar', tel: '09951 9479650', email: 'landau-isar@unique-personal.de' },
     { id: 'pit-landau', name: 'personal in time GmbH', ort: 'Spitalplatz 5, 94405 Landau a.d. Isar', tel: '09951 6033954', email: null },
@@ -343,15 +334,16 @@ var AKQUISE_FIRMEN = [
     { id: 'bayer-riedl', name: 'Bayer + Riedl Personalservice GmbH', ort: 'Rennstraße 2, 84130 Dingolfing', tel: '08731 32570-0', email: 'info@bayer-riedl.de' },
     { id: 'lpd', name: 'LPD Zeitarbeit (Lukas Personaldienstleistungen GmbH)', ort: 'Rotkehlchenweg 3, 84130 Dingolfing', tel: '08731 32180', email: null },
   ]},
+  { region: 'Rottal-Inn (Eggenfelden / Pfarrkirchen / Massing)', items: [
+    { id: 'peso', name: 'PESO-Service GmbH', ort: 'Schießstättgasse 1, 84307 Eggenfelden', tel: '0851 204244-0', email: 'info@peso-service.de' },
+    { id: 'ihs', name: 'IHS GmbH Personaldienstleistungen', ort: 'Rennbahnstr. 7–9, 84323 Massing', tel: '08724 9662-0', email: null },
+    { id: 'carpediem-pfk', name: 'Carpe Diem Personalberatung GmbH', ort: 'NL Pfarrkirchen, Max-Breiherr-Str. 32, 84347 Pfarrkirchen', tel: '08561 98654', email: null, hinweis: 'Zuordnung zur Unternehmensgruppe vor Kontakt telefonisch prüfen' },
+    { id: 'alphaconsult-egg', name: 'AlphaConsult KG', ort: 'Eggenfelden · Zuständigkeit über NL Regensburg/Ostbayern', tel: '0171 6707445', email: 'info.regensburg@alphaconsult.org' },
+  ]},
   { region: 'Deggendorf', items: [
     { id: 'lengle', name: 'Lengle Personal GmbH', ort: 'Bräugasse 1, 94469 Deggendorf', tel: '0170 4330894', email: null },
     { id: 'tuja', name: 'TUJA Zeitarbeit GmbH', ort: 'Lateinschulgasse 22, 94469 Deggendorf', tel: '0991 320190', email: 'deggendorf@tuja.de' },
     { id: 'timepartner', name: 'TimePartner Personalmanagement GmbH', ort: 'Stadt-Au 8, 94469 Deggendorf', tel: null, email: null },
-  ]},
-  { region: 'Passau', items: [
-    { id: 'hofmann', name: 'I. K. Hofmann GmbH', ort: 'Spitalhofstr. 94, 94032 Passau', tel: null, email: null },
-    { id: 'gut', name: 'GuT Personalmanagement GmbH', ort: 'Marsstraße 4a, 80335 München · aktiv im Raum Passau', tel: '089 5906865-0', email: 'info@gut-zeitarbeit-passau.de' },
-    { id: 'persowerk', name: 'persowerk Deutschland GmbH', ort: 'Speditionstrasse 15A, 50670 Köln · aktiv im Raum Passau', tel: '0211 54255090', email: 'hello@persowerk.com' },
   ]},
   { region: 'Straubing', items: [
     { id: 'orizon', name: 'Orizon GmbH', ort: 'Fraunhoferstr. 18, 94315 Straubing', tel: '09421 8610990', email: null },
@@ -360,6 +352,14 @@ var AKQUISE_FIRMEN = [
   { region: 'Landshut', items: [
     { id: 'unique-landshut', name: 'Unique Personalservice GmbH', ort: 'Altdorfer Straße 49, 84032 Landshut', tel: '0871 9751990', email: 'landshut@unique-personal.de' },
     { id: 'zeitconcept', name: 'zeitconcept GmbH Personaldienstleistungen', ort: 'Alte Regensburger Str. 2–4, 84030 Landshut', tel: '0871 97404', email: 'landshut@zeitconcept.de' },
+  ]},
+  { region: 'Passau — schon deutlich weiter weg', items: [
+    { id: 'hofmann', name: 'I. K. Hofmann GmbH', ort: 'Spitalhofstr. 94, 94032 Passau', tel: null, email: null },
+    { id: 'gut', name: 'GuT Personalmanagement GmbH', ort: 'Marsstraße 4a, 80335 München · aktiv im Raum Passau', tel: '089 5906865-0', email: 'info@gut-zeitarbeit-passau.de' },
+    { id: 'persowerk', name: 'persowerk Deutschland GmbH', ort: 'Speditionstrasse 15A, 50670 Köln · aktiv im Raum Passau', tel: '0211 54255090', email: 'hello@persowerk.com' },
+  ]},
+  { region: 'Weit entfernt — nur bei Sammeltermin sinnvoll', items: [
+    { id: 'prostaff', name: 'ProStaff GmbH', ort: 'Traunstein, ca. 150 km entfernt', tel: '0861 9098040', email: null, hinweis: 'Vermeintlicher Bezug zu "Simbach" (Knauf-Werk) betrifft Simbach am Inn — ein anderer, gleichnamiger Ort. Keine echte Nähe zu dir.' },
   ]},
 ];
 var AKQUISE_KEY = 'akquiseKontaktiert';
