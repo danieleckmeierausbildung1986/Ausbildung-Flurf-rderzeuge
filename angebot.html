@@ -791,7 +791,8 @@ function generatePDF(data){
         {canvas:[{type:'line',x1:0,y1:0,x2:515,y2:0,lineWidth:0.5,lineColor:'#e5e7eb'}], margin:[0,18,0,10]},
         {text:'Gemäß §19 UStG wird keine Umsatzsteuer berechnet.', bold:true, fontSize:8.5, color:'#6b7280', margin:[0,0,0,4]},
         {text:'Alle Schulungen werden nach DGUV Grundsatz 308-001 bzw. VDI 2700 ff. durchgeführt. Die praktische Prüfung findet vor Ort beim Kunden statt. Der Praxistermin wird nach Auftragseingang individuell vereinbart.', fontSize:8, color:'#9ca3af', italics:true, margin:[0,0,0,4]},
-        {text:[{text:'Konditionen: ', bold:true, fontSize:8.5, color:'#6b7280'},{text:'Zahlbar innerhalb von 14 Tagen nach Rechnungsstellung. Dieses Angebot ist 30 Tage gültig.', fontSize:8.5, color:'#9ca3af'}]}
+        {text:[{text:'Konditionen: ', bold:true, fontSize:8.5, color:'#6b7280'},{text:'Zahlbar innerhalb von 14 Tagen nach Rechnungsstellung. Dieses Angebot ist 30 Tage gültig.', fontSize:8.5, color:'#9ca3af'}], margin:[0,0,0,4]},
+        {text:[{text:'Bankverbindung: ', bold:true, fontSize:8.5, color:'#6b7280'},{text:'Daniel Eckmeier · IBAN: DE42 1101 0101 5973 2498 43 · BIC: SOBKDEB2XXX', fontSize:8.5, color:'#9ca3af'}]}
       ],
       styles:{th:{bold:true, fontSize:8, color:'#ffffff'}},
       footer:function(){return {margin:[40,8,40,0], text:'ProDrive Akademie Niederbayern · Daniel Eckmeier · Am Schwimmbad 12, 94436 Simbach · DGUV 308-001 · VDI 2700', fontSize:7, color:'#9ca3af', alignment:'center'};}
