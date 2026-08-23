@@ -227,28 +227,28 @@ button{font-family:inherit;cursor:pointer}
       <div class="ico">
         <svg viewBox="0 0 24 24"><path d="M20 8h-3V4H3c-1.1 0-2 .9-2 2v11h2c0 1.66 1.34 3 3 3s3-1.34 3-3h6c0 1.66 1.34 3 3 3s3-1.34 3-3h2v-5l-3-4z"/></svg>
       </div>
-      <h1>Ladungssicherung</h1>
-      <p>Ausbildung nach VDI 2700 ff.</p>
+      <h1 id="loginTitle">Ladungssicherung</h1>
+      <p id="loginSub">Ausbildung nach VDI 2700 ff.</p>
     </div>
     <div class="lcard-body">
       <div class="lf">
-        <label>Registriernummer</label>
+        <label id="labelRegnr">Registriernummer</label>
         <input type="text" id="regnr" placeholder="2025-001" autocomplete="off"
           onkeydown="if(event.key==='Enter')document.getElementById('vorname').focus()">
       </div>
       <div class="lf">
-        <label>Vorname</label>
+        <label id="labelVorname">Vorname</label>
         <input type="text" id="vorname" placeholder="Max" autocomplete="off"
           onkeydown="if(event.key==='Enter')document.getElementById('nachname').focus()">
       </div>
       <div class="lf">
-        <label>Nachname</label>
+        <label id="labelNachname">Nachname</label>
         <input type="text" id="nachname" placeholder="Mustermann" autocomplete="off"
           onkeydown="if(event.key==='Enter')doLogin()">
       </div>
-      <button class="lbtn" onclick="doLogin()">Anmelden →</button>
+      <button class="lbtn" id="loginBtn" onclick="doLogin()">Anmelden →</button>
       <div class="lerr" id="lerr"></div>
-      <div class="lhint">Format: 2025-001 – erhalten Sie von Ihrem Ausbilder</div>
+      <div class="lhint" id="loginHint">Format: 2025-001 – erhalten Sie von Ihrem Ausbilder</div>
     </div>
   </div>
 </div>
@@ -260,7 +260,7 @@ button{font-family:inherit;cursor:pointer}
     <div class="topbar-logo">
       <svg viewBox="0 0 24 24"><path d="M20 8h-3V4H3c-1.1 0-2 .9-2 2v11h2c0 1.66 1.34 3 3 3s3-1.34 3-3h6c0 1.66 1.34 3 3 3s3-1.34 3-3h2v-5l-3-4z"/></svg>
     </div>
-    <span class="topbar-title">Ladungssicherung VDI 2700</span>
+    <span class="topbar-title" id="topbarTitle">Ladungssicherung VDI 2700</span>
     <div class="topbar-right">
       <span class="topbar-who" id="topbar-who"></span>
       <a class="back-home" id="backHomeBtn" href="#">← Zurück</a>
@@ -289,12 +289,45 @@ const LERNFORTSCHRITT_ABRUFEN_URL = 'https://default8af25f9034bc4ef4aba22ab6f641
 const WA_NR = '4916096877039';
 const MAIL = 'danieleckmeier@ausbildung1986.onmicrosoft.com';
 
+/* ── SPRACHE ──
+   lang='de' (Standard/Fallback) verhält sich exakt wie vorher – keine
+   Textänderung, keine Bildumschaltung. Nur lang='pl' schaltet auf die
+   polnische Übersetzung um. Weitere Sprachen (ro, sq) können später nach
+   demselben Muster ergänzt werden (siehe staplerapp_stufe2.html). */
+var lang = new URLSearchParams(window.location.search).get('lang') || sessionStorage.getItem('lang') || 'de';
+function L(de, pl){ return lang === 'pl' ? pl : de; }
+const IMG_BASE_PL = 'https://danieleckmeierausbildung1986.github.io/Ausbildung-Flurf-rderzeuge/LASI_PL_BILDER/';
+/* Foliennummern, für die eine (neu gezeichnete) polnische Bildversion existiert.
+   Alle anderen Folien zeigen immer LASI_BILDER (Original), auch bei lang='pl'. */
+const PL_BILDER_SET = new Set([4,5,6,31,45,53,63,93,99,130,137,138,139]);
+
+/* Statische HTML-Texte (Login-Karte, Topbar, Zugangs-Overlay) werden nur bei
+   lang='pl' überschrieben – ansonsten bleibt die Seite exakt wie im Markup. */
+if(lang === 'pl'){
+  document.title = 'Zabezpieczanie ładunku VDI 2700 – Szkolenie';
+  document.documentElement.lang = 'pl';
+  var _plId = function(id, text){ var el=document.getElementById(id); if(el) el.textContent = text; };
+  _plId('loginTitle', 'Zabezpieczanie ładunku');
+  _plId('loginSub', 'Szkolenie wg VDI 2700 i nast.');
+  _plId('labelRegnr', 'Numer rejestracyjny');
+  _plId('labelVorname', 'Imię');
+  _plId('labelNachname', 'Nazwisko');
+  _plId('loginBtn', 'Zaloguj się →');
+  _plId('loginHint', 'Format: 2025-001 – otrzymasz od swojego instruktora');
+  _plId('topbarTitle', 'Zabezpieczanie ładunku VDI 2700');
+  _plId('backHomeBtn', '← Wstecz');
+  _plId('zugangsCheckContent', 'Trwa sprawdzanie dostępu…');
+  var _plRegnr=document.getElementById('regnr'); if(_plRegnr) _plRegnr.placeholder='2025-001';
+  var _plVorname=document.getElementById('vorname'); if(_plVorname) _plVorname.placeholder='Jan';
+  var _plNachname=document.getElementById('nachname'); if(_plNachname) _plNachname.placeholder='Kowalski';
+}
+
 /* ── VIDEOS ──
    Foliennummer → YouTube-Video (ersetzt die Folienbild-Anzeige für diese Nummer).
    Folie 36 fehlt hier noch, da der Link in der Original-Präsentation
    defekt war (kein gültiges Video hinterlegt) — sobald der richtige Link
    bekannt ist, hier ergänzen. */
-const VIDEO_MAP = {
+const VIDEO_MAP_DE = {
   8:  { url:'https://www.youtube-nocookie.com/embed/S3jubdSZppc', titel:'Video: Unfallgeschehen' },
   9:  { url:'https://www.youtube-nocookie.com/embed/95sVdjPt6xE', titel:'Video: 10 ungewöhnliche LKW-Vorfälle' },
   41: { url:'https://www.youtube-nocookie.com/embed/iQ5Wtz8Rp7c?start=5', titel:'Video: Rechtliche Grundlagen & Verantwortung' },
@@ -306,9 +339,22 @@ const VIDEO_MAP = {
   119:{ url:'https://www.youtube-nocookie.com/embed/kYkAcw5y53U', titel:'Video: Arten der Ladungssicherung' },
   9901:{ url:'https://www.youtube-nocookie.com/embed/nLcRaRoPlR8', titel:'Lastverteilung Videobeispiel' }
 };
+const VIDEO_MAP_PL = {
+  8:  { url:'https://www.youtube-nocookie.com/embed/S3jubdSZppc', titel:'Wideo: Wypadki' },
+  9:  { url:'https://www.youtube-nocookie.com/embed/95sVdjPt6xE', titel:'Wideo: 10 niezwykłych wypadków ciężarówek' },
+  41: { url:'https://www.youtube-nocookie.com/embed/iQ5Wtz8Rp7c?start=5', titel:'Wideo: Podstawy prawne i odpowiedzialność' },
+  52: { url:'https://www.youtube-nocookie.com/embed/S878icvxHAE', titel:'Wideo: Działanie alkoholu na organizm' },
+  94: { url:'https://www.youtube-nocookie.com/embed/9auPDNujfwk', titel:'Wideo: Podstawy fizyczne (1)' },
+  95: { url:'https://www.youtube-nocookie.com/embed/RpX85Gt9Jrg', titel:'Wideo: Podstawy fizyczne (2)' },
+  96: { url:'https://www.youtube-nocookie.com/embed/-halnFPU5ls', titel:'Wideo: Podstawy fizyczne (3)' },
+  97: { url:'https://www.youtube-nocookie.com/embed/gpR58OEz0oc?start=5', titel:'Wideo: Podstawy fizyczne (4)' },
+  119:{ url:'https://www.youtube-nocookie.com/embed/kYkAcw5y53U', titel:'Wideo: Rodzaje zabezpieczenia ładunku' },
+  9901:{ url:'https://www.youtube-nocookie.com/embed/nLcRaRoPlR8', titel:'Przykład wideo: rozkład obciążenia' }
+};
+const VIDEO_MAP = lang === 'pl' ? VIDEO_MAP_PL : VIDEO_MAP_DE;
 
 /* ── KAPITEL DATA ── */
-const KAPITEL = [
+const KAPITEL_DE = [
   { title:"Einführung", folien:[1,2,3,4,5,6,7],
     quiz:[
       {q:"Wie häufig muss eine Ladungssicherungsschulung nach VDI 2700 Blatt 5 mindestens durchgeführt werden?",o:["Jährlich","Alle 2 Jahre","Mindestens alle 3 Jahre","Alle 5 Jahre"],c:2},
@@ -378,6 +424,79 @@ const KAPITEL = [
     ]
   }
 ];
+
+/* Polnische Übersetzung – identische Struktur/Schlüssel/Reihenfolge/„c“-Werte wie KAPITEL_DE. */
+const KAPITEL_PL = [
+  { title:"Wprowadzenie", folien:[1,2,3,4,5,6,7],
+    quiz:[
+      {q:"Jak często musi być przeprowadzane szkolenie z zabezpieczania ładunku zgodnie z VDI 2700 arkusz 5?",o:["Co roku","Co 2 lata","Co najmniej co 3 lata","Co 5 lat"],c:2},
+      {q:"Kto odpowiada za zapewnienie obowiązku szkoleniowego zgodnie z VDI 2700 arkusz 5?",o:["Kierowca","Kierownik prac załadunkowych","Rada zakładowa","Zawodowe stowarzyszenie ubezpieczeniowe (Berufsgenossenschaft)"],c:1},
+      {q:"Czy własna odpowiedzialność za zabezpieczenie ładunku pozostaje, gdy ładunek przygotowują osoby trzecie?",o:["Nie, odpowiedzialność przechodzi na osoby trzecie","Tak, odpowiedzialność pozostaje","Tylko przy transportach zagranicznych","Tylko przy transportach powyżej 5 ton"],c:1}
+    ]
+  },
+  { title:"Wypadki", folien:[8,9,10,11,12,13,14,15,16,17],
+    quiz:[
+      {q:"Czym może stać się niezabezpieczony ładunek podczas gwałtownego hamowania?",o:["Pozostaje na miejscu","Pociskiem o wielokrotnie większej wadze","Rozkłada się równomiernie","Przesuwa się tylko do tyłu"],c:1},
+      {q:"Czy zagrożenie niezabezpieczonym ładunkiem dotyczy tylko długich tras?",o:["Tak, od 50 km","Tak, od autostrady","Nie, zagrożenie istnieje na każdej trasie","Tylko podczas jazdy nocą"],c:2},
+      {q:"Jakie mogą być skutki niewystarczającego zabezpieczenia ładunku?",o:["Tylko mandaty","Obrażenia, szkody materialne, konsekwencje karne","Tylko szkody wizerunkowe","Żadne przy wolnej jeździe"],c:1}
+    ]
+  },
+  { title:"Podstawy prawne i odpowiedzialność",
+    folien:[18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53],
+    quiz:[
+      {q:"Który przepis reguluje obowiązek zabezpieczenia ładunku w ruchu drogowym?",o:["§ 23 StVZO","§ 22 Abs. 1 StVO","DGUV Vorschrift 70","VDI 2700 Blatt 1"],c:1},
+      {q:"Kto zgodnie z § 23 StVO odpowiada przede wszystkim za prawidłowy załadunek?",o:["Załadowca","Posiadacz pojazdu","Kierowca","Spedytor"],c:2},
+      {q:"Od jakiego poziomu alkoholu we krwi czas reakcji jest wyraźnie spowolniony?",o:["0,2 ‰","0,3 ‰","0,5 ‰","1,0 ‰"],c:2},
+      {q:"Co prawnie oznacza VDI 2700?",o:["Obowiązuje tylko dla sądów","Uznany stan techniki","Zastępuje książkę jazd","Tylko dla transportów ciężkich"],c:1},
+      {q:"Jak wysoki jest mandat za brak zabezpieczenia ładunku stwarzający zagrożenie?",o:["35 €","60 € + 1 punkt","100 € + 2 punkty","20 €"],c:1}
+    ]
+  },
+  { title:"Podstawy fizyczne",
+    folien:[54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97],
+    quiz:[
+      {q:"Jak duża jest siła bezwładności do przodu podczas gwałtownego hamowania?",o:["0,5 × siły ciężkości","0,8 × siły ciężkości","1,0 × siły ciężkości","0,3 × siły ciężkości"],c:1},
+      {q:"Jak duża jest siła odśrodkowa podczas jazdy na zakręcie według VDI 2700?",o:["0,8 × FG","0,3 × FG","0,5 × FG","1,0 × FG"],c:2},
+      {q:"Co się dzieje, gdy prędkość na zakręcie podwaja się?",o:["Siła odśrodkowa podwaja się","Siła odśrodkowa rośnie czterokrotnie","Siła odśrodkowa zmniejsza się o połowę","Brak zmiany"],c:1},
+      {q:"Co określa wzór FR = μ × FG?",o:["Siłę bezwładności","Siłę tarcia","Siłę ciężkości","Siłę naciągu"],c:1},
+      {q:"Jaki współczynnik tarcia jest stosowany w obliczeniach?",o:["Współczynnik tarcia statycznego","Współczynnik tarcia kinetycznego (poślizgu)","Wyższy z nich","Wartość średnia"],c:1},
+      {q:"Szybki wzór przy μ = 0,4?",o:["Ciężar × 3","Ciężar × 1","Ciężar ÷ 3","Ciężar × 2"],c:1}
+    ]
+  },
+  { title:"Właściwości ładunku", folien:[98,99,100,101,102,103,104,9901],
+    quiz:[
+      {q:"Jakie trzy warunki musi spełniać ładunek?",o:["Kolor, kształt, materiał","Ciężar, środek ciężkości, stabilne opakowanie","Długość, szerokość, wysokość","Producent, rok produkcji, certyfikat"],c:1},
+      {q:"Gdzie leży środek ciężkości przy równomiernym rozkładzie masy?",o:["Na dolnym końcu","Na powierzchni","W środku bryły","Na krawędzi"],c:2},
+      {q:"Co oznacza symbol „Ta strona do góry”?",o:["Ciężar znajduje się u góry","Załadować strzałkami do góry","Punkt zaczepienia u góry","Chwytać tylko od góry"],c:1}
+    ]
+  },
+  { title:"Rodzaje zabezpieczenia ładunku",
+    folien:[105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,121,122,123,124,125,126,127,128,129,130,131,132,133,134,135,136,137,138,139],
+    quiz:[
+      {q:"Ile środków mocujących jest minimalnie wymaganych przy mocowaniu bezpośrednim?",o:["2","3","4","6"],c:2},
+      {q:"Co powoduje mocowanie dociskowe (Niederzurren)?",o:["Ładunek zostaje zablokowany","Siła tarcia zostaje zwiększona","Ładunek zostaje podniesiony","Środek ciężkości zostaje przesunięty"],c:1},
+      {q:"Skuteczna siła naciągu bez ślizgacza krawędziowego po przeciwnej stronie?",o:["100 %","75 %","50 %","25 %"],c:2},
+      {q:"Od jakiego kąta mocowania środki mocujące stają się nieskuteczne?",o:["Poniżej 60°","Poniżej 45°","Poniżej 30°","Poniżej 15°"],c:2},
+      {q:"Szybki wzór przy mocowaniu dociskowym dla μ = 0,4?",o:["Ciężar × 3","Ciężar × 1","Ciężar ÷ 3","Ciężar × 2"],c:1},
+      {q:"Minimalna nośność ściany bocznej według DIN EN 12642 Code L?",o:["10 %","20 %","30 %","50 %"],c:2}
+    ]
+  },
+  { title:"Nadwozia pojazdów", folien:[140,141,142,143,144],
+    quiz:[
+      {q:"Co jest podstawowym warunkiem skutecznego zabezpieczenia ładunku?",o:["Pojazd musi być nowy","Odpowiedni pojazd z właściwym nadwoziem","Nadwozie zamknięte (kontener) jest obowiązkowe","Co najmniej 5 punktów mocowania"],c:1},
+      {q:"Co przy ciężkich ładunkach często jest najsłabszym ogniwem?",o:["Pasy mocujące","Burty pojazdu","Punkty mocowania w pojeździe","Grzechotka (napinacz)"],c:2}
+    ]
+  },
+  { title:"Środki mocujące i pomocnicze", folien:[145,146,147,148,149,150,151,152,153,154],
+    quiz:[
+      {q:"Co oznacza „LC” na pasie mocującym?",o:["Natężenie światła","Maksymalna siła przy ciągu prostym","Klasa obciążenia","Długość w cm"],c:1},
+      {q:"Kiedy pas mocujący musi zostać wycofany z użytku?",o:["Tylko przy rozdarciu","Gdy etykieta brakuje lub jest nieczytelna","Tylko przy złamaniu haka","Po 2 latach"],c:1},
+      {q:"Siła naciągu przy zastosowaniu ślizgacza krawędziowego?",o:["Zmniejsza się o połowę","Pozostaje bez zmian","Do 200 % STF jako siła dociskowa","300 %"],c:2},
+      {q:"Co należy zrobić po kilku kilometrach jazdy przy mocowaniu dociskowym?",o:["Nic","Dociągnąć pasy","Poluzować pasy","Zmniejszyć prędkość"],c:1},
+      {q:"Który środek mocujący nadaje się do transportów ciężkich?",o:["Taśmy z tworzywa sztucznego","Łańcuchy mocujące","Taśma klejąca","Poduszki wypełniające"],c:1}
+    ]
+  }
+];
+const KAPITEL = lang === 'pl' ? KAPITEL_PL : KAPITEL_DE;
 
 /* ── ERKLÄRUNGSTEXTE (Foliennummer → Text) ── */
 const ERKLAERUNG_DE = {
@@ -516,6 +635,146 @@ const ERKLAERUNG_DE = {
   17:'Für den Ernstfall gelten fünf Grundregeln: Unbedingt Ruhe bewahren, dann gedanklich die Reihenfolge durchgehen – Situation erkennen, weitere Schritte planen (Eigen- und Drittschutz geht immer vor), überlegt und entschlossen handeln. Danach den Unfall über die 112 melden (wo, was, wie viele Verletzte, welche Verletzungsart), soweit möglich Erste Hilfe leisten und weitere Maßnahmen wie Absicherung der Unfallstelle organisieren. Zuspruch und Beistand für Betroffene sind dabei ebenfalls wichtig.'
 };
 
+/* Polnische Übersetzung – identische Foliennummern-Schlüssel wie ERKLAERUNG_DE.
+   Rechtliche/technische Referenzen (§ StVO/StVZO/StGB/BGB, VDI 2700, DGUV, DIN EN …)
+   bleiben unübersetzt, wie im Original. */
+const ERKLAERUNG_PL = {
+  4:'Ta legenda towarzyszy Państwu przez całe szkolenie: fioletowa wskazówka praktyczna pokazuje, na co konkretnie zwracać uwagę w zakładzie. Niebieskie pole z ikoną schowka pokazuje, jak może wyglądać pytanie egzaminacyjne na dany temat. Zielone pole z „i” dostarcza dodatkowych, ciekawych informacji, które nie są istotne dla egzaminu. Czerwone pole z wykrzyknikiem oznacza realne zagrożenie lub czynność, której należy bezwzględnie unikać. A czerwony symbol wideo oznacza wybrane filmy YouTube dotyczące danego tematu.',
+  5:'Zgodnie z VDI 2700 arkusz 5 jednorazowe przeszkolenie nie wystarcza: pracownicy zajmujący się zabezpieczaniem ładunku lub jego kontrolą muszą być szkoleni według tej wytycznej co najmniej co 3 lata. Przekazywane są przy tym m.in. podstawy fizyczne, właściwości ładunku oraz możliwości jego zabezpieczenia i ich praktyczne wykonanie. Za zapewnienie realizacji tego obowiązku szkoleniowego odpowiada „kierownik prac załadunkowych” – który może również sam przeprowadzić szkolenie.',
+  6:'Cztery dobre powody starannego zabezpieczania ładunku: po pierwsze bezpieczeństwo wszystkich – niewystarczające zabezpieczenie zagraża przede wszystkim niezaangażowanym osobom trzecim w ruchu drogowym. Po drugie unikanie strat finansowych i wizerunkowych – wypadki kosztują pieniądze, opóźniają dostawy i szkodzą reputacji firmy. Po trzecie unikanie konsekwencji prawnych – prawidłowe zabezpieczenie ładunku jest wymagane ustawowo, w razie nieprzestrzegania grożą konsekwencje prawne. I po czwarte Państwa własna odpowiedzialność: nawet jeśli ładunek jest przygotowywany i zabezpieczany przez osoby trzecie, nie zmienia to Państwa własnej odpowiedzialności jako kierowcy.',
+  10:'Ten prawdziwy przypadek pokazuje, jak szybko z utraconego ładunku robi się poważna szkoda: kierowca ciężarówki na autostradzie koło Hagen zgubił około 800 skrzynek z napojami, które przez wiele godzin blokowały wjazd. W tym wypadku przypadkiem nikt nie został ranny – to jednak czysty przypadek, a nie zasługa zabezpieczenia ładunku.',
+  11:'Zabezpieczenie ładunku zawodzi także przy szczególnie ciężkich ładunkach: naczepa przechyliła się, a dwa elementy betonowe o wadze po dziewięć ton przebiły ścianę boczną. Jeden z nich uszkodził jezdnię na długości 15 metrów, całkowita szkoda wyniosła co najmniej 50 000 euro – do usunięcia szkody potrzebny był dźwig o dużym udźwigu. To pokazuje: nawet pozornie „nieruchome” ładunki wymagają fachowego zabezpieczenia.',
+  12:'Także ten przypadek – ważący osiem ton element konstrukcyjny musiał po utracie ładunku zostać podniesiony dźwigiem na zastępczą ciężarówkę – pokazuje wyraźnie, jaki nakład pracy i jakie koszty może pociągnąć za sobą pojedynczy brak zabezpieczenia ładunku, niezależnie od tego, czy dochodzi przy tym do obrażeń osób.',
+  13:'Sześć powszechnych błędnych przekonań, które wciąż prowadzą do wypadków: „ciężki ładunek sam się zabezpiecza” – nieprawda, i tak się przesuwa i przewraca. „Jedzie się tylko za róg” – zagrożenie istnieje na każdej trasie, o każdej porze. „Ściana przednia i podłoga wystarczą” – przesuwający się ładunek może je łatwo zniszczyć. „Jazda przewidująca wystarczy” – nikt nie przewidzi bawiących się dzieci ani zagrożeń za zakrętem. „Nigdy mi się nic nie stało” – niemal codziennie na jezdni leży zgubiony, niezapowiedziany ładunek. I „każdy pas utrzyma dwie tony” – system pasów wbudowany w plandekę typu curtainsider przez znitowanie utrzymuje często już tylko do 400 kg.',
+  14:'Zabezpieczenie ładunku nie służy tylko własnej ochronie: chroni kierowcę i pasażera, innych uczestników ruchu, sam pojazd, ładunek przed uszkodzeniem, infrastrukturę (drogi, bariery ochronne) przed uszkodzeniem, pomaga unikać zatorów spowodowanych utraconym ładunkiem, chroni przed konsekwencjami prawnymi i sporami sądowymi, zapobiega szkodom wizerunkowym firmy – a tym samym w ostateczności zabezpiecza także miejsca pracy.',
+  15:'Możliwe zagrożenia przy niewystarczającym zabezpieczeniu ładunku sięgają dużo dalej niż samo przesunięcie: ładunek może się przesuwać, przewracać, toczyć się tam i z powrotem lub latać jak pocisk; może spaść lub wypaść podczas załadunku/rozładunku bądź się przechylić, grozi upadek z powierzchni ładunkowej, utracony ładunek na jezdni, przeciążenie pojazdu, nierównomierny rozkład obciążenia, nieodpowiednie pojemniki transportowe, pasy mocujące na ostrych krawędziach, uszkodzone pojemniki z wyciekającym towarem, a także obciążenie psychiczne kierowców i fizyczne osób ładujących/rozładowujących.',
+  16:'Skutki niewystarczającego zabezpieczenia ładunku sięgają od obrażeń kierowcy, pasażera lub innych uczestników ruchu, przez trwałe uszczerbki na zdrowiu aż po śmierć, uszkodzenie lub utratę samego ładunku, opóźnienia dostaw z kosztami i utratą klientów oraz szkody wizerunkowe firmy, aż po konkretne roszczenia takie jak mandaty i odszkodowania.',
+  19:'W dziedzinie ochrony pracy i zdrowia obowiązuje hierarchia od prawa UE przez ustawę zasadniczą aż po poszczególne ustawy, jak ustawa o ochronie pracy (ArbSchG). Skierowana jest ona zarówno do pracodawcy/przedsiębiorcy, jak i do pracowników: rozdział 2 (§3 podstawowe obowiązki pracodawcy, §4 zasady ogólne, §12 instruktaż pracowników) reguluje obowiązki pracodawcy, rozdział 3 (§15 obowiązki pracowników, §16 szczególne obowiązki wsparcia) obowiązki i prawa samych pracowników.',
+  20:'Przepis DGUV Vorschrift 1 „Zasady prewencji” konkretyzuje obowiązek instruktażu: zgodnie z §4 przedsiębiorca musi instruować ubezpieczonych w zakresie bezpieczeństwa i ochrony zdrowia w pracy, w szczególności o zagrożeniach związanych z ich pracą i środkach zapobiegawczych. Instruktaż musi być powtarzany w razie potrzeby, jednak co najmniej raz w roku, i musi być udokumentowany. Ponadto istotne treści obowiązujących przepisów i zasad muszą być przekazywane w sposób zrozumiały.',
+  21:'Dlaczego przy zabezpieczaniu ładunku obowiązuje inne prawo niż w normalnej ochronie pracy? Ponieważ proces załadunku odbywa się zazwyczaj wewnątrz zakładu – tam obowiązuje prawo ochrony pracy – natomiast właściwy transport odbywa się w publicznym ruchu drogowym. Gdy tylko pojazd opuści zakład, dodatkowo obowiązuje prawo o ruchu drogowym.',
+  22:'Ponieważ transport odbywa się w publicznym ruchu drogowym, zmienia się także terminologia dotycząca zaangażowanych osób: z pracodawcy/przedsiębiorcy prawnie staje się posiadacz pojazdu/załadowca, z pracownika – kierowca. Ta podwójna rola jest ważna, ponieważ dla obu ról obowiązują różne przepisy.',
+  23:'Wraz z rolą zmienia się także właściwa podstawa prawna: dla pracodawcy/przedsiębiorcy i pracowników obowiązują kodeks handlowy (HGB) oraz ustawy i rozporządzenia z zakresu ochrony pracy. Dla posiadacza pojazdu/załadowcy i kierowcy w publicznym ruchu drogowym obowiązują natomiast przepisy ruchu drogowego (StVO) oraz przepisy o dopuszczeniu pojazdów do ruchu (StVZO) – kluczowe przepisy dla zabezpieczania ładunku.',
+  24:'§22 ust. 1 StVO jest najważniejszą podstawą prawną zabezpieczania ładunku: ładunek wraz z urządzeniami do jego zabezpieczenia oraz urządzeniami załadowczymi musi być tak ułożony i zabezpieczony, aby nawet przy gwałtownym hamowaniu lub nagłym manewrze wymijania nie przesuwał się, nie przewracał, nie toczył się tam i z powrotem, nie spadał ani nie powodował zbędnego hałasu. Należy przy tym przestrzegać uznanych zasad techniki – to właśnie ta podstawa prawna, na której opiera się także VDI 2700.',
+  25:'§23 StVO określa, kto odpowiada za prawidłowe zabezpieczenie ładunku: kierowca pojazdu. Kto prowadzi pojazd, odpowiada za to, aby jego widoczność nie była ograniczona przez ładunek, aby pojazd, zespół pojazdów wzgl. przyczepa i ładunek były zgodne z przepisami, oraz aby bezpieczeństwo ruchu pojazdu nie ucierpiało wskutek ładunku. Tę odpowiedzialność ponosi kierowca niezależnie od tego, kto pierwotnie ułożył ładunek.',
+  26:'Odpowiedzialność ponosi także przedsiębiorca wzgl. posiadacz pojazdu, uregulowana w §§30 i 31 StVZO – nawet jeśli zazwyczaj deleguje ją na załadowcę lub kierownika prac załadunkowych. §30 ust. 1 StVZO wymaga, aby pojazdy były tak skonstruowane i wyposażone, żeby ich eksploatacja nikogo nie zagrażała, a pasażerowie byli w miarę możliwości chronieni w razie wypadku. §31 ust. 2 StVZO wyraźnie zabrania posiadaczowi zlecania lub dopuszczania eksploatacji, jeśli wie on lub powinien wiedzieć, że ładunek nie jest zgodny z przepisami lub że cierpi na tym bezpieczeństwo ruchu.',
+  28:'Na podstawie tych wyroków wytyczna VDI 2700 uznawana jest obecnie za technicznie uznany stan zasad załadunku – określa się ją jako „zobiektywizowaną opinię biegłego”, którą należy powszechnie przestrzegać. Oznacza to: załadowca i kierowca mają przeprowadzać zabezpieczenie ładunku na podstawie VDI 2700, podczas gdy posiadacz pojazdu musi wyposażyć pojazd w wystarczające środki do zabezpieczania ładunku, aby było to w ogóle możliwe.',
+  29:'Przedsiębiorca musi stworzyć struktury organizacyjne, dzięki którym odpowiedzialność za prawidłowe zabezpieczenie ładunku jest bez luk zapewniona i możliwa do udokumentowania. Konkretnie oznacza to: „prawidłowo” oznacza zabezpieczenie ładunku zgodnie ze stanem techniki, „bez luk” oznacza kontrole pojazdów bez wyjątków, a „możliwe do udokumentowania” oznacza kontrolę załadunku z dokumentacją – a więc możliwą do wykazania na piśmie.',
+  30:'VDI 2700 wymaga systemu zarządzania jakością z jasną strukturą organizacyjną: przedsiębiorca powierza „kierownikowi prac załadunkowych” realizację i przekazuje mu odpowiednie obowiązki przedsiębiorcy. Ten jako załadowca ponosi odpowiedzialność za obszar załadunku i zabezpieczenie ładunku oraz wspólnie z przedsiębiorcą ustala struktury i procedury. Personel załadunkowy (np. kierowcy wózków widłowych, wózków podnośnikowych, operatorzy dźwigów) odpowiada za sam załadunek, musi przy tym przestrzegać instrukcji załadunku i natychmiast zgłaszać kierownikowi prac załadunkowych usterki lub zakłócenia.',
+  31:'„Kierownik prac załadunkowych” ma sześć głównych zadań: organizację udokumentowanych kontroli pojazdu przed załadunkiem, organizację kontroli przy wyjeździe, wydawanie personelowi załadunkowemu instrukcji dotyczących przebiegu pracy, kontrolowanie personelu załadunkowego, przekazywanie informacji zwrotnej przedsiębiorcy (np. w formie rocznych raportów), oraz sporządzanie instrukcji załadunku z konkretnymi środkami zabezpieczającymi dla danego ładunku.',
+  32:'Personel załadunkowy ma przed i podczas załadunku cały szereg obowiązków: kontrola pojazdu pod kątem widocznych usterek przed załadunkiem, stosowanie odpowiednich systemów zabezpieczenia ładunku (np. burty załadowcze, pasy mocujące, drążki kotwiące, maty antypoślizgowe), kontrola zabezpieczenia przed jazdą oraz po krótkim odcinku jazdy lub ekstremalnych manewrach, wybór odpowiedniego pojazdu, przestrzeganie planu rozkładu obciążenia i dopuszczalnej masy całkowitej, czyszczenie i kontrola powierzchni ładunkowej, bezpieczne dla ruchu zestawianie jednostek ładunkowych, regularna kontrola środków zabezpieczających, noszenie środków ochrony indywidualnej (np. obuwia ochronnego) oraz ostatnia kontrola przed opuszczeniem terenu zakładu. Koniecznie zapoznajcie się Państwo z instrukcją załadunku obowiązującą w Waszej firmie!',
+  33:'Przepis DGUV Vorschrift 70 „Pojazdy” to właściwy przepis dotyczący zapobiegania wypadkom w odniesieniu do pojazdów w zakładzie: każdy przedsiębiorca musi podejmować środki zapobiegania wypadkom, a pojazdy zakładu muszą odpowiadać obowiązującym przepisom w tym zakresie.',
+  34:'DGUV Grundsatz 314-002 „Kontrola pojazdów przez personel kierujący” wyjaśnia jasno: ciężarówka jest dla przedsiębiorstwa środkiem pracy w rozumieniu rozporządzenia o bezpieczeństwie eksploatacji (BetrSichV). Dlatego – jak przy każdym innym środku pracy – „obsługujący”, czyli kierowca, musi przed każdym pierwszym użyciem przeprowadzić kontrolę wzrokową i funkcjonalną.',
+  35:'Informacja DGHM 108 „Załadunek i rozładunek pojazdów” uzupełnia wymagania techniczne specjalnie dla procesu załadunku i rozładunku – i tu obowiązuje: ciężarówka jako środek pracy musi być skontrolowana przed użyciem, a konkretne wymagania dotyczące środków mocujących, punktów zaczepienia i sposobu postępowania przy załadunku/rozładunku są zebrane w tej informacji.',
+  36:'Ten przykład z kraju bez porównywalnych przepisów pokazuje dobitnie, co dzieje się bez wiążących zasad zabezpieczania ładunku: beznadziejnie przeładowane i niezabezpieczone pojazdy w ruchu drogowym. Uświadamia to, dlaczego obowiązujące w Niemczech wymogi prawne dotyczące zabezpieczania ładunku są tak ważne – chronią właśnie przed takimi sytuacjami.',
+  37:'Dla pytania, czy i w jakim zakresie ktoś odpowiada, decydujący jest stopień winy – skala sięga od niskiego do wysokiego: nieświadome/lekkie niedbalstwo („powinien był postąpić inaczej”), świadome/rażące niedbalstwo („liczył, że się uda”, „to było oczywiste”), zamiar ewentualny („wiedział o tym, był wystarczająco wykwalifikowany”), aż po zamiar bezpośredni (świadoma wiedza i chęć popełnienia czynu karalnego). Im wyższy stopień winy, tym poważniejsze możliwe roszczenia z tytułu odpowiedzialności.',
+  38:'Prawo karne chroni kluczowe dobra prawne, takie jak życie, zdrowie, wolność i własność – za naruszenia grożą kary grzywny lub pozbawienia wolności. W kontekście wypadków przy pracy istotne są przede wszystkim spowodowanie obrażeń ciała i śmierci. Ważne: do ścigania karnego wystarczy już nieumyślne działanie lub zaniechanie – działa się nieumyślnie już wtedy, gdy zaniedbuje się staranność, do której było się zdolnym według własnej wiedzy i umiejętności. Nieumyślne spowodowanie obrażeń ciała wg §229 StGB może być karane pozbawieniem wolności do 3 wzgl. 5 lat lub grzywną.',
+  39:'Jeśli przepisy dotyczące zabezpieczania ładunku nie są przestrzegane, kierowcy, załadowcy i posiadaczowi pojazdu grożą różne konsekwencje: podczas rutynowej kontroli drogowej grozi zakaz dalszej jazdy do czasu prawidłowego zabezpieczenia oraz zawiadomienie o wykroczeniu z mandatem i punktami we Flensburgu. Jeśli dojdzie do wypadku, przy czystej szkodzie materialnej również grożą mandat i punkty, natomiast przy szkodach osobowych – zawiadomienie karne z karą grzywny lub pozbawienia wolności. Dodatkowo grożą roszczenia odszkodowawcze: przy szkodach osób trzecich wg §823 BGB, przy szkodach własnych ewentualnie pomniejszonych na podstawie §254 BGB (przyczynienie się), a przy szkodach na samym ładunku – wg HGB.',
+  42:'Ta tabela pokazuje, jak bardzo różne mogą być konsekwencje w zależności od dziedziny prawa i stopnia winy: w prawie ochrony pracy przy naruszeniu nieumyślnym lub umyślnym grożą grzywny do 25 000 € (ArbSchG/BetrSichV), do 100 000 € (ProdSG), do 10 000 € (SGB VII), a nawet do 1 miliona € (OWiG). W prawie karnym przy zamiarze lub powtarzającym się niedbalstwie grożą kary grzywny lub pozbawienia wolności do 1 roku, do 3 lat (§230 StGB, obrażenia ciała) lub do 10 lat (§222 StGB, spowodowanie śmierci). W prawie cywilnym zgodnie z §823 BGB szkoda materialna musi być w pełni naprawiona.',
+  43:'Ta oficjalna tabela mandatów pokazuje konkretne kwoty za typowe braki w zabezpieczeniu ładunku: nie zapobieżono zbędnemu hałasowi (10 €), ładunek niedopuszczalnie wystaje poza pojazd (20–25 €, zależnie od kierunku i oznakowania), ładunek niewystarczająco zabezpieczony przed spadnięciem (35 €), stwarzając zagrożenie dla innych (60 € + 1 punkt), z uszkodzeniem mienia (75 € + 1 punkt), oraz zbyt wysoki pojazd z ładunkiem powyżej 4,20 m (60 € + 1 punkt). Kwoty te pokazują, jak szybko z drobnego braku w zabezpieczeniu robi się punkt we Flensburgu.',
+  44:'Także operator dźwigu potrzebuje, zależnie od zastosowania i zagrożenia, odpowiednich środków ochrony indywidualnej: kasku ochronnego ze względu na ryzyko uderzenia, np. o hak dźwigu lub przy przejściu przez regały magazynowe; ochronników słuchu w strefach oznaczonych jako hałaśliwe (dostarczanych przez przedsiębiorcę); ochrony rąk, ponieważ przy obsłudze zawiesi wciąż dochodzi do skaleczeń rąk przez wystające druty lub ostre krawędzie ładunku; kamizelki ostrzegawczej w strefach ruchu (zazwyczaj obowiązkowo) oraz ewentualnie odzieży chroniącej przed warunkami atmosferycznymi; a także obuwia ochronnego przed spadającymi przedmiotami lub ostrymi krawędziami – to musi być noszone zawsze.',
+  45:'To pytanie prowadzi do kolejnego ważnego tematu: kiedy obsługujący środek pracy – np. kierowca lub operator dźwigu – nie jest już w stanie bezpiecznie go obsługiwać? Jedną z najczęstszych przyczyn są alkohol, narkotyki i niektóre leki, które zostaną omówione w dalszej części.',
+  47:'Organizm mężczyzny rozkłada średnio tylko około 0,1 do 0,15 promila na godzinę. Przykład pokazuje: kto o 9 rano ma jeszcze 0,6 promila we krwi (np. z poprzedniego wieczoru), może przy odpowiednim spożyciu do godziny 24 ponownie osiągnąć 1,5 promila – rozkład jest więc wyraźnie wolniejszy, niż wielu sądzi, a „po prostu przespać się jedną noc” często nie wystarcza, by ponownie być trzeźwym.',
+  48:'Ile alkoholu prowadzi do 0,5 promila? Zależy to od wagi ciała i płci: 70-kilogramowa kobieta osiąga tę wartość już po ok. 21 gramach alkoholu – co odpowiada mniej więcej 0,5 litra piwa (ok. 20 g) lub 0,2 litra wina (ok. 19 g). Im lżejsza osoba, tym mniej alkoholu wystarcza do osiągnięcia tego samego poziomu promili – kobiety przy tej samej wadze ciała osiągają granicę 0,5 promila przy mniejszej ilości alkoholu niż mężczyźni.',
+  49:'Także przy samym rozkładzie alkoholu istnieje różnica między kobietą a mężczyzną: kobiety rozkładają średnio tylko ok. 0,1 promila na godzinę, mężczyźni natomiast 0,1 do maksymalnie 0,2 promila na godzinę. W przykładzie rozkład jednej standardowej szklanki (np. 0,25 l piwa) trwa u 55-kilogramowej kobiety ok. 3 godziny, a u 80-kilogramowego mężczyzny tylko 1 do 2 godzin.',
+  50:'Już niewielkie ilości alkoholu wyraźnie pogarszają sprawność i bezpieczeństwo: przy 0,3 ‰ spada uwaga, zdolność koncentracji i odporność na zmęczenie. Przy 0,5 ‰ spowalnia się czas reakcji. Przy 0,8 ‰ zmysł równowagi, jasność myślenia i samokrytyczne działanie są wyraźnie zaburzone, a czas reakcji jest silnie spowolniony. Ogółem 15–30% wszystkich wypadków przy pracy jest spowodowanych lub współspowodowanych spożyciem alkoholu. Ważne: przy pełnym upojeniu alkoholowym nie obowiązuje już ustawowe ubezpieczenie wypadkowe, jeśli pracownik nie jest w stanie wykonywać swoich zadań.',
+  51:'Jeśli u pracownika widać spożycie alkoholu lub narkotyków, konieczne są natychmiastowe działania: odmówienie dostępu do terenu zakładu wzgl. obszaru pracy, zakaz dalszej pracy wzgl. usunięcie pracownika z obszaru, zależnie od stanu upojenia zapewnienie nadzorowanego miejsca na wytrzeźwienie, oraz zapewnienie bezpiecznej drogi do domu aż do drzwi mieszkania. Przy powtarzającym się spożyciu następują dalsze kroki: poinformowanie rady zakładowej wzgl. przedstawicielstwa pracowników oraz zalecenie skorzystania z pomocy lekarza zakładowego lub poradni uzależnień. Zasada przy tym: pomoc zawsze przed karą.',
+  55:'W tym rozdziale chodzi o dwie podstawy fizyczne, za pomocą których można wyjaśnić niemal wszystko na temat zabezpieczania ładunku: prawo dźwigni Archimedesa oraz siłę grawitacji, którą badał Newton (podobno zainspirowany spadającym jabłkiem).',
+  56:'Dźwignia jest jednym z najstarszych narzędzi ludzkości – na długo przed tym, jak Archimedes (287–212 p.n.e.) ok. 250 r. p.n.e. matematycznie sformułował prawo dźwigni, wiedziano już: duży kamień łatwiej podnieść, podkładając pod niego gałąź jako dźwignię. Jego słynny cytat „Dajcie mi dźwignię wystarczająco długą i punkt podparcia wystarczająco mocny, a poruszę Ziemię jedną ręką” trafnie ujmuje tę zasadę: przy odpowiednio długim ramieniu dźwigni można pokonać nawet bardzo dużą siłę niewielkim nakładem.',
+  57:'Newton i siła grawitacji są nierozerwalnie ze sobą związani – choć raczej mało prawdopodobne, by pomysł faktycznie przyszedł mu do głowy dzięki spadającemu jabłku, to piękna anegdota. Dla zabezpieczania ładunku ważna jest siła ciężkości (F wzgl. G), która powstaje w wyniku działania grawitacji i jest mierzona w niutonach (N) – to podstawa wszystkich dalszych obliczeń sił w tym rozdziale.',
+  58:'Siła grawitacji jest niewidzialną, lecz wszechobecną siłą – dzięki niej Księżyc nie odlatuje w kosmos, a mobilny środek pracy, taki jak dźwig, stoi bezpiecznie. Obowiązuje to jednak tylko tak długo, jak długo działający przez dźwignię ładunek nie „przeważy” tej siły ciężkości, czyli moment przechylający nie stanie się większy od momentu utrzymującego.',
+  59:'Przy klasycznej huśtawce cięższa osoba musi siedzieć bliżej punktu obrotu, a lżejsza dalej na zewnątrz, aby siły się wyrównały – na tym obrazku jest dokładnie odwrotnie: ciężka osoba siedzi daleko na zewnątrz, lekka blisko punktu obrotu. Dlatego huśtawka nie może być w równowadze.',
+  60:'Tak wygląda prawidłowy układ: cięższa osoba siedzi blisko punktu obrotu (krótkie ramię dźwigni), lżejsza osoba siedzi dalej na zewnątrz (długie ramię dźwigni) – tylko wtedy oba momenty (siła × ramię dźwigni) się równoważą i huśtawka pozostaje w równowadze.',
+  61:'Dokładnie tę zasadę wykorzystuje także wózek widłowy dla swojej stateczności: duży (przeciw)ciężar blisko pojazdu, ale z długim ramieniem dźwigni do krawędzi przewrócenia, przeciwstawia się ładunkowi umieszczonemu możliwie blisko grzbietu wideł, z krótkim ramieniem dźwigni. Moment wózka (ramię wózka × ciężar wózka) musi być przy tym zawsze większy niż moment ładunku wzgl. moment przewracający (ramię ładunku × ciężar ładunku) – w przeciwnym razie wózek przewraca się do przodu przez krawędź przewrócenia.',
+  62:'Także koparka wykorzystuje tę samą zasadę dźwigni dla swojej stateczności: ciężar własny koparki z krótkim ramieniem dźwigni do krawędzi przewrócenia musi wytrzymać moment wynikający z ramienia wysięgnika i podniesionego ładunku (wzgl. osprzętu), z często znacznie dłuższym ramieniem dźwigni.',
+  64:'Także w przypadku ciężarówki ta zasada odgrywa rolę, choć w stanie postoju nie przewraca się ona jak huśtawka: niekorzystny rozkład obciążenia – np. gdy ładunek leży wyłącznie na osi tylnej – odciąża oś przednią tak mocno, że wpływa to negatywnie na właściwości jezdne. Dlatego prawidłowy rozkład obciążenia ma decydujące znaczenie dla zabezpieczenia ładunku.',
+  65:'Cztery siły decydują o tym, czy ładunek pozostaje bezpiecznie na miejscu: siła ciężkości ciągnie masę pionowo w kierunku środka Ziemi (jednostka niuton). Siła bezwładności (siła masowa) chce utrzymać ładunek w jego aktualnej pozycji wzgl. ruchu i przeciwdziała przyspieszaniu, hamowaniu i zmianom kierunku. Siła tarcia wspiera zabezpieczenie ładunku, ponieważ przeciwdziała przesunięciu. A siła zabezpieczająca to właśnie ta siła, którą muszą wytworzyć środki zabezpieczające ładunek, aby zrównoważyć pozostałe siły.',
+  66:'Masę ciała – potocznie nazywaną jego „wagą” – oblicza się jako objętość razy ciężar właściwy materiału. Tabela pokazuje, jak bardzo różni się ciężar właściwy w zależności od materiału budowlanego: granit waży przy 2,8 t/m³ niemal dwa razy więcej niż cegła dziurawka przy 1,5 t/m³ przy tej samej objętości. Jest to ważne, ponieważ masę ładunku można często oszacować tylko na podstawie jego objętości i materiału, gdy brak jest podanej wagi.',
+  67:'Siła ciężkości to iloczyn masy i przyspieszenia ziemskiego (grawitacji g). Przyspieszenie ziemskie opisuje, jak szybko przedmiot spada na Ziemię wzgl. jak mocno ładunek naciska na podłoże – wynosi ono 9,81 m/s², co odpowiada 9,81 niutona. W ten sposób waga zostaje przełożona na siłę: 1 kg masy wytwarza siłę ciężkości 9,81 N, dla uproszczenia zazwyczaj zaokrąglaną do 10 N (wzgl. 1 daN).',
+  68:'Sama siła ciężkości nie utrzymuje automatycznie skrzyni w miejscu – decydujące pytanie brzmi: w jakich warunkach mimo to zaczyna się ona przesuwać? Odpowiedź na to pytanie znajduje się na następnym slajdzie – tyle na wstępie: to cztery zupełnie codzienne sytuacje jazdy.',
+  69:'Ładunek może zacząć się przesuwać w czterech typowych sytuacjach: przy normalnym, a przede wszystkim nieprzewidzianym hamowaniu (im silniejsze hamowanie, tym większa siła do przodu), na zakrętach, na rondzie lub przy manewrach wymijania (gdy tarcie statyczne nie wystarcza), przez wibracje przy nierównościach drogi (już przy normalnej jeździe), oraz przy ponownym przyspieszaniu, przez co ładunek może przesunąć się w stronę tyłu pojazdu.',
+  70:'Siła bezwładności – nazywana także siłą masową, siłą odśrodkową lub siłą przyspieszenia – to siła przeciwdziałająca zmianie stanu ruchu. Powstaje zawsze wtedy, gdy masy są przyspieszane, hamowane lub zmieniają kierunek, i dąży przy tym do zachowania pierwotnego ruchu. Wzór brzmi: siła bezwładności (FM) = masa (m) × przyspieszenie (a). Ważne: VDI 2700 określa, jakie maksymalne siły bezwładności mogą wystąpić w normalnej eksploatacji – to podstawa wszystkich dalszych obliczeń dotyczących zabezpieczania ładunku.',
+  71:'Przy hamowaniu siła bezwładności działa w kierunku jazdy, czyli próbuje przesunąć ładunek do przodu, w stronę ściany przedniej wzgl. kabiny kierowcy. Przy gwałtownym hamowaniu VDI 2700 ustala tę siłę bezwładności na 0,8 siły ciężkości – oznacza to: zabezpieczenie do przodu musi wytrzymać 80% ciężaru ładunku.',
+  72:'To zdjęcie z wypadku pokazuje dobitnie, co się dzieje, gdy ładunek – tutaj przewożony pojazd – nie wytrzymuje tej działającej do przodu siły bezwładności: przy niewystarczającym zabezpieczeniu do przodu ładunek dosłownie przesuwa się wzgl. przechyla poza pojazd ciągnący. Właśnie tę siłę wynoszącą 0,8 siły ciężkości musi wytrzymać zabezpieczenie ładunku do przodu.',
+  74:'Uwaga: siła odśrodkowa nie rośnie proporcjonalnie do prędkości, lecz w sposób kwadratowy – jeśli prędkość na zakręcie podwoi się, siła odśrodkowa wzrasta czterokrotnie. I odwrotnie: połowa promienia zakrętu oznacza podwójną siłę odśrodkową. Już niewielkie zmiany prędkości lub promienia mają więc nieproporcjonalnie duży wpływ.',
+  75:'Szczególną ostrożność wobec zwiększonych sił odśrodkowych należy zachować przy: ciasnych manewrach wymijania, szybkich zmianach pasa ruchu, na rondach oraz przy zjazdach z autostrady – wszędzie tam, gdzie ciasne promienie zakrętów spotykają się z często wciąż zbyt wysoką prędkością.',
+  76:'To prawdziwe zdjęcie pokazuje, co się dzieje, gdy zabezpieczenie boczne nie było dostosowane do rzeczywiście występujących sił odśrodkowych: cały ładunek w przestrzeni ładunkowej przesunął się na skutek jazdy na zakręcie i częściowo się przewrócił – z odpowiednim ryzykiem uszkodzenia i wypadku.',
+  77:'Przy przyspieszaniu pojazdu ładunek zmienia swój stan ruchu ze spoczynku na ruch – powstające przy tym siły są skierowane przeciwnie do kierunku jazdy i próbują „zsunąć” ładunek z powierzchni ładunkowej do tyłu. VDI 2700 ustala tę siłę bezwładności przy przyspieszaniu na 0,5 siły ciężkości – zabezpieczenie do tyłu musi więc wytrzymać 50% ciężaru ładunku.',
+  78:'To zestawienie podsumowuje trzy maksymalnie występujące siły bezwładności w normalnej eksploatacji według VDI 2700 – zapamiętajcie Państwo te trzy wartości, są one podstawą każdego obliczenia zabezpieczenia ładunku: 0,8 siły ciężkości do przodu (siła hamowania), 0,5 siły ciężkości na bok (siła odśrodkowa) i 0,5 siły ciężkości do tyłu (siła przyspieszenia).',
+  79:'Dzięki temu można odpowiedzieć, co właściwie oznacza zabezpieczenie ładunku: jego celem jest przejęcie właśnie tych maksymalnie występujących sił bezwładności – 0,8 do przodu, po 0,5 na bok i do tyłu – za pomocą odpowiednich środków zabezpieczających, tak aby ładunek nawet w przypadku granicznym (gwałtowne hamowanie, silny zakręt, mocne przyspieszenie) nie zaczął się poruszać.',
+  80:'Konkretny przykład obliczeniowy uczy tego namacalnie: jeśli siła ciężkości ładunku wynosi 1000 kg, do przodu trzeba zabezpieczyć 800 kg (1000 × 0,8). Innymi słowy: działającej do przodu sile hamowania musi przeciwstawić się co najmniej równie duża siła zabezpieczająca – tylko wtedy ładunek pozostaje na miejscu podczas gwałtownego hamowania.',
+  81:'Istnieje jednak jeszcze jedna siła, która odgrywa dużą rolę przy zabezpieczaniu ładunku: siła tarcia (tarcie statyczne) między ładunkiem a powierzchnią ładunkową. Na przykładzie: przy sile ciężkości 1000 daN i sile hamowania 0,8 FG (czyli 800 daN), bez uwzględnienia tarcia potrzebna byłaby siła zabezpieczająca również 800 daN. Ale jak tarcie zmienia tę wartość?',
+  82:'Odpowiedź: część potrzebnej siły zabezpieczającej jest już automatycznie zapewniona przez siłę tarcia (tarcie statyczne) między ładunkiem a powierzchnią ładunkową. Oznacza to: im wyższe tarcie między ładunkiem a powierzchnią ładunkową, tym mniejsza siła zabezpieczająca, którą trzeba dodatkowo wytworzyć za pomocą pasów mocujących itp. – tarcie „pracuje” niejako za darmo.',
+  84:'Siła tarcia jest najważniejszym pasywnym pomocnikiem zabezpieczania ładunku. Zależy ona od struktury powierzchni ładunku i powierzchni ładunkowej: niezależnie od tego, jak gładka wydaje się powierzchnia, między stykającymi się powierzchniami zawsze zachodzi „mikrozazębienie”, które działa tym silniej, im bardziej chropowate są powierzchnie. Wielkością odniesienia jest tu współczynnik tarcia kinetycznego μ (czytaj „mi”).',
+  85:'Ważne do zrozumienia: skuteczna siła tarcia zależy wyłącznie od struktury i stanu stykających się materiałów – jest niezależna od wagi ładunku i od wielkości powierzchni styku. Mała chropowata powierzchnia styku może więc, w stosunku do ładunku, wytworzyć tyle samo tarcia co duża.',
+  86:'Wzór brzmi: siła tarcia (FR) = współczynnik tarcia kinetycznego (μ) × siła ciężkości (FG). Siła tarcia przeciwdziała przesunięciu ładunku (sile ciągnącej) i tym samym wspiera środki zabezpieczające ładunek – dzięki mikrozazębieniu ładunek zostaje do pewnego stopnia utrzymany w swojej pierwotnej pozycji. Im bardziej chropowata powierzchnia, tym silniej może działać siła tarcia.',
+  87:'Istnieją dwa rodzaje tarcia: tarcie statyczne to siła oporu, jaką spoczywające ciało przeciwstawia przesunięciu na swoim podłożu; tarcie kinetyczne to siła oporu, jaką już poruszające się ciało przeciwstawia dalszemu przesuwaniu. Ponieważ tarcie statyczne jest zawsze większe niż kinetyczne, ze względów bezpieczeństwa przy zabezpieczaniu ładunku zawsze liczy się z niższym współczynnikiem tarcia kinetycznego. Zależy on od pary materiałów i warunków otoczenia – np. drewno na drewnie suche: 0,2–0,5, mokre: 0,2–0,25, zatłuszczone już tylko 0,05–0,15. Także beton na drewnie (0,3–0,6 sucho), metal na drewnie i metal na metalu mają odrębne wartości, które przy wilgoci lub zabrudzeniu wyraźnie spadają.',
+  88:'Jeśli między ładunkiem a powierzchnią ładunkową zastosuje się specjalne maty antypoślizgowe, można przyjąć wyraźnie wyższy współczynnik tarcia kinetycznego, do 0,6 – to znacznie zmniejsza dodatkowo potrzebną siłę zabezpieczającą i czyni maty antypoślizgowe jednym z najskuteczniejszych i najtańszych środków zabezpieczania ładunku.',
+  89:'Przykład obliczeniowy dla suchego drewna na drewnie przy μ = 0,4: siła tarcia FR = siła ciężkości FG × μ = 1000 daN × 0,4 = 400 daN. Oznacza to: z pierwotnie potrzebnych 800 daN siły zabezpieczającej do przodu, samo tarcie przejmuje już 400 daN.',
+  90:'Pozostałe zapotrzebowanie na zabezpieczenie oblicza się jako FS = FG (pierwotnie wymagana część do przodu, tutaj 0,8 × 1000 daN = 800 daN) minus FR (siła już pokryta przez tarcie, tutaj 400 daN). W przykładzie: FS = 800 daN − 400 daN = 400 daN. Tylko te 400 daN muszą więc zostać dostarczone przez dodatkowe środki zabezpieczające, takie jak pasy mocujące.',
+  91:'Istnieją dwie „śruby regulacyjne”, dzięki którym można wytworzyć potrzebne siły zabezpieczające: po pierwsze poprzez rodzaj zabezpieczenia ładunku wzgl. stosowane środki pomocnicze, takie jak pasy mocujące lub łańcuchy (więcej o tym w następnym rozdziale), a po drugie poprzez wysokość samej siły tarcia, którą można celowo zwiększyć np. za pomocą mat antypoślizgowych. Im więcej tarcia jest dostępne od początku, tym mniej trzeba dodatkowo zabezpieczać za pomocą środków mocujących.',
+  92:'To pytanie sprawdza istotne zrozumienie: skrzynia o wadze 30 kg przy takim samym opóźnieniu hamowania nie ślizga się szybciej ani wolniej niż skrzynia o wadze 300 kg! Ponieważ zarówno działająca siła bezwładności, jak i przeciwdziałająca siła tarcia są proporcjonalne do wagi danej skrzyni, waga skraca się w obliczeniu – obie skrzynie przy identycznym współczynniku tarcia zaczynają ślizgać się jednocześnie, niezależnie od ich masy.',
+  99:'Zanim będą Państwo mogli bezpiecznie obchodzić się z ładunkiem, muszą Państwo znać o nim trzy rzeczy: musi być znana waga ładunku, musi być znany środek ciężkości ładunku, a ładunek wzgl. jednostka ładunkowa musi być stabilnie i bezpiecznie dla transportu zapakowana. Jeśli brakuje jednej z tych trzech informacji, nie można bezpiecznie zaplanować i zabezpieczyć ładunku.',
+  100:'Ciała rozciągłe zachowują się w odniesieniu do spoczynku i ruchu tak, jakby siła ciężkości działała w jednym punkcie – ten punkt nazywa się środkiem masy lub środkiem ciężkości. Przy regularnie ukształtowanych ciałach z jednolitego materiału środek ciężkości leży w środku bryły; przy nieregularnie ukształtowanych ciałach trzeba go wyznaczyć doświadczalnie. Ważne: przy równomiernym rozkładzie obciążenia środek ciężkości leży pośrodku ładunku, przy nierównomiernym rozkładzie leży poza środkiem – i zawsze działa prostopadle w kierunku środka Ziemi.',
+  101:'Środek ciężkości jest ważny nie tylko przy pojedynczych ładunkach, ale także przy całym ładunku: dopuszczalna ładowność wykazana w dowodzie rejestracyjnym pojazdu (część I) obowiązuje bowiem tylko przy optymalnym położeniu środka ciężkości ładunku – jeśli rzeczywisty łączny środek ciężkości zbytnio odbiega od zamierzonej pozycji, pojazd może być przeciążony lub niebezpiecznie niewyważony mimo dotrzymania łącznej masy.',
+  102:'Przy kilku pojedynczych jednostkach ładunkowych, z których każda ma własny środek ciężkości (oznaczony na grafice krzyżykami celownika), obliczeniowo powstaje wspólny łączny środek ciężkości dla całego ładunku – musi on znajdować się we właściwym miejscu, aby załadunek był bezpieczny i zgodny z przepisami.',
+  103:'Decydujące jest to, że łączny środek ciężkości ładunku musi znajdować się na powierzchni ładunkowej w miejscu przewidzianym przez producenta (zazwyczaj pośrodku nad osiami) – a nie gdziekolwiek w przestrzeni ładunkowej. Tylko wtedy siły rozkładają się na oś przednią i tylną tak, jak przyjął to producent pojazdu przy dopuszczeniu do ruchu.',
+  106:'Zasadniczo istnieją trzy rodzaje zabezpieczania ładunku: zabezpieczenie kształtowe poprzez oparcie o ścianę przednią (blokowanie) oraz za pomocą pasa mocującego jako mocowanie bezpośrednie – tutaj pasy mocujące trzeba naciągnąć jedynie ręcznie; zabezpieczenie siłowe za pomocą pasa mocującego jako mocowanie dociskowe (Niederzurren) – tutaj pasy trzeba naciągnąć z siłą, ponieważ tylko w ten sposób zwiększa się nacisk na powierzchnię ładunkową, a tym samym tarcie; oraz zabezpieczenie kombinowane, wykorzystujące oba te sposoby jednocześnie.',
+  107:'Do zabezpieczenia kształtowego za pomocą mocowania bezpośredniego dostępne są takie środki pomocnicze jak mocowanie po przekątnej, mocowanie ukośne oraz mocowanie pętlowe czołowe i boczne – szczelne przyleganie ładunku w przestrzeni ładunkowej nazywa się zamknięciem kształtowym. Zasady przy tym: środki mocujące trzeba naciągnąć jedynie ręcznie, mimo to należy uwzględnić nośność środków mocujących (wartość LC) i punktów mocowania, a użyć trzeba co najmniej czterech środków mocujących.',
+  108:'Mocowanie bezpośrednie stosuje się szczególnie często przy ciężkich ładunkach lub maszynach budowlanych, jak pokazują te przykłady: punkty zaczepienia na maszynie są łączone na krzyż za pomocą pasów mocujących lub łańcuchów mocujących z punktami mocowania w pojeździe, tworząc zamknięcie kształtowe – dzięki temu ładunek nie może poruszać się ani do przodu/tyłu, ani na bok.',
+  109:'Przy mocowaniu ukośnym stosuje się co najmniej 8 środków mocujących, możliwie blisko narożników ładunku. W połączeniu solidnie zabezpieczają one ładunek przed przesuwaniem i obracaniem. Ponieważ każdy środek mocujący działa preferencyjnie w określonym kierunku zabezpieczenia, rozwija w tym właśnie kierunku swoją maksymalną możliwą zdolność zabezpieczającą.',
+  110:'Przy mocowaniu po przekątnej stosuje się co najmniej cztery środki mocujące, zaczepiane na krzyż w przeciwległych narożnikach ładunku – dzięki temu ładunek jest zabezpieczony w każdym kierunku. Ważne: ze względu na powstające przy tym kąty (środki mocujące nie przebiegają równolegle do kierunku zabezpieczenia), należy wybierać zasadniczo mocniejsze środki mocujące niż przy czystym mocowaniu ukośnym lub bezpośrednim.',
+  111:'Mocowanie pętlowe czołowe i boczne pozwalają zabezpieczyć ładunki nawet bez własnych punktów zaczepienia: przy mocowaniu pętlowym czołowym za pomocą zawiesia okrągłego owiniętego wokół ładunku tworzy się dodatkowy punkt mocowania. Przy mocowaniu pętlowym bocznym ładunek (np. rura lub rolka) jest po prostu owinięty wzgl. opasany bocznie środkiem mocującym, bez potrzeby oddzielnego punktu zaczepienia.',
+  112:'Także tylna i boczne ściany ciężarówki mogą być wykorzystane jako zabezpieczenie kształtowe ładunku – działa to jednak tylko wtedy, gdy między poszczególnymi jednostkami ładunkowymi nie ma luk, przez które ładunek mógłby się rozpędzić i nabrać siły uderzenia. Takie luki można celowo zamykać, np. za pomocą nadmuchiwanych poduszek wypełniających lub palet drewnianych.',
+  113:'Te przykłady pokazują tę zasadę w praktyce: kartony są przysuwane bez luk aż do ściany przedniej, pozostałe wolne przestrzenie są wypełniane poduszkami wypełniającymi lub dodatkowym materiałem opakowaniowym – dopiero gdy naprawdę nie ma już żadnej luki, ściana może w pełni rozwinąć swoje działanie blokujące.',
+  115:'Dlaczego samo blokowanie czasem nie wystarcza? Jeśli sam w sobie lekki ładunek (np. 100 kg) zacznie się ślizgać przy gwałtownym hamowaniu z prędkości 40 km/h, przy uderzeniu działa on z siłą wielokrotnie przewyższającą jego rzeczywisty ciężar do przodu – w przykładzie z siłą uderzenia ok. 6000 kg. Prosta ściana przednia często nie jest już w stanie bezpiecznie przejąć takich sił, dlatego konieczne jest dodatkowe zabezpieczenie siłowe.',
+  116:'Zabezpieczenie siłowe za pomocą pasa mocującego nazywane jest mocowaniem dociskowym (Niederzurren). Środki mocujące dociskają przy tym ładunek do powierzchni ładunkowej i tym samym zwiększają siłę tarcia między ładunkiem a powierzchnią – dzieje się tak, aż osiągnięta zostanie wymagana siła zabezpieczająca. Dla porównania: ok. 80% ładunku na niemieckich drogach jest mocowane dociskowo – jest to więc zdecydowanie najczęstsza metoda zabezpieczania w praktyce.',
+  117:'Instrukcja mocowania dociskowego w ośmiu krokach: zawiesić hak z jednej strony w punkcie mocowania, przełożyć pas mocujący wokół zabezpieczanego materiału, zaczepić hak z grzechotką po przeciwnej stronie, wprowadzić luźny koniec taśmy pasa w szczelinę grzechotki, wyciągnąć luźny koniec aż do napięcia, naciągnąć poprzez ruch grzechotki do góry, zabezpieczyć grzechotkę poprzez dociśnięcie w dół, oraz po kilku kilometrach jazdy dociągnąć pas.',
+  118:'Uwaga przy mocowaniu dociskowym: zawsze trzeba zwracać uwagę, aby ładunek nie został uszkodzony przez samo mocowanie – zbyt mocno naciągnięte pasy mogą wgnieść lub odkształcić wrażliwy ładunek. W razie potrzeby kątowniki ochronne lub ślizgacze krawędziowe pomagają rozłożyć nacisk.',
+  120:'Cztery czynniki decydują o wyborze i liczbie potrzebnych pasów mocujących: waga ładunku w tonach (zazwyczaj podana na samym ładunku, w dokumentach, lub trzeba ją zważyć), siła naciągu grzechotki (wartość STF podana na etykiecie pasa mocującego), kąt nachylenia α pasów mocujących oraz istniejący współczynnik tarcia μ między ładunkiem a powierzchnią ładunkową (patrz rozdział 4).',
+  121:'Za pomocą siły naciągu ładunek jest dociskany do powierzchni ładunkowej, co zwiększa siłę tarcia. Siła naciągu STF przy mocowaniu dociskowym powstaje dzięki sile ręcznej SHF na grzechotce. Uwaga: ponieważ środek mocujący przechodzi przez ładunek, a więc również przez jego krawędzie, zwykle po drugiej stronie dociera tylko połowa wprowadzonej siły naciągu – liczy się więc ze 100% STF po stronie grzechotki plus tylko 50% STF po stronie przeciwnej, łącznie 150% działa jako siła dociskowa w dół.',
+  122:'Jeśli stosuje się ślizgacze krawędziowe, zapewniają one wyraźnie bardziej równomierne rozłożenie siły naciągu na obie strony ładunku i jednocześnie chronią ładunek oraz pasy w obszarze krawędzi. Efekt: zamiast tylko 150% działa wtedy do 200% siły naciągu (100% z każdej strony) jako siła dociskowa w dół – wyraźny wzrost bezpieczeństwa przy wrażliwych lub ostrokrawędziowych ładunkach.',
+  123:'Jeśli do zabezpieczenia tego samego ładunku trzeba zamocować kilka środków mocujących, zaleca się zmienianie stron, po których znajduje się grzechotka – dzięki temu pełna siła naciągu (100% STF) rozkłada się równomierniej na obie strony ładunku, zamiast działać jednostronnie.',
+  125:'Wraz z malejącym kątem nachylenia wyraźnie zmniejsza się siła działająca na ładunek w dół: przy zaledwie 30° skuteczna siła wynosi tylko 50% zastosowanego naciągu – reszta jest tracona bocznie. Kąty mniejsze niż 30° nie mają więc praktycznie sensu dla zabezpieczania ładunku.',
+  126:'Optymalny jest możliwie pionowo przebiegający pas napinający o kącie 90°, ponieważ najlepiej przenosi on siły naciągu na ładunek. Wynika z tego prosta zasada: im bliżej punktu zaczepienia znajduje się ładunek, tym większy staje się kąt – i tym optymalniej działają siły naciągu.',
+  127:'Aby szybko określić w praktyce rzeczywisty kąt nachylenia pasa mocującego, istnieją praktyczne pomoce, takie ta karta z miernikiem kąta: przykłada się ją do pasa i od razu odczytuje, czy kąt znajduje się w zakresie nieodpowiednim, dobrym czy bardzo dobrym.',
+  128:'Ten wykres dla ładunku o wadze 1000 kg pokazuje, jak kąt mocowania (oś X) i współczynnik tarcia (poszczególne krzywe) razem określają potrzebną siłę naciągu (oś Y). Wniosek: przy niskim współczynniku tarcia kąt ma duży wpływ na wymaganą siłę naciągu – tu szczególnie warto zadbać o stromy kąt. Im wyższy natomiast współczynnik tarcia, tym mniej pasów mocujących wzgl. siły naciągu jest ogółem potrzebnych, a kąt odgrywa mniejszą rolę.',
+  129:'Potrzebną siłę naciągu przy mocowaniu dociskowym oblicza się z relacji między współczynnikiem przyspieszenia (0,8 do przodu), współczynnikiem tarcia kinetycznego μ i ciężarem ładunku G: FV = G × (0,8 − μ) / μ. Przykład dla ładunku 2000 kg: przy μ = 0,2 potrzeba 6000 daN, przy μ = 0,4 już tylko 2000 daN, a przy μ = 0,6 już tylko 666 daN – im wyższy współczynnik tarcia, tym mniej siły naciągu trzeba zastosować.',
+  130:'Dla codziennej praktyki można z tego wyprowadzić prosty szybki wzór, bez konieczności przeprowadzania pełnego obliczenia: przy μ = 0,2 potrzebna siła naciągu odpowiada 3-krotności ciężaru ładunku (G × 3), przy μ = 0,4 dokładnie pojedynczemu ciężarowi ładunku (G × 1), a przy μ = 0,6 już tylko jednej trzeciej ciężaru ładunku (G ÷ 3).',
+  131:'Ważne uzupełnienie do szybkiego wzoru: jeśli rzeczywisty współczynnik tarcia nie jest pewny, należy zawsze przyjąć niższą (bardziej niekorzystną) wartość – lepiej zastosować nieco za dużo siły naciągu niż za mało. Przecenienie współczynnika tarcia może bowiem doprowadzić do tego, że ładunek mimo pozornie prawidłowego zabezpieczenia zacznie się ślizgać.',
+  132:'Ile pasów mocujących jest rzeczywiście potrzebnych, powinno być zawsze ustalane za pomocą programu, obliczenia, szablonu, tabeli lub systemu mocowania przypisanego do pojazdu – nigdy poprzez zgadywanie, szacowanie czy zasadę „jakoś to będzie”. Przy systemie mocowania przypisanym do pojazdu, pojazd jest od razu wyposażony w środki mocujące odpowiednie do jego maksymalnej ładowności, wystarczające nawet w najbardziej niekorzystnych warunkach – w ten sposób do górnej granicy ładowności można bezpiecznie zamocować każdy stabilny, jednorodny ładunek.',
+  133:'Do dokładnego obliczenia dostępne są różne narzędzia: specjalne oprogramowanie, jak Dolores 2.0 („Dolezych Ladungssicherung Optimiertes Rechnergestütztes Experten System”), które precyzyjnie określa potrzebną liczbę i wymiarowanie środków mocujących, a także bezpłatne kalkulatory online, jak kalkulator mocowania dociskowego na regupol-easylasi.de lub różne kalkulatory środków mocujących od Hebezone – najlepiej od razu jako aplikacja pod ręką na telefonie.',
+  135:'Do szybkiego użytku w praktyce, bez kalkulatora, istnieją szablony takie jak ta tarcza obrotowa: wystarczy wybrać ciężar ładunku i określić współczynnik tarcia, po czym odczytać bezpośrednio wymaganą siłę uciągu (w daN) oraz liczbę potrzebnych środków mocujących – żmudne obliczenia według wzoru odpadają całkowicie.',
+  136:'Wszystkie wartości można też sprawdzić w formie tabelarycznej: w zależności od ładowności, kąta mocowania i współczynnika tarcia kinetycznego można bezpośrednio odczytać potrzebną liczbę środków mocujących o określonej sile naciągu (STF) – praktyczne rozwiązanie w codziennej pracy zakładu, gdy trzeba zabezpieczać stale powtarzające się rodzaje ładunku.',
+  137:'Połączenie zamknięcia siłowego (mocowanie dociskowe) i zamknięcia kształtowego (oparcie o ściany lub mocowanie bezpośrednie) oferuje często najlepsze możliwości zabezpieczenia – oba sposoby wzajemnie się uzupełniają: zamknięcie kształtowe całkowicie uniemożliwia ruch w określonym kierunku, podczas gdy zamknięcie siłowe poprzez tarcie zapewnia dodatkowe bezpieczeństwo we wszystkich kierunkach.',
+  138:'To podsumowanie mocowania dociskowego zawiera najważniejsze zasady praktyczne: zawsze potrzebne są co najmniej 2 pasy mocujące, aby ładunek nie obracał się ani nie podskakiwał na nierównościach jezdni. Mocowanie dociskowe staje się coraz mniej praktyczne przy cięższych ładunkach. Minimalne wyposażenie powierzchni ładunkowej w punkty mocowania często nie wystarcza, ponieważ punkty te leżą zazwyczaj zbyt daleko od siebie. Jeśli to możliwe, stosujcie Państwo inne metody mocowania i zawsze maty antypoślizgowe. Zaczepiajcie grzechotki możliwie na zmiennych stronach. Pasy mocujące muszą być dostosowane do dopuszczalnej siły ciągu punktów mocowania. Jeśli to możliwe, stwórzcie dodatkowo zamknięcie kształtowe z burtami (np. za pomocą kantówek lub palet). I sporządźcie instrukcję roboczą ze szczegółowymi wytycznymi dla powtarzających się rodzajów ładunku.',
+  141:'Dla pojazdów dostępne są różne rodzaje nadwozi, dostosowane do różnych zastosowań: nadwozie otwarte (z burtami lub bez), nadwozie z plandeką (plandeka na pałąkach lub plandeka przesuwna), nadwozie zamknięte (kontener/skrzynia) oraz różne nadwozia specjalne. Wybór właściwego pojazdu bazowego z odpowiednim nadwoziem jest jedną z najbardziej podstawowych decyzji w zabezpieczaniu ładunku – tylko przy odpowiednim pojeździe późniejsze zabezpieczenie ma w ogóle szansę powodzenia.',
+  142:'Jeśli podejmuje się próbę zabezpieczenia ładunku przez zamknięcie kształtowe przy ścianie przedniej lub burtach, trzeba wcześniej wiedzieć, jakie siły te ściany w ogóle mogą przejąć. Jako wartości orientacyjne obowiązuje: ściana przednia musi przejąć 40% ładowności, ściana tylna tylko 25% ładowności – wyraźnie mniej, ponieważ typowa siła działająca do tyłu przy przyspieszaniu jest mniejsza niż siła do przodu przy hamowaniu.',
+  143:'Zgodnie z DIN EN 12642 Code L także ściany boczne muszą wytrzymać określone obciążenie próbne bez trwałego odkształcenia: ściana boczna musi przejąć co najmniej 30% próbnej ładowności. Te wartości normowe są ważne, aby ocenić, czy burta w ogóle nadaje się jako element zabezpieczający, czy potrzebne są dodatkowe środki mocujące.',
+  146:'Dla wyboru środków zabezpieczania ładunku decydujące są waga i sposób załadunku towarów – dla wielu towarów zaleca się łączenie różnych środków. Środki mocujące to elastyczne środki zabezpieczania ładunku, które dopiero za pomocą elementu napinającego, elementu spinającego i elementu łączącego mogą zostać naprężone i utrzymane w napięciu. Trzy najczęstsze środki mocujące to: pas mocujący (element napinający: taśma pasa, naciągany np. grzechotką, łączony np. hakiem mocującym), łańcuch mocujący (element napinający: łańcuch ogniwowy okrągły, naciągany np. napinaczem śrubowym, łączony np. hakiem lub szeklą), oraz lina drucianą mocującą (element napinający: lina stalowa, naciągana np. wciągarką).',
+  147:'Pas mocujący to tkana taśma z włókien chemicznych z grzechotką – może być jedno- lub dwuczęściowy i zawsze musi być zaopatrzony w etykietę z trzema wartościami: maksymalną dopuszczalną siłą (LC), którą pas może być obciążony w ciągu prostym (np. przy mocowaniu bezpośrednim) – jeśli pas stosowany jest jako pętla, wartość ta się podwaja; normalną siłą naciągu (STF), którą grzechotka obsługiwana ręcznie wytwarza w pasie (ile z tego rzeczywiście działa na ładunek przy mocowaniu dociskowym, zależy od kąta naciągu); oraz normalną siłą ręczną (SHF), którą trzeba przyłożyć do grzechotki, aby osiągnąć dokładnie tę siłę naciągu.',
+  148:'Bardzo istotne: wszystkie pasy mocujące muszą mieć czytelną etykietę z danymi o nośności (LC, STF, SHF). Jeśli etykieta brakuje, jest uszkodzona lub nieczytelna, pas nie może już być używany, ponieważ jego rzeczywista nośność nie jest wtedy pewnie znana.',
+  149:'Łańcuchy mocujące należą – z nielicznymi wyjątkami – do najlepszych środków zabezpieczania ładunku przy mocowaniu bezpośrednim: są trójwymiarowo ruchome, wytrzymałe i odporne na zabrudzenie. Dlatego stosuje się je szczególnie przy transportach ciężkich i maszynach budowlanych, gdzie panują duże siły i trudne warunki eksploatacji.',
+  150:'Liny druciane mocujące zgodne z DIN EN 12195-4 to kolejna alternatywa dla zabezpieczania ładunku: są elastyczne i bardzo dobrze dają się prowadzić wokół ładunku, dlatego nadają się szczególnie do ładunków ściśliwych (np. mat zbrojeniowych budowlanych) lub do zabezpieczania ciężkich towarów. Ich wytrzymałość eksploatacyjna wynika z odpowiedniego udziału drutów i splotek; stosowane są głównie jako liny mocujące na wciągarkach do zabezpieczania ładunku lub do indywidualnego zabezpieczania ciężkich ładunków.',
+  151:'Ochrona krawędzi i ślizgacze krawędziowe służą dwóm celom: chronią same ładunki przed uszkodzeniem przez środek mocujący, a jako ślizgacze krawędziowe przy przekierowaniu środków mocujących przez krawędź zapewniają, że osiągnięte zostanie równomierne naprężenie po obu stronach (patrz rozdział 6: wtedy do 200% zamiast tylko 150% siły naciągu działa jako siła dociskowa).',
+  152:'Kierowca musi przed każdym użyciem skontrolować środki mocujące i wycofać je z użytku, gdy tylko osiągną granicę zużycia: przy taśmie pasa jest to więcej niż 10% nacięć, uszkodzenia szwu lub odkształcenie przez działanie ciepła. Przy grzechotce jest to odkształcony wałek szczelinowy, zużyty lub pęknięty wieniec zębaty, albo uszkodzona dźwignia napinająca. Przy etykiecie trzeba sprawdzić, czy w ogóle jest obecna i czytelna. A przy okuciach końcowych wzgl. hakach jest to więcej niż 5% rozwarcia haka, pęknięcia, znaczna korozja, odkształcenie lub złamanie haka. Jeśli zachodzi jeden z tych punktów, środek mocujący nie może być już używany.',
+  153:'Na zakończenie sześć podstawowych zasad obowiązujących przy każdym zabezpieczaniu ładunku: w zależności od ładunku wybrać odpowiedni pojazd, który bezpiecznie przejmie występujące siły. Środek ciężkości ładunku utrzymywać możliwie na osi podłużnej pojazdu i jak najniżej. Ładować ciężki towar na dole, lekki na górze. Nie przekraczać dopuszczalnej masy całkowitej wzgl. dopuszczalnych nacisków na osie i nie schodzić poniżej minimalnego nacisku na oś kierowaną. Przy częściowym załadunku zadbać o równomierny rozkład wagi, uwzględniając przy tym plany rozkładu obciążenia producenta pojazdu wzgl. nadwozia. I dostosować prędkość jazdy, zależnie od ładunku, do warunków drogowych, ruchu i właściwości jezdnych pojazdu.',
+  154:'Te symbole na opakowaniach dają ważne wskazówki dotyczące obchodzenia się z ładunkiem. Symbol szklanki oznacza towar łamliwy, przy którym należy unikać wszelkich uderzeń podczas załadunku/rozładunku i w trakcie transportu. Parasol oznacza: chronić przed wilgocią, zazwyczaj poprzez transport w nadwoziach zamkniętych. Słońce nad domem oznacza: chronić przed ciepłem, istotne np. przy dłuższym postoju pojazdu w pełnym słońcu. Dwie strzałki skierowane do góry oznaczają „ta strona do góry” – taki ładunek musi być koniecznie załadowany strzałkami do góry, ponieważ inaczej nawet fachowe zabezpieczenie nie zapobiegnie przewróceniu ładunku. Łańcuch oznacza miejsce, w którym ładunek można zaczepić do podnoszenia za pomocą zawiesi. A symbole środka ciężkości (w tym rosyjski znak „N”) stosuje się przy ciężkich towarach, których środek ciężkości nie leży pośrodku.',
+  144:'Przy ciężkich ładunkach to często nie same pasy mocujące, lecz punkty mocowania w pojeździe stanowią najsłabsze ogniwo całego łańcucha zabezpieczającego. Zgodnie z DIN EN 12640 punkty mocowania są przystosowane do określonych obciążeń (w przykładzie 1000 wzgl. 2500 daN) i mogą być obciążane pod kątem minimum 30° do powierzchni ładunkowej. Stan i dopuszczalne obciążenie punktów mocowania muszą więc być sprawdzane i uwzględniane przed każdym zabezpieczeniem.',
+  139:'Te przykładowe pytania podsumowują kluczowe punkty tego rozdziału: co należy do zabezpieczenia siłowego ładunku (mocowanie dociskowe, przy którym środki mocujące dociskają ładunek do powierzchni ładunkowej, zwiększając w ten sposób siłę tarcia)? Co rozumie się pod pojęciem zabezpieczenia kształtowego (szczelne przyleganie ładunku do ścian lub punktów mocowania, np. poprzez blokowanie lub mocowanie bezpośrednie)? I jak duża musi być siła zabezpieczająca (co najmniej tak duża, jak rzeczywiście występujące siły bezwładności pomniejszone o już działającą siłę tarcia)?',
+  134:'Dla tych, którzy chcą znać dokładny sposób obliczeń (ten fragment można też pominąć): pełny wzór według DIN EN 12195-1:2011 brzmi FV = [(c − μ) / (μ × sin α)] × (FG / A), gdzie c to współczynnik przyspieszenia (0,8 do przodu), μ współczynnik tarcia, α kąt mocowania, a A = 1,6 współczynnik wyrównawczy. W przykładzie (10 ton elementów betonowych, kąt mocowania 60°, μ = 0,4, bez maty antypoślizgowej) wynika łączna siła naciągu 5437 daN. Dzieląc ją przez siłę naciągu pojedynczego pasa mocującego (np. 450 daN STF), otrzymuje się liczbę potrzebnych pasów mocujących – tutaj: 12 sztuk.',
+  124:'Aby siła naciągu wytworzona przez grzechotki działała możliwie w całości w dół na ładunek, pasy mocujące powinny przebiegać niemal pionowo. Zasada praktyczna: kąt nachylenia poniżej 30° uznaje się za nieodpowiedni – tu duża część siły ginie bocznie zamiast działać w dół –, 30° do 60° uznaje się za dobry, a powyżej 60° za bardzo dobry.',
+  114:'Te zdjęcia z wypadków pokazują dobitnie, co się dzieje, gdy nawet zamknięcie kształtowe osiąga swoje granice – np. przy ekstremalnie ciężkich lub niekorzystnie ukształtowanych ładunkach, takich jak rury czy kontenery, które mimo oparcia o ścianę przednią mogą uderzyć w kabinę kierowcy. W takich przypadkach potrzebne są dodatkowo środki zabezpieczenia siłowego, takie jak mocowanie dociskowe, które zostanie wyjaśnione w dalszej części.',
+  104:'Plan rozkładu obciążenia – przedstawiany zazwyczaj jako wykres z położeniem środka ciężkości nad długością pojazdu – wskazuje, jak ładunek (waga i położenie środka ciężkości) powinien być rozłożony na pojeździe, aby jednocześnie spełnić trzy warunki: nie zostanie przekroczona dopuszczalna masa całkowita, nie zostaną przekroczone ani niedoszacowane dopuszczalne naciski na osie, oraz nie powstanie niedopuszczalne położenie środka ciężkości. Jest więc kluczowym narzędziem dla prawidłowego załadunku.',
+  93:'Te przykładowe pytania podsumowują kluczowe punkty tej części: kiedy występują siły przyspieszenia (przy ruszaniu wzgl. przyspieszaniu pojazdu, działają przeciwnie do kierunku jazdy)? I z czym trzeba się liczyć przy nierównomiernym rozkładzie obciążenia (z negatywnym wpływem na właściwości jezdne, np. odciążona oś przednia i gorsze zachowanie przy hamowaniu)?',
+  73:'Przy jeździe na zakręcie (po torze kołowym) powstają siły odśrodkowe, które chcą wypchnąć ładunek na zewnętrzną stronę zakrętu. VDI 2700 ustala tę boczną siłę bezwładności na 0,5 siły ciężkości – zabezpieczenie na bok musi więc wytrzymać 50% ciężaru ładunku, wyraźnie mniej niż 80% do przodu, ale wciąż znacząco.',
+  63:'Dokładnie tak samo działa stateczność żurawia wieżowego: przeciwciężar na krótkim ramieniu wysięgnika za wieżą musi zrównoważyć moment przewracający ładunku na długim ramieniu wysięgnika przed wieżą – ta sama zasada dźwigni co przy huśtawce, wózku widłowym i koparce, tylko w znacznie większej skali.',
+  53:'Te trzy przykładowe pytania podsumowują kluczowe punkty tego rozdziału i pokazują, jak mogłoby wyglądać pytanie egzaminacyjne na ten temat: kto odpowiada za zabezpieczenie ładunku na pojazdach (kierowca, posiadacz pojazdu i załadowca wspólnie)? Jaka podstawa prawna musi być zasadniczo przestrzegana (§22 StVO wzgl. VDI 2700 jako uznany stan techniki)? I dlaczego ładunek w ogóle musi być zabezpieczony (bezpieczeństwo wszystkich, unikanie szkód i konsekwencji prawnych)?',
+  40:'Konsekwencje prawne w razie nieprzestrzegania działają na trzech płaszczyznach: skutki wewnątrzzakładowe wynikające z umowy o pracę (upomnienie, nagana), skutki prywatno-/cywilnoprawne (roszczenia odszkodowawcze poszkodowanego), oraz skutki karne w razie naruszenia obowiązującego prawa, jak nieumyślne spowodowanie obrażeń ciała lub śmierci (kara grzywny lub pozbawienia wolności do 5 lat). Przy poważnych naruszeniach o szczególnie ciężkich skutkach lub w przypadku powtarzania grozi nawet wypowiedzenie umowy o pracę.',
+  27:'Trzy zasadnicze wyroki sądów wyższej instancji konkretyzują, kto ponosi jaką odpowiedzialność: OLG Koblencja (06.09.1991) stwierdził, że kierowca musi przeprowadzić zabezpieczenie ładunku na podstawie VDI 2700. OLG Düsseldorf (18.07.1989) stwierdził, że posiadacz pojazdu musi wyposażyć pojazd w wystarczające środki zabezpieczania ładunku, aby kierowcy w ogóle było możliwe prawidłowe zabezpieczenie. A OLG Stuttgart (27.12.1982) stwierdził, że także załadowca obok kierowcy współodpowiada za zabezpieczenie ładunku zgodnie z §22 StVO. Odpowiedzialność nigdy więc nie spoczywa tylko na jednej osobie.',
+  17:'W sytuacji awaryjnej obowiązuje pięć podstawowych zasad: bezwzględnie zachować spokój, następnie w myślach przejść kolejność działań – rozpoznać sytuację, zaplanować dalsze kroki (ochrona własna i osób trzecich zawsze ma pierwszeństwo), działać przemyślanie i zdecydowanie. Następnie zgłosić wypadek pod numer 112 (gdzie, co, ile osób rannych, jaki rodzaj obrażeń), w miarę możliwości udzielić pierwszej pomocy i zorganizować dalsze działania, takie jak zabezpieczenie miejsca wypadku. Wsparcie i pomoc dla poszkodowanych są przy tym również ważne.'
+};
+const ERKLAERUNG = lang === 'pl' ? ERKLAERUNG_PL : ERKLAERUNG_DE;
+
 /* ── STEPS ── */
 let STEPS = [];
 function buildSteps(){
@@ -541,9 +800,9 @@ function doLogin(){
   const nachname = document.getElementById('nachname').value.trim();
   const errEl = document.getElementById('lerr');
   errEl.textContent = '';
-  if(!val){errEl.textContent='Bitte Registriernummer eingeben.';return;}
-  if(!/^\d{4}-\d{3,4}$/.test(val)){errEl.textContent='Ungültig. Format: 2025-001';return;}
-  if(!vorname || !nachname){errEl.textContent='Bitte Vor- und Nachnamen eingeben.';return;}
+  if(!val){errEl.textContent=L('Bitte Registriernummer eingeben.','Proszę podać numer rejestracyjny.');return;}
+  if(!/^\d{4}-\d{3,4}$/.test(val)){errEl.textContent=L('Ungültig. Format: 2025-001','Nieprawidłowy format. Wzór: 2025-001');return;}
+  if(!vorname || !nachname){errEl.textContent=L('Bitte Vor- und Nachnamen eingeben.','Proszę podać imię i nazwisko.');return;}
   startApp(val, vorname, nachname);
 }
 
@@ -552,7 +811,7 @@ async function startApp(nr, vorname, nachname){
   const overlay = document.getElementById('zugangsCheckOverlay');
   const content = document.getElementById('zugangsCheckContent');
   overlay.style.display = 'flex';
-  const backBtnHtml = '<button onclick="window.location.href=\'' + PORTAL_URL + '?regnr=' + encodeURIComponent(nr) + '\'" style="padding:12px 28px;border:none;border-radius:12px;background:#fff;color:#7a3502;font-weight:700;font-size:14px;cursor:pointer;font-family:inherit">&larr; Zur&uuml;ck zur Startseite</button>';
+  const backBtnHtml = '<button onclick="window.location.href=\'' + PORTAL_URL + '?regnr=' + encodeURIComponent(nr) + '\'" style="padding:12px 28px;border:none;border-radius:12px;background:#fff;color:#7a3502;font-weight:700;font-size:14px;cursor:pointer;font-family:inherit">&larr; ' + L('Zur&uuml;ck zur Startseite','Powrót do strony głównej') + '</button>';
   try {
     const res = await fetch(ZUGANGSPRUEFUNG_URL, {
       method: 'POST', headers: {'Content-Type':'application/json'},
@@ -560,13 +819,13 @@ async function startApp(nr, vorname, nachname){
     });
     const data = await res.json();
     if(!(data && data.zugang === true)){
-      content.innerHTML = '<div style="max-width:420px"><div style="font-size:40px;margin-bottom:12px">&#x1F512;</div><div style="font-size:18px;font-weight:700;margin-bottom:8px">Zugriff nicht m&ouml;glich</div><div style="font-size:14px;color:rgba(255,255,255,.75);line-height:1.6;margin-bottom:20px">Registriernummer, Vor- oder Nachname stimmen nicht &uuml;berein. Bitte pr&uuml;fen Sie Ihre Eingaben oder wenden Sie sich an Ihren Ausbilder.</div>' + backBtnHtml + '</div>';
+      content.innerHTML = '<div style="max-width:420px"><div style="font-size:40px;margin-bottom:12px">&#x1F512;</div><div style="font-size:18px;font-weight:700;margin-bottom:8px">'+L('Zugriff nicht m&ouml;glich','Brak dostępu')+'</div><div style="font-size:14px;color:rgba(255,255,255,.75);line-height:1.6;margin-bottom:20px">'+L('Registriernummer, Vor- oder Nachname stimmen nicht &uuml;berein. Bitte pr&uuml;fen Sie Ihre Eingaben oder wenden Sie sich an Ihren Ausbilder.','Numer rejestracyjny, imię lub nazwisko się nie zgadzają. Proszę sprawdzić dane lub skontaktować się z instruktorem.')+'</div>' + backBtnHtml + '</div>';
       return;
     }
     let fVal = data.pruefung_lasi_freigegeben;
     if(fVal && typeof fVal === 'object') fVal = fVal.Value;
     if(fVal === 'Geschlossen'){
-      content.innerHTML = '<div style="max-width:420px"><div style="font-size:40px;margin-bottom:12px">&#x1F512;</div><div style="font-size:18px;font-weight:700;margin-bottom:8px">Schulung abgeschlossen</div><div style="font-size:14px;color:rgba(255,255,255,.75);line-height:1.6;margin-bottom:20px">Sie haben die Pr&uuml;fung zu diesem Kurs bereits bestanden. Der Zugriff auf die Schulungsinhalte ist daher nicht mehr m&ouml;glich.</div>' + backBtnHtml + '</div>';
+      content.innerHTML = '<div style="max-width:420px"><div style="font-size:40px;margin-bottom:12px">&#x1F512;</div><div style="font-size:18px;font-weight:700;margin-bottom:8px">'+L('Schulung abgeschlossen','Szkolenie zakończone')+'</div><div style="font-size:14px;color:rgba(255,255,255,.75);line-height:1.6;margin-bottom:20px">'+L('Sie haben die Pr&uuml;fung zu diesem Kurs bereits bestanden. Der Zugriff auf die Schulungsinhalte ist daher nicht mehr m&ouml;glich.','Zdałeś już egzamin z tego kursu. Dostęp do treści szkoleniowych nie jest już możliwy.')+'</div>' + backBtnHtml + '</div>';
       return;
     }
   } catch(e){}
@@ -616,7 +875,7 @@ function buildSidebar(){
     div.id='si-'+ki;
     div.innerHTML=`<div class="snum">${done?'✓':ki+1}</div>
       <div class="stxt"><div class="stitle">${k.title}</div>
-      <div class="scnt">${done?'Abgeschlossen':k.folien.length+' Folien · '+k.quiz.length+' Fragen'}</div></div>`;
+      <div class="scnt">${done?L('Abgeschlossen','Ukończono'):k.folien.length+' '+L('Folien','slajdów')+' · '+k.quiz.length+' '+L('Fragen','pytań')}</div></div>`;
     div.onclick=()=>{goStep(chIdx);closeSidebar();};
     list.appendChild(div);
   });
@@ -625,8 +884,8 @@ function buildSidebar(){
   examDiv.className='sidebar-item'+(STEPS[cur]?.type==='exam'?' active':'');
   examDiv.id='si-exam';
   examDiv.innerHTML=`<div class="snum">📋</div>
-    <div class="stxt"><div class="stitle">Abschlussprüfung</div>
-    <div class="scnt">Theoretische Prüfung</div></div>`;
+    <div class="stxt"><div class="stitle">${L('Abschlussprüfung','Egzamin końcowy')}</div>
+    <div class="scnt">${L('Theoretische Prüfung','Egzamin teoretyczny')}</div></div>`;
   examDiv.onclick=()=>{goStep(examIdx);closeSidebar();};
   list.appendChild(examDiv);
 }
@@ -660,16 +919,16 @@ function goStep(idx){
 
 function toggleErkl(el){var box=el.closest('.erklaerung-box');if(box)box.classList.toggle('open');}
 
-function renderFoot(showBack=true,showNext=true,nextLabel='Weiter →'){
+function renderFoot(showBack=true,showNext=true,nextLabel=L('Weiter →','Dalej →')){
   const foot=document.getElementById('foot');
   const s=STEPS[cur];
   let pageText='';
   if(s.type==='folie'||s.type==='video'){
     const k=KAPITEL[s.ki];
-    pageText=`${s.fi+1} / ${k.folien.length} in diesem Kapitel`;
+    pageText=`${s.fi+1} / ${k.folien.length} ${L('in diesem Kapitel','w tym rozdziale')}`;
   }
   foot.innerHTML=`
-    ${showBack?`<button class="navbtn" onclick="goStep(${cur-1})" ${cur===0?'disabled':''}>← Zurück</button>`:'<div></div>'}
+    ${showBack?`<button class="navbtn" onclick="goStep(${cur-1})" ${cur===0?'disabled':''}>${L('← Zurück','← Wstecz')}</button>`:'<div></div>'}
     <span class="pageno">${pageText}</span>
     ${showNext?`<button class="navbtn primary" onclick="goStep(${cur+1})">${nextLabel}</button>`:'<div></div>'}
   `;
@@ -681,10 +940,10 @@ function render(){
   const host=document.getElementById('host');
   const crumb=document.getElementById('crumb');
   if(s.type==='welcome'){crumb.textContent='';renderWelcome(host);}
-  else if(s.type==='chapter'){crumb.textContent=`Kapitel ${s.ki+1}`;renderChapter(host,s.ki);}
-  else if(s.type==='folie'){crumb.textContent=`Kapitel ${s.ki+1} · Folie ${s.fn}`;renderFolie(host,s);}
-  else if(s.type==='video'){crumb.textContent=`Kapitel ${s.ki+1} · Folie ${s.fn}`;renderVideo(host,s);}
-  else if(s.type==='quiz'){crumb.textContent=`Kapitel ${s.ki+1} · Wissenstest`;renderQuiz(host,s.ki);}
+  else if(s.type==='chapter'){crumb.textContent=`${L('Kapitel','Rozdział')} ${s.ki+1}`;renderChapter(host,s.ki);}
+  else if(s.type==='folie'){crumb.textContent=`${L('Kapitel','Rozdział')} ${s.ki+1} · ${L('Folie','Slajd')} ${s.fn}`;renderFolie(host,s);}
+  else if(s.type==='video'){crumb.textContent=`${L('Kapitel','Rozdział')} ${s.ki+1} · ${L('Folie','Slajd')} ${s.fn}`;renderVideo(host,s);}
+  else if(s.type==='quiz'){crumb.textContent=`${L('Kapitel','Rozdział')} ${s.ki+1} · ${L('Wissenstest','Test wiedzy')}`;renderQuiz(host,s.ki);}
   else if(s.type==='exam'){crumb.textContent='';renderExam(host);}
 }
 
@@ -693,14 +952,14 @@ function renderWelcome(host){
   const totalQ=KAPITEL.reduce((a,k)=>a+k.quiz.length,0);
   host.innerHTML=`<div class="welcome-card">
     <div class="w-icon"><svg viewBox="0 0 24 24"><path d="M20 8h-3V4H3c-1.1 0-2 .9-2 2v11h2c0 1.66 1.34 3 3 3s3-1.34 3-3h6c0 1.66 1.34 3 3 3s3-1.34 3-3h2v-5l-3-4z"/></svg></div>
-    <h2>Willkommen zur Ladungssicherung</h2>
-    <p>Offizielle Ausbildung nach DGUV Grundsatz 308-009 auf der Basis der Richtlinie VDI 2700 ff.</p>
+    <h2>${L('Willkommen zur Ladungssicherung','Witamy w module Zabezpieczanie ładunku')}</h2>
+    <p>${L('Offizielle Ausbildung nach DGUV Grundsatz 308-009 auf der Basis der Richtlinie VDI 2700 ff.','Oficjalne szkolenie zgodnie z DGUV Grundsatz 308-009 na podstawie wytycznej VDI 2700 i nast.')}</p>
     <div class="w-stats">
-      <div class="wstat"><div class="wn">${KAPITEL.length}</div><div class="wl">Kapitel</div></div>
-      <div class="wstat"><div class="wn">${totalF}</div><div class="wl">Folien</div></div>
-      <div class="wstat"><div class="wn">${totalQ}</div><div class="wl">Quizfragen</div></div>
+      <div class="wstat"><div class="wn">${KAPITEL.length}</div><div class="wl">${L('Kapitel','Rozdziały')}</div></div>
+      <div class="wstat"><div class="wn">${totalF}</div><div class="wl">${L('Folien','Slajdy')}</div></div>
+      <div class="wstat"><div class="wn">${totalQ}</div><div class="wl">${L('Quizfragen','Pytania quizowe')}</div></div>
     </div>
-    <button class="btn" onclick="goStep(1)">Ausbildung starten →</button>
+    <button class="btn" onclick="goStep(1)">${L('Ausbildung starten →','Rozpocznij szkolenie →')}</button>
   </div>`;
   document.getElementById('foot').innerHTML='';
 }
@@ -709,13 +968,13 @@ function renderChapter(host,ki){
   const k=KAPITEL[ki];
   if(!kapitelStartZeit[ki])kapitelStartZeit[ki]=Date.now();
   host.innerHTML=`<div class="chapter-intro">
-    <div class="ci-num">Kapitel ${ki+1} von ${KAPITEL.length}</div>
+    <div class="ci-num">${L('Kapitel','Rozdział')} ${ki+1} ${L('von','z')} ${KAPITEL.length}</div>
     <h2>${k.title}</h2>
-    <p class="ci-meta">${k.folien.length} Folien · ${k.quiz.length} Quizfragen</p>
+    <p class="ci-meta">${k.folien.length} ${L('Folien','slajdów')} · ${k.quiz.length} ${L('Quizfragen','pytań quizowych')}</p>
     <p style="color:var(--muted);font-size:14px;max-width:440px;margin:12px auto 24px;line-height:1.6">
-      Arbeiten Sie die Folien dieses Kapitels durch und testen Sie anschließend Ihr Wissen.
+      ${L('Arbeiten Sie die Folien dieses Kapitels durch und testen Sie anschließend Ihr Wissen.','Przejdź przez slajdy tego rozdziału, a następnie sprawdź swoją wiedzę.')}
     </p>
-    <button class="btn" onclick="goStep(${cur+1})">Kapitel starten →</button>
+    <button class="btn" onclick="goStep(${cur+1})">${L('Kapitel starten →','Rozpocznij rozdział →')}</button>
   </div>`;
   document.getElementById('foot').innerHTML='';
 }
@@ -723,21 +982,22 @@ function renderChapter(host,ki){
 function renderFolie(host,s){
   const k=KAPITEL[s.ki];
   const fn=s.fn;
-  const imgUrl=IMG_BASE+'Folie'+fn+'.PNG';
-  const waText=encodeURIComponent(`Hallo, ich habe eine Frage zu:\nKapitel ${s.ki+1}: ${k.title}\nFolie ${fn}\n\nMeine Frage:`);
-  const mailSubj=encodeURIComponent(`Frage zu Folie ${fn} – ${k.title}`);
-  const mailBody=encodeURIComponent(`Hallo,\n\nFrage zu Kapitel ${s.ki+1}: ${k.title}\nFolie ${fn}\n\nMeine Frage:\n\n`);
+  const useplImg=(lang==='pl' && PL_BILDER_SET.has(fn));
+  const imgUrl=(useplImg?IMG_BASE_PL:IMG_BASE)+'Folie'+fn+'.PNG';
+  const waText=encodeURIComponent(L(`Hallo, ich habe eine Frage zu:\nKapitel ${s.ki+1}: ${k.title}\nFolie ${fn}\n\nMeine Frage:`,`Dzień dobry, mam pytanie dotyczące:\nRozdział ${s.ki+1}: ${k.title}\nSlajd ${fn}\n\nMoje pytanie:`));
+  const mailSubj=encodeURIComponent(L(`Frage zu Folie ${fn} – ${k.title}`,`Pytanie dotyczące slajdu ${fn} – ${k.title}`));
+  const mailBody=encodeURIComponent(L(`Hallo,\n\nFrage zu Kapitel ${s.ki+1}: ${k.title}\nFolie ${fn}\n\nMeine Frage:\n\n`,`Dzień dobry,\n\nPytanie dotyczące rozdziału ${s.ki+1}: ${k.title}\nSlajd ${fn}\n\nMoje pytanie:\n\n`));
 
   const nextStep=STEPS[cur+1];
   const isLast=nextStep&&nextStep.type==='quiz';
 
-  const erkl=ERKLAERUNG_DE[fn];
-  const erklHtml=erkl?`<div class="erklaerung-box"><div class="erklaerung-label" onclick="toggleErkl(this)">💡 Erklärung<span class="chev">▾</span></div><div class="erklaerung-content"><p>${erkl}</p></div></div>`:'';
+  const erkl=ERKLAERUNG[fn];
+  const erklHtml=erkl?`<div class="erklaerung-box"><div class="erklaerung-label" onclick="toggleErkl(this)">💡 ${L('Erklärung','Wyjaśnienie')}<span class="chev">▾</span></div><div class="erklaerung-content"><p>${erkl}</p></div></div>`:'';
   host.innerHTML=`<div class="slide-card">
     <img class="slide-img-full" src="${imgUrl}" loading="lazy" alt="Folie ${fn}">
     ${erklHtml}
     <div class="slide-footer">
-      <span class="slide-nr">Folie ${fn}</span>
+      <span class="slide-nr">${L('Folie','Slajd')} ${fn}</span>
       <span style="flex:1"></span>
       <a class="wa-btn" href="https://wa.me/${WA_NR}?text=${waText}" target="_blank">
         <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
@@ -745,11 +1005,11 @@ function renderFolie(host,s){
       </a>
       <a class="mail-btn" href="mailto:${MAIL}?subject=${mailSubj}&body=${mailBody}">
         <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
-        E-Mail
+        ${L('E-Mail','E-mail')}
       </a>
     </div>
   </div>`;
-  renderFoot(true,true,isLast?'Zum Quiz →':'Weiter →');
+  renderFoot(true,true,isLast?L('Zum Quiz →','Do quizu →'):L('Weiter →','Dalej →'));
 }
 
 function renderVideo(host,s){
@@ -757,11 +1017,11 @@ function renderVideo(host,s){
   const isLast=nextStep&&nextStep.type==='quiz';
   host.innerHTML=`<div class="slide-card video-slide">
     <div class="video-wrap">
-      <div class="video-label"><span>▶ ${s.titel}</span><button class="video-fs-btn" onclick="videoVollbild()">⛶ Vollbild</button></div>
+      <div class="video-label"><span>▶ ${s.titel}</span><button class="video-fs-btn" onclick="videoVollbild()">⛶ ${L('Vollbild','Pełny ekran')}</button></div>
       <iframe id="videoFrame" src="${s.vidUrl}" allow="autoplay; fullscreen; picture-in-picture; encrypted-media" allowfullscreen></iframe>
     </div>
   </div>`;
-  renderFoot(true,true,isLast?'Zum Quiz →':'Weiter →');
+  renderFoot(true,true,isLast?L('Zum Quiz →','Do quizu →'):L('Weiter →','Dalej →'));
 }
 
 function videoVollbild(){
@@ -782,12 +1042,12 @@ function renderQuiz(host,ki){
     const done=!!kapitelAbgeschlossen[ki];
     host.innerHTML=`<div class="quiz-card"><div class="quiz-result">
       <div class="qr-icon ${pass?'ok':'no'}">${pass?'✓':'✗'}</div>
-      <div class="qr-score">${qs.score} / ${k.quiz.length} richtig</div>
-      <p style="color:var(--muted);margin-bottom:20px">${pass?'Gut gemacht! Weiter zum nächsten Kapitel.':'Bitte das Kapitel wiederholen.'}</p>
-      ${pass?`<button class="btn" id="aBtn" onclick="kapitelAbschliessen(${ki})" ${done?'disabled style="background:var(--ok)"':''}>${done?'✓ Abgeschlossen':'Thema abschließen &amp; speichern'}</button>
-             <div class="abschluss-status" id="aStat" style="margin-top:10px;font-size:13px;color:var(--muted)">${done?'Kapitel '+(ki+1)+' gespeichert.':''}</div>
-             <button class="btn" style="margin-top:10px;background:var(--muted)" onclick="goStep(${cur+1})" ${done?'':'disabled'} id="weiterBtn">Weiter →</button>`
-             :`<button class="btn" onclick="resetQuiz(${ki})">Wiederholen</button>`}
+      <div class="qr-score">${qs.score} / ${k.quiz.length} ${L('richtig','poprawnych')}</div>
+      <p style="color:var(--muted);margin-bottom:20px">${pass?L('Gut gemacht! Weiter zum nächsten Kapitel.','Dobra robota! Przejdź do następnego rozdziału.'):L('Bitte das Kapitel wiederholen.','Proszę powtórzyć rozdział.')}</p>
+      ${pass?`<button class="btn" id="aBtn" onclick="kapitelAbschliessen(${ki})" ${done?'disabled style="background:var(--ok)"':''}>${done?L('✓ Abgeschlossen','✓ Ukończono'):L('Thema abschließen &amp; speichern','Zakończ temat i zapisz')}</button>
+             <div class="abschluss-status" id="aStat" style="margin-top:10px;font-size:13px;color:var(--muted)">${done?L('Kapitel '+(ki+1)+' gespeichert.','Rozdział '+(ki+1)+' zapisany.'):''}</div>
+             <button class="btn" style="margin-top:10px;background:var(--muted)" onclick="goStep(${cur+1})" ${done?'':'disabled'} id="weiterBtn">${L('Weiter →','Dalej →')}</button>`
+             :`<button class="btn" onclick="resetQuiz(${ki})">${L('Wiederholen','Powtórz')}</button>`}
     </div></div>`;
     document.getElementById('foot').innerHTML='';
     return;
@@ -796,7 +1056,7 @@ function renderQuiz(host,ki){
   host.innerHTML=`<div class="quiz-card">
     <div class="quiz-hd">
       <span class="quiz-kap">${k.title}</span>
-      <span class="quiz-prog">Frage ${qs.qi+1} / ${k.quiz.length}</span>
+      <span class="quiz-prog">${L('Frage','Pytanie')} ${qs.qi+1} / ${k.quiz.length}</span>
     </div>
     <div class="quiz-q">${q.q}</div>
     <div class="quiz-opts">
@@ -814,8 +1074,8 @@ function answerQuiz(ki,chosen){
   document.querySelectorAll('.opt').forEach(b=>b.disabled=true);
   document.getElementById('opt-'+q.c).classList.add('correct');
   const fb=document.getElementById('qfb');
-  if(chosen===q.c){qs.score++;fb.className='quiz-fb ok';fb.textContent='✓ Richtig!';}
-  else{document.getElementById('opt-'+chosen).classList.add('wrong');fb.className='quiz-fb no';fb.textContent='✗ Falsch. Richtig: '+q.o[q.c];}
+  if(chosen===q.c){qs.score++;fb.className='quiz-fb ok';fb.textContent=L('✓ Richtig!','✓ Poprawnie!');}
+  else{document.getElementById('opt-'+chosen).classList.add('wrong');fb.className='quiz-fb no';fb.textContent=L('✗ Falsch. Richtig: ','✗ Błędnie. Poprawna odpowiedź: ')+q.o[q.c];}
   qs.qi++;
   setTimeout(()=>renderQuiz(document.getElementById('host'),ki),1200);
 }
@@ -833,7 +1093,7 @@ function kapitelAbschliessen(ki){
   if(!btn||!stat)return;
   const k=KAPITEL[ki];
   const qs=quizState[ki];
-  btn.disabled=true;btn.textContent='Wird gespeichert…';
+  btn.disabled=true;btn.textContent=L('Wird gespeichert…','Zapisywanie…');
   const payload={
     regnr:regnr,
     kapitel_nr:ki+1,
@@ -848,29 +1108,29 @@ function kapitelAbschliessen(ki){
   };
   function onOK(){
     kapitelAbgeschlossen[ki]=true;
-    btn.textContent='✓ Abgeschlossen';btn.style.background='var(--ok)';
-    stat.textContent='Kapitel '+(ki+1)+' gespeichert.';
+    btn.textContent=L('✓ Abgeschlossen','✓ Ukończono');btn.style.background='var(--ok)';
+    stat.textContent=L('Kapitel '+(ki+1)+' gespeichert.','Rozdział '+(ki+1)+' zapisany.');
     if(weiterBtn)weiterBtn.disabled=false;
   }
   fetch(LERNFORTSCHRITT_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)})
     .then(onOK)
-    .catch(()=>{btn.disabled=false;btn.textContent='Thema abschließen & speichern';stat.textContent='Fehler beim Speichern. Bitte erneut versuchen.';stat.style.color='var(--no)';});
+    .catch(()=>{btn.disabled=false;btn.textContent=L('Thema abschließen & speichern','Zakończ temat i zapisz');stat.textContent=L('Fehler beim Speichern. Bitte erneut versuchen.','Błąd zapisu. Spróbuj ponownie.');stat.style.color='var(--no)';});
 }
 
 /* ── EXAM ── */
 function renderExam(host){
   host.innerHTML=`<div class="exam-card">
     <div class="exam-icon"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg></div>
-    <h2>Theoretische Prüfung</h2>
+    <h2>${L('Theoretische Prüfung','Egzamin teoretyczny')}</h2>
     <p style="color:var(--muted);font-size:15px;max-width:480px;margin:10px auto 24px;line-height:1.6">
-      Sie haben alle Lerneinheiten abgeschlossen.<br>Bitte melden Sie sich bei Ihrem Ausbilder.<br><br>
-      <strong>Bestehensgrenze: 12 von 20 Fragen (60 %)</strong>
+      ${L('Sie haben alle Lerneinheiten abgeschlossen.','Ukończyłeś wszystkie jednostki szkoleniowe.')}<br>${L('Bitte melden Sie sich bei Ihrem Ausbilder.','Proszę zgłosić się do swojego instruktora.')}<br><br>
+      <strong>${L('Bestehensgrenze: 12 von 20 Fragen (60 %)','Próg zaliczenia: 12 z 20 pytań (60%)')}</strong>
     </p>
-    <a href="https://wa.me/${WA_NR}?text=${encodeURIComponent('Hallo, ich habe die Ladungssicherungs-Ausbildung abgeschlossen und möchte die Prüfung anmelden.')}"
+    <a href="https://wa.me/${WA_NR}?text=${encodeURIComponent(L('Hallo, ich habe die Ladungssicherungs-Ausbildung abgeschlossen und möchte die Prüfung anmelden.','Dzień dobry, ukończyłem szkolenie z zabezpieczania ładunku i chciałbym zapisać się na egzamin.'))}"
        target="_blank"
        style="display:inline-flex;align-items:center;gap:10px;padding:12px 24px;background:#25D366;color:#fff;border-radius:11px;font-size:15px;font-weight:700;text-decoration:none">
       <svg viewBox="0 0 24 24" width="22" height="22" fill="#fff"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-      WhatsApp – Prüfung anmelden
+      ${L('WhatsApp – Prüfung anmelden','WhatsApp – zapisz się na egzamin')}
     </a>
   </div>`;
   document.getElementById('foot').innerHTML='';

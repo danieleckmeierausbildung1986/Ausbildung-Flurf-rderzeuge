@@ -128,7 +128,7 @@ function renderChoices(data, nr){
   list.innerHTML = '';
 
   const theorieGeschlossen = getSF(data.pruefung_lasi_freigegeben) === 'geschlossen';
-  const theorieUrl = BASE + 'staplerapp_lasi_1.html?regnr=' + encodeURIComponent(nr);
+  const theorieUrl = BASE + 'staplerapp_lasi_1.html?regnr=' + encodeURIComponent(nr) + '&lang=' + currentLang;
   const praxisUrl = BASE + 'lasi_praxismodul.html?regnr=' + encodeURIComponent(nr);
 
   if(theorieGeschlossen){
