@@ -74,20 +74,20 @@ body::before{
 <div class="container">
   <div class="logo-area">
     <div class="logo-icon">
-      <img src="format_icons/kurs_lasi.png" alt="Ladungssicherung">
+      <img src="format_icons/kurs_lasi.png" alt="Ladungssicherung" id="logoImgAlt">
     </div>
-    <h1>Ladungssicherung</h1>
-    <p>VDI 2700 ff.</p>
+    <h1 id="pageTitle">Ladungssicherung</h1>
+    <p id="pageSub">VDI 2700 ff.</p>
   </div>
 
   <div class="card" id="mainCard">
     <div class="greeting">
       <div class="greeting-name" id="greetName">Willkommen</div>
-      <div class="greeting-sub">Bitte wählen Sie Theorie oder Praxis</div>
+      <div class="greeting-sub" id="greetSub">Bitte wählen Sie Theorie oder Praxis</div>
     </div>
     <div class="choices" id="choiceList"></div>
     <div class="footer-area">
-      <button class="back-btn" onclick="goBack()">← Zurück zur Startseite</button>
+      <button class="back-btn" onclick="goBack()" id="backBtn">← Zurück zur Startseite</button>
     </div>
   </div>
 </div>
@@ -102,6 +102,33 @@ function logoImg(base, ext){
   const suffix = logoLangs.includes(currentLang) ? '_' + currentLang : '';
   return 'logos/' + base + suffix + '.' + ext;
 }
+
+const TXT = {
+  de: {
+    title: 'Ladungssicherung', sub: 'VDI 2700 ff.',
+    welcome: 'Willkommen', hallo: 'Hallo, ', greetSub: 'Bitte wählen Sie Theorie oder Praxis',
+    back: '← Zurück zur Startseite', bestanden: 'Bereits bestanden',
+    keinZugang: 'Für Sie ist aktuell keine Ladungssicherungs-Schulung gebucht. Bitte wenden Sie sich an Ihren Ausbilder.',
+    verbindungsfehler: 'Verbindungsfehler. Bitte erneut versuchen.',
+    altLadung: 'Ladungssicherung', altTheorie: 'Theorieausbildung Ladungssicherung', altPraxis: 'Praxisausbildung Ladungssicherung'
+  },
+  pl: {
+    title: 'Zabezpieczanie ładunku', sub: 'VDI 2700 i nast.',
+    welcome: 'Witamy', hallo: 'Cześć, ', greetSub: 'Proszę wybrać: Teoria lub Praktyka',
+    back: '← Powrót do strony głównej', bestanden: 'Już zdane',
+    keinZugang: 'Aktualnie nie mają Państwo zarezerwowanego szkolenia z zabezpieczania ładunku. Prosimy o kontakt z instruktorem.',
+    verbindungsfehler: 'Błąd połączenia. Spróbuj ponownie.',
+    altLadung: 'Zabezpieczanie ładunku', altTheorie: 'Szkolenie teoretyczne - zabezpieczanie ładunku', altPraxis: 'Szkolenie praktyczne - zabezpieczanie ładunku'
+  }
+};
+const T = TXT[currentLang] || TXT.de;
+document.getElementById('logoImgAlt').alt = T.altLadung;
+document.getElementById('pageTitle').textContent = T.title;
+document.getElementById('pageSub').textContent = T.sub;
+document.getElementById('greetName').textContent = T.welcome;
+document.getElementById('greetSub').textContent = T.greetSub;
+document.getElementById('backBtn').textContent = T.back;
+document.documentElement.lang = currentLang;
 
 function getSF(val){
   if(val && typeof val === 'object') return (val.Value || '').toLowerCase().replace(/-/g,'');
@@ -134,19 +161,19 @@ function renderChoices(data, nr){
   if(theorieGeschlossen){
     list.innerHTML += `
       <div class="choice-btn disabled">
-        <img src="${BASE}${logoImg('logo_ausbildung_lasi','jpg')}" alt="Theorieausbildung Ladungssicherung">
-        <span class="choice-badge">Bereits bestanden</span>
+        <img src="${BASE}${logoImg('logo_ausbildung_lasi','jpg')}" alt="${T.altTheorie}">
+        <span class="choice-badge">${T.bestanden}</span>
       </div>`;
   } else {
     list.innerHTML += `
       <a class="choice-btn" href="${theorieUrl}">
-        <img src="${BASE}${logoImg('logo_ausbildung_lasi','jpg')}" alt="Theorieausbildung Ladungssicherung">
+        <img src="${BASE}${logoImg('logo_ausbildung_lasi','jpg')}" alt="${T.altTheorie}">
       </a>`;
   }
 
   list.innerHTML += `
     <a class="choice-btn" href="${praxisUrl}">
-      <img src="${BASE}${logoImg('lasi_praxis','jpg')}" alt="Praxisausbildung Ladungssicherung">
+      <img src="${BASE}${logoImg('lasi_praxis','jpg')}" alt="${T.altPraxis}">
     </a>`;
 }
 
@@ -160,7 +187,7 @@ async function init(){
   const authNachname = sessionStorage.getItem('authNachname');
   if(authRegnr !== nr || !authVorname || !authNachname){ window.location.href = loginUrl; return; }
 
-  document.getElementById('greetName').textContent = 'Hallo, ' + authVorname + ' ' + authNachname + '!';
+  document.getElementById('greetName').textContent = T.hallo + authVorname + ' ' + authNachname + '!';
 
   try{
     const res = await fetch(ZUGANGSPRUEFUNG_URL, {
@@ -169,12 +196,12 @@ async function init(){
     });
     const data = await res.json();
     if(!(data && data.zugang === true) || !data.lasi){
-      document.getElementById('choiceList').innerHTML = '<div class="no-access">Für Sie ist aktuell keine Ladungssicherungs-Schulung gebucht. Bitte wenden Sie sich an Ihren Ausbilder.</div>';
+      document.getElementById('choiceList').innerHTML = '<div class="no-access">' + T.keinZugang + '</div>';
       return;
     }
     renderChoices(data, nr);
   }catch(e){
-    document.getElementById('choiceList').innerHTML = '<div class="no-access">Verbindungsfehler. Bitte erneut versuchen.</div>';
+    document.getElementById('choiceList').innerHTML = '<div class="no-access">' + T.verbindungsfehler + '</div>';
   }
 }
 
