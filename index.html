@@ -51,6 +51,10 @@ nav{
   transition:all .15s;white-space:nowrap;
 }
 .nav-login:hover{border-color:var(--navy);background:var(--bg)}
+.nav-login-trainer{margin-left:24px;color:var(--safety);border-color:var(--safety)}
+.nav-login-trainer:hover{background:#fff3e9}
+.nav-login-teilnehmer{color:var(--blue);border-color:var(--blue)}
+.nav-login-teilnehmer:hover{background:var(--blue-xl)}
 .nav-actions{display:flex;align-items:center;gap:10px}
 .nav-toggle{
   display:none;align-items:center;gap:8px;
@@ -152,6 +156,22 @@ nav{
 }
 .section-title{font-size:clamp(24px,4vw,36px);font-weight:800;color:var(--navy);margin-bottom:14px}
 .section-sub{font-size:16px;color:var(--muted);max-width:560px;margin-bottom:52px;line-height:1.65}
+
+/* ABLAUF */
+.ablauf-section{padding-bottom:40px}
+.ablauf-section .section-title{margin-bottom:40px}
+.ablauf-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:28px}
+@media(max-width:1000px){.ablauf-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:520px){.ablauf-grid{grid-template-columns:1fr}}
+.ablauf-step{position:relative;padding-left:52px}
+.ablauf-num{
+  position:absolute;left:0;top:0;
+  width:36px;height:36px;border-radius:50%;
+  background:var(--blue);color:#fff;font-weight:800;font-size:16px;
+  display:flex;align-items:center;justify-content:center;
+}
+.ablauf-title{font-size:16px;font-weight:800;color:var(--navy);margin-bottom:6px;padding-top:4px}
+.ablauf-desc{font-size:13.5px;color:var(--muted);line-height:1.6}
 
 /* KURSE */
 .courses-grid{
@@ -410,8 +430,8 @@ footer a{color:rgba(255,255,255,.4);text-decoration:underline}
       <a class="nav-link" href="#termine">Termine</a>
       <a class="nav-link" href="ueber-uns.html">Über uns</a>
       <a class="nav-link" href="#kontakt">Kontakt</a>
-      <a class="nav-login" href="trainerbereich.html">Trainerzugang</a>
-      <a class="nav-login" href="login.html" title="Bereits angemeldet? Hier einloggen">Teilnehmer-Login</a>
+      <a class="nav-login nav-login-trainer" href="trainerbereich.html">Trainerzugang</a>
+      <a class="nav-login nav-login-teilnehmer" href="login.html" title="Bereits angemeldet? Hier einloggen">Teilnehmer-Login</a>
     </div>
     <div class="nav-actions">
       <button class="nav-toggle" id="navToggle" aria-label="Menü öffnen" aria-expanded="false" onclick="document.getElementById('navLinks').classList.toggle('open');this.setAttribute('aria-expanded', document.getElementById('navLinks').classList.contains('open'))">
@@ -434,6 +454,36 @@ footer a{color:rgba(255,255,255,.4);text-decoration:underline}
       <div class="stat"><div class="stat-num">DGUV</div><div class="stat-label">Grundsatz 308-001</div></div>
       <div class="stat"><div class="stat-num">VDI</div><div class="stat-label">2700 ff. Ladungssicherung</div></div>
       <div class="stat"><div class="stat-num">4</div><div class="stat-label">Schulungsmodule</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ABLAUF -->
+<section class="section ablauf-section">
+  <div class="section-inner">
+    <div class="section-label">So einfach geht's</div>
+    <h2 class="section-title">Ihr Weg zur Schulung</h2>
+    <div class="ablauf-grid">
+      <div class="ablauf-step">
+        <div class="ablauf-num">1</div>
+        <div class="ablauf-title">Kurs wählen</div>
+        <div class="ablauf-desc">Passende Ausbildung(en) aussuchen — auch Kombinationen wie Stufe 1 + Ladungssicherung sind möglich.</div>
+      </div>
+      <div class="ablauf-step">
+        <div class="ablauf-num">2</div>
+        <div class="ablauf-title">Termin oder Wunschtermin</div>
+        <div class="ablauf-desc">Passenden Termin aus dem Kalender wählen oder einen eigenen Wunschtermin anfragen.</div>
+      </div>
+      <div class="ablauf-step">
+        <div class="ablauf-num">3</div>
+        <div class="ablauf-title">Formular ausfüllen</div>
+        <div class="ablauf-desc">Teilnehmer eintragen und Format wählen — E-Learning, live online oder Präsenz.</div>
+      </div>
+      <div class="ablauf-step">
+        <div class="ablauf-num">4</div>
+        <div class="ablauf-title">Zugang erhalten</div>
+        <div class="ablauf-desc">Bestätigung per E-Mail mit E-Learning-Zugang bzw. den Details zum Präsenztermin.</div>
+      </div>
     </div>
   </div>
 </section>
