@@ -51,9 +51,9 @@ nav{
   transition:all .15s;white-space:nowrap;
 }
 .nav-login:hover{border-color:var(--navy);background:var(--bg)}
-.nav-login-trainer{margin-left:24px;color:var(--safety);border-color:var(--safety)}
+.nav-login-trainer{color:var(--safety);border-color:var(--safety)}
 .nav-login-trainer:hover{background:#fff3e9}
-.nav-login-teilnehmer{color:var(--blue);border-color:var(--blue)}
+.nav-login-teilnehmer{margin-left:24px;color:var(--blue);border-color:var(--blue)}
 .nav-login-teilnehmer:hover{background:var(--blue-xl)}
 .nav-actions{display:flex;align-items:center;gap:10px}
 .nav-toggle{
@@ -430,8 +430,8 @@ footer a{color:rgba(255,255,255,.4);text-decoration:underline}
       <a class="nav-link" href="#termine">Termine</a>
       <a class="nav-link" href="ueber-uns.html">Über uns</a>
       <a class="nav-link" href="#kontakt">Kontakt</a>
-      <a class="nav-login nav-login-trainer" href="trainerbereich.html">Trainerzugang</a>
       <a class="nav-login nav-login-teilnehmer" href="login.html" title="Bereits angemeldet? Hier einloggen">Teilnehmer-Login</a>
+      <a class="nav-login nav-login-trainer" href="trainerbereich.html">Trainerzugang</a>
     </div>
     <div class="nav-actions">
       <button class="nav-toggle" id="navToggle" aria-label="Menü öffnen" aria-expanded="false" onclick="document.getElementById('navLinks').classList.toggle('open');this.setAttribute('aria-expanded', document.getElementById('navLinks').classList.contains('open'))">
