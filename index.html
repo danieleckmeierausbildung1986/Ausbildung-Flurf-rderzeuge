@@ -159,23 +159,11 @@ nav{
 .section-sub{font-size:16px;color:var(--muted);max-width:560px;margin-bottom:52px;line-height:1.65}
 
 /* KURSE */
-.kurs-tabs{display:flex;gap:10px;flex-wrap:wrap;margin:28px 0 24px}
-.kurs-tab{
-  padding:11px 20px;border-radius:30px;border:1.5px solid var(--line);
-  background:#fff;color:var(--muted);font-size:14px;font-weight:700;
-  cursor:pointer;transition:all .15s;
-}
-.kurs-tab:hover{border-color:var(--blue)}
-.kurs-tab.active{background:var(--blue);border-color:var(--blue);color:#fff}
 .courses-grid{
   display:grid;
   grid-template-columns:repeat(4,1fr);
   gap:20px;
 }
-.courses-grid.n1{grid-template-columns:minmax(0,360px)}
-.courses-grid.n2{grid-template-columns:repeat(2,minmax(0,1fr));max-width:760px}
-.courses-grid.n3{grid-template-columns:repeat(3,minmax(0,1fr))}
-.courses-grid-empty{color:var(--muted);font-size:14px;padding:20px 0}
 @media(max-width:1000px){.courses-grid{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:520px){.courses-grid{grid-template-columns:1fr}}
 .course-card{
@@ -447,7 +435,7 @@ footer a{color:rgba(255,255,255,.4);text-decoration:underline}
     <h1>Professionelle Schulungen für <em>Flurförderzeuge</em> & Ladungssicherung</h1>
     <p>Berufsgenossenschaftskonforme Aus- und Weiterbildungen für Ihren Betrieb — mit modernem E-Learning und praxisnaher Präsenzschulung.</p>
     <div class="hero-actions">
-      <a class="btn-primary" href="#termine">📋 Schulung buchen</a>
+      <a class="btn-primary" href="termin-anfragen.html">📋 Termin anfragen</a>
       <a class="btn-secondary" href="#kurse">Alle Schulungen ansehen</a>
     </div>
     <div class="hero-stats">
@@ -463,10 +451,71 @@ footer a{color:rgba(255,255,255,.4);text-decoration:underline}
   <div class="section-inner">
     <div class="section-label">Unser Angebot</div>
     <h2 class="section-title">Alle Schulungsmodule</h2>
-    <p class="section-sub">Wählen Sie eine oder mehrere Ausbildungen aus — Bausteine lassen sich frei kombinieren, z. B. Stufe 1 + Ladungssicherung oder Stufe 2 + Ladungssicherung.</p>
+    <p class="section-sub">Wählen Sie die passende Ausbildung für Ihre Mitarbeiter — von der Grundausbildung bis zur Spezialisierung. Module lassen sich frei kombinieren, z. B. Stufe 1 + Ladungssicherung.</p>
 
-    <div class="kurs-tabs" id="kursTabs"></div>
-    <div class="courses-grid" id="kursDetails"></div>
+    <div class="courses-grid">
+
+      <!-- Stufe 1 -->
+      <div class="course-card">
+        <div class="course-header">
+          <img class="course-illustration" src="format_icons/kurs_stufe1.png" alt="">
+          <div class="course-tags">
+            <span class="tag tag-online">✓ E-Learning</span>
+            <span class="tag tag-onlinekurs">✓ Online</span>
+            <span class="tag tag-praesenz">Präsenz</span>
+            <span class="tag tag-norm">DGUV 308-001</span>
+          </div>
+          <div class="course-title">Ausbildung für Flurförderzeuge Stufe 1</div>
+          <div class="course-desc">Grundausbildung für Gabelstaplerfahrer nach DGUV Grundsatz 308-001. Theorieinhalte zu Arbeitssicherheit, Rechtsgrundlagen, Fahrzeugtechnik und sicherem Betrieb.</div>
+        </div>
+      </div>
+
+      <!-- Stufe 2 -->
+      <div class="course-card">
+        <div class="course-header">
+          <img class="course-illustration" src="format_icons/kurs_stufe2.png" alt="">
+          <div class="course-tags">
+            <span class="tag tag-online">✓ E-Learning</span>
+            <span class="tag tag-onlinekurs">✓ Online</span>
+            <span class="tag tag-praesenz">Präsenz</span>
+            <span class="tag tag-anfrage">⏱ Auf Anfrage</span>
+            <span class="tag tag-norm">DGUV 308-001</span>
+          </div>
+          <div class="course-title">Zusatzausbildung Flurförderzeuge Stufe 2</div>
+          <div class="course-desc">Aufbauausbildung für spezielle Fahrzeugtypen: Schubmaststapler, Kommissioniergeräte und Schmalgangsysteme. Für Fahrer mit abgeschlossener Stufe-1-Ausbildung.</div>
+        </div>
+      </div>
+
+      <!-- LaSi -->
+      <div class="course-card">
+        <div class="course-header">
+          <img class="course-illustration" src="format_icons/kurs_lasi.png" alt="">
+          <div class="course-tags">
+            <span class="tag tag-online">✓ E-Learning</span>
+            <span class="tag tag-onlinekurs">✓ Online</span>
+            <span class="tag tag-praesenz">Präsenz</span>
+            <span class="tag tag-anfrage">⏱ Auf Anfrage</span>
+            <span class="tag tag-norm">VDI 2700</span>
+          </div>
+          <div class="course-title">Ladungssicherung nach VDI 2700 ff.</div>
+          <div class="course-desc">Rechtssichere Ladungssicherung im Straßenverkehr. Physikalische Grundlagen, gesetzliche Pflichten, Sicherungsmittel und praktische Anwendung nach aktuellen VDI-Richtlinien.</div>
+        </div>
+      </div>
+
+      <!-- Grundlagentraining -->
+      <div class="course-card">
+        <div class="course-header">
+          <img class="course-illustration" src="format_icons/kurs_training.png" alt="">
+          <div class="course-tags">
+            <span class="tag tag-praesenz">Nur Präsenz</span>
+            <span class="tag tag-norm">DGUV 308-001</span>
+          </div>
+          <div class="course-title">Grundlagentraining Flurförderzeuge</div>
+          <div class="course-desc">Praxisorientiertes Einführungstraining für Neueinsteiger — direkt am Fahrzeug. Sicherheitsunterweisung, Fahrzeugkunde und erste Fahrübungen unter Aufsicht.</div>
+        </div>
+      </div>
+
+    </div>
   </div>
 </section>
 
@@ -693,57 +742,6 @@ footer a{color:rgba(255,255,255,.4);text-decoration:underline}
 <script>
 if(history.scrollRestoration) history.scrollRestoration = 'manual';
 window.scrollTo(0,0);
-
-var KURSE = [
-  { id:'stufe1', label:'Stufe 1', img:'format_icons/kurs_stufe1.png',
-    tags:['<span class="tag tag-online">✓ E-Learning</span>','<span class="tag tag-onlinekurs">✓ Online</span>','<span class="tag tag-praesenz">Präsenz</span>','<span class="tag tag-norm">DGUV 308-001</span>'],
-    title:'Ausbildung für Flurförderzeuge Stufe 1',
-    desc:'Grundausbildung für Gabelstaplerfahrer nach DGUV Grundsatz 308-001. Theorieinhalte zu Arbeitssicherheit, Rechtsgrundlagen, Fahrzeugtechnik und sicherem Betrieb.' },
-  { id:'stufe2', label:'Stufe 2', img:'format_icons/kurs_stufe2.png',
-    tags:['<span class="tag tag-online">✓ E-Learning</span>','<span class="tag tag-onlinekurs">✓ Online</span>','<span class="tag tag-praesenz">Präsenz</span>','<span class="tag tag-anfrage">⏱ Auf Anfrage</span>','<span class="tag tag-norm">DGUV 308-001</span>'],
-    title:'Zusatzausbildung Flurförderzeuge Stufe 2',
-    desc:'Aufbauausbildung für spezielle Fahrzeugtypen: Schubmaststapler, Kommissioniergeräte und Schmalgangsysteme. Für Fahrer mit abgeschlossener Stufe-1-Ausbildung.' },
-  { id:'lasi', label:'Ladungssicherung', img:'format_icons/kurs_lasi.png',
-    tags:['<span class="tag tag-online">✓ E-Learning</span>','<span class="tag tag-onlinekurs">✓ Online</span>','<span class="tag tag-praesenz">Präsenz</span>','<span class="tag tag-anfrage">⏱ Auf Anfrage</span>','<span class="tag tag-norm">VDI 2700</span>'],
-    title:'Ladungssicherung nach VDI 2700 ff.',
-    desc:'Rechtssichere Ladungssicherung im Straßenverkehr. Physikalische Grundlagen, gesetzliche Pflichten, Sicherungsmittel und praktische Anwendung nach aktuellen VDI-Richtlinien.' },
-  { id:'training', label:'Grundlagentraining', img:'format_icons/kurs_training.png',
-    tags:['<span class="tag tag-praesenz">Nur Präsenz</span>','<span class="tag tag-norm">DGUV 308-001</span>'],
-    title:'Grundlagentraining Flurförderzeuge',
-    desc:'Praxisorientiertes Einführungstraining für Neueinsteiger — direkt am Fahrzeug. Sicherheitsunterweisung, Fahrzeugkunde und erste Fahrübungen unter Aufsicht.' }
-];
-var kursAuswahl = KURSE.map(function(k){ return k.id; }); // alle standardmäßig ausgewählt
-
-function toggleKurs(id){
-  var i = kursAuswahl.indexOf(id);
-  if(i >= 0){
-    if(kursAuswahl.length > 1) kursAuswahl.splice(i,1); // mind. 1 Kurs bleibt sichtbar
-  } else {
-    kursAuswahl.push(id);
-  }
-  renderKurse();
-}
-
-function renderKurse(){
-  var tabsHtml = KURSE.map(function(k){
-    var active = kursAuswahl.indexOf(k.id) >= 0;
-    return '<button type="button" class="kurs-tab' + (active?' active':'') + '" onclick="toggleKurs(\'' + k.id + '\')">' + k.label + '</button>';
-  }).join('');
-  document.getElementById('kursTabs').innerHTML = tabsHtml;
-
-  var ausgewaehlt = KURSE.filter(function(k){ return kursAuswahl.indexOf(k.id) >= 0; });
-  var grid = document.getElementById('kursDetails');
-  grid.className = 'courses-grid' + (ausgewaehlt.length <= 3 ? ' n' + ausgewaehlt.length : '');
-  grid.innerHTML = ausgewaehlt.map(function(k){
-    return '<div class="course-card"><div class="course-header">' +
-      '<img class="course-illustration" src="' + k.img + '" alt="">' +
-      '<div class="course-tags">' + k.tags.join('') + '</div>' +
-      '<div class="course-title">' + k.title + '</div>' +
-      '<div class="course-desc">' + k.desc + '</div>' +
-      '</div></div>';
-  }).join('');
-}
-renderKurse();
 
 function toggleImpressum(){
   var body  = document.getElementById('imp-body');
