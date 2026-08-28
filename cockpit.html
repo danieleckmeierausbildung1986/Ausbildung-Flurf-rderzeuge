@@ -328,7 +328,7 @@ var AKQUISE_FIRMEN = [
   { region: 'Landau an der Isar — direkte Nähe', items: [
     { id: 'greenjobs', name: 'Greenjobs Personal GmbH', ort: 'Zwischen den Bächen 10, 94405 Landau a.d. Isar', tel: '0176 82415717', email: 'info@greenjobsgmbh.de' },
     { id: 'unique-landau', name: 'Unique Personalservice GmbH', ort: 'Harburger Straße 7, 94405 Landau a.d. Isar', tel: '09951 9479650', email: 'landau-isar@unique-personal.de' },
-    { id: 'pit-landau', name: 'personal in time GmbH', ort: 'Spitalplatz 5, 94405 Landau a.d. Isar', tel: '09951 6033954', email: null },
+    { id: 'pit-landau', name: 'personal in time GmbH', ort: 'Spitalplatz 5, 94405 Landau a.d. Isar', tel: '09951 6033954', email: 'info@personalintime.de' },
   ]},
   { region: 'Dingolfing', items: [
     { id: 'bayer-riedl', name: 'Bayer + Riedl Personalservice GmbH', ort: 'Rennstraße 2, 84130 Dingolfing', tel: '08731 32570-0', email: 'info@bayer-riedl.de' },
@@ -364,8 +364,17 @@ var AKQUISE_FIRMEN = [
 ];
 var AKQUISE_KEY = 'akquiseKontaktiert';
 
+var AKQUISE_DEFAULT_KONTAKTIERT = ['persowerk','gut','bayer-riedl','zeitconcept','tuja','peso','allpersona','alphaconsult-egg','unique-landshut','greenjobs','pit-landau','unique-landau'];
 function ladeAkquiseState(){
-  try { return JSON.parse(localStorage.getItem(AKQUISE_KEY) || '{}'); } catch(e){ return {}; }
+  try {
+    var raw = localStorage.getItem(AKQUISE_KEY);
+    if(raw === null){
+      var seed = {};
+      AKQUISE_DEFAULT_KONTAKTIERT.forEach(function(id){ seed[id] = true; });
+      return seed;
+    }
+    return JSON.parse(raw || '{}');
+  } catch(e){ return {}; }
 }
 function speichereAkquiseState(state){
   try { localStorage.setItem(AKQUISE_KEY, JSON.stringify(state)); } catch(e){}
