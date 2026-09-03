@@ -185,7 +185,15 @@ function showLibrary(){
       </div>
       <div class="lib-arrow">→</div>
     </a>`;
-  }).join('');
+  }).join('') + (isTrainer ? `
+    <a class="lib-card" href="${BASE}unterweisung_unterschriften.html" style="border-top:1px dashed var(--line);margin-top:6px;padding-top:16px">
+      <div class="lib-icon">📋</div>
+      <div class="lib-info">
+        <div class="lib-title">Jährliche Unterweisung</div>
+        <div class="lib-sub">Unterschriftenliste für die jährliche Unterweisung beim Kunden vor Ort</div>
+      </div>
+      <div class="lib-arrow">→</div>
+    </a>` : '');
 }
 
 // Login passiert bereits auf einer vorherigen Seite (z.B. Teilnehmer-Login).
