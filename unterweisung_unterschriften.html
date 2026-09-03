@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Jährliche Unterweisung – Unterschriftenliste</title>
+<style>
+:root{
+  --blue:#1a4fa8;--blue-l:#2e75cc;--blue-d:#0d2d80;--blue-xl:#e8f0fb;
+  --navy:#16243f;--ink:#1a2330;--muted:#5a6a7a;--line:#e3e8f0;
+  --safety:#f07920;--white:#fff;--bg:#f7f9fb;
+  --shadow-sm:0 2px 8px rgba(0,0,0,.08);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"Segoe UI",system-ui,sans-serif;color:var(--ink);background:var(--bg);line-height:1.6}
+a{text-decoration:none;color:inherit}
+
+nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.95);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);padding:0 24px}
+.nav-inner{max-width:900px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:80px;gap:16px}
+.nav-logo img{height:56px;object-fit:contain}
+.nav-back{display:inline-flex;align-items:center;gap:8px;padding:8px 16px;border-radius:10px;font-size:14px;font-weight:600;color:var(--muted);border:1.5px solid var(--line);background:#fff;transition:all .15s}
+.nav-back:hover{color:var(--ink);border-color:var(--navy)}
+
+.page{max-width:760px;margin:0 auto;padding:40px 24px 80px}
+.page-label{font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--blue);margin-bottom:8px}
+.page-title{font-size:clamp(22px,4vw,32px);font-weight:800;color:var(--navy);margin-bottom:8px}
+.page-sub{font-size:14.5px;color:var(--muted);margin-bottom:28px}
+
+.card{background:#fff;border-radius:18px;border:1px solid var(--line);box-shadow:var(--shadow-sm);padding:28px}
+.field-row{display:flex;gap:10px;margin-bottom:6px}
+.field-row input{flex:1;padding:12px 14px;border-radius:10px;border:1.5px solid var(--line);font-size:15px;font-family:inherit}
+.field-row input:focus{outline:none;border-color:var(--blue)}
+.btn{padding:12px 22px;border-radius:10px;font-size:14.5px;font-weight:700;border:none;cursor:pointer;transition:all .15s;white-space:nowrap}
+.btn-primary{background:var(--blue);color:#fff}
+.btn-primary:hover{background:var(--blue-d)}
+.btn-primary:disabled{opacity:.5;cursor:default}
+.btn-outline{background:#fff;border:1.5px solid var(--line);color:var(--muted)}
+.btn-outline:hover{border-color:var(--blue);color:var(--blue)}
+.hint{font-size:13px;color:var(--muted);margin-bottom:0}
+.error-box{background:#fef2f2;border:1px solid #fecaca;color:#dc2626;border-radius:10px;padding:12px 16px;font-size:14px;margin-top:14px}
+
+.session-info{background:var(--blue-xl);border-radius:12px;padding:16px 20px;margin-bottom:22px}
+.session-info .firma{font-size:16px;font-weight:800;color:var(--navy)}
+.session-info .meta{font-size:13px;color:var(--muted);margin-top:2px}
+
+.teilnehmer-row{border:1.5px solid var(--line);border-radius:14px;padding:16px 18px;margin-bottom:12px;transition:border-color .15s}
+.teilnehmer-row.signed{border-color:#22c55e;background:#f0fdf4}
+.tn-top{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.tn-name{font-size:15px;font-weight:700;color:var(--navy)}
+.tn-geb{font-size:13px;color:var(--muted)}
+.tn-status{font-size:12px;font-weight:700;padding:4px 12px;border-radius:20px}
+.tn-status.open{background:#fef9e7;color:#b7770d}
+.tn-status.done{background:#dcfce7;color:#15803d}
+
+.sign-pad-box{border:1.5px solid var(--line);border-radius:12px;overflow:hidden;position:relative;background:#fafbfc;margin-top:14px}
+.sign-pad-box canvas{display:block;width:100%;height:130px;touch-action:none}
+.sign-actions{display:flex;gap:10px;margin-top:10px}
+
+.submit-bar{margin-top:24px;text-align:center}
+.progress-text{font-size:13.5px;color:var(--muted);margin-bottom:14px}
+
+.empty-state{text-align:center;color:var(--muted);font-size:14px;padding:20px}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a class="nav-logo" href="index.html">
+      <img src="logos/logo_haupt_transparent.png" alt="ProDrive Akademie Niederbayern">
+    </a>
+    <a class="nav-back" href="trainerbereich.html">← Zurück zum Trainerbereich</a>
+  </div>
+</nav>
+
+<div class="page">
+  <div class="page-label">Jährliche Unterweisung</div>
+  <h1 class="page-title">Unterschriftenliste</h1>
+  <p class="page-sub">Registrierungsnummer der Buchung eingeben, um die Teilnehmerliste zu laden. Jeder Teilnehmer unterschreibt direkt auf diesem Gerät.</p>
+
+  <div class="card">
+    <div id="loadSection">
+      <div class="field-row">
+        <input type="text" id="regnrInput" placeholder="z. B. 2026-014" autocomplete="off">
+        <button class="btn btn-primary" id="loadBtn" onclick="ladeListe()">Liste laden</button>
+      </div>
+      <p class="hint">Die Registrierungsnummer steht in der Buchungsbestätigung der Firma.</p>
+      <div class="error-box" id="loadError" style="display:none"></div>
+    </div>
+
+    <div id="listeSection" style="display:none">
+      <div class="session-info">
+        <div class="firma" id="infoFirma"></div>
+        <div class="meta" id="infoMeta"></div>
+      </div>
+
+      <div id="teilnehmerListe"></div>
+
+      <div class="submit-bar">
+        <div class="progress-text" id="progressText"></div>
+        <button class="btn btn-primary" id="abschliessenBtn" onclick="listeAbschliessen()" disabled>Liste abschließen &amp; speichern</button>
+      </div>
+      <div class="error-box" id="submitError" style="display:none"></div>
+      <div id="successMsg" style="display:none;text-align:center;padding:24px 0">
+        <div style="font-size:40px;margin-bottom:10px">✅</div>
+        <div style="font-size:17px;font-weight:800;color:var(--navy)">Unterschriftenliste gespeichert</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── Platzhalter-Flow-URLs — noch anzulegen ──
+// UNTERWEISUNG_ABRUFEN_URL: POST { regnr } → { firma, datum, teilnehmer: [{nachname, vorname, geburtsdatum}, ...] }
+// UNTERWEISUNG_SPEICHERN_URL: POST { regnr, firma, datum, teilnehmer: [{nachname, vorname, geburtsdatum, unterschrift_base64}, ...] }
+var UNTERWEISUNG_ABRUFEN_URL = 'PLATZHALTER_NOCH_ANZULEGEN';
+var UNTERWEISUNG_SPEICHERN_URL = 'PLATZHALTER_NOCH_ANZULEGEN';
+
+// ── Trainer-Zugangsprüfung ──
+(function(){
+  var trainerAuth = null;
+  try { trainerAuth = JSON.parse(sessionStorage.getItem('trainerAuth') || 'null'); } catch(e){}
+  if(!trainerAuth || !trainerAuth.name){
+    window.location.href = 'trainerbereich.html';
+  }
+})();
+
+var aktuelleFirma = '', aktuellesDatum = '', aktuelleRegnr = '';
+var teilnehmer = []; // { nachname, vorname, geburtsdatum, unterschrift: null|dataUrl }
+var sigPads = {};
+
+var params = new URLSearchParams(window.location.search);
+var urlRegnr = params.get('regnr');
+if(urlRegnr){ document.getElementById('regnrInput').value = urlRegnr; }
+
+async function ladeListe(){
+  var regnr = document.getElementById('regnrInput').value.trim();
+  var errEl = document.getElementById('loadError');
+  errEl.style.display = 'none';
+  if(!regnr){
+    errEl.textContent = 'Bitte eine Registrierungsnummer eingeben.';
+    errEl.style.display = 'block';
+    return;
+  }
+  var btn = document.getElementById('loadBtn');
+  btn.disabled = true; btn.textContent = 'Lädt…';
+  try{
+    var res = await fetch(UNTERWEISUNG_ABRUFEN_URL, {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ regnr: regnr })
+    });
+    var data = await res.json();
+    if(!data || !data.teilnehmer || !data.teilnehmer.length){
+      errEl.textContent = 'Zu dieser Registrierungsnummer wurde keine Teilnehmerliste gefunden.';
+      errEl.style.display = 'block';
+      return;
+    }
+    aktuelleRegnr = regnr;
+    aktuelleFirma = data.firma || '';
+    aktuellesDatum = data.datum || '';
+    teilnehmer = data.teilnehmer.map(function(t){
+      return { nachname: t.nachname, vorname: t.vorname, geburtsdatum: t.geburtsdatum, unterschrift: null };
+    });
+    zeigeListe();
+  }catch(e){
+    errEl.textContent = 'Verbindungsfehler. Bitte erneut versuchen.';
+    errEl.style.display = 'block';
+  }finally{
+    btn.disabled = false; btn.textContent = 'Liste laden';
+  }
+}
+
+function zeigeListe(){
+  document.getElementById('loadSection').style.display = 'none';
+  document.getElementById('listeSection').style.display = 'block';
+  document.getElementById('infoFirma').textContent = aktuelleFirma;
+  document.getElementById('infoMeta').textContent = 'Registrierungsnummer ' + aktuelleRegnr + (aktuellesDatum ? ' · ' + aktuellesDatum : '');
+  renderTeilnehmer();
+}
+
+function renderTeilnehmer(){
+  var html = teilnehmer.map(function(t, i){
+    var signed = !!t.unterschrift;
+    return '<div class="teilnehmer-row' + (signed ? ' signed' : '') + '" id="tn-row-' + i + '">' +
+      '<div class="tn-top">' +
+        '<div>' +
+          '<div class="tn-name">' + t.nachname + ', ' + t.vorname + '</div>' +
+          '<div class="tn-geb">geb. ' + t.geburtsdatum + '</div>' +
+        '</div>' +
+        '<div class="tn-status ' + (signed ? 'done' : 'open') + '">' + (signed ? '✓ Unterschrieben' : 'Offen') + '</div>' +
+      '</div>' +
+      (signed ? '' :
+        '<div style="margin-top:12px">' +
+          '<button class="btn btn-outline" onclick="oeffneSigFeld(' + i + ')" id="tn-btn-' + i + '">Jetzt unterschreiben</button>' +
+          '<div class="sign-pad-box" id="tn-pad-wrap-' + i + '" style="display:none">' +
+            '<canvas id="tn-canvas-' + i + '"></canvas>' +
+          '</div>' +
+          '<div class="sign-actions" id="tn-actions-' + i + '" style="display:none">' +
+            '<button class="btn btn-outline" onclick="clearTnSig(' + i + ')">Löschen</button>' +
+            '<button class="btn btn-primary" onclick="speichereTnSig(' + i + ')">Unterschrift übernehmen</button>' +
+          '</div>' +
+        '</div>'
+      ) +
+    '</div>';
+  }).join('');
+  document.getElementById('teilnehmerListe').innerHTML = html || '<div class="empty-state">Keine Teilnehmer gefunden.</div>';
+  updateProgress();
+}
+
+function oeffneSigFeld(i){
+  document.getElementById('tn-btn-' + i).style.display = 'none';
+  document.getElementById('tn-pad-wrap-' + i).style.display = 'block';
+  document.getElementById('tn-actions-' + i).style.display = 'flex';
+  initSigPad('tn-canvas-' + i);
+}
+
+function initSigPad(id){
+  if(sigPads[id]) return;
+  var canvas = document.getElementById(id);
+  var ratio = window.devicePixelRatio || 1;
+  canvas.width = canvas.clientWidth * ratio;
+  canvas.height = canvas.clientHeight * ratio;
+  var ctx = canvas.getContext('2d');
+  ctx.scale(ratio, ratio);
+  ctx.strokeStyle = '#16243f';
+  ctx.lineWidth = 2.2;
+  ctx.lineCap = 'round';
+  var drawing = false, last = null;
+  function pos(e){
+    var r = canvas.getBoundingClientRect();
+    return {x: e.clientX - r.left, y: e.clientY - r.top};
+  }
+  canvas.addEventListener('pointerdown', function(e){
+    drawing = true; last = pos(e); canvas.setPointerCapture(e.pointerId);
+  });
+  canvas.addEventListener('pointermove', function(e){
+    if(!drawing) return;
+    var p = pos(e);
+    ctx.beginPath(); ctx.moveTo(last.x, last.y); ctx.lineTo(p.x, p.y); ctx.stroke();
+    last = p;
+  });
+  ['pointerup','pointerleave','pointercancel'].forEach(function(ev){
+    canvas.addEventListener(ev, function(){ drawing = false; });
+  });
+  sigPads[id] = canvas;
+}
+function clearTnSig(i){
+  var id = 'tn-canvas-' + i;
+  var canvas = document.getElementById(id);
+  var ctx = canvas.getContext('2d');
+  ctx.save(); ctx.setTransform(1,0,0,1,0,0); ctx.clearRect(0,0,canvas.width,canvas.height); ctx.restore();
+}
+function sigIsEmpty(id){
+  var canvas = document.getElementById(id);
+  var ctx = canvas.getContext('2d');
+  var data = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+  for(var k = 3; k < data.length; k += 4){ if(data[k] !== 0) return false; }
+  return true;
+}
+function speichereTnSig(i){
+  var id = 'tn-canvas-' + i;
+  if(sigIsEmpty(id)){
+    alert('Bitte erst unterschreiben, bevor Sie übernehmen.');
+    return;
+  }
+  teilnehmer[i].unterschrift = document.getElementById(id).toDataURL('image/png');
+  renderTeilnehmer();
+}
+
+function updateProgress(){
+  var gesamt = teilnehmer.length;
+  var fertig = teilnehmer.filter(function(t){ return !!t.unterschrift; }).length;
+  document.getElementById('progressText').textContent = fertig + ' von ' + gesamt + ' Teilnehmern haben unterschrieben';
+  document.getElementById('abschliessenBtn').disabled = (fertig !== gesamt || gesamt === 0);
+}
+
+async function listeAbschliessen(){
+  var errEl = document.getElementById('submitError');
+  errEl.style.display = 'none';
+  var btn = document.getElementById('abschliessenBtn');
+  btn.disabled = true; btn.textContent = 'Wird gespeichert…';
+  try{
+    await fetch(UNTERWEISUNG_SPEICHERN_URL, {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({
+        regnr: aktuelleRegnr,
+        firma: aktuelleFirma,
+        datum: aktuellesDatum,
+        teilnehmer: teilnehmer.map(function(t){
+          return { nachname: t.nachname, vorname: t.vorname, geburtsdatum: t.geburtsdatum, unterschrift_base64: t.unterschrift };
+        })
+      })
+    });
+    document.getElementById('teilnehmerListe').style.display = 'none';
+    document.querySelector('.submit-bar').style.display = 'none';
+    document.getElementById('successMsg').style.display = 'block';
+  }catch(e){
+    errEl.textContent = 'Verbindungsfehler beim Speichern. Bitte erneut versuchen.';
+    errEl.style.display = 'block';
+    btn.disabled = false; btn.textContent = 'Liste abschließen & speichern';
+  }
+}
+</script>
+<script defer src="schriftgroesse.js"></script>
+<script data-goatcounter="https://prodrive-akademie.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</body>
+</html>

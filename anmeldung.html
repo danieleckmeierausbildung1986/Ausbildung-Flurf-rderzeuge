@@ -304,6 +304,16 @@ footer{
         </div>
       </div>
 
+      <div class="af-kurs-block" id="block-unterweisung" style="display:none">
+        <div class="af-kurs-top">
+          <label class="af-kurs-label">
+            <input type="checkbox" id="ck-unterweisung">
+            Jährliche Unterweisung Flurförderzeuge
+            <span style="font-size:12px;font-weight:400;color:var(--muted)">(nur Präsenz, nur für Unternehmen)</span>
+          </label>
+        </div>
+      </div>
+
       <div id="af-teilnehmer-section" style="display:none">
         <hr class="af-divider">
         <div style="font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--navy);margin-bottom:6px">Teilnehmerliste</div>
@@ -472,8 +482,11 @@ function setKontaktTyp(t){
   document.getElementById('af-kurs-mehrfach').style.display = t==='gewerblich' ? 'none' : '';
   document.getElementById('af-kurs-hint-gewerblich').style.display = t==='gewerblich' ? 'block' : 'none';
   document.getElementById('af-teilnehmer-section').style.display = t==='gewerblich' ? 'block' : 'none';
+  document.getElementById('block-unterweisung').style.display = t==='gewerblich' ? 'block' : 'none';
   if(t==='privat'){
     document.getElementById('af-teilnehmer-list').innerHTML = '';
+    document.getElementById('ck-unterweisung').checked = false;
+    document.getElementById('block-unterweisung').classList.remove('active');
   }
   if(t==='gewerblich' && document.querySelectorAll('.af-teilnehmer-row').length===0){
     addTeilnehmer();
@@ -481,7 +494,7 @@ function setKontaktTyp(t){
 }
 
 // ── Bei Gewerblich: nur ein Kurs für die ganze Teilnehmerliste ──
-var ALL_KURS_IDS = ['stufe1','stufe2','lasi','training'];
+var ALL_KURS_IDS = ['stufe1','stufe2','lasi','training','unterweisung'];
 function enforceSingleKurs(currentId){
   if(kontaktTyp !== 'gewerblich') return;
   ALL_KURS_IDS.forEach(function(id){
@@ -666,6 +679,10 @@ document.getElementById('ck-training').addEventListener('change',function(){
   document.getElementById('block-training').classList.toggle('active',this.checked);
   if(this.checked) enforceSingleKurs('training');
 });
+document.getElementById('ck-unterweisung').addEventListener('change',function(){
+  document.getElementById('block-unterweisung').classList.toggle('active',this.checked);
+  if(this.checked) enforceSingleKurs('unterweisung');
+});
 function validateStufe2(){
   var stufe2 = document.getElementById('ck-stufe2').checked;
   var typenDiv = document.getElementById('stufe2-typen');
@@ -711,8 +728,9 @@ document.getElementById('anmeldungForm').addEventListener('submit', async functi
   var stufe2   = document.getElementById('ck-stufe2').checked;
   var lasi     = document.getElementById('ck-lasi').checked;
   var training = document.getElementById('ck-training').checked;
+  var unterweisung = document.getElementById('ck-unterweisung').checked;
 
-  if(!stufe1 && !stufe2 && !lasi && !training){
+  if(!stufe1 && !stufe2 && !lasi && !training && !unterweisung){
     errEl.textContent = 'Bitte wählen Sie mindestens eine Schulung aus.';
     errEl.style.display = 'block';
     return;
@@ -782,6 +800,7 @@ document.getElementById('anmeldungForm').addEventListener('submit', async functi
   if(stufe2)   schulungen.push('Zusatzausbildung Stufe 2');
   if(lasi)     schulungen.push('Ladungssicherung VDI 2700');
   if(training) schulungen.push('Grundlagentraining');
+  if(unterweisung) schulungen.push('Jährliche Unterweisung Flurförderzeuge');
 
   var formen = [s1form, s2form, liform];
   var schulungstyp = formen.indexOf('Elearning') >= 0 ? 'Elearning' :
@@ -813,6 +832,7 @@ document.getElementById('anmeldungForm').addEventListener('submit', async functi
     lasi_gebucht:            lasi,
     lasi_schulungsform:      liform,
     training_gebucht:        training,
+    unterweisung_gebucht:    unterweisung,
     schulung:                schulungen.join(', '),
     schulungstyp:            schulungstyp,
     kursnummer:              _urlKursnummer,
