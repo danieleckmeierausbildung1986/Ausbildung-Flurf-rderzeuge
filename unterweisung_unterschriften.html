@@ -80,11 +80,21 @@ nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.95);backdrop-
 
   <div class="card">
     <div id="loadSection">
+      <div style="margin-bottom:20px">
+        <label style="display:block;font-size:13px;font-weight:700;color:var(--navy);margin-bottom:8px">Unternehmen suchen</label>
+        <input type="text" id="firmaSuche" placeholder="Firmenname eingeben…" autocomplete="off" style="width:100%;padding:12px 14px;border-radius:10px;border:1.5px solid var(--line);font-size:15px;font-family:inherit">
+        <div id="firmaErgebnisse" style="margin-top:8px"></div>
+        <div class="hint" id="firmenListeStatus" style="margin-top:6px">Firmenverzeichnis wird geladen…</div>
+      </div>
+
+      <hr style="border:none;border-top:1px solid var(--line);margin:20px 0">
+
+      <label style="display:block;font-size:13px;font-weight:700;color:var(--navy);margin-bottom:8px">Oder direkt per Registrierungsnummer</label>
       <div class="field-row">
-        <input type="text" id="regnrInput" placeholder="z. B. 2026-014" autocomplete="off">
+        <input type="text" id="regnrInput" placeholder="z. B. U-001" autocomplete="off">
         <button class="btn btn-primary" id="loadBtn" onclick="ladeListe()">Liste laden</button>
       </div>
-      <p class="hint">Die Registrierungsnummer steht in der Buchungsbestätigung der Firma.</p>
+      <p class="hint">Die Unternehmens-ID steht in der Buchungsbestätigung und bleibt für dieses Unternehmen dauerhaft gleich.</p>
       <div class="error-box" id="loadError" style="display:none"></div>
     </div>
 
@@ -98,12 +108,14 @@ nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.95);backdrop-
 
       <div class="submit-bar">
         <div class="progress-text" id="progressText"></div>
-        <button class="btn btn-primary" id="abschliessenBtn" onclick="listeAbschliessen()" disabled>Liste abschließen &amp; speichern</button>
+        <button class="btn btn-primary" id="abschliessenBtn" onclick="listeSpeichern()">Speichern</button>
+        <p class="hint" id="abschlussHint" style="margin-top:10px"></p>
       </div>
       <div class="error-box" id="submitError" style="display:none"></div>
-      <div id="successMsg" style="display:none;text-align:center;padding:24px 0">
-        <div style="font-size:40px;margin-bottom:10px">✅</div>
-        <div style="font-size:17px;font-weight:800;color:var(--navy)">Unterschriftenliste gespeichert</div>
+      <div id="successMsg" style="display:none;text-align:center;padding:16px 0 4px;font-size:14px;font-weight:700;color:#15803d"></div>
+
+      <div style="text-align:center;margin-top:18px">
+        <button class="btn btn-outline" onclick="zurueckZurSuche()">← Andere Firma / Liste öffnen</button>
       </div>
     </div>
   </div>
@@ -111,8 +123,12 @@ nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.95);backdrop-
 
 <script>
 // ── Platzhalter-Flow-URLs — noch anzulegen ──
-// UNTERWEISUNG_ABRUFEN_URL: POST { regnr } → { firma, datum, teilnehmer: [{nachname, vorname, geburtsdatum}, ...] }
-// UNTERWEISUNG_SPEICHERN_URL: POST { regnr, firma, datum, teilnehmer: [{nachname, vorname, geburtsdatum, unterschrift_base64}, ...] }
+// UNTERWEISUNG_FIRMEN_URL: POST {} → { unternehmen: [{unternehmens_id, firma}, ...] }
+// UNTERWEISUNG_ABRUFEN_URL: POST { regnr } → { firma, datum, teilnehmer: [{nachname, vorname, geburtsdatum, status, unterschrift_vorhanden}, ...] }
+//   status je Teilnehmer: 'offen' | 'unterschrieben' | 'entschuldigt'
+// UNTERWEISUNG_SPEICHERN_URL: POST { regnr, firma, datum, teilnehmer: [{nachname, vorname, geburtsdatum, status, unterschrift_base64}, ...] }
+//   Der Flow verschickt die fertige Liste + Rechnung ans Unternehmen automatisch, sobald kein Teilnehmer mehr 'offen' ist.
+var UNTERWEISUNG_FIRMEN_URL = 'PLATZHALTER_NOCH_ANZULEGEN';
 var UNTERWEISUNG_ABRUFEN_URL = 'PLATZHALTER_NOCH_ANZULEGEN';
 var UNTERWEISUNG_SPEICHERN_URL = 'PLATZHALTER_NOCH_ANZULEGEN';
 
@@ -126,19 +142,45 @@ var UNTERWEISUNG_SPEICHERN_URL = 'PLATZHALTER_NOCH_ANZULEGEN';
 })();
 
 var aktuelleFirma = '', aktuellesDatum = '', aktuelleRegnr = '';
-var teilnehmer = []; // { nachname, vorname, geburtsdatum, unterschrift: null|dataUrl }
+var teilnehmer = []; // { nachname, vorname, geburtsdatum, status:'offen'|'unterschrieben'|'entschuldigt', unterschrift: null|dataUrl }
 var sigPads = {};
+var alleFirmen = [];
 
 var params = new URLSearchParams(window.location.search);
 var urlRegnr = params.get('regnr');
 if(urlRegnr){ document.getElementById('regnrInput').value = urlRegnr; }
 
-async function ladeListe(){
-  var regnr = document.getElementById('regnrInput').value.trim();
+// ── Firmenverzeichnis laden + durchsuchbar machen ──
+(async function ladeFirmenverzeichnis(){
+  var statusEl = document.getElementById('firmenListeStatus');
+  try{
+    var res = await fetch(UNTERWEISUNG_FIRMEN_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({}) });
+    var data = await res.json();
+    alleFirmen = (data && data.unternehmen) ? data.unternehmen : [];
+    statusEl.textContent = alleFirmen.length ? '' : 'Noch keine Unternehmen erfasst.';
+  }catch(e){
+    statusEl.textContent = 'Firmenverzeichnis konnte nicht geladen werden — Suche nach Registrierungsnummer weiterhin möglich.';
+  }
+})();
+
+document.getElementById('firmaSuche').addEventListener('input', function(){
+  var q = this.value.trim().toLowerCase();
+  var box = document.getElementById('firmaErgebnisse');
+  if(!q){ box.innerHTML = ''; return; }
+  var treffer = alleFirmen.filter(function(f){ return f.firma.toLowerCase().indexOf(q) >= 0; }).slice(0, 8);
+  box.innerHTML = treffer.map(function(f){
+    return '<div class="teilnehmer-row" style="cursor:pointer;padding:10px 14px;margin-bottom:6px" onclick="ladeListe(\'' + f.unternehmens_id + '\')">' +
+      '<span class="tn-name">' + f.firma + '</span> <span class="tn-geb">(' + f.unternehmens_id + ')</span>' +
+    '</div>';
+  }).join('') || '<div class="hint">Keine Treffer.</div>';
+});
+
+async function ladeListe(idFromSearch){
+  var regnr = idFromSearch || document.getElementById('regnrInput').value.trim();
   var errEl = document.getElementById('loadError');
   errEl.style.display = 'none';
   if(!regnr){
-    errEl.textContent = 'Bitte eine Registrierungsnummer eingeben.';
+    errEl.textContent = 'Bitte eine Registrierungsnummer eingeben oder ein Unternehmen auswählen.';
     errEl.style.display = 'block';
     return;
   }
@@ -159,7 +201,7 @@ async function ladeListe(){
     aktuelleFirma = data.firma || '';
     aktuellesDatum = data.datum || '';
     teilnehmer = data.teilnehmer.map(function(t){
-      return { nachname: t.nachname, vorname: t.vorname, geburtsdatum: t.geburtsdatum, unterschrift: null };
+      return { nachname: t.nachname, vorname: t.vorname, geburtsdatum: t.geburtsdatum, status: t.status || 'offen', unterschrift: null };
     });
     zeigeListe();
   }catch(e){
@@ -170,9 +212,19 @@ async function ladeListe(){
   }
 }
 
+function zurueckZurSuche(){
+  document.getElementById('loadSection').style.display = 'block';
+  document.getElementById('listeSection').style.display = 'none';
+  document.getElementById('successMsg').style.display = 'none';
+  document.getElementById('regnrInput').value = '';
+  document.getElementById('firmaSuche').value = '';
+  document.getElementById('firmaErgebnisse').innerHTML = '';
+}
+
 function zeigeListe(){
   document.getElementById('loadSection').style.display = 'none';
   document.getElementById('listeSection').style.display = 'block';
+  document.getElementById('successMsg').style.display = 'none';
   document.getElementById('infoFirma').textContent = aktuelleFirma;
   document.getElementById('infoMeta').textContent = 'Registrierungsnummer ' + aktuelleRegnr + (aktuellesDatum ? ' · ' + aktuellesDatum : '');
   renderTeilnehmer();
@@ -180,18 +232,23 @@ function zeigeListe(){
 
 function renderTeilnehmer(){
   var html = teilnehmer.map(function(t, i){
-    var signed = !!t.unterschrift;
-    return '<div class="teilnehmer-row' + (signed ? ' signed' : '') + '" id="tn-row-' + i + '">' +
+    var statusLabel = { offen:'Offen', unterschrieben:'✓ Unterschrieben', entschuldigt:'Entschuldigt' }[t.status];
+    var statusClass = t.status === 'offen' ? 'open' : 'done';
+    var rowClass = t.status === 'unterschrieben' ? ' signed' : (t.status === 'entschuldigt' ? ' signed' : '');
+    return '<div class="teilnehmer-row' + rowClass + '" id="tn-row-' + i + '">' +
       '<div class="tn-top">' +
         '<div>' +
           '<div class="tn-name">' + t.nachname + ', ' + t.vorname + '</div>' +
           '<div class="tn-geb">geb. ' + t.geburtsdatum + '</div>' +
         '</div>' +
-        '<div class="tn-status ' + (signed ? 'done' : 'open') + '">' + (signed ? '✓ Unterschrieben' : 'Offen') + '</div>' +
+        '<div class="tn-status ' + statusClass + '">' + statusLabel + '</div>' +
       '</div>' +
-      (signed ? '' :
+      (t.status !== 'offen' ? (
+        '<div style="margin-top:10px"><button class="btn btn-outline" onclick="zuruecksetzen(' + i + ')">Zurücksetzen</button></div>'
+      ) :
         '<div style="margin-top:12px">' +
-          '<button class="btn btn-outline" onclick="oeffneSigFeld(' + i + ')" id="tn-btn-' + i + '">Jetzt unterschreiben</button>' +
+          '<button class="btn btn-outline" onclick="oeffneSigFeld(' + i + ')" id="tn-btn-' + i + '">Jetzt unterschreiben</button> ' +
+          '<button class="btn btn-outline" onclick="alsEntschuldigtMarkieren(' + i + ')">Entschuldigt (Urlaub/Krankheit)</button>' +
           '<div class="sign-pad-box" id="tn-pad-wrap-' + i + '" style="display:none">' +
             '<canvas id="tn-canvas-' + i + '"></canvas>' +
           '</div>' +
@@ -205,6 +262,17 @@ function renderTeilnehmer(){
   }).join('');
   document.getElementById('teilnehmerListe').innerHTML = html || '<div class="empty-state">Keine Teilnehmer gefunden.</div>';
   updateProgress();
+}
+
+function alsEntschuldigtMarkieren(i){
+  teilnehmer[i].status = 'entschuldigt';
+  teilnehmer[i].unterschrift = null;
+  renderTeilnehmer();
+}
+function zuruecksetzen(i){
+  teilnehmer[i].status = 'offen';
+  teilnehmer[i].unterschrift = null;
+  renderTeilnehmer();
 }
 
 function oeffneSigFeld(i){
@@ -264,17 +332,23 @@ function speichereTnSig(i){
     return;
   }
   teilnehmer[i].unterschrift = document.getElementById(id).toDataURL('image/png');
+  teilnehmer[i].status = 'unterschrieben';
   renderTeilnehmer();
 }
 
 function updateProgress(){
   var gesamt = teilnehmer.length;
-  var fertig = teilnehmer.filter(function(t){ return !!t.unterschrift; }).length;
-  document.getElementById('progressText').textContent = fertig + ' von ' + gesamt + ' Teilnehmern haben unterschrieben';
-  document.getElementById('abschliessenBtn').disabled = (fertig !== gesamt || gesamt === 0);
+  var offen = teilnehmer.filter(function(t){ return t.status === 'offen'; }).length;
+  var unterschrieben = teilnehmer.filter(function(t){ return t.status === 'unterschrieben'; }).length;
+  var entschuldigt = teilnehmer.filter(function(t){ return t.status === 'entschuldigt'; }).length;
+  document.getElementById('progressText').textContent =
+    unterschrieben + ' unterschrieben · ' + entschuldigt + ' entschuldigt · ' + offen + ' noch offen (von ' + gesamt + ')';
+  document.getElementById('abschlussHint').textContent = offen === 0
+    ? 'Alle Teilnehmer sind erfasst — beim Speichern gehen die fertige Liste und die Rechnung automatisch ans Unternehmen raus.'
+    : 'Sie können auch mit offenen Teilnehmern zwischenspeichern und die Liste später erneut öffnen (z. B. bei Urlaub/Krankheit).';
 }
 
-async function listeAbschliessen(){
+async function listeSpeichern(){
   var errEl = document.getElementById('submitError');
   errEl.style.display = 'none';
   var btn = document.getElementById('abschliessenBtn');
@@ -287,17 +361,21 @@ async function listeAbschliessen(){
         firma: aktuelleFirma,
         datum: aktuellesDatum,
         teilnehmer: teilnehmer.map(function(t){
-          return { nachname: t.nachname, vorname: t.vorname, geburtsdatum: t.geburtsdatum, unterschrift_base64: t.unterschrift };
+          return { nachname: t.nachname, vorname: t.vorname, geburtsdatum: t.geburtsdatum, status: t.status, unterschrift_base64: t.unterschrift };
         })
       })
     });
-    document.getElementById('teilnehmerListe').style.display = 'none';
-    document.querySelector('.submit-bar').style.display = 'none';
-    document.getElementById('successMsg').style.display = 'block';
+    var offen = teilnehmer.filter(function(t){ return t.status === 'offen'; }).length;
+    var successEl = document.getElementById('successMsg');
+    successEl.textContent = offen === 0
+      ? '✅ Gespeichert — Liste und Rechnung wurden an ' + aktuelleFirma + ' verschickt.'
+      : '✅ Zwischenstand gespeichert. Sie können diese Liste jederzeit über die Registrierungsnummer ' + aktuelleRegnr + ' wieder öffnen.';
+    successEl.style.display = 'block';
   }catch(e){
     errEl.textContent = 'Verbindungsfehler beim Speichern. Bitte erneut versuchen.';
     errEl.style.display = 'block';
-    btn.disabled = false; btn.textContent = 'Liste abschließen & speichern';
+  }finally{
+    btn.disabled = false; btn.textContent = 'Speichern';
   }
 }
 </script>
