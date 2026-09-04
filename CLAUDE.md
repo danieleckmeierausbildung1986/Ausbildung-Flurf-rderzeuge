@@ -87,3 +87,102 @@ prüfen, nicht von einem anderen Flow übernehmen.
   Angaben (Aussteller, Datum, genauer Titel) fragen, bevor sie auf der
   Website erscheinen.
 - Registrierungsnummer-Format: `YYYY-NNN` (z.B. `2026-001`).
+
+## Bestehender Rechnungs-/E-Mail-Mechanismus (Flow "Anmeldung HP")
+
+Der Haupt-Anmeldeflow ("Anmeldung HP", Owner Daniel Eckmeier, verbunden mit
+Office 365 Outlook + SharePoint + OneDrive) enthält bereits die komplette
+Rechnungs- und Versandlogik für Stufe1/Stufe2/LaSi-Buchungen. Grobe Struktur
+(Stand 04.09.2026, per Screenshot erfasst, nicht vollständig durchgebaut):
+
+- Trigger → viele `Variable initialisieren`-Schritte (u.a.
+  `VarLeistungenHTMLGruppiert`, `VarNeueRechnungsnummer`,
+  `VarLeistungenHTML`, `VarGesamtbetrag`, `VarPositionenArray`)
+- Bedingung "Ist Sammelanmeldung" (Wahr/Falsch) — Sammelanmeldungen (mehrere
+  Teilnehmer/Kurse in einer Buchung) laufen über einen eigenen Zweig mit
+  `VarSammelID`, pro Kurstyp eigene Bedingungen (`Ist Stufe 2 Sammel`, `Ist
+  Ladungssicherung Sammel`), `For each Teilnehmer` mit Existenzprüfung
+  ("Teilnehmer existiert bereits" → Update statt Neuanlage)
+- Rechnungsnummer-Vergabe: `Letzte Rechnungsnummer Sammel` (Elemente
+  abrufen, wohl sortiert) → Bedingung `Rechnungsnummer vorhanden Sammel 2`
+  (Wahr/Falsch) → jeweils eigene `Variable festlegen`
+- Rechnungserstellung: `For each Positionen Sammel` (Element aktualisieren
+  + Array aufbauen) → `For each Gruppierung Sammel` (Array filtern) →
+  `Logo laden Sammel` → **Stripe-Integration**: `Stripe Preis erstellen` →
+  `Stripe Zahlungslink erstellen` → `QR Code laden` → `Rechnung HTML
+  gesammelt Sammel` (HTML-Vorlage zusammenbauen) → `Datei erstellen Sammel`
+  → `Datei konvertieren Sammel` (vermutlich HTML→PDF) → `Datei erstellen
+  SharePoint Sammel` (Ablage der Rechnung als Datei) → `E-Mail senden
+  Sammel` (Versand)
+- Danach weitere Bedingungen für Einzelbuchungen (`Bedingung 1`, `Hat
+  Stufe1 Nachweis`, `Schubmaststapler`, etc.) — nicht im Detail erfasst.
+
+**Für die Jährliche Unterweisung (Zahlungen-Liste)** wurde bewusst
+entschieden, **nicht** diese komplette Stripe+PDF+SharePoint-Pipeline
+nachzubauen, sondern zunächst nur eine einfache Zahlungen-Zeile (Firma,
+Kurs, Betrag, Rechnungsnummer) anzulegen — die volle Rechnungs-PDF- und
+E-Mail-Automatisierung ist als eigener, späterer Ausbauschritt vorgesehen.
+
+## Jährliche Unterweisung — Architektur (in Arbeit, Stand 04.09.2026)
+
+Neues, von `Staplerprufung_Master` komplett unabhängiges Feature für
+unternehmensweite jährliche Sicherheitsunterweisungen (Buchung + digitale
+Unterschriftenliste). Persistente Unternehmens_ID (`U-001`, `U-002`, ...)
+pro Firma, bleibt über mehrere Jahre/Buchungen gleich.
+
+**Neue SharePoint-Listen** (alle mit Title-Spalte umbenannt zu
+`Unternehmens_ID`, dadurch **intern weiterhin `Title`** — Title-Falle
+beachten):
+- `Unterweisung_Unternehmen` (Site "Ausbildung Zentrale"): `Unternehmens_ID`
+  (=Title), `Firma`, `Ansprechpartner`, `Email_AP`, `Telefon_AP`,
+  `Unternehmen_Adresse`
+- `Unterweisung_Buchungen` (Site **"ProDrive Verwaltung"**, nicht Ausbildung
+  Zentrale!): `Unternehmens_ID` (=Title), `Firma`, `Datum`, `Jahr`, `Status`
+  (Choice: `Offen`/`Abgeschlossen`), `Rechnungsnummer`
+- `Unterweisung_Teilnehmer` (Site "Ausbildung Zentrale"): `Unternehmens_ID`
+  (=Title), `Datum`, `Nachname`, `Vorname`, `Geburtsdatum`, `Status` (Choice:
+  `Offen`/`Unterschrieben`/`Entschuldigt`), `Unterschrift` (mehrzeiliger
+  Text, Base64-PNG)
+- `Zahlungen` (Site "ProDrive Verwaltung", bestehende Liste) erweitert um
+  Kurs-Option `"Jährliche Unterweisung Flurförderzeuge"` — Spalte
+  `Firmenname` existierte dort bereits.
+
+**Wichtiger Connector-Fallstrick:** Choice-Spalten kommen beim SharePoint
+"Elemente abrufen" manchmal als Objekt `{Value:"Offen", Id:0, ...}` zurück,
+nicht als reiner String — beim Auslesen daher immer
+`item()?['Spalte']?['Value']` verwenden (ggf. mit `coalesce(...)` gegen
+reine String-Fälle absichern), nie `item()?['Spalte']` direkt in
+`toLower()`/String-Funktionen stecken.
+
+**`select()`-Lambda-Ausdrücke funktionieren in diesem Flow-Typ nicht
+zuverlässig** (Parserfehler) — für Array-Transformationen stattdessen die
+Datenvorgänge-Aktion **"Auswählen" (Select)** verwenden (grafisches
+Mapping), für "höchsten Wert finden"-Logik lieber `For each` + Bedingung +
+Variable statt `select()`/`max()`-Lambda-Kombination.
+
+**Flows (alle neu, unabhängig vom bestehenden `ANMELDUNG_URL`-Flow):**
+- `Unterweisung_Buchung_Anlegen` — nimmt Buchung von `anmeldung.html`
+  entgegen, vergibt/findet `Unternehmens_ID`, legt Buchung + Teilnehmer an.
+  Fertig & getestet.
+- `Unterweisung_Firmenverzeichnis` — liefert `{unternehmen:[{unternehmens_id,
+  firma}]}` für die Firmensuche im Trainer-Tool. Fertig & getestet.
+- `Unterweisung_Liste_Abrufen` (in der UI als "UNTERWEISUNG_ABRUFEN_URL"
+  benannt) — liefert zu einer `Unternehmens_ID` Firma + Teilnehmerliste.
+  Fertig & getestet.
+- `UNTERWEISUNG_SPEICHERN_URL` — schreibt Unterschrift/Status je Teilnehmer
+  zurück; Grundfunktion (Teilnehmer aktualisieren) fertig & getestet. Die
+  Abschluss-Logik (Rechnung anlegen bei 0 offenen Teilnehmern, E-Mail-Versand)
+  ist **in Arbeit, noch nicht fertig**.
+
+**Preislogik Jährliche Unterweisung** (bestätigt, netto/brutto noch klären
+falls relevant): pro Teilnehmer gestaffelt — 1–3 TN: 89€, 4–6 TN: 69€, 7+ TN:
+55€ (keine weitere Stufe ab 9+, bleibt bei 55€) — plus Mindestpauschale
+300€ pro Termin, es gilt der höhere der beiden Beträge:
+`Betrag = max(300, Teilnehmerzahl × Preis/TN)`.
+
+**Offene Entscheidung:** Rechnung bei Abschluss der Unterschriftenliste
+(nicht bei Buchung) — Rechnungsnummer-Vergabe soll die bestehende Logik aus
+"Anmeldung HP" (`Letzte Rechnungsnummer` + Fallback-Bedingung) wiederverwenden,
+noch nicht implementiert. Zwei getrennte E-Mails (eine mit Rechnung, eine mit
+unterschriebener Liste) sind gewünscht, aber die PDF-/HTML-Erstellung dafür
+ist noch nicht gebaut.
