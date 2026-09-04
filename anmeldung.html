@@ -349,6 +349,9 @@ footer{
 <script>
 (function(){var p=new URLSearchParams(window.location.search);if((p.get('v')||0)<4){p.set('v',4);window.location.replace(location.pathname+'?'+p.toString());}})();
 var ANMELDUNG_URL = 'https://default8af25f9034bc4ef4aba22ab6f641d5.01.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/dbe5673986dd498bb2049e8a80220add/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=ogUKNB6jpCkEcxwY87bHLFJbIzrnQm5TPAwNTX4DYFQ';
+// Jährliche Unterweisung läuft über einen eigenen, von der Kursanmeldung unabhängigen Flow
+// (eigene Unternehmens_ID/Rechnungsnummerierung, siehe CLAUDE.md).
+var UNTERWEISUNG_BUCHUNG_URL = 'https://default8af25f9034bc4ef4aba22ab6f641d5.01.environment.api.powerplatform.com:443/powerautomate/automations/direct/cu/19/workflows/92de327c90254e0ab5c93242fae29148/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=hTmt9j28ZL30qJ9a8r94B3ULzSRf1-Z1BTSq-JYx8EU';
 
 // Kontakttyp-Status muss VOR allen Vorausfüll-IIFEs deklariert werden,
 // sonst überschreibt diese Zeile ein per URL-Parameter gesetztes 'gewerblich' wieder mit 'privat'.
@@ -795,12 +798,46 @@ document.getElementById('anmeldungForm').addEventListener('submit', async functi
     return;
   }
 
+  var btn = e.target.querySelector('.af-submit');
+
+  if(unterweisung){
+    var uwPayload = {
+      firma:           document.getElementById('af-firma').value.trim(),
+      ansprechpartner: [document.getElementById('af-vorname').value.trim(), document.getElementById('af-nachname').value.trim()].filter(Boolean).join(' '),
+      email:           document.getElementById('af-email').value.trim(),
+      telefon:         document.getElementById('af-telefon').value.trim(),
+      adresse:         [document.getElementById('af-strasse').value.trim(), [document.getElementById('af-plz').value.trim(), document.getElementById('af-ort').value.trim()].filter(Boolean).join(' ')].filter(Boolean).join(', '),
+      teilnehmer:      buildTeilnehmerArray()
+    };
+    btn.disabled = true;
+    btn.textContent = 'Wird gesendet…';
+    try {
+      var uwResp = await fetch(UNTERWEISUNG_BUCHUNG_URL, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(uwPayload)
+      });
+      if(uwResp.ok || uwResp.status === 202){
+        document.getElementById('anmeldungForm').style.display = 'none';
+        document.getElementById('af-success-msg').style.display = 'block';
+        window.scrollTo({top:0, behavior:'smooth'});
+      } else {
+        throw new Error('Status: ' + uwResp.status);
+      }
+    } catch(err){
+      btn.disabled = false;
+      btn.textContent = 'Anmeldung absenden';
+      errEl.textContent = 'Fehler beim Senden — bitte per E-Mail melden: DanielEckmeier@Ausbildung1986.onmicrosoft.com';
+      errEl.style.display = 'block';
+    }
+    return;
+  }
+
   var schulungen = [];
   if(stufe1)   schulungen.push('Ausbildung Flurförderzeuge Stufe 1');
   if(stufe2)   schulungen.push('Zusatzausbildung Stufe 2');
   if(lasi)     schulungen.push('Ladungssicherung VDI 2700');
   if(training) schulungen.push('Grundlagentraining');
-  if(unterweisung) schulungen.push('Jährliche Unterweisung Flurförderzeuge');
 
   var formen = [s1form, s2form, liform];
   var schulungstyp = formen.indexOf('Elearning') >= 0 ? 'Elearning' :
@@ -832,7 +869,6 @@ document.getElementById('anmeldungForm').addEventListener('submit', async functi
     lasi_gebucht:            lasi,
     lasi_schulungsform:      liform,
     training_gebucht:        training,
-    unterweisung_gebucht:    unterweisung,
     schulung:                schulungen.join(', '),
     schulungstyp:            schulungstyp,
     kursnummer:              _urlKursnummer,
@@ -850,7 +886,6 @@ document.getElementById('anmeldungForm').addEventListener('submit', async functi
     nachweis_stufe1_dateiname: nachweisDateiname
   };
 
-  var btn = e.target.querySelector('.af-submit');
   btn.disabled = true;
   btn.textContent = 'Wird gesendet…';
 
