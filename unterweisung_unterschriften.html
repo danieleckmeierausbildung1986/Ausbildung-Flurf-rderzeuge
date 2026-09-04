@@ -127,7 +127,8 @@ nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.95);backdrop-
 // UNTERWEISUNG_ABRUFEN_URL: POST { unternehmens_id } → { firma, datum, teilnehmer: [{nachname, vorname, geburtsdatum, status}, ...] }
 //   status je Teilnehmer: 'offen' | 'unterschrieben' | 'entschuldigt'
 // UNTERWEISUNG_SPEICHERN_URL: POST { unternehmens_id, firma, datum, teilnehmer: [{nachname, vorname, geburtsdatum, status, unterschrift_base64}, ...] }
-//   Der Flow legt bei Vollständigkeit (kein Teilnehmer mehr 'offen') automatisch eine Rechnungszeile in Zahlungen an.
+//   Der Flow legt eine Rechnungszeile in Zahlungen an, sobald wirklich alle Teilnehmer 'unterschrieben' sind
+//   (Status 'offen' oder 'entschuldigt' blockiert die Rechnung weiterhin).
 var UNTERWEISUNG_FIRMEN_URL = 'https://default8af25f9034bc4ef4aba22ab6f641d5.01.environment.api.powerplatform.com:443/powerautomate/automations/direct/cu/11/workflows/8e388ca32816427c8ca399b033a07626/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=SbAjq8ZAcl16P_cA74sVOYOVO_LJg7-qZPe06tN3kdc';
 var UNTERWEISUNG_ABRUFEN_URL = 'https://default8af25f9034bc4ef4aba22ab6f641d5.01.environment.api.powerplatform.com:443/powerautomate/automations/direct/cu/27/workflows/cadfec6b8bcc4e6dbeceb7ad99386c48/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=FXxhsGsho5o7p55hzrNClzA1SAxTX7Ir6jUHaIOLyto';
 var UNTERWEISUNG_SPEICHERN_URL = 'https://default8af25f9034bc4ef4aba22ab6f641d5.01.environment.api.powerplatform.com:443/powerautomate/automations/direct/cu/14/workflows/a414fb57d0a8428fa6994924d3ad73a5/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=IgOU5fNV0BxQ1IDqiL15F3LYzUhh2BFD9AjI_astlQ0';
@@ -343,9 +344,9 @@ function updateProgress(){
   var entschuldigt = teilnehmer.filter(function(t){ return t.status === 'entschuldigt'; }).length;
   document.getElementById('progressText').textContent =
     unterschrieben + ' unterschrieben · ' + entschuldigt + ' entschuldigt · ' + offen + ' noch offen (von ' + gesamt + ')';
-  document.getElementById('abschlussHint').textContent = offen === 0
-    ? 'Alle Teilnehmer sind erfasst — beim Speichern gehen die fertige Liste und die Rechnung automatisch ans Unternehmen raus.'
-    : 'Sie können auch mit offenen Teilnehmern zwischenspeichern und die Liste später erneut öffnen (z. B. bei Urlaub/Krankheit).';
+  document.getElementById('abschlussHint').textContent = unterschrieben === gesamt
+    ? 'Alle Teilnehmer haben unterschrieben — beim Speichern wird die Rechnung erstellt.'
+    : 'Sie können auch mit offenen oder entschuldigten Teilnehmern zwischenspeichern und die Liste später erneut öffnen (z. B. bei Urlaub/Krankheit). Die Rechnung entsteht erst, wenn wirklich alle unterschrieben haben.';
 }
 
 async function listeSpeichern(){
@@ -365,10 +366,10 @@ async function listeSpeichern(){
         })
       })
     });
-    var offen = teilnehmer.filter(function(t){ return t.status === 'offen'; }).length;
+    var alleUnterschrieben = teilnehmer.every(function(t){ return t.status === 'unterschrieben'; });
     var successEl = document.getElementById('successMsg');
-    successEl.textContent = offen === 0
-      ? '✅ Gespeichert — Liste und Rechnung wurden an ' + aktuelleFirma + ' verschickt.'
+    successEl.textContent = alleUnterschrieben
+      ? '✅ Gespeichert — alle Teilnehmer haben unterschrieben, die Rechnung für ' + aktuelleFirma + ' wurde erstellt.'
       : '✅ Zwischenstand gespeichert. Sie können diese Liste jederzeit über die Registrierungsnummer ' + aktuelleRegnr + ' wieder öffnen.';
     successEl.style.display = 'block';
   }catch(e){
