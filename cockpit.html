@@ -563,7 +563,7 @@ function renderZahlungen(rows){
     document.getElementById('lopList').innerHTML = '<div class="lop-empty">✓ Keine offenen Posten — alles bezahlt.</div>';
   } else {
     document.getElementById('lopList').innerHTML = offen.map(function(r){
-      var wer = [r.Vorname, r.Name].filter(Boolean).join(' ') || r.Title || 'Unbekannt';
+      var wer = [r.Vorname, r.Name].filter(Boolean).join(' ') || r.Firmenname || r.Title || 'Unbekannt';
       var kurs = choiceVal(r.Kurs) || 'Unbekannt';
       var sub = 'Rechnung ' + (r.Rechnungsnummer || '–') + (r.Zahlungsdatum ? ' · ' + r.Zahlungsdatum : '');
       return '<div class="lop-row">' +
