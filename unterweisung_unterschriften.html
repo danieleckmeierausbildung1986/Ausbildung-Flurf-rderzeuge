@@ -122,15 +122,15 @@ nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.95);backdrop-
 </div>
 
 <script>
-// ── Platzhalter-Flow-URLs — noch anzulegen ──
+// ── Flow-URLs (Unterweisung_Firmenverzeichnis / Unterweisung_Liste_Abrufen / UNTERWEISUNG_SPEICHERN_URL) ──
 // UNTERWEISUNG_FIRMEN_URL: POST {} → { unternehmen: [{unternehmens_id, firma}, ...] }
-// UNTERWEISUNG_ABRUFEN_URL: POST { regnr } → { firma, datum, teilnehmer: [{nachname, vorname, geburtsdatum, status, unterschrift_vorhanden}, ...] }
+// UNTERWEISUNG_ABRUFEN_URL: POST { unternehmens_id } → { firma, datum, teilnehmer: [{nachname, vorname, geburtsdatum, status}, ...] }
 //   status je Teilnehmer: 'offen' | 'unterschrieben' | 'entschuldigt'
-// UNTERWEISUNG_SPEICHERN_URL: POST { regnr, firma, datum, teilnehmer: [{nachname, vorname, geburtsdatum, status, unterschrift_base64}, ...] }
-//   Der Flow verschickt die fertige Liste + Rechnung ans Unternehmen automatisch, sobald kein Teilnehmer mehr 'offen' ist.
-var UNTERWEISUNG_FIRMEN_URL = 'PLATZHALTER_NOCH_ANZULEGEN';
-var UNTERWEISUNG_ABRUFEN_URL = 'PLATZHALTER_NOCH_ANZULEGEN';
-var UNTERWEISUNG_SPEICHERN_URL = 'PLATZHALTER_NOCH_ANZULEGEN';
+// UNTERWEISUNG_SPEICHERN_URL: POST { unternehmens_id, firma, datum, teilnehmer: [{nachname, vorname, geburtsdatum, status, unterschrift_base64}, ...] }
+//   Der Flow legt bei Vollständigkeit (kein Teilnehmer mehr 'offen') automatisch eine Rechnungszeile in Zahlungen an.
+var UNTERWEISUNG_FIRMEN_URL = 'https://default8af25f9034bc4ef4aba22ab6f641d5.01.environment.api.powerplatform.com:443/powerautomate/automations/direct/cu/11/workflows/8e388ca32816427c8ca399b033a07626/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=SbAjq8ZAcl16P_cA74sVOYOVO_LJg7-qZPe06tN3kdc';
+var UNTERWEISUNG_ABRUFEN_URL = 'https://default8af25f9034bc4ef4aba22ab6f641d5.01.environment.api.powerplatform.com:443/powerautomate/automations/direct/cu/27/workflows/cadfec6b8bcc4e6dbeceb7ad99386c48/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=FXxhsGsho5o7p55hzrNClzA1SAxTX7Ir6jUHaIOLyto';
+var UNTERWEISUNG_SPEICHERN_URL = 'https://default8af25f9034bc4ef4aba22ab6f641d5.01.environment.api.powerplatform.com:443/powerautomate/automations/direct/cu/14/workflows/a414fb57d0a8428fa6994924d3ad73a5/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=IgOU5fNV0BxQ1IDqiL15F3LYzUhh2BFD9AjI_astlQ0';
 
 // ── Trainer-Zugangsprüfung ──
 (function(){
@@ -189,7 +189,7 @@ async function ladeListe(idFromSearch){
   try{
     var res = await fetch(UNTERWEISUNG_ABRUFEN_URL, {
       method: 'POST', headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({ regnr: regnr })
+      body: JSON.stringify({ unternehmens_id: regnr })
     });
     var data = await res.json();
     if(!data || !data.teilnehmer || !data.teilnehmer.length){
@@ -357,7 +357,7 @@ async function listeSpeichern(){
     await fetch(UNTERWEISUNG_SPEICHERN_URL, {
       method: 'POST', headers: {'Content-Type':'application/json'},
       body: JSON.stringify({
-        regnr: aktuelleRegnr,
+        unternehmens_id: aktuelleRegnr,
         firma: aktuelleFirma,
         datum: aktuellesDatum,
         teilnehmer: teilnehmer.map(function(t){
