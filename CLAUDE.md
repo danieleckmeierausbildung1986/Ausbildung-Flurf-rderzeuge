@@ -172,10 +172,13 @@ Variable statt `select()`/`max()`-Lambda-Kombination.
   benannt) — liefert zu einer `Unternehmens_ID` Firma + Teilnehmerliste.
   Fertig & getestet.
 - `UNTERWEISUNG_SPEICHERN_URL` — schreibt Unterschrift/Status je Teilnehmer
-  zurück; prüft danach Vollständigkeit (keine Teilnehmer mehr mit Status
-  `Offen`) und legt bei Abschluss automatisch eine einfache Rechnungszeile
-  in `Zahlungen` an (Rechnungsnummer nach demselben Schema wie "Anmeldung
-  HP", Betrag nach Preisstaffel). **Fertig & getestet.** Die volle
+  zurück; prüft danach Vollständigkeit (**alle** Teilnehmer haben Status
+  `Unterschrieben` — `Entschuldigt` blockiert die Rechnung bewusst
+  weiterhin, siehe unten) und legt bei Abschluss automatisch eine einfache
+  Rechnungszeile in `Zahlungen` an (Rechnungsnummer nach demselben Schema
+  wie "Anmeldung HP", Betrag nach Preisstaffel), plus eine Sperre gegen
+  mehrfaches Abschließen (siehe unten). **Fertig, end-to-end getestet
+  (05.09.2026, Testfirma "Musterlager Landshut GmbH").** Die volle
   Stripe-Zahlungslink- + PDF-Rechnung- + E-Mail-Pipeline (analog "Anmeldung
   HP") ist bewusst **noch nicht gebaut** — separater, späterer Ausbauschritt.
 
@@ -185,6 +188,17 @@ falls relevant): pro Teilnehmer gestaffelt — 1–3 TN: 89€, 4–6 TN: 69€,
 300€ pro Termin, es gilt der höhere der beiden Beträge:
 `Betrag = max(300, Teilnehmerzahl × Preis/TN)`.
 
+**Vollständigkeits-Entscheidung (wichtig, nachträglich geändert):** Ein
+`Entschuldigt`-Teilnehmer blockiert die Rechnungsstellung genauso wie
+`Offen` — nur wenn wirklich **alle** `Unterschrieben` sind, wird
+abgerechnet. Ursprünglich war geplant, dass `Entschuldigt` die Rechnung
+nicht aufhält (damit ein einzelner Urlaub die Abrechnung nicht blockiert),
+das wurde aber bewusst verworfen: die Buchung soll erst als inhaltlich
+abgeschlossen gelten, wenn wirklich jeder schult wurde. Die Liste bleibt
+trotzdem jederzeit mit offenen/entschuldigten Teilnehmern zwischenspeicherbar
+und über die `Unternehmens_ID` wieder aufrufbar — das betrifft nur den
+Zeitpunkt der Rechnungsstellung, nicht das Speichern selbst.
+
 **Rechnungsnummer-Vergabe** (im Flow `UNTERWEISUNG_SPEICHERN_URL`
 implementiert, exakt wie in "Anmeldung HP"): Format `RE-YYYY-NNN`, zählt
 pro Jahr neu, ermittelt über `startswith(Rechnungsnummer,'RE-<Jahr>')` auf
@@ -192,12 +206,37 @@ pro Jahr neu, ermittelt über `startswith(Rechnungsnummer,'RE-<Jahr>')` auf
 derselben Nummernreihe wie alle anderen Kurstypen (keine Kollisionsgefahr,
 da dieselbe Liste/Abfrage verwendet wird).
 
-**Power-Automate-Fallstrick (neu entdeckt):** `Variable initialisieren`
-darf **nicht** innerhalb einer Bedingung/eines Scopes verschachtelt sein
-(Fehler `InvalidVariableInitialization`) — alle "Initialize variable"-
-Schritte müssen auf der obersten Flow-Ebene stehen (Startwert dort simple
-Konstante, z.B. `0` oder leerer Text). Die eigentliche Berechnung erfolgt
-dann per `Variable festlegen` (Set variable) innerhalb der Verzweigung.
+**Sperre gegen mehrfaches Abschließen:** Vor der Rechnungsnummer-Vergabe
+prüft der Flow per "Elemente abrufen", ob die zugehörige
+`Unterweisung_Buchungen`-Zeile (Filter `Title eq <Unternehmens_ID> and
+Status eq 'Offen'`) noch offen ist — nur dann wird überhaupt eine Rechnung
+angelegt. Nach dem "Element erstellen" in `Zahlungen` wird diese
+Buchungs-Zeile per "Element aktualisieren" auf `Status = Abgeschlossen`
+gesetzt (inkl. `Rechnungsnummer`). Ohne diese Sperre erzeugt jedes erneute
+Speichern (z.B. nach einem "Zurücksetzen") eine weitere, doppelte
+Rechnungszeile.
+
+**Power-Automate-Fallstricke (neu entdeckt beim Bau dieses Flows):**
+- `Variable initialisieren` darf **nicht** innerhalb einer Bedingung/eines
+  Scopes verschachtelt sein (Fehler `InvalidVariableInitialization`) —
+  alle "Initialize variable"-Schritte müssen auf der obersten Flow-Ebene
+  stehen (Startwert dort simple Konstante, z.B. `0` oder leerer Text). Die
+  eigentliche Berechnung erfolgt dann per `Variable festlegen` (Set
+  variable) innerhalb der Verzweigung.
+- `first(body('Aktionsname'))` funktioniert **nicht** direkt auf einer
+  SharePoint-"Elemente abrufen"-Ausgabe — `body(...)` liefert ein Objekt
+  `{value: [...]}`, kein Array. Richtig: `first(outputs('Aktionsname')?
+  ['body/value'])`. Dieser Bug blieb lange unbemerkt, weil er nur im
+  "Rechnungsnummer erhöhen"-Zweig auftrat (erste Rechnung eines Jahres
+  nimmt den Falsch-Zweig ohne `first(...)`-Aufruf).
+- Aktionsnamen dürfen keine Sonderzeichen wie `?`, `/`, `&` enthalten
+  (Fehler `InvalidWorkflowRunActionName`) — auch beim Umbenennen eigener
+  Bedingungen/Schritte beachten (z.B. "Buchung noch offen?" → ungültig,
+  "Buchung noch offen" → gültig).
+- Verschachtelungstiefe beim Verschieben von Aktionen per Drag & Drop
+  zwischen Bedingungs-Kästen ist fehleranfällig — nach jedem Verschieben
+  die Diagrammansicht (rausgezoomt) gegenprüfen, nicht nur den einzelnen
+  Aktions-Screenshot.
 
 **Cockpit-Anpassung:** `cockpit.html`, LoP-Liste (`var wer = ...`) hat
 jetzt `r.Firmenname` als Fallback zwischen Name/Vorname und "Unbekannt",
@@ -207,4 +246,6 @@ erscheinen statt "Unbekannt".
 **Offen für später:** Stripe-Zahlungslink, PDF-Rechnung, E-Mail-Versand
 (zwei getrennte E-Mails: Rechnung + unterschriebene Liste) für die
 Unterweisung — eigener, separat zu planender Ausbauschritt, analog zur
-"Anmeldung HP"-Pipeline (siehe oben).
+"Anmeldung HP"-Pipeline (siehe oben). Bis dahin zeigt
+`unterweisung_unterschriften.html` bei Abschluss nur "Rechnung wurde
+erstellt", nicht "wurde verschickt" — es geht noch keine E-Mail raus.
