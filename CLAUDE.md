@@ -144,8 +144,10 @@ beachten):
   `Offen`/`Unterschrieben`/`Entschuldigt`), `Unterschrift` (mehrzeiliger
   Text, Base64-PNG)
 - `Zahlungen` (Site "ProDrive Verwaltung", bestehende Liste) erweitert um
-  Kurs-Option `"Jährliche Unterweisung Flurförderzeuge"` — Spalte
-  `Firmenname` existierte dort bereits.
+  Kurs-Option `"Jährliche Unterweisung Flurförderzeuge"` — Spalten
+  `Firmenname` und `Schulungsform` (Wert `Präsenz`) existierten dort
+  bereits; neu ergänzt: `Unternehmens_ID` (Einzeiliger Text, zur
+  Rückverfolgung zur Unterweisung_Unternehmen-Zeile).
 
 **Wichtiger Connector-Fallstrick:** Choice-Spalten kommen beim SharePoint
 "Elemente abrufen" manchmal als Objekt `{Value:"Offen", Id:0, ...}` zurück,
@@ -170,9 +172,12 @@ Variable statt `select()`/`max()`-Lambda-Kombination.
   benannt) — liefert zu einer `Unternehmens_ID` Firma + Teilnehmerliste.
   Fertig & getestet.
 - `UNTERWEISUNG_SPEICHERN_URL` — schreibt Unterschrift/Status je Teilnehmer
-  zurück; Grundfunktion (Teilnehmer aktualisieren) fertig & getestet. Die
-  Abschluss-Logik (Rechnung anlegen bei 0 offenen Teilnehmern, E-Mail-Versand)
-  ist **in Arbeit, noch nicht fertig**.
+  zurück; prüft danach Vollständigkeit (keine Teilnehmer mehr mit Status
+  `Offen`) und legt bei Abschluss automatisch eine einfache Rechnungszeile
+  in `Zahlungen` an (Rechnungsnummer nach demselben Schema wie "Anmeldung
+  HP", Betrag nach Preisstaffel). **Fertig & getestet.** Die volle
+  Stripe-Zahlungslink- + PDF-Rechnung- + E-Mail-Pipeline (analog "Anmeldung
+  HP") ist bewusst **noch nicht gebaut** — separater, späterer Ausbauschritt.
 
 **Preislogik Jährliche Unterweisung** (bestätigt, netto/brutto noch klären
 falls relevant): pro Teilnehmer gestaffelt — 1–3 TN: 89€, 4–6 TN: 69€, 7+ TN:
@@ -180,9 +185,26 @@ falls relevant): pro Teilnehmer gestaffelt — 1–3 TN: 89€, 4–6 TN: 69€,
 300€ pro Termin, es gilt der höhere der beiden Beträge:
 `Betrag = max(300, Teilnehmerzahl × Preis/TN)`.
 
-**Offene Entscheidung:** Rechnung bei Abschluss der Unterschriftenliste
-(nicht bei Buchung) — Rechnungsnummer-Vergabe soll die bestehende Logik aus
-"Anmeldung HP" (`Letzte Rechnungsnummer` + Fallback-Bedingung) wiederverwenden,
-noch nicht implementiert. Zwei getrennte E-Mails (eine mit Rechnung, eine mit
-unterschriebener Liste) sind gewünscht, aber die PDF-/HTML-Erstellung dafür
-ist noch nicht gebaut.
+**Rechnungsnummer-Vergabe** (im Flow `UNTERWEISUNG_SPEICHERN_URL`
+implementiert, exakt wie in "Anmeldung HP"): Format `RE-YYYY-NNN`, zählt
+pro Jahr neu, ermittelt über `startswith(Rechnungsnummer,'RE-<Jahr>')` auf
+`Zahlungen` + `desc`-Sortierung + Top 1, dann letzte Zahl +1. Läuft in
+derselben Nummernreihe wie alle anderen Kurstypen (keine Kollisionsgefahr,
+da dieselbe Liste/Abfrage verwendet wird).
+
+**Power-Automate-Fallstrick (neu entdeckt):** `Variable initialisieren`
+darf **nicht** innerhalb einer Bedingung/eines Scopes verschachtelt sein
+(Fehler `InvalidVariableInitialization`) — alle "Initialize variable"-
+Schritte müssen auf der obersten Flow-Ebene stehen (Startwert dort simple
+Konstante, z.B. `0` oder leerer Text). Die eigentliche Berechnung erfolgt
+dann per `Variable festlegen` (Set variable) innerhalb der Verzweigung.
+
+**Cockpit-Anpassung:** `cockpit.html`, LoP-Liste (`var wer = ...`) hat
+jetzt `r.Firmenname` als Fallback zwischen Name/Vorname und "Unbekannt",
+damit Unterweisung-Rechnungszeilen (keine Einzelperson) dort lesbar
+erscheinen statt "Unbekannt".
+
+**Offen für später:** Stripe-Zahlungslink, PDF-Rechnung, E-Mail-Versand
+(zwei getrennte E-Mails: Rechnung + unterschriebene Liste) für die
+Unterweisung — eigener, separat zu planender Ausbauschritt, analog zur
+"Anmeldung HP"-Pipeline (siehe oben).
