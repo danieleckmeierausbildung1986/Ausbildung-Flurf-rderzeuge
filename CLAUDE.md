@@ -249,3 +249,31 @@ Unterweisung — eigener, separat zu planender Ausbauschritt, analog zur
 "Anmeldung HP"-Pipeline (siehe oben). Bis dahin zeigt
 `unterweisung_unterschriften.html` bei Abschluss nur "Rechnung wurde
 erstellt", nicht "wurde verschickt" — es geht noch keine E-Mail raus.
+**Stand 05.09.2026: dieser Ausbauschritt wird jetzt begonnen** (siehe
+nächster Abschnitt).
+
+## Unterweisung-Rechnung: Stripe/PDF/E-Mail-Ausbau (in Arbeit, ab 05.09.2026)
+
+**Entscheidung zu kombinierten Buchungen** (Stufe1/2/LaSi + Unterweisung
+gleichzeitig, z.B. Stufe 1 für 3 Personen + Unterweisung für 25
+Mitarbeiter): Bleiben **zwei komplett getrennte Rechnungen**, keine
+Zusammenführung. Grund: Stufe1/2/LaSi werden sofort bei Buchung über
+"Anmeldung HP" abgerechnet, die Unterweisung aber bewusst erst wenn
+wirklich alle Mitarbeiter geschult (unterschrieben) sind — das kann Wochen
+dauern und lässt sich nicht sinnvoll mit einer Sofort-Rechnung
+zusammenlegen. Eine Integration der Unterweisung direkt in "Anmeldung HP"
+(wie die anderen Kurstypen, inkl. Sammelanmeldung-Logik) wurde diskutiert
+und **verworfen**, genau aus diesem Zeitpunkt-Grund. Die
+Rechnungsnummer-Sequenz bleibt trotzdem gemeinsam/fortlaufend (siehe oben).
+
+**Ablage-Entscheidung:** PDF-Rechnungen der Unterweisung landen in
+**derselben** SharePoint-Dokumentbibliothek "Rechnungen" (Site "ProDrive
+Verwaltung") wie die Stufe1/2/LaSi-Rechnungen — keine eigene Bibliothek,
+damit alle Rechnungen an einem Ort auffindbar bleiben (konsistent mit der
+gemeinsamen Rechnungsnummer-Sequenz).
+
+**Zurückgestellt, nicht vergessen:** Auch `angebot.html` (Angebots-Rechner
+mit E-Mail-Bestätigungslink zur finalen Buchung) bietet die Jährliche
+Unterweisung bisher nicht als Option an (siehe `PREISE`-Objekt dort, kein
+`unterweisung`-Schlüssel). Soll perspektivisch ergänzt werden, ist aber
+explizit kein Teil des aktuellen Stripe/PDF/E-Mail-Ausbauschritts.
