@@ -284,8 +284,8 @@ function oeffneSigFeld(i){
 }
 
 function initSigPad(id){
-  if(sigPads[id]) return;
   var canvas = document.getElementById(id);
+  if(sigPads[id] === canvas) return;
   var ratio = window.devicePixelRatio || 1;
   canvas.width = canvas.clientWidth * ratio;
   canvas.height = canvas.clientHeight * ratio;
