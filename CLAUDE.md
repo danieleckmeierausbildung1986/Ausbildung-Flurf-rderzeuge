@@ -333,3 +333,33 @@ zusammensetzt, und **diese Variable als Ganzes** über den
 Dynamischer-Inhalt-Button (⚡) mitten in den normal getippten Fliestratext
 einfügen — dynamisch eingefügte Werte werden nicht escaped, jeder direkt
 eingetippte oder eingefügte HTML-Code hingegen schon.
+
+## Unterweisung-Erstkontakt: Terminanfrage statt Angebots-Rechner (05.09.2026)
+
+Für den ersten Kontakt einer Firma zur Jährlichen Unterweisung wird
+bewusst **nicht** `angebot.html` (Preisrechner + direkter Buchungslink)
+verwendet, sondern das bereits bestehende, generische
+**Terminanfrage-System**:
+
+- `termin-anfragen.html` — neue Kurs-Karte "Jährliche Unterweisung
+  Flurförderzeuge" (nur Präsenz, kein Format-Dropdown, analog
+  "Grundlagentraining"). Geschätzte Mitarbeiterzahl wird im bereits
+  vorhandenen Notiz-Freitextfeld erfasst (Platzhaltertext ergänzt) — kein
+  neues Feld nötig.
+- Sendet weiterhin an den gemeinsamen `ANMELDUNG_URL`-Flow mit
+  `anfrage_typ: 'Terminanfrage'`, `schulung_id: 'unterweisung'` — dieser
+  Flow ist bereits kursunabhängig/generisch.
+- `termine.html` (Trainer-Ansicht "Offene Terminanfragen") und die beiden
+  zugehörigen Flows `Terminanfragen` (Liste abrufen) und
+  `Anfragen_bestätigen` (Bestätigen/Ablehnen) sind **komplett generisch**
+  (zeigen/verarbeiten nur das freie Textfeld "Schulung", keine
+  Kurstyp-Verzweigung, keine automatische Anlage in
+  `Staplerprufung_Master` o.ä.) — **keine Flow-Änderung nötig gewesen**.
+
+Begründung: Bei der Unterweisung steht der Umfang (genaue
+Mitarbeiterzahl, Ablauf) oft erst nach einer Vor-Ort-Besichtigung fest —
+ein sofortiger Preis + direkter Buchungslink (wie bei Stufe1/2/LaSi über
+`angebot.html`) wäre verfrüht. Die Terminanfrage führt stattdessen zu
+einem bestätigten/abgelehnten Besichtigungstermin; die eigentliche
+Buchung mit fester Teilnehmerliste läuft danach separat über
+`anmeldung.html` (siehe oben).
