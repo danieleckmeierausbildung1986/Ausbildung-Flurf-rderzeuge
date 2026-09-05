@@ -117,6 +117,14 @@ Rechnungs- und Versandlogik für Stufe1/Stufe2/LaSi-Buchungen. Grobe Struktur
 - Danach weitere Bedingungen für Einzelbuchungen (`Bedingung 1`, `Hat
   Stufe1 Nachweis`, `Schubmaststapler`, etc.) — nicht im Detail erfasst.
 
+**Wichtig, am 05.09.2026 korrigiert:** Die Aktion "Stripe Preis erstellen 1"
+hatte einen **Stripe-Test-Key** (`sk_test_...`) statt des Live-Keys
+hinterlegt — dadurch wären in diesem Zweig erzeugte Zahlungslinks nicht
+mit echtem Geld bezahlbar gewesen. Wurde auf den Live-Key korrigiert
+(gleicher Key wie bei "Stripe Preis erstellen"/"Stripe Zahlungslink
+erstellen" ohne die "1"). Bei künftigen Änderungen an Stripe-Schritten in
+diesem Flow immer den Key-Typ gegenprüfen.
+
 **Für die Jährliche Unterweisung (Zahlungen-Liste)** wurde bewusst
 entschieden, **nicht** diese komplette Stripe+PDF+SharePoint-Pipeline
 nachzubauen, sondern zunächst nur eine einfache Zahlungen-Zeile (Firma,
@@ -252,7 +260,7 @@ erstellt", nicht "wurde verschickt" — es geht noch keine E-Mail raus.
 **Stand 05.09.2026: dieser Ausbauschritt wird jetzt begonnen** (siehe
 nächster Abschnitt).
 
-## Unterweisung-Rechnung: Stripe/PDF/E-Mail-Ausbau (in Arbeit, ab 05.09.2026)
+## Unterweisung-Rechnung: Stripe/PDF/E-Mail-Ausbau (fertig, 05.09.2026)
 
 **Entscheidung zu kombinierten Buchungen** (Stufe1/2/LaSi + Unterweisung
 gleichzeitig, z.B. Stufe 1 für 3 Personen + Unterweisung für 25
@@ -277,3 +285,51 @@ mit E-Mail-Bestätigungslink zur finalen Buchung) bietet die Jährliche
 Unterweisung bisher nicht als Option an (siehe `PREISE`-Objekt dort, kein
 `unterweisung`-Schlüssel). Soll perspektivisch ergänzt werden, ist aber
 explizit kein Teil des aktuellen Stripe/PDF/E-Mail-Ausbauschritts.
+
+**Umsetzung:** Die komplette Kette aus "Anmeldung HP" (Sammel-Zweig) wurde
+per Copy&Paste in `UNTERWEISUNG_SPEICHERN_URL` übernommen (Logo laden
+Sammel → Stripe Preis erstellen 1 → Stripe Zahlungslink erstellen 1 → QR
+Code laden 1 → Rechnung HTML gesammelt Sammel → Datei erstellen Sammel →
+Datei konvertieren Sammel → Datei erstellen SharePoint Sammel → E-Mail
+senden Sammel), eingefügt im Wahr-Zweig von "Buchung noch offen" nach
+"Element aktualisieren 1". Power Automate erhält beim Kopieren alle
+Aktionsnamen — dadurch funktionieren die meisten Verweise zwischen den
+kopierten Schritten automatisch (z.B. QR-Code-Schritt verweist einfach
+auf `Stripe_Zahlungslink_erstellen_1`, unverändert). Angepasst werden
+mussten nur die Verweise auf die alten "Anmeldung HP"-spezifischen
+Variablen/Felder:
+- `VarNeueRechnungsnummer` → `varRechnungsnummer` (Stripe Preis erstellen 1,
+  Stripe Zahlungslink erstellen 1, Rechnung-HTML, Datei erstellen Sammel,
+  Datei erstellen SharePoint Sammel, E-Mail Betreff/Anhang-Name)
+- `VarGesamtbetrag` → `varBetrag`, `VarSammelID`/Registrierungsnummer im
+  Stripe-Metadata → `triggerBody()?['unternehmens_id']`
+- `VarLeistungenHTMLGruppiert` (mehrere Positionen) → eine feste einzelne
+  Position "Jährliche Unterweisung Flurförderzeuge (@{varAnzahl}
+  Teilnehmer)"
+- Empfänger/Anrede (`triggerBody()?['ansprechpartner_email']` etc. — gibt
+  es in unserem Trigger nicht): neuer Schritt **"Unternehmen Kontakt
+  abrufen"** (Elemente abrufen, Unterweisung_Unternehmen, Filter `Title eq
+  '@{triggerBody()?['unternehmens_id']}'`) direkt vor "Logo laden Sammel"
+  eingefügt; E-Mail-Empfänger = `first(outputs('Unternehmen_Kontakt_abrufen')?['body/value'])?['Email_AP']`,
+  Anrede vereinfacht auf `Sehr geehrte Damen und Herren von @{triggerBody()?['firma']}`
+  (keine Ansprechpartner-Vor-/Nachname-Trennung nötig)
+- **Stripe-Key**: Die kopierte Aktion "Stripe Preis erstellen 1" hatte
+  ursprünglich (auch im Original-Flow "Anmeldung HP"!) einen **Test-Key**
+  (`sk_test_...`) statt des Live-Keys hinterlegt — in beiden Flows auf den
+  Live-Key korrigiert.
+
+**Power-Automate-Fallstrick: Hyperlinks mit dynamischem Ziel im
+E-Mail-Text.** Der Rich-Text-Editor der Outlook-"E-Mail senden
+(V2)"-Aktion nimmt im Link-Einfügen-Dialog **keine Ausdrücke** entgegen —
+ein dort eingetragener Ausdruck wie `body('Aktion')?['url']` wird als
+wörtlicher Text ins `href`-Attribut geschrieben, nicht ausgewertet.
+Ebenso funktioniert **kein direktes Einfügen von rohem HTML über die
+Quellcode-Ansicht** (`</>`) — eingefügte spitze Klammern werden beim
+Speichern escaped und erscheinen im Mailtext als sichtbarer Text
+(`<p>...</p>`) statt als Formatierung. Zuverlässige Lösung: einen
+eigenen Flow-Schritt (**Variable festlegen**) bauen, der den fertigen
+`<a href="...">Text</a>`-Schnipsel per `concat(...)`-Ausdruck
+zusammensetzt, und **diese Variable als Ganzes** über den
+Dynamischer-Inhalt-Button (⚡) mitten in den normal getippten Fliestratext
+einfügen — dynamisch eingefügte Werte werden nicht escaped, jeder direkt
+eingetippte oder eingefügte HTML-Code hingegen schon.
