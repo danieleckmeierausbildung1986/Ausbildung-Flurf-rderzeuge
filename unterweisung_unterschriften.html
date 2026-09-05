@@ -91,7 +91,7 @@ nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.95);backdrop-
 
       <label style="display:block;font-size:13px;font-weight:700;color:var(--navy);margin-bottom:8px">Oder direkt per Registrierungsnummer</label>
       <div class="field-row">
-        <input type="text" id="regnrInput" placeholder="z. B. U-001" autocomplete="off">
+        <input type="text" id="regnrInput" placeholder="z. B. U-001" autocomplete="off" onkeydown="if(event.key==='Enter'){event.preventDefault();ladeListe();}">
         <button class="btn btn-primary" id="loadBtn" onclick="ladeListe()">Liste laden</button>
       </div>
       <p class="hint">Die Unternehmens-ID steht in der Buchungsbestätigung und bleibt für dieses Unternehmen dauerhaft gleich.</p>
