@@ -237,6 +237,18 @@ nav{
   flex:1;padding:11px 16px;border-radius:10px;font-size:14px;font-weight:700;
   background:var(--line);color:var(--muted);border:none;cursor:default;text-align:center;
 }
+.course-icon-emoji{
+  width:52px;height:52px;border-radius:14px;margin-bottom:14px;
+  display:flex;align-items:center;justify-content:center;font-size:26px;
+  background:linear-gradient(135deg,var(--blue-d),var(--blue));
+}
+.uw-tabs{display:flex;gap:6px;margin-bottom:14px;background:var(--bg);border-radius:10px;padding:4px}
+.uw-tab{flex:1;padding:9px 8px;border-radius:8px;border:none;background:transparent;color:var(--muted);font-size:12.5px;font-weight:700;cursor:pointer;transition:all .15s}
+.uw-tab.active{background:#fff;color:var(--blue-d);box-shadow:var(--shadow-sm)}
+.uw-pane{display:none}
+.uw-pane.active{display:block}
+.uw-pane-desc{font-size:13.5px;color:var(--muted);line-height:1.6;margin-bottom:14px}
+.uw-pane a.btn-book{display:block;text-decoration:none}
 
 /* TERMINE */
 .termine-section{background:var(--bg);padding:80px 24px}
@@ -558,6 +570,33 @@ footer a{color:rgba(255,255,255,.4);text-decoration:underline}
         </div>
       </div>
 
+      <!-- Jährliche Unterweisung -->
+      <div class="course-card">
+        <div class="course-header">
+          <div class="course-icon-emoji">📋</div>
+          <div class="course-tags">
+            <span class="tag tag-praesenz">Nur Präsenz</span>
+            <span class="tag tag-norm">Für Unternehmen</span>
+          </div>
+          <div class="course-title">Jährliche Unterweisung Flurförderzeuge</div>
+          <div class="course-desc">Die gesetzlich vorgeschriebene jährliche Sicherheitsunterweisung für Ihre Staplerfahrer — bei Ihnen im Unternehmen, für beliebig viele Mitarbeiter.</div>
+        </div>
+        <div class="course-body">
+          <div class="uw-tabs">
+            <button type="button" class="uw-tab active" onclick="uwTab('erst', this)">Erstgespräch</button>
+            <button type="button" class="uw-tab" onclick="uwTab('buchen', this)">Anfragen &amp; Buchen</button>
+          </div>
+          <div class="uw-pane active" id="uw-pane-erst">
+            <p class="uw-pane-desc">Noch unklar, wie viele Mitarbeiter geschult werden sollen oder wie der Ablauf bei Ihnen aussehen soll? Wir schauen uns Ihren Betrieb unverbindlich vor Ort an und stimmen alles gemeinsam ab.</p>
+            <a class="btn-book" href="termin-anfragen.html?kurs=unterweisung">Termin für Erstgespräch anfragen →</a>
+          </div>
+          <div class="uw-pane" id="uw-pane-buchen">
+            <p class="uw-pane-desc">Sie wissen bereits, wie viele Mitarbeiter geschult werden sollen? Dann können Sie direkt anfragen und die Teilnehmerliste übermitteln.</p>
+            <a class="btn-book" href="anmeldung.html?kurs=unterweisung">Jetzt anfragen &amp; buchen →</a>
+          </div>
+        </div>
+      </div>
+
     </div>
   </div>
 </section>
@@ -839,6 +878,13 @@ var KURS_TITEL  = {
   lasi:'Ladungssicherung nach VDI 2700 ff.',
   training:'Grundlagentraining Flurförderzeuge'
 };
+
+function uwTab(name, btn){
+  document.querySelectorAll('.uw-tab').forEach(function(b){ b.classList.remove('active'); });
+  btn.classList.add('active');
+  document.getElementById('uw-pane-erst').classList.toggle('active', name === 'erst');
+  document.getElementById('uw-pane-buchen').classList.toggle('active', name === 'buchen');
+}
 
 function normalizeKursId(val){
   if(!val) return '';

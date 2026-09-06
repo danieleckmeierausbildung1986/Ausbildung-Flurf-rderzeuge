@@ -54,6 +54,14 @@ nav{
 .ta-empty{text-align:center;padding:60px 20px;color:var(--muted)}
 .ta-status{font-size:13px;color:var(--muted)}
 
+.ta-vorschlaege-label{font-size:12px;color:var(--muted);font-weight:700;display:block;margin-bottom:8px}
+.ta-vorschlag-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:8px}
+.ta-vorschlag-num{font-size:12px;font-weight:700;color:var(--blue);width:18px;flex-shrink:0}
+.ta-btn-remove{background:none;border:none;color:var(--red);font-size:16px;font-weight:700;cursor:pointer;padding:2px 6px;line-height:1}
+.ta-btn-remove:hover{opacity:.7}
+.ta-btn-add-vorschlag{background:var(--blue-xl);color:var(--blue);border:none;border-radius:8px;padding:7px 14px;font-size:13px;font-weight:700;cursor:pointer;margin-bottom:16px}
+.ta-btn-add-vorschlag:hover{opacity:.85}
+
 footer{text-align:center;padding:24px;font-size:13px;color:var(--muted);border-top:1px solid var(--line);background:#fff}
 </style>
 </head>
@@ -148,15 +156,46 @@ function renderCard(a){
         '<label style="font-size:12px;color:var(--muted);font-weight:700;display:block;margin-bottom:6px">Persönliche Nachricht (optional, wird mit in die E-Mail übernommen)</label>'+
         '<textarea id="kommentar-'+id+'" style="width:100%;min-height:60px;padding:10px 12px;border-radius:10px;border:1.5px solid var(--line);font-family:inherit;font-size:13.5px;resize:vertical" placeholder="z.B. individuelle Hinweise für diese Anfrage…"></textarea>'+
       '</div>'+
+      '<div style="margin-bottom:14px">'+
+        '<label class="ta-vorschlaege-label">Terminvorschläge (werden in die E-Mail übernommen, Kunde kann wählen)</label>'+
+        '<div class="ta-vorschlaege" id="vorschlaege-'+id+'">'+
+          vorschlagRow(1)+
+        '</div>'+
+        '<button type="button" class="ta-btn-add-vorschlag" onclick="addVorschlag(\''+id+'\')">+ weiteren Terminvorschlag</button>'+
+      '</div>'+
       '<div class="ta-actions">'+
-        '<label style="font-size:12px;color:var(--muted);font-weight:700">Von</label>'+
-        '<input type="date" class="ta-date-input" id="date-von-'+id+'">'+
-        '<label style="font-size:12px;color:var(--muted);font-weight:700">Bis</label>'+
-        '<input type="date" class="ta-date-input" id="date-bis-'+id+'">'+
         '<button class="ta-btn ta-btn-confirm" onclick="entscheiden(\''+id+'\',\'Bestätigt\')">✓ Bestätigen</button>'+
         '<button class="ta-btn ta-btn-decline" onclick="entscheiden(\''+id+'\',\'Abgelehnt\')">✕ Ablehnen</button>'+
       '</div>'+
     '</div>';
+}
+
+function vorschlagRow(num){
+  return '<div class="ta-vorschlag-row">'+
+    '<span class="ta-vorschlag-num">'+num+'.</span>'+
+    '<label style="font-size:12px;color:var(--muted);font-weight:700">Von</label>'+
+    '<input type="date" class="ta-date-input v-von">'+
+    '<label style="font-size:12px;color:var(--muted);font-weight:700">Bis</label>'+
+    '<input type="date" class="ta-date-input v-bis">'+
+    '<button type="button" class="ta-btn-remove" onclick="removeVorschlag(this)" style="visibility:'+(num>1?'visible':'hidden')+'">✕</button>'+
+  '</div>';
+}
+
+function addVorschlag(id){
+  var container = document.getElementById('vorschlaege-'+id);
+  var count = container.querySelectorAll('.ta-vorschlag-row').length + 1;
+  container.insertAdjacentHTML('beforeend', vorschlagRow(count));
+}
+
+function removeVorschlag(btn){
+  var row = btn.closest('.ta-vorschlag-row');
+  var container = row.parentElement;
+  row.remove();
+  var rows = container.querySelectorAll('.ta-vorschlag-row');
+  rows.forEach(function(r, i){
+    r.querySelector('.ta-vorschlag-num').textContent = (i+1)+'.';
+    r.querySelector('.ta-btn-remove').style.visibility = i===0 ? 'hidden' : 'visible';
+  });
 }
 
 async function entscheiden(id, entscheidung){
