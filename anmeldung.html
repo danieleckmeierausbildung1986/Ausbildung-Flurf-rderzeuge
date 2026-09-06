@@ -372,6 +372,10 @@ var _urlKursSpId   = '';
   var sel = document.getElementById('sel-' + kurs);
   if(sel) sel.disabled = false;
   document.getElementById('block-' + kurs).classList.add('active');
+  if(kurs === 'unterweisung' && typeof setKontaktTyp === 'function'){
+    setKontaktTyp('gewerblich');
+    document.getElementById('block-unterweisung').classList.add('active');
+  }
   if(kurs === 'stufe2'){
     document.getElementById('stufe2-typen').style.display = 'block';
     validateStufe2();

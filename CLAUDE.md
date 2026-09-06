@@ -334,6 +334,92 @@ Dynamischer-Inhalt-Button (⚡) mitten in den normal getippten Fliestratext
 einfügen — dynamisch eingefügte Werte werden nicht escaped, jeder direkt
 eingetippte oder eingefügte HTML-Code hingegen schon.
 
+## Unterweisung: PDF-Unterschriftenliste zusätzlich zur Rechnung (fertig, 06.09.2026)
+
+Zusätzlich zur Rechnung wird bei Abschluss (alle Teilnehmer unterschrieben)
+eine **PDF-Version der kompletten Unterschriftenliste** erzeugt und
+mitverschickt — pro Teilnehmer Name, Vorname, Geburtsdatum, Status und die
+eingescannte Unterschrift (Feld `Unterschrift`, Base64-PNG, aus
+`Unterweisung_Teilnehmer`). **Fertig, end-to-end getestet (06.09.2026,
+Testfirma "Testfracht Vilshofen GmbH").**
+
+**Entschieden:**
+- **Eine E-Mail mit zwei Anhängen** (Rechnung-PDF + Unterschriftenliste-PDF),
+  keine zwei getrennten Mails.
+- **CC an Daniel** auf dieser E-Mail (`danieleckmeier@prodrive-akademie.de`),
+  damit er automatisch eine Kopie für Nachweiszwecke im eigenen Postfach hat.
+- **Ablage NICHT in der Rechnungen-Bibliothek**, sondern in einer neuen
+  Dokumentbibliothek/Ordner **"Unterschriftenlisten"** unter derselben
+  Struktur wie "Fahrausweise"/"Zertifikate" — konkret: Bibliothek
+  "Dokumente" auf Site **"Ausbildung Zentrale"** (nicht "ProDrive
+  Verwaltung"!), Ordnerpfad `/Freigegebene Dokumente/Unterschriftenlisten`,
+  Dateiname `Unterschriftenliste_<Rechnungsnummer>.pdf`.
+
+**Umsetzung in `UNTERWEISUNG_SPEICHERN_URL`** (im Wahr-Zweig von "Buchung
+noch offen", nach "Datei erstellen SharePoint Sammel", vor "E-Mail senden
+Sammel"):
+- **"Auf alle anwenden 1"** (For each über `body('Elemente_abrufen_1')?
+  ['value']`, dieselbe bereits vorhandene Teilnehmerliste, die auch für
+  die Kopfzahl verwendet wird) → darin **"Anfügen an Zeichenfolgenvariable"**
+  (Append to string variable) auf `varUnterschriftenZeilen`, baut pro
+  Teilnehmer eine `<tr>`-Zeile (Name, Vorname, Geburtsdatum, Status,
+  `<img src="...">` mit der Unterschrift).
+- **"Variable festlegen 6"** baut daraus `varUnterschriftenlisteHTML` —
+  eine komplette HTML-Seite im selben Layout/Stil wie die Rechnung (Logo
+  via `base64(body('Logo_laden_Sammel'))`, Farben/Typografie identisch zur
+  Rechnungsvorlage).
+- Danach wie bei der Rechnung: Datei erstellen (OneDrive, HTML) → Datei
+  konvertieren (→PDF) → Datei erstellen (SharePoint, Ziel siehe oben).
+- "E-Mail senden Sammel": CC-Feld gesetzt, zweiter Anhang mit dem
+  konvertierten PDF hinzugefügt.
+
+**Zwei Power-Automate-Fallstricke, die dabei aufgetreten sind (neu, wichtig
+für künftige Array-zu-HTML-Umbauten):**
+- **"Auswählen" (Select) im Zuordnung/Key-Value-Modus statt Text-Modus**
+  liefert ein Array von Objekten mit leerem Schlüssel (`{"": "<Wert>"}`)
+  statt eines Arrays reiner Strings. `join(...)` produziert daraus dann
+  sichtbaren JSON-Müll (`{"":"..."}{"":"..."}`) im Ergebnistext, statt die
+  Werte sauber zu verketten. Der "Text-Modus"-Umschalter für "Auswählen"
+  ist in der Oberfläche schwer zu finden/zu treffen — **zuverlässiger
+  Ersatz: eine "For each"-Schleife mit "Anfügen an Zeichenfolgenvariable"
+  statt "Auswählen" + `join()`** verwenden, wenn aus einem Array eine
+  einzelne HTML-Zeichenkette gebaut werden soll.
+- **`Variable festlegen` unterstützt keine Selbstreferenz**
+  (`varX = concat(variables('varX'), ...)` schlägt fehl mit
+  `WorkflowRunActionInputsInvalidProperty` / "Self reference is not
+  supported when updating the value of variable"). Für
+  Anhänge-in-Schleife-Muster (String akkumulieren) immer die eigene
+  Aktion **"Anfügen an Zeichenfolgenvariable"** (Append to string
+  variable) verwenden, nicht "Variable festlegen" mit Selbstbezug.
+- **Base64-Doppel-Präfix-Falle:** Das Feld `Unterschrift` enthält bereits
+  die komplette Data-URL (`data:image/png;base64,...`, so wie sie vom
+  Canvas im Browser kommt) — beim Einbauen in `<img src="...">` darf
+  `data:image/png;base64,` **nicht nochmal** vorangestellt werden, sonst
+  entsteht ein ungültiges doppeltes Präfix und das Bild bleibt leer, ohne
+  Fehlermeldung.
+
+## Terminanfragen: Mehrere Terminvorschläge statt einem festen Termin (06.09.2026, in Arbeit)
+
+`termine.html` (Trainer-Ansicht "Offene Terminanfragen") hatte bisher nur
+ein festes Von/Bis-Datumsfeld beim Bestätigen. Auf Wunsch umgebaut auf
+**beliebig viele Terminvorschlags-Zeilen** (je Von/Bis, per "+ weiteren
+Terminvorschlag" hinzufügbar/entfernbar) — Ziel: dem Anfragenden mehrere
+Terminoptionen zur Auswahl anbieten statt einen fix gesetzten Termin.
+Frontend-seitig fertig (sendet ein Array `terminvorschlaege` statt
+`bestaetigter_termin`/`bestaetigter_termin_bis` an `TERMIN_ENTSCHEIDEN_URL`
+— **Payload-Feldname im Flow `Anfragen_bestätigen` muss noch angepasst
+werden**, aktuell erwartet der Flow vermutlich noch die alten Einzelfelder).
+
+**Offener Punkt, noch nicht entschieden:** Bei der Jährlichen Unterweisung
+soll der Bestätigungs-Mail-Link nicht wie bei den anderen Kursen direkt
+zur verbindlichen Kursbuchung (`anmeldung.html`) führen, sondern zunächst
+nur einen **Besichtigungstermin vor Ort** klarmachen — die eigentliche
+Unterweisungsbuchung mit fester Teilnehmerliste folgt danach separat.
+Wie der Kunde aus den Terminvorschlägen genau einen Besichtigungstermin
+auswählt (Selbstbedienungsseite mit neuem Flow vs. einfache
+E-Mail-Antwort), ist noch offen — Frage wurde gestellt, aber noch nicht
+beantwortet.
+
 ## Unterweisung-Erstkontakt: Terminanfrage statt Angebots-Rechner (05.09.2026)
 
 Für den ersten Kontakt einer Firma zur Jährlichen Unterweisung wird
