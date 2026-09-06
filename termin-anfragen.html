@@ -82,6 +82,14 @@ nav{
 
 .divider{border:none;border-top:1px solid var(--line);margin:24px 0}
 
+/* Unterweisung: Erstgespräch/Buchen-Weiche */
+.uw-choice{display:none;margin-top:12px;padding-top:12px;border-top:1px solid var(--line)}
+.uw-choice-buttons{display:flex;gap:10px;flex-wrap:wrap}
+.uw-choice-btn{flex:1;min-width:200px;text-align:left;padding:12px 14px;border-radius:10px;border:1.5px solid var(--line);background:#fff;cursor:pointer;font-family:inherit;font-size:13px;font-weight:700;color:var(--navy);transition:all .15s}
+.uw-choice-btn:hover{border-color:var(--blue)}
+.uw-choice-btn.active{border-color:var(--blue);background:var(--blue-xl)}
+.uw-choice-btn span{display:block;font-weight:400;color:var(--muted);font-size:12px;margin-top:4px;line-height:1.5}
+
 .submit-btn{
   display:block;width:100%;padding:14px;border-radius:12px;
   font-size:16px;font-weight:700;background:var(--blue);color:#fff;
@@ -177,11 +185,23 @@ footer{text-align:center;padding:24px;font-size:13px;color:var(--muted);border-t
       </div>
       <div class="kurs-block" id="kb-unterweisung" onclick="toggleKurs('unterweisung', event)">
         <label class="kurs-label"><input type="checkbox" id="ck-unterweisung"> Jährliche Unterweisung Flurförderzeuge <span style="font-weight:400;color:var(--muted);font-size:12.5px">(nur Präsenz, für Unternehmen)</span></label>
+        <div class="uw-choice" id="uw-choice">
+          <div class="uw-choice-buttons">
+            <button type="button" class="uw-choice-btn active" id="uw-btn-erst" onclick="event.stopPropagation();chooseUwErstgespraech()">
+              📅 Erstgespräch vor Ort
+              <span>Noch unklar, wie viele Mitarbeiter geschult werden sollen oder wie der Ablauf bei Ihnen aussehen soll? Wir schauen uns Ihren Betrieb unverbindlich an und stimmen alles gemeinsam ab.</span>
+            </button>
+            <button type="button" class="uw-choice-btn" id="uw-btn-buchen" onclick="event.stopPropagation();location.href='anmeldung.html?kurs=unterweisung'">
+              ✅ Direkt anfragen &amp; buchen
+              <span>Sie wissen bereits, wie viele Mitarbeiter geschult werden sollen? Dann direkt die Teilnehmerliste übermitteln.</span>
+            </button>
+          </div>
+        </div>
       </div>
     </div>
 
     <!-- Kalender -->
-    <div class="card">
+    <div class="card" id="card-kalender">
       <div class="card-title">📅 Wunschtermine (mehrere auswählbar)</div>
       <div class="cal-wrap">
         <div class="cal-nav">
@@ -196,7 +216,7 @@ footer{text-align:center;padding:24px;font-size:13px;color:var(--muted);border-t
     </div>
 
     <!-- Anmerkungen -->
-    <div class="card">
+    <div class="card" id="card-anmerkungen">
       <div class="card-title">💬 Anmerkungen</div>
       <div class="field">
         <label>Anzahl Teilnehmer / sonstige Hinweise</label>
@@ -205,7 +225,7 @@ footer{text-align:center;padding:24px;font-size:13px;color:var(--muted);border-t
     </div>
 
     <div class="error-msg" id="f-error"></div>
-    <button type="submit" class="submit-btn">Terminanfrage absenden →</button>
+    <button type="submit" class="submit-btn" id="submit-btn">Terminanfrage absenden →</button>
   </form>
 </div>
 
@@ -227,14 +247,42 @@ var ANMELDUNG_URL = 'https://default8af25f9034bc4ef4aba22ab6f641d5.01.environmen
     document.getElementById('kb-'+k).classList.add('active');
     var kf = document.getElementById('kf-'+k);
     if(kf) kf.style.display = 'block';
+    if(k === 'unterweisung') updateUwVisibility();
   }
 })();
+
+var uwResolved = false;
+
+function updateUwVisibility(){
+  var uwChecked = document.getElementById('ck-unterweisung').checked;
+  document.getElementById('uw-choice').style.display = uwChecked ? 'block' : 'none';
+  var hide = uwChecked && !uwResolved;
+  document.getElementById('card-kalender').style.display = hide ? 'none' : '';
+  document.getElementById('card-anmerkungen').style.display = hide ? 'none' : '';
+  document.getElementById('submit-btn').style.display = hide ? 'none' : '';
+}
+
+function chooseUwErstgespraech(){
+  uwResolved = true;
+  document.getElementById('uw-btn-erst').classList.add('active');
+  document.getElementById('uw-btn-buchen').classList.remove('active');
+  updateUwVisibility();
+  document.getElementById('card-kalender').scrollIntoView({behavior:'smooth', block:'center'});
+}
 
 function syncKursBlock(id){
   var ck = document.getElementById('ck-'+id);
   document.getElementById('kb-'+id).classList.toggle('active', ck.checked);
   var kf = document.getElementById('kf-'+id);
   if(kf) kf.style.display = ck.checked ? 'block' : 'none';
+  if(id === 'unterweisung'){
+    if(!ck.checked){
+      uwResolved = false;
+      document.getElementById('uw-btn-erst').classList.add('active');
+      document.getElementById('uw-btn-buchen').classList.remove('active');
+    }
+    updateUwVisibility();
+  }
 }
 
 function toggleKurs(id, evt){
