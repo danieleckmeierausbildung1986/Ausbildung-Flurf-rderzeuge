@@ -45,6 +45,19 @@ Zentrale Teilnehmerliste: **`Staplerprufung_Master`** — enthält u.a.
 (`Stufe1_gebucht`, `Stufe2_gebucht`, `LaSi_gebucht`, `Training_gebucht`,
 `Nachweis_Stufe1_vorhanden`, `ELearning_Zugang`, `Pruefung_Stufe1_Freigegeben`,
 `pruefung_lasi_freigegeben`, `Punkte_Theorie`, `Status_Theorie`, `Pruefer`).
+Zusätzlich (per Screenshot 13.10. bestätigt) vorhanden: `Firma`,
+`Anmeldungsart`, Ansprechpartner-Block `AP_Vorname`/`AP_Nachname`/
+`AP_Email`/`AP_Telefon`, `Abgesagt`, `Kurse` (+ Lookup-Unterspalten wie
+`Kurse: Kurs_Beginn`). Bei gewerblicher Anmeldung über `anmeldung.html`
+wird `firma` im Payload an den Flow "Anmeldung HP" mitgeschickt und landet
+dort im `Firma`-Feld — die Rohdaten pro Firma sind also bereits vorhanden.
+**Es gibt aber noch keine fertige Auswertung/Filteransicht im Cockpit**,
+die Teilnehmer nach Firma filtert (z.B. "alle Teilnehmer von Firma X") —
+das wäre bei Bedarf eine kleine Ergänzung auf Basis bestehender Daten,
+kein Neubau. Hintergrund: Kam im Zuge von Kooperationsgesprächen mit
+I. K. Hofmann GmbH auf (siehe Cockpit-Akquise-Tab) — Hofmann würde
+interessieren, ob bei ihnen durchgeführte Schulungen separat zuordenbar
+wären.
 
 Weitere Listen pro Modul (z.B. `Staplerprufung_Stufe2`,
 `Ladungssicherung_Master`) haben **eigene, nicht garantiert identische
