@@ -176,10 +176,9 @@ nav{
 /* KURSE */
 .courses-grid{
   display:grid;
-  grid-template-columns:repeat(5,minmax(0,1fr));
+  grid-template-columns:repeat(4,minmax(0,1fr));
   gap:20px;
 }
-@media(max-width:1200px){.courses-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media(max-width:1000px){.courses-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:520px){.courses-grid{grid-template-columns:1fr}}
 .course-card{
@@ -545,19 +544,6 @@ footer a{color:rgba(255,255,255,.4);text-decoration:underline}
         </div>
       </div>
 
-      <!-- Grundlagentraining -->
-      <div class="course-card">
-        <div class="course-header">
-          <img class="course-illustration" src="format_icons/kurs_training.png" alt="">
-          <div class="course-tags">
-            <span class="tag tag-praesenz">Nur Präsenz</span>
-            <span class="tag tag-norm">DGUV 308-001</span>
-          </div>
-          <div class="course-title">Grundlagentraining Flurförderzeuge</div>
-          <div class="course-desc">Praxisorientiertes Einführungstraining für Neueinsteiger — direkt am Fahrzeug. Sicherheitsunterweisung, Fahrzeugkunde und erste Fahrübungen unter Aufsicht.</div>
-        </div>
-      </div>
-
       <!-- Jährliche Unterweisung -->
       <div class="course-card">
         <div class="course-header">
@@ -845,12 +831,11 @@ function openWiderruf(){
 // Termine Flow URL
 var TERMINE_URL = 'https://default8af25f9034bc4ef4aba22ab6f641d5.01.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/f6a06c0024774443a8789688a8cc647f/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=g55O2CX-sNt67kqfjfmdxCaHrk6TxDucxSOzezhjtAM';
 
-var KURS_NORM   = {stufe1:'DGUV 308-001',stufe2:'DGUV 308-001',lasi:'VDI 2700',training:'DGUV 308-001'};
+var KURS_NORM   = {stufe1:'DGUV 308-001',stufe2:'DGUV 308-001',lasi:'VDI 2700'};
 var KURS_TITEL  = {
   stufe1:'Ausbildung Flurförderzeuge Stufe 1',
   stufe2:'Zusatzausbildung Flurförderzeuge Stufe 2',
-  lasi:'Ladungssicherung nach VDI 2700 ff.',
-  training:'Grundlagentraining Flurförderzeuge'
+  lasi:'Ladungssicherung nach VDI 2700 ff.'
 };
 
 function normalizeKursId(val){
@@ -859,8 +844,7 @@ function normalizeKursId(val){
   var map = {
     'stufe 1':'stufe1','stufe1':'stufe1',
     'stufe 2':'stufe2','stufe2':'stufe2',
-    'lasi':'lasi',
-    'training':'training','grundlagentraining':'training'
+    'lasi':'lasi'
   };
   return map[v.toLowerCase().trim()] || v.toLowerCase().replace(/\s+/g,'');
 }
@@ -917,17 +901,15 @@ async function ladeTermine(){
     var KURS_SVG = {
       stufe1:'<path fill-rule="evenodd" d="M6.5 4C5.67 4 5 4.67 5 5.5V10H4.5C3.67 10 3 10.67 3 11.5V16h.6a3.6 3.6 0 0 1 7 0h.9a3.6 3.6 0 0 1 3.5-2.9V11.3c0-.72-.58-1.3-1.3-1.3h-.9L11.4 5a1.5 1.5 0 0 0-1.4-1H6.5zm.7 1.8h2.3l1.5 4.2H7.2V5.8z"/><circle cx="7.1" cy="17.6" r="2.4"/><circle cx="14.6" cy="17.6" r="2.4"/><path d="M16.6 2.5c-.44 0-.8.36-.8.8v10.5c0 .44.36.8.8.8h.2c.44 0 .8-.36.8-.8V3.3c0-.44-.36-.8-.8-.8h-.2z"/><path d="M15.8 14.2h6.7c.44 0 .8.36.8.8v.2c0 .44-.36.8-.8.8h-6.7v-1.8z"/>',
       stufe2:'<path fill-rule="evenodd" d="M6.5 4C5.67 4 5 4.67 5 5.5V10H4.5C3.67 10 3 10.67 3 11.5V16h.6a3.6 3.6 0 0 1 7 0h.9a3.6 3.6 0 0 1 3.5-2.9V11.3c0-.72-.58-1.3-1.3-1.3h-.9L11.4 5a1.5 1.5 0 0 0-1.4-1H6.5zm.7 1.8h2.3l1.5 4.2H7.2V5.8z"/><circle cx="7.1" cy="17.6" r="2.4"/><circle cx="14.6" cy="17.6" r="2.4"/><path d="M16.6 2.5c-.44 0-.8.36-.8.8v10.5c0 .44.36.8.8.8h.2c.44 0 .8-.36.8-.8V3.3c0-.44-.36-.8-.8-.8h-.2z"/><path d="M15.8 14.2h6.7c.44 0 .8.36.8.8v.2c0 .44-.36.8-.8.8h-6.7v-1.8z"/>',
-      lasi:'<path d="M20 8h-3V4H3c-1.1 0-2 .9-2 2v11h2c0 1.66 1.34 3 3 3s3-1.34 3-3h6c0 1.66 1.34 3 3 3s3-1.34 3-3h2v-5l-3-4z"/>',
-      training:'<path d="M12 3L1 9l11 6 9-4.91V17h2V9L12 3zM5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82z"/>'
+      lasi:'<path d="M20 8h-3V4H3c-1.1 0-2 .9-2 2v11h2c0 1.66 1.34 3 3 3s3-1.34 3-3h6c0 1.66 1.34 3 3 3s3-1.34 3-3h2v-5l-3-4z"/>'
     };
     var KURS_BG = {
       stufe1:'linear-gradient(135deg,#1e3a6b,#2b6cb0)',
       stufe2:'linear-gradient(135deg,#2d1b6b,#5b3db0)',
-      lasi:'linear-gradient(135deg,#0d2d80,#1a4fa8)',
-      training:'linear-gradient(135deg,#8b4513,#d4880f)'
+      lasi:'linear-gradient(135deg,#0d2d80,#1a4fa8)'
     };
 
-    var reihenfolge = ['stufe1','stufe2','lasi','training'];
+    var reihenfolge = ['stufe1','stufe2','lasi'];
     var html = '';
     reihenfolge.forEach(function(kid){
       if(!gruppen[kid]) return;
@@ -973,7 +955,7 @@ async function ladeTermine(){
     }
 
     // Kurs-Karten: Button auf "Termin anfragen" setzen wenn kein Termin vorhanden
-    ['stufe1','stufe2','lasi','training'].forEach(function(kid){
+    ['stufe1','stufe2','lasi'].forEach(function(kid){
       var btn = document.getElementById('btn-kurs-'+kid);
       if(!btn) return;
       if(!gruppen[kid]){
@@ -988,7 +970,7 @@ async function ladeTermine(){
     grid.innerHTML = '<div class="termine-empty"><h3>Termine werden auf Anfrage vergeben</h3><p>Melden Sie sich gerne — wir finden gemeinsam einen passenden Termin.</p><a href="termin-anfragen.html">Termin anfragen →</a></div>';
     // Bei Ladefehler: alle Modul-Buttons auf "Termin anfragen" setzen,
     // statt ins Leere/zur Fehlermeldung zu scrollen.
-    ['stufe1','stufe2','lasi','training'].forEach(function(kid){
+    ['stufe1','stufe2','lasi'].forEach(function(kid){
       var btn = document.getElementById('btn-kurs-'+kid);
       if(!btn) return;
       btn.textContent = 'Termin anfragen →';
