@@ -172,6 +172,15 @@ nav{
 }
 .ablauf-title{font-size:16px;font-weight:800;color:var(--navy);margin-bottom:6px;padding-top:4px}
 .ablauf-desc{font-size:13.5px;color:var(--muted);line-height:1.6}
+.ablauf-note{
+  display:flex;gap:16px;align-items:flex-start;margin-top:36px;
+  background:var(--blue-xl);border-radius:16px;padding:20px 24px;
+}
+.ablauf-note-icon{font-size:24px;flex-shrink:0}
+.ablauf-note-title{font-size:14.5px;font-weight:800;color:var(--navy);margin-bottom:4px}
+.ablauf-note-desc{font-size:13.5px;color:var(--ink);line-height:1.6}
+.ablauf-note-desc a{color:var(--blue-d);font-weight:700;text-decoration:underline}
+@media(max-width:520px){.ablauf-note{flex-direction:column}}
 
 /* KURSE */
 .courses-grid{
@@ -483,6 +492,14 @@ footer a{color:rgba(255,255,255,.4);text-decoration:underline}
         <div class="ablauf-num">4</div>
         <div class="ablauf-title">Zugang erhalten</div>
         <div class="ablauf-desc">Bestätigung per E-Mail mit E-Learning-Zugang bzw. den Details zum Präsenztermin.</div>
+      </div>
+    </div>
+
+    <div class="ablauf-note">
+      <div class="ablauf-note-icon">🏢</div>
+      <div>
+        <div class="ablauf-note-title">Für Unternehmen: Jährliche Unterweisung</div>
+        <div class="ablauf-note-desc">Bei der Jährlichen Unterweisung läuft es etwas anders: Hier kommt Daniel vorab unverbindlich zu Ihnen vor Ort, um sich ein Bild von Ihrem Betrieb zu machen und die Schulung auf Ihre Wünsche abzustimmen. Erst danach wird die eigentliche Schulung mit fester Teilnehmerliste gebucht. <a href="termin-anfragen.html?kurs=unterweisung">Jetzt Erstgespräch anfragen →</a></div>
       </div>
     </div>
   </div>
