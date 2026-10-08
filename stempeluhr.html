@@ -91,8 +91,13 @@ body::before{
     </div>
 
     <div class="notiz-wrap">
+      <label>Schulung / Kunde</label>
+      <input type="text" id="schulung" placeholder="z.B. Hofmann GmbH – Stufe 1">
+    </div>
+
+    <div class="notiz-wrap">
       <label>Notiz (optional)</label>
-      <input type="text" id="notiz" placeholder="z.B. Schulungsort / Firma">
+      <input type="text" id="notiz" placeholder="z.B. Schulungsort">
     </div>
 
     <button class="stempel-btn ein" id="btnEin" onclick="einstempeln()" disabled>Einstempeln</button>
@@ -132,19 +137,23 @@ function showStatus(type, message){
   status.innerHTML = message;
 }
 
-function setRunningUI(running, info){
+function setRunningUI(running, info, schulung){
   var box = document.getElementById('stateBox');
   var val = document.getElementById('stateValue');
   var btnEin = document.getElementById('btnEin');
   var btnAus = document.getElementById('btnAus');
+  var schulungInput = document.getElementById('schulung');
   if(running){
     box.classList.add('running');
-    val.textContent = 'Eingestempelt seit ' + info;
+    val.textContent = 'Eingestempelt seit ' + info + (schulung ? ' — ' + schulung : '');
     btnEin.style.display = 'none';
     btnAus.style.display = '';
     btnEin.disabled = true;
     btnAus.disabled = false;
+    if(schulung){ schulungInput.value = schulung; }
+    schulungInput.disabled = true;
   } else {
+    schulungInput.disabled = false;
     box.classList.remove('running');
     val.textContent = 'Nicht eingestempelt';
     btnEin.style.display = '';
@@ -170,7 +179,7 @@ async function ladeStatus(){
     if(d && d.offen){
       offenerEintrag = d.eintrag;
       var zeit = d.eintrag && d.eintrag.einstempelzeit ? new Date(d.eintrag.einstempelzeit).toLocaleTimeString('de-DE') : '';
-      setRunningUI(true, zeit);
+      setRunningUI(true, zeit, d.eintrag ? d.eintrag.schulung : '');
     } else {
       offenerEintrag = null;
       setRunningUI(false, '');
@@ -191,7 +200,7 @@ async function einstempeln(){
     var resp = await fetch(FLOW_URL, {
       method:'POST',
       headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({ aktion:'einstempeln', notiz: document.getElementById('notiz').value.trim() })
+      body: JSON.stringify({ aktion:'einstempeln', schulung: document.getElementById('schulung').value.trim(), notiz: document.getElementById('notiz').value.trim() })
     });
     var d = await resp.json();
     if(d && d.success){
