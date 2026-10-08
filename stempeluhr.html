@@ -61,11 +61,15 @@ body::before{
 .status.success{color:#1a6b3c}
 .notiz-wrap{margin-bottom:16px}
 .notiz-wrap label{display:block;font-size:11px;font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:.6px;margin-bottom:7px}
-.notiz-wrap input{
+.notiz-wrap input,.notiz-wrap select{
   width:100%;padding:12px 14px;border:2px solid var(--line);border-radius:12px;
   font-size:14px;background:#fafbfc;color:var(--ink);font-family:inherit;
 }
-.notiz-wrap input:focus{outline:none;border-color:var(--blue);background:#fff}
+.notiz-wrap select{appearance:none;-webkit-appearance:none;cursor:pointer;
+  background-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="%2368788f"><path d="M7 10l5 5 5-5z"/></svg>');
+  background-repeat:no-repeat;background-position:right 12px center;padding-right:38px;
+}
+.notiz-wrap input:focus,.notiz-wrap select:focus{outline:none;border-color:var(--blue);background:#fff}
 .footer-area{padding-top:16px}
 .back-btn{
   display:block;width:100%;padding:11px;border:2px solid var(--line);
@@ -91,13 +95,18 @@ body::before{
     </div>
 
     <div class="notiz-wrap">
-      <label>Schulung / Kunde</label>
-      <input type="text" id="schulung" placeholder="z.B. Hofmann GmbH – Stufe 1">
+      <label>Firma / Kunde</label>
+      <input type="text" id="notiz" placeholder="z.B. Hofmann GmbH">
     </div>
 
     <div class="notiz-wrap">
-      <label>Notiz (optional)</label>
-      <input type="text" id="notiz" placeholder="z.B. Schulungsort">
+      <label>Schulung</label>
+      <select id="schulung">
+        <option value="" disabled selected>Bitte wählen…</option>
+        <option value="Stufe 1">Stufe 1</option>
+        <option value="Stufe 2">Stufe 2</option>
+        <option value="LaSi">Ladungssicherung (LaSi)</option>
+      </select>
     </div>
 
     <button class="stempel-btn ein" id="btnEin" onclick="einstempeln()" disabled>Einstempeln</button>
