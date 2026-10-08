@@ -35,6 +35,27 @@ body::before{
 .card{background:#fff;border-radius:20px;box-shadow:var(--shadow);overflow:hidden}
 .lib-grid{padding:22px 24px;display:grid;grid-template-columns:1fr 1fr;gap:18px}
 @media(max-width:520px){.lib-grid{grid-template-columns:1fr}}
+.lib-section-title{
+  grid-column:1/-1;font-size:12px;font-weight:700;color:var(--blue);
+  text-transform:uppercase;letter-spacing:.6px;margin:4px 0 -6px;
+  display:flex;align-items:center;gap:8px;
+}
+.lib-section-title::after{content:'';flex:1;height:1px;background:var(--line)}
+.lib-section-title:first-child{margin-top:0}
+.lib-card-expand{cursor:pointer}
+.sub-panel{
+  grid-column:1/-1;display:none;gap:10px;padding:2px 2px 0;
+}
+.sub-panel.open{display:grid;grid-template-columns:1fr 1fr 1fr}
+@media(max-width:520px){.sub-panel.open{grid-template-columns:1fr}}
+.sub-card{
+  border:1.5px solid var(--line);border-radius:12px;padding:14px 12px;text-align:center;
+  text-decoration:none;color:var(--navy);transition:all .15s;position:relative;
+}
+.sub-card:not(.sub-disabled):hover{border-color:var(--blue);background:var(--blue-xl)}
+.sub-card .sub-title{font-size:13.5px;font-weight:700;margin-bottom:3px}
+.sub-card .sub-note{font-size:11px;color:var(--muted)}
+.sub-disabled{opacity:.55;cursor:default;pointer-events:none}
 .lib-card{
   display:flex;flex-direction:column;align-items:center;text-align:center;gap:0;padding:0 0 18px;
   border:1.5px solid var(--line);border-radius:16px;text-decoration:none;overflow:hidden;
@@ -144,6 +165,7 @@ body::before{
       <div class="greeting-name" id="greetName"></div>
     </div>
     <div class="lib-grid">
+      <div class="lib-section-title">Prüfungen &amp; Nachweise</div>
       <a class="lib-card" href="praxispruefung_start.html">
         <div class="lib-icon" style="padding:0;overflow:hidden"><img src="logos/logo_praxispruefung.png" alt="" style="width:100%;height:100%;object-fit:contain"></div>
         <div class="lib-info">
@@ -160,6 +182,52 @@ body::before{
         </div>
         <div class="lib-arrow">→</div>
       </a>
+      <a class="lib-card" href="unterweisungsbibliothek.html">
+        <div class="lib-icon" style="padding:0;overflow:hidden"><img src="logos/logo_bibliothek.png" alt="" style="width:100%;height:100%;object-fit:contain"></div>
+        <div class="lib-info">
+          <div class="lib-title">Unterweisungsbibliothek</div>
+          <div class="lib-sub">Gerätespezifische Sicherheitsunterweisungen mit Wissenscheck &amp; Unterschrift · inkl. jährliche Unterweisung</div>
+        </div>
+      </a>
+
+      <div class="lib-section-title">Vor Ort &amp; Schulungstag</div>
+      <a class="lib-card" href="https://danieleckmeierausbildung1986.github.io/fahrausweis-check/checkin/qr.html" target="_blank" rel="noopener">
+        <div class="lib-icon" style="padding:0;overflow:hidden"><img src="logos/logo_checkin.jpg" alt="" style="width:100%;height:100%;object-fit:cover"></div>
+        <div class="lib-info">
+          <div class="lib-title">Check-in</div>
+          <div class="lib-sub">Anwesenheitserfassung für Schulungen — Teilnehmer checken per Registrierungsnummer ein</div>
+        </div>
+      </a>
+      <div class="lib-card lib-card-expand" onclick="toggleAnmeldung()">
+        <div class="lib-icon" style="font-size:36px">📝</div>
+        <div class="lib-info">
+          <div class="lib-title">Teilnehmeranmeldung</div>
+          <div class="lib-sub">Vor-Ort-Selbstanmeldung per QR-Code — Kurs wählen</div>
+        </div>
+      </div>
+      <a class="lib-card" href="stempeluhr.html">
+        <div class="lib-icon" style="font-size:36px">⏱️</div>
+        <div class="lib-info">
+          <div class="lib-title">Stempeluhr</div>
+          <div class="lib-sub">Ein- und ausstempeln für die Dozenten-Honorarabrechnung</div>
+        </div>
+      </a>
+      <div class="sub-panel" id="anmeldungPanel">
+        <div class="sub-card sub-disabled">
+          <div class="sub-title">Stufe 1</div>
+          <div class="sub-note">in Vorbereitung</div>
+        </div>
+        <div class="sub-card sub-disabled">
+          <div class="sub-title">Stufe 2</div>
+          <div class="sub-note">in Vorbereitung</div>
+        </div>
+        <div class="sub-card sub-disabled">
+          <div class="sub-title">Ladungssicherung</div>
+          <div class="sub-note">in Vorbereitung</div>
+        </div>
+      </div>
+
+      <div class="lib-section-title">Verwaltung &amp; Organisation</div>
       <a class="lib-card" href="termine.html">
         <div class="lib-icon" style="padding:0;overflow:hidden"><img src="logos/logo_terminanfragen.png" alt="" style="width:100%;height:100%;object-fit:contain"></div>
         <div class="lib-info">
@@ -182,20 +250,6 @@ body::before{
           <div class="lib-sub">Geschäftszahlen, Baufortschritt und offene Baustellen auf einen Blick</div>
         </div>
       </a>
-      <a class="lib-card" href="unterweisungsbibliothek.html">
-        <div class="lib-icon" style="padding:0;overflow:hidden"><img src="logos/logo_bibliothek.png" alt="" style="width:100%;height:100%;object-fit:contain"></div>
-        <div class="lib-info">
-          <div class="lib-title">Unterweisungsbibliothek</div>
-          <div class="lib-sub">Gerätespezifische Sicherheitsunterweisungen mit Wissenscheck &amp; Unterschrift · inkl. jährliche Unterweisung</div>
-        </div>
-      </a>
-      <a class="lib-card" href="https://danieleckmeierausbildung1986.github.io/fahrausweis-check/checkin/qr.html" target="_blank" rel="noopener">
-        <div class="lib-icon" style="padding:0;overflow:hidden"><img src="logos/logo_checkin.jpg" alt="" style="width:100%;height:100%;object-fit:cover"></div>
-        <div class="lib-info">
-          <div class="lib-title">Check-in</div>
-          <div class="lib-sub">Anwesenheitserfassung für Schulungen — Teilnehmer checken per Registrierungsnummer ein</div>
-        </div>
-      </a>
     </div>
     <div class="footer-area">
       <button class="back-btn" onclick="doLogout()" style="cursor:pointer">↩ Abmelden</button>
@@ -211,6 +265,10 @@ function showTools(name, benutzername){
   document.getElementById('toolsCard').style.display = 'block';
   document.getElementById('greetName').textContent = name ? ('Hallo, ' + name + '!') : '';
   document.getElementById('cockpitCard').style.display = (benutzername === 'Trainer01') ? '' : 'none';
+}
+
+function toggleAnmeldung(){
+  document.getElementById('anmeldungPanel').classList.toggle('open');
 }
 
 function doLogout(){

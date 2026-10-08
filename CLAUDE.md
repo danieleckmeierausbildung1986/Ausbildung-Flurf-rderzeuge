@@ -1,3 +1,26 @@
+## Stempeluhr & Vor-Ort-Teilnehmeranmeldung (ab 07.10.2026, Ziel 13.10.2026)
+
+Zwei neue, von allen bisherigen Systemen unabhängige Features, angestoßen durch
+die Hofmann-Kooperation (Dozententätigkeit vor Ort, Abrechnung über Honorar statt
+über die normale Kursbuchung):
+
+- **Stempeluhr** (`stempeluhr.html`, verlinkt im Trainerbereich): Ein-/Ausstempel-
+  Button für Daniels eigene Arbeitszeit, Basis für die Dozenten-Honorarabrechnung
+  (kein Stripe/Teilnehmer-Rechnung, reine Zeiterfassung). Frontend ist fertig,
+  **Flow fehlt noch** — `FLOW_URL` in `stempeluhr.html` ist aktuell leer. Flow
+  müsste erwartete Requests `{aktion:'status'}` → `{offen:bool, eintrag:{einstempelzeit}}`,
+  `{aktion:'einstempeln', notiz}` → `{success:true}`, `{aktion:'ausstempeln', notiz}`
+  → `{success:true, dauer}` gegen eine neue SharePoint-Liste (Vorschlag:
+  `Dozent_Zeiterfassung`, Felder Einstempelzeit/Ausstempelzeit/Dauer/Notiz/Status
+  Offen-Abgeschlossen) bedienen. Noch nicht mit Daniel final abgestimmt, welche Site.
+- **Teilnehmeranmeldung** (Vor-Ort-Selbstanmeldung per 3 getrennten QR-Codes,
+  Stufe 1/Stufe 2/LaSi getrennt damit sich Teilnehmer nicht verklicken): Kachel im
+  Trainerbereich existiert bereits (klappt die drei Kursoptionen auf), die drei
+  Optionen sind aber noch reine Platzhalter ("in Vorbereitung") — Backend/Formulare
+  noch nicht gebaut. Bewusst **nicht** über die bestehende "Anmeldung HP"-Flow-
+  Pipeline (erzeugt immer eine Stripe-Rechnung pro Teilnehmer, hier nicht gewünscht,
+  da Abrechnung separat über Honorar läuft).
+
 # ProDrive Akademie Niederbayern — Website & Automatisierung
 
 Statische Multi-Page-HTML/CSS/Vanilla-JS-Website auf GitHub Pages (Custom Domain
