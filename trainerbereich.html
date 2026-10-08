@@ -54,17 +54,18 @@ body::before{
 }
 .section-head.open .section-chevron{transform:rotate(180deg);color:var(--blue)}
 .section-head-banner{
-  display:block;width:100%;
-  padding:0;overflow:hidden;position:relative;aspect-ratio:1263/832;max-height:165px;
+  display:flex;flex-direction:column;width:100%;
+  padding:0;overflow:hidden;position:relative;
 }
+.section-head-banner .section-banner-img-wrap{width:100%;aspect-ratio:1263/832;max-height:150px;overflow:hidden}
 .section-head-banner img{width:100%;height:100%;object-fit:cover;object-position:top;display:block}
-.section-head-banner .section-chevron-badge{
-  position:absolute;top:10px;right:10px;width:30px;height:30px;border-radius:50%;
-  background:rgba(255,255,255,.92);display:flex;align-items:center;justify-content:center;
-  box-shadow:0 2px 8px rgba(0,0,0,.15);
+.section-head-banner .section-chevron-strip{
+  width:100%;padding:6px 10px;display:flex;justify-content:flex-end;align-items:center;
+  background:#fafbfc;border-top:1px solid var(--line);
 }
-.section-head-banner .section-chevron-badge .section-chevron{color:var(--navy);width:16px;height:16px}
-.section-head-banner.open .section-chevron-badge .section-chevron{transform:rotate(180deg);color:var(--blue)}
+.section-head-banner .section-chevron{color:var(--muted);width:16px;height:16px}
+.section-head-banner.open .section-chevron-strip{background:var(--blue-xl)}
+.section-head-banner.open .section-chevron{transform:rotate(180deg);color:var(--blue)}
 .section-body{
   display:none;grid-template-columns:1fr 1fr;gap:18px;
   border:1.5px solid var(--blue);border-top:none;border-radius:0 0 14px 14px;
@@ -197,20 +198,20 @@ body::before{
     <div class="lib-grid">
       <div class="section-heads-row">
         <div class="section-head section-head-banner" id="headPruefungen" onclick="toggleSection('Pruefungen')">
-          <img src="logos/logo_section_pruefungen.jpg" alt="Prüfungen &amp; Nachweise">
-          <div class="section-chevron-badge">
+          <div class="section-banner-img-wrap"><img src="logos/logo_section_pruefungen.jpg" alt="Prüfungen &amp; Nachweise"></div>
+          <div class="section-chevron-strip">
             <svg class="section-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
           </div>
         </div>
         <div class="section-head section-head-banner" id="headVorOrt" onclick="toggleSection('VorOrt')">
-          <img src="logos/logo_section_vorort.jpg" alt="Vor Ort &amp; Schulungstag">
-          <div class="section-chevron-badge">
+          <div class="section-banner-img-wrap"><img src="logos/logo_section_vorort.jpg" alt="Vor Ort &amp; Schulungstag"></div>
+          <div class="section-chevron-strip">
             <svg class="section-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
           </div>
         </div>
         <div class="section-head section-head-banner" id="headVerwaltung" onclick="toggleSection('Verwaltung')">
-          <img src="logos/logo_section_verwaltung.jpg" alt="Verwaltung &amp; Organisation">
-          <div class="section-chevron-badge">
+          <div class="section-banner-img-wrap"><img src="logos/logo_section_verwaltung.jpg" alt="Verwaltung &amp; Organisation"></div>
+          <div class="section-chevron-strip">
             <svg class="section-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
           </div>
         </div>
