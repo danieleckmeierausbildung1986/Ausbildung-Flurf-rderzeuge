@@ -35,13 +35,29 @@ body::before{
 .card{background:#fff;border-radius:20px;box-shadow:var(--shadow);overflow:hidden}
 .lib-grid{padding:22px 24px;display:grid;grid-template-columns:1fr 1fr;gap:18px}
 @media(max-width:520px){.lib-grid{grid-template-columns:1fr}}
-.lib-section-title{
-  grid-column:1/-1;font-size:12px;font-weight:700;color:var(--blue);
-  text-transform:uppercase;letter-spacing:.6px;margin:4px 0 -6px;
-  display:flex;align-items:center;gap:8px;
+.section-block{grid-column:1/-1}
+.section-head{
+  display:flex;align-items:center;justify-content:space-between;gap:10px;
+  padding:14px 16px;border:1.5px solid var(--line);border-radius:14px;
+  cursor:pointer;transition:all .15s;background:#fafbfc;
 }
-.lib-section-title::after{content:'';flex:1;height:1px;background:var(--line)}
-.lib-section-title:first-child{margin-top:0}
+.section-head:hover{border-color:var(--blue)}
+.section-head.open{border-color:var(--blue);background:var(--blue-xl);border-radius:14px 14px 0 0}
+.section-head-left{display:flex;align-items:center;gap:10px}
+.section-dot{width:9px;height:9px;border-radius:50%;background:var(--blue);flex-shrink:0}
+.section-title{font-size:14.5px;font-weight:700;color:var(--navy)}
+.section-count{font-size:11.5px;color:var(--muted);font-weight:600}
+.section-chevron{
+  width:18px;height:18px;flex-shrink:0;color:var(--muted);transition:transform .2s;
+}
+.section-head.open .section-chevron{transform:rotate(180deg);color:var(--blue)}
+.section-body{
+  display:none;grid-template-columns:1fr 1fr;gap:18px;
+  border:1.5px solid var(--blue);border-top:none;border-radius:0 0 14px 14px;
+  padding:18px;
+}
+.section-body.open{display:grid}
+@media(max-width:520px){.section-body.open{grid-template-columns:1fr}}
 .lib-card-expand{cursor:pointer}
 .sub-panel{
   grid-column:1/-1;display:none;gap:10px;padding:2px 2px 0;
@@ -165,91 +181,124 @@ body::before{
       <div class="greeting-name" id="greetName"></div>
     </div>
     <div class="lib-grid">
-      <div class="lib-section-title">Prüfungen &amp; Nachweise</div>
-      <a class="lib-card" href="praxispruefung_start.html">
-        <div class="lib-icon" style="padding:0;overflow:hidden"><img src="logos/logo_praxispruefung.png" alt="" style="width:100%;height:100%;object-fit:contain"></div>
-        <div class="lib-info">
-          <div class="lib-title">Praxisprüfung</div>
-          <div class="lib-sub">Stufe 1 &amp; Stufe 2 — Checkliste, Auswertung, Unterschriften &amp; Fahrausweis-Foto</div>
+      <div class="section-block">
+        <div class="section-head" id="headPruefungen" onclick="toggleSection('Pruefungen')">
+          <div class="section-head-left">
+            <span class="section-dot"></span>
+            <span class="section-title">Prüfungen &amp; Nachweise</span>
+            <span class="section-count">3</span>
+          </div>
+          <svg class="section-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
         </div>
-        <div class="lib-arrow">→</div>
-      </a>
-      <a class="lib-card" href="nachpruefung_theorie.html">
-        <div class="lib-icon" style="padding:14px;overflow:hidden"><img src="logos/logo_theorie_nachpruefung.png" alt="" style="width:100%;height:100%;object-fit:contain"></div>
-        <div class="lib-info">
-          <div class="lib-title">Theorieprüfungen</div>
-          <div class="lib-sub">Erst- und Nachprüfungen (Stufe 1, Stufe 2, LaSi) einsehen und freigeben</div>
-        </div>
-        <div class="lib-arrow">→</div>
-      </a>
-      <a class="lib-card" href="unterweisungsbibliothek.html">
-        <div class="lib-icon" style="padding:0;overflow:hidden"><img src="logos/logo_bibliothek.png" alt="" style="width:100%;height:100%;object-fit:contain"></div>
-        <div class="lib-info">
-          <div class="lib-title">Unterweisungsbibliothek</div>
-          <div class="lib-sub">Gerätespezifische Sicherheitsunterweisungen mit Wissenscheck &amp; Unterschrift · inkl. jährliche Unterweisung</div>
-        </div>
-      </a>
-
-      <div class="lib-section-title">Vor Ort &amp; Schulungstag</div>
-      <a class="lib-card" href="https://danieleckmeierausbildung1986.github.io/fahrausweis-check/checkin/qr.html" target="_blank" rel="noopener">
-        <div class="lib-icon" style="padding:0;overflow:hidden"><img src="logos/logo_checkin.jpg" alt="" style="width:100%;height:100%;object-fit:cover"></div>
-        <div class="lib-info">
-          <div class="lib-title">Check-in</div>
-          <div class="lib-sub">Anwesenheitserfassung für Schulungen — Teilnehmer checken per Registrierungsnummer ein</div>
-        </div>
-      </a>
-      <div class="lib-card lib-card-expand" onclick="toggleAnmeldung()">
-        <div class="lib-icon" style="font-size:36px">📝</div>
-        <div class="lib-info">
-          <div class="lib-title">Teilnehmeranmeldung</div>
-          <div class="lib-sub">Vor-Ort-Selbstanmeldung per QR-Code — Kurs wählen</div>
-        </div>
-      </div>
-      <a class="lib-card" href="stempeluhr.html">
-        <div class="lib-icon" style="font-size:36px">⏱️</div>
-        <div class="lib-info">
-          <div class="lib-title">Stempeluhr</div>
-          <div class="lib-sub">Ein- und ausstempeln für die Dozenten-Honorarabrechnung</div>
-        </div>
-      </a>
-      <div class="sub-panel" id="anmeldungPanel">
-        <div class="sub-card sub-disabled">
-          <div class="sub-title">Stufe 1</div>
-          <div class="sub-note">in Vorbereitung</div>
-        </div>
-        <div class="sub-card sub-disabled">
-          <div class="sub-title">Stufe 2</div>
-          <div class="sub-note">in Vorbereitung</div>
-        </div>
-        <div class="sub-card sub-disabled">
-          <div class="sub-title">Ladungssicherung</div>
-          <div class="sub-note">in Vorbereitung</div>
+        <div class="section-body" id="bodyPruefungen">
+          <a class="lib-card" href="praxispruefung_start.html">
+            <div class="lib-icon" style="padding:0;overflow:hidden"><img src="logos/logo_praxispruefung.png" alt="" style="width:100%;height:100%;object-fit:contain"></div>
+            <div class="lib-info">
+              <div class="lib-title">Praxisprüfung</div>
+              <div class="lib-sub">Stufe 1 &amp; Stufe 2 — Checkliste, Auswertung, Unterschriften &amp; Fahrausweis-Foto</div>
+            </div>
+            <div class="lib-arrow">→</div>
+          </a>
+          <a class="lib-card" href="nachpruefung_theorie.html">
+            <div class="lib-icon" style="padding:14px;overflow:hidden"><img src="logos/logo_theorie_nachpruefung.png" alt="" style="width:100%;height:100%;object-fit:contain"></div>
+            <div class="lib-info">
+              <div class="lib-title">Theorieprüfungen</div>
+              <div class="lib-sub">Erst- und Nachprüfungen (Stufe 1, Stufe 2, LaSi) einsehen und freigeben</div>
+            </div>
+            <div class="lib-arrow">→</div>
+          </a>
+          <a class="lib-card" href="unterweisungsbibliothek.html">
+            <div class="lib-icon" style="padding:0;overflow:hidden"><img src="logos/logo_bibliothek.png" alt="" style="width:100%;height:100%;object-fit:contain"></div>
+            <div class="lib-info">
+              <div class="lib-title">Unterweisungsbibliothek</div>
+              <div class="lib-sub">Gerätespezifische Sicherheitsunterweisungen mit Wissenscheck &amp; Unterschrift · inkl. jährliche Unterweisung</div>
+            </div>
+          </a>
         </div>
       </div>
 
-      <div class="lib-section-title">Verwaltung &amp; Organisation</div>
-      <a class="lib-card" href="termine.html">
-        <div class="lib-icon" style="padding:0;overflow:hidden"><img src="logos/logo_terminanfragen.png" alt="" style="width:100%;height:100%;object-fit:contain"></div>
-        <div class="lib-info">
-          <div class="lib-title">Terminanfragen</div>
-          <div class="lib-sub">Offene Wunschtermine bestätigen oder ablehnen</div>
+      <div class="section-block">
+        <div class="section-head" id="headVorOrt" onclick="toggleSection('VorOrt')">
+          <div class="section-head-left">
+            <span class="section-dot"></span>
+            <span class="section-title">Vor Ort &amp; Schulungstag</span>
+            <span class="section-count">3</span>
+          </div>
+          <svg class="section-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
         </div>
-        <div class="lib-arrow">→</div>
-      </a>
-      <a class="lib-card" href="trainer_wissensbot.html">
-        <div class="lib-icon" style="padding:0;overflow:hidden"><img src="logos/logo_wissensassistent.png" alt="" style="width:100%;height:100%;object-fit:contain"></div>
-        <div class="lib-info">
-          <div class="lib-title">Wissens-Assistent</div>
-          <div class="lib-sub">Fragen zu Vorschriften &amp; Gesetzestexten stellen — Antwort aus der Trainer-Wissensdatenbank</div>
+        <div class="section-body" id="bodyVorOrt">
+          <a class="lib-card" href="https://danieleckmeierausbildung1986.github.io/fahrausweis-check/checkin/qr.html" target="_blank" rel="noopener">
+            <div class="lib-icon" style="padding:0;overflow:hidden"><img src="logos/logo_checkin.jpg" alt="" style="width:100%;height:100%;object-fit:cover"></div>
+            <div class="lib-info">
+              <div class="lib-title">Check-in</div>
+              <div class="lib-sub">Anwesenheitserfassung für Schulungen — Teilnehmer checken per Registrierungsnummer ein</div>
+            </div>
+          </a>
+          <div class="lib-card lib-card-expand" onclick="event.stopPropagation();toggleAnmeldung()">
+            <div class="lib-icon" style="font-size:36px">📝</div>
+            <div class="lib-info">
+              <div class="lib-title">Teilnehmeranmeldung</div>
+              <div class="lib-sub">Vor-Ort-Selbstanmeldung per QR-Code — Kurs wählen</div>
+            </div>
+          </div>
+          <a class="lib-card" href="stempeluhr.html">
+            <div class="lib-icon" style="font-size:36px">⏱️</div>
+            <div class="lib-info">
+              <div class="lib-title">Stempeluhr</div>
+              <div class="lib-sub">Ein- und ausstempeln für die Dozenten-Honorarabrechnung</div>
+            </div>
+          </a>
+          <div class="sub-panel" id="anmeldungPanel">
+            <div class="sub-card sub-disabled">
+              <div class="sub-title">Stufe 1</div>
+              <div class="sub-note">in Vorbereitung</div>
+            </div>
+            <div class="sub-card sub-disabled">
+              <div class="sub-title">Stufe 2</div>
+              <div class="sub-note">in Vorbereitung</div>
+            </div>
+            <div class="sub-card sub-disabled">
+              <div class="sub-title">Ladungssicherung</div>
+              <div class="sub-note">in Vorbereitung</div>
+            </div>
+          </div>
         </div>
-      </a>
-      <a class="lib-card" href="cockpit.html" id="cockpitCard" style="display:none">
-        <div class="lib-icon" style="padding:0;overflow:hidden"><img src="logos/logo_business_cockpit.png" alt="" style="width:100%;height:100%;object-fit:contain"></div>
-        <div class="lib-info">
-          <div class="lib-title">Business-Cockpit</div>
-          <div class="lib-sub">Geschäftszahlen, Baufortschritt und offene Baustellen auf einen Blick</div>
+      </div>
+
+      <div class="section-block">
+        <div class="section-head" id="headVerwaltung" onclick="toggleSection('Verwaltung')">
+          <div class="section-head-left">
+            <span class="section-dot"></span>
+            <span class="section-title">Verwaltung &amp; Organisation</span>
+            <span class="section-count" id="countVerwaltung">3</span>
+          </div>
+          <svg class="section-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
         </div>
-      </a>
+        <div class="section-body" id="bodyVerwaltung">
+          <a class="lib-card" href="termine.html">
+            <div class="lib-icon" style="padding:0;overflow:hidden"><img src="logos/logo_terminanfragen.png" alt="" style="width:100%;height:100%;object-fit:contain"></div>
+            <div class="lib-info">
+              <div class="lib-title">Terminanfragen</div>
+              <div class="lib-sub">Offene Wunschtermine bestätigen oder ablehnen</div>
+            </div>
+            <div class="lib-arrow">→</div>
+          </a>
+          <a class="lib-card" href="trainer_wissensbot.html">
+            <div class="lib-icon" style="padding:0;overflow:hidden"><img src="logos/logo_wissensassistent.png" alt="" style="width:100%;height:100%;object-fit:contain"></div>
+            <div class="lib-info">
+              <div class="lib-title">Wissens-Assistent</div>
+              <div class="lib-sub">Fragen zu Vorschriften &amp; Gesetzestexten stellen — Antwort aus der Trainer-Wissensdatenbank</div>
+            </div>
+          </a>
+          <a class="lib-card" href="cockpit.html" id="cockpitCard" style="display:none">
+            <div class="lib-icon" style="padding:0;overflow:hidden"><img src="logos/logo_business_cockpit.png" alt="" style="width:100%;height:100%;object-fit:contain"></div>
+            <div class="lib-info">
+              <div class="lib-title">Business-Cockpit</div>
+              <div class="lib-sub">Geschäftszahlen, Baufortschritt und offene Baustellen auf einen Blick</div>
+            </div>
+          </a>
+        </div>
+      </div>
     </div>
     <div class="footer-area">
       <button class="back-btn" onclick="doLogout()" style="cursor:pointer">↩ Abmelden</button>
@@ -264,7 +313,14 @@ function showTools(name, benutzername){
   document.getElementById('loginCard').style.display = 'none';
   document.getElementById('toolsCard').style.display = 'block';
   document.getElementById('greetName').textContent = name ? ('Hallo, ' + name + '!') : '';
-  document.getElementById('cockpitCard').style.display = (benutzername === 'Trainer01') ? '' : 'none';
+  var zeigeCockpit = (benutzername === 'Trainer01');
+  document.getElementById('cockpitCard').style.display = zeigeCockpit ? '' : 'none';
+  document.getElementById('countVerwaltung').textContent = zeigeCockpit ? '3' : '2';
+}
+
+function toggleSection(name){
+  document.getElementById('head' + name).classList.toggle('open');
+  document.getElementById('body' + name).classList.toggle('open');
 }
 
 function toggleAnmeldung(){
