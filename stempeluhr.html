@@ -96,7 +96,15 @@ body::before{
 
     <div class="notiz-wrap">
       <label>Firma / Kunde</label>
-      <input type="text" id="firma" placeholder="z.B. Hofmann GmbH">
+      <select id="firma" onchange="toggleFirmaFreitext()">
+        <option value="" disabled selected>Bitte wählen…</option>
+        <option value="Hofmann GmbH">Hofmann GmbH</option>
+        <option value="__andere__">Andere…</option>
+      </select>
+    </div>
+    <div class="notiz-wrap" id="firmaFreitextWrap" style="display:none">
+      <label>Firmenname eingeben</label>
+      <input type="text" id="firmaFreitext" placeholder="Firmenname">
     </div>
 
     <div class="notiz-wrap">
@@ -143,6 +151,18 @@ function tickClock(){
 setInterval(tickClock, 1000);
 tickClock();
 
+function toggleFirmaFreitext(){
+  var sel = document.getElementById('firma');
+  var wrap = document.getElementById('firmaFreitextWrap');
+  wrap.style.display = (sel.value === '__andere__') ? '' : 'none';
+}
+
+function getFirmaWert(){
+  var sel = document.getElementById('firma');
+  if(sel.value === '__andere__') return document.getElementById('firmaFreitext').value.trim();
+  return sel.value;
+}
+
 function showStatus(type, message){
   var status = document.getElementById('status');
   status.style.display = '';
@@ -167,12 +187,13 @@ function setRunningUI(running, info, schulung, firma){
     btnEin.disabled = true;
     btnAus.disabled = false;
     if(schulung){ schulungInput.value = schulung; }
-    if(firma){ firmaInput.value = firma; }
     schulungInput.disabled = true;
     firmaInput.disabled = true;
+    document.getElementById('firmaFreitext').disabled = true;
   } else {
     schulungInput.disabled = false;
     firmaInput.disabled = false;
+    document.getElementById('firmaFreitext').disabled = false;
     box.classList.remove('running');
     val.textContent = 'Nicht eingestempelt';
     btnEin.style.display = '';
@@ -219,7 +240,7 @@ async function einstempeln(){
     var resp = await fetch(FLOW_URL, {
       method:'POST',
       headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({ aktion:'einstempeln', firma: document.getElementById('firma').value.trim(), schulung: document.getElementById('schulung').value.trim(), notiz: document.getElementById('notiz').value.trim() })
+      body: JSON.stringify({ aktion:'einstempeln', firma: getFirmaWert(), schulung: document.getElementById('schulung').value.trim(), notiz: document.getElementById('notiz').value.trim() })
     });
     var d = await resp.json();
     if(d && d.success){
