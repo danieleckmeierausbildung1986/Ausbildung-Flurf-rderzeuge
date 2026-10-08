@@ -96,7 +96,7 @@ body::before{
 
     <div class="notiz-wrap">
       <label>Firma / Kunde</label>
-      <input type="text" id="notiz" placeholder="z.B. Hofmann GmbH">
+      <input type="text" id="firma" placeholder="z.B. Hofmann GmbH">
     </div>
 
     <div class="notiz-wrap">
@@ -107,6 +107,11 @@ body::before{
         <option value="Stufe 2">Stufe 2</option>
         <option value="LaSi">Ladungssicherung (LaSi)</option>
       </select>
+    </div>
+
+    <div class="notiz-wrap">
+      <label>Notiz (optional)</label>
+      <input type="text" id="notiz" placeholder="z.B. Schulungsort">
     </div>
 
     <button class="stempel-btn ein" id="btnEin" onclick="einstempeln()" disabled>Einstempeln</button>
@@ -146,23 +151,28 @@ function showStatus(type, message){
   status.innerHTML = message;
 }
 
-function setRunningUI(running, info, schulung){
+function setRunningUI(running, info, schulung, firma){
   var box = document.getElementById('stateBox');
   var val = document.getElementById('stateValue');
   var btnEin = document.getElementById('btnEin');
   var btnAus = document.getElementById('btnAus');
   var schulungInput = document.getElementById('schulung');
+  var firmaInput = document.getElementById('firma');
   if(running){
     box.classList.add('running');
-    val.textContent = 'Eingestempelt seit ' + info + (schulung ? ' — ' + schulung : '');
+    var zusatz = [firma, schulung].filter(Boolean).join(' — ');
+    val.textContent = 'Eingestempelt seit ' + info + (zusatz ? ' — ' + zusatz : '');
     btnEin.style.display = 'none';
     btnAus.style.display = '';
     btnEin.disabled = true;
     btnAus.disabled = false;
     if(schulung){ schulungInput.value = schulung; }
+    if(firma){ firmaInput.value = firma; }
     schulungInput.disabled = true;
+    firmaInput.disabled = true;
   } else {
     schulungInput.disabled = false;
+    firmaInput.disabled = false;
     box.classList.remove('running');
     val.textContent = 'Nicht eingestempelt';
     btnEin.style.display = '';
@@ -188,7 +198,7 @@ async function ladeStatus(){
     if(d && d.offen){
       offenerEintrag = d.eintrag;
       var zeit = d.eintrag && d.eintrag.einstempelzeit ? new Date(d.eintrag.einstempelzeit).toLocaleTimeString('de-DE') : '';
-      setRunningUI(true, zeit, d.eintrag ? d.eintrag.schulung : '');
+      setRunningUI(true, zeit, d.eintrag ? d.eintrag.schulung : '', d.eintrag ? d.eintrag.firma : '');
     } else {
       offenerEintrag = null;
       setRunningUI(false, '');
@@ -209,7 +219,7 @@ async function einstempeln(){
     var resp = await fetch(FLOW_URL, {
       method:'POST',
       headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({ aktion:'einstempeln', schulung: document.getElementById('schulung').value.trim(), notiz: document.getElementById('notiz').value.trim() })
+      body: JSON.stringify({ aktion:'einstempeln', firma: document.getElementById('firma').value.trim(), schulung: document.getElementById('schulung').value.trim(), notiz: document.getElementById('notiz').value.trim() })
     });
     var d = await resp.json();
     if(d && d.success){
