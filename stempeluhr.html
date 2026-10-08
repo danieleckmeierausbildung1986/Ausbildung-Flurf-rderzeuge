@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Stempeluhr – ProDrive Akademie Niederbayern</title>
+<style>
+:root{
+  --bg:#0a1628;--blue:#1a4fa8;--blue-l:#2e75cc;--blue-d:#0d2d80;--blue-xl:#e8f0fb;
+  --navy:#16243f;--muted:#68788f;--line:#e3e8f0;--ink:#1a2330;--safety:#f07920;
+  --shadow:0 8px 40px rgba(0,0,0,.25);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:"Segoe UI",system-ui,sans-serif;
+  min-height:100vh;background:var(--bg);
+  display:flex;align-items:center;justify-content:center;padding:20px;
+}
+body::before{
+  content:'';position:fixed;inset:0;
+  background:
+    radial-gradient(ellipse 80% 60% at 20% 20%, rgba(26,79,168,.28) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 80% at 80% 80%, rgba(13,45,128,.32) 0%, transparent 60%);
+  pointer-events:none;z-index:0;
+}
+.container{position:relative;z-index:1;width:100%;max-width:440px}
+.logo-area{text-align:center;margin-bottom:22px}
+.logo-area h1{color:#fff;font-size:21px;font-weight:700;margin-bottom:4px}
+.logo-area p{color:rgba(255,255,255,.6);font-size:13px}
+.card{background:#fff;border-radius:20px;box-shadow:var(--shadow);overflow:hidden;padding:28px 26px 26px}
+.clock{
+  text-align:center;font-size:40px;font-weight:700;color:var(--navy);
+  letter-spacing:.5px;margin-bottom:4px;font-variant-numeric:tabular-nums;
+}
+.clock-date{text-align:center;font-size:13px;color:var(--muted);margin-bottom:22px}
+.state-box{
+  border-radius:14px;padding:16px 18px;margin-bottom:20px;text-align:center;
+  border:1.5px solid var(--line);background:#fafbfc;
+}
+.state-label{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin-bottom:6px}
+.state-value{font-size:16px;font-weight:700;color:var(--navy)}
+.state-box.running{border-color:#2e9e5b;background:#eafbf1}
+.state-box.running .state-value{color:#1a6b3c}
+.stempel-btn{
+  width:100%;padding:16px;border:none;border-radius:14px;
+  font-size:16px;font-weight:700;cursor:pointer;letter-spacing:.3px;
+  transition:opacity .15s;margin-bottom:10px;
+}
+.stempel-btn.ein{background:linear-gradient(135deg,var(--blue),var(--blue-d));color:#fff}
+.stempel-btn.aus{background:linear-gradient(135deg,var(--safety),#c85e10);color:#fff}
+.stempel-btn:disabled{opacity:.5;cursor:not-allowed}
+.stempel-btn:hover:not(:disabled){opacity:.9}
+.spinner{
+  width:18px;height:18px;border:3px solid rgba(255,255,255,.35);
+  border-top-color:#fff;border-radius:50%;
+  animation:spin .7s linear infinite;display:inline-block;vertical-align:middle;margin-right:8px;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+.status{margin-top:4px;font-size:13px;text-align:center;min-height:18px}
+.status.error{color:#c0392b}
+.status.success{color:#1a6b3c}
+.notiz-wrap{margin-bottom:16px}
+.notiz-wrap label{display:block;font-size:11px;font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:.6px;margin-bottom:7px}
+.notiz-wrap input{
+  width:100%;padding:12px 14px;border:2px solid var(--line);border-radius:12px;
+  font-size:14px;background:#fafbfc;color:var(--ink);font-family:inherit;
+}
+.notiz-wrap input:focus{outline:none;border-color:var(--blue);background:#fff}
+.footer-area{padding-top:16px}
+.back-btn{
+  display:block;width:100%;padding:11px;border:2px solid var(--line);
+  border-radius:12px;background:#fff;color:var(--muted);
+  font-size:14px;font-weight:600;cursor:pointer;transition:all .15s;text-align:center;text-decoration:none;
+}
+.back-btn:hover{border-color:var(--blue);color:var(--blue)}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="logo-area">
+    <h1>Stempeluhr</h1>
+    <p>Arbeitszeit für die Dozenten-Honorarabrechnung</p>
+  </div>
+  <div class="card">
+    <div class="clock" id="clock">--:--:--</div>
+    <div class="clock-date" id="clockDate"></div>
+
+    <div class="state-box" id="stateBox">
+      <div class="state-label">Status</div>
+      <div class="state-value" id="stateValue">wird geladen…</div>
+    </div>
+
+    <div class="notiz-wrap">
+      <label>Notiz (optional)</label>
+      <input type="text" id="notiz" placeholder="z.B. Schulungsort / Firma">
+    </div>
+
+    <button class="stempel-btn ein" id="btnEin" onclick="einstempeln()" disabled>Einstempeln</button>
+    <button class="stempel-btn aus" id="btnAus" onclick="ausstempeln()" disabled style="display:none">Ausstempeln</button>
+    <div class="status" id="status"></div>
+
+    <div class="footer-area">
+      <a class="back-btn" href="trainerbereich.html">← Zurück zum Trainerbereich</a>
+    </div>
+  </div>
+</div>
+
+<script>
+// TODO: FLOW_URL muss noch mit der echten Power-Automate-URL befüllt werden
+// (Flow "Stempeluhr" auf Basis der SharePoint-Liste "Dozent_Zeiterfassung", siehe CLAUDE.md)
+var FLOW_URL = '';
+
+var offenerEintrag = null; // {id, einstempelzeit}
+
+function pad(n){ return n < 10 ? '0' + n : '' + n; }
+
+function tickClock(){
+  var now = new Date();
+  document.getElementById('clock').textContent =
+    pad(now.getHours()) + ':' + pad(now.getMinutes()) + ':' + pad(now.getSeconds());
+  document.getElementById('clockDate').textContent =
+    now.toLocaleDateString('de-DE', { weekday:'long', day:'2-digit', month:'2-digit', year:'numeric' });
+}
+setInterval(tickClock, 1000);
+tickClock();
+
+function showStatus(type, message){
+  var status = document.getElementById('status');
+  status.style.display = '';
+  if(!type){ status.className = 'status'; status.innerHTML = ''; return; }
+  status.className = 'status ' + type;
+  status.innerHTML = message;
+}
+
+function setRunningUI(running, info){
+  var box = document.getElementById('stateBox');
+  var val = document.getElementById('stateValue');
+  var btnEin = document.getElementById('btnEin');
+  var btnAus = document.getElementById('btnAus');
+  if(running){
+    box.classList.add('running');
+    val.textContent = 'Eingestempelt seit ' + info;
+    btnEin.style.display = 'none';
+    btnAus.style.display = '';
+    btnEin.disabled = true;
+    btnAus.disabled = false;
+  } else {
+    box.classList.remove('running');
+    val.textContent = 'Nicht eingestempelt';
+    btnEin.style.display = '';
+    btnAus.style.display = 'none';
+    btnEin.disabled = false;
+    btnAus.disabled = true;
+  }
+}
+
+async function ladeStatus(){
+  if(!FLOW_URL){
+    showStatus('error', 'Flow-URL noch nicht hinterlegt — Stempeluhr ist technisch noch nicht fertig verbunden.');
+    return;
+  }
+  showStatus('', '');
+  try{
+    var resp = await fetch(FLOW_URL, {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ aktion: 'status' })
+    });
+    var d = await resp.json();
+    if(d && d.offen){
+      offenerEintrag = d.eintrag;
+      var zeit = d.eintrag && d.eintrag.einstempelzeit ? new Date(d.eintrag.einstempelzeit).toLocaleTimeString('de-DE') : '';
+      setRunningUI(true, zeit);
+    } else {
+      offenerEintrag = null;
+      setRunningUI(false, '');
+    }
+  } catch(e){
+    showStatus('error', 'Status konnte nicht geladen werden.');
+    document.getElementById('btnEin').disabled = false;
+  }
+}
+
+async function einstempeln(){
+  if(!FLOW_URL){ showStatus('error', 'Flow-URL fehlt noch.'); return; }
+  var btn = document.getElementById('btnEin');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span>Wird gestartet…';
+  showStatus('', '');
+  try{
+    var resp = await fetch(FLOW_URL, {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ aktion:'einstempeln', notiz: document.getElementById('notiz').value.trim() })
+    });
+    var d = await resp.json();
+    if(d && d.success){
+      showStatus('success', 'Eingestempelt.');
+      await ladeStatus();
+    } else {
+      showStatus('error', 'Fehler beim Einstempeln.');
+      btn.disabled = false;
+    }
+  } catch(e){
+    showStatus('error', 'Fehler beim Einstempeln.');
+    btn.disabled = false;
+  }
+  btn.innerHTML = 'Einstempeln';
+}
+
+async function ausstempeln(){
+  if(!FLOW_URL){ showStatus('error', 'Flow-URL fehlt noch.'); return; }
+  var btn = document.getElementById('btnAus');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span>Wird gestoppt…';
+  showStatus('', '');
+  try{
+    var resp = await fetch(FLOW_URL, {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ aktion:'ausstempeln', notiz: document.getElementById('notiz').value.trim() })
+    });
+    var d = await resp.json();
+    if(d && d.success){
+      showStatus('success', 'Ausgestempelt. Dauer: ' + (d.dauer || '—'));
+      document.getElementById('notiz').value = '';
+      await ladeStatus();
+    } else {
+      showStatus('error', 'Fehler beim Ausstempeln.');
+      btn.disabled = false;
+    }
+  } catch(e){
+    showStatus('error', 'Fehler beim Ausstempeln.');
+    btn.disabled = false;
+  }
+  btn.innerHTML = 'Ausstempeln';
+}
+
+ladeStatus();
+</script>
+</body>
+</html>
