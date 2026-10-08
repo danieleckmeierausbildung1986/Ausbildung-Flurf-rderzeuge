@@ -12,7 +12,8 @@ die Hofmann-Kooperation (Dozententätigkeit vor Ort, Abrechnung über Honorar st
   `{aktion:'einstempeln', notiz}` → `{success:true}`, `{aktion:'ausstempeln', notiz}`
   → `{success:true, dauer}` gegen eine neue SharePoint-Liste (Vorschlag:
   `Dozent_Zeiterfassung`, Felder Einstempelzeit/Ausstempelzeit/Dauer/Notiz/Status
-  Offen-Abgeschlossen) bedienen. Noch nicht mit Daniel final abgestimmt, welche Site.
+  Offen-Abgeschlossen) bedienen. **Site bestätigt: "ProDrive Verwaltung"**
+  (wie `Zahlungen`/`Unterweisung_Buchungen`).
 - **Teilnehmeranmeldung** (Vor-Ort-Selbstanmeldung per 3 getrennten QR-Codes,
   Stufe 1/Stufe 2/LaSi getrennt damit sich Teilnehmer nicht verklicken): Kachel im
   Trainerbereich existiert bereits (klappt die drei Kursoptionen auf), die drei
