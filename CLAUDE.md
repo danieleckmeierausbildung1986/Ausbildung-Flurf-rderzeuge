@@ -93,7 +93,54 @@ die Hofmann-Kooperation (Dozententätigkeit vor Ort, Abrechnung über Honorar st
   `Stufe1_gebucht`, `Stufe1_Schulungsform` (Choice), `Stufe2_gebucht`,
   `Stufe2_Schulungsform` (Choice), `LaSi_gebucht`, `LaSi_Schulungsform`
   (Choice), `Training_gebucht`, `Nachweis_Stufe1_vorhanden` (Choice),
-  `Anmeldungsart` (Choice), `Firma`, `Kurse` (Lookup).
+  `Anmeldungsart` (Choice), `Firma`, `Kurse` (Lookup). Zusätzlich bestätigt:
+  `Status_Theorie` und `StatusPraxis` (Choice-Felder) — zusammen `Bestanden`
+  heißt "Stufe 1 komplett abgeschlossen" (wie auch schon von der
+  Fahrausweis-Verifikation-Seite im `fahrausweis-check`-Repo geprüft).
+
+  **Stand 09.10.2026, Flow `Teilnehmer_Selbstanmeldung` fast fertig, noch
+  nicht final getestet:** Frontend (`fahrausweis-check`-Repo,
+  `anmeldung/index.html` + `anmeldung/qr-stufe1.html`/`qr-stufe2.html`/
+  `qr-lasi.html`) ist fertig und mit der echten Flow-URL verbunden. Flow-
+  Logik: HTTP-Trigger nimmt `{kurs, nachname, vorname, geburtsdatum,
+  geburtsort, schulungsform, email, telefon, strasse, plz, ort,
+  nachweis_stufe1_base64, nachweis_stufe1_dateiname}` entgegen, prüft per
+  Name+Vorname+Geburtsdatum auf `Staplerprufung_Master`, ob der Teilnehmer
+  schon existiert — wenn ja, wird nur das passende `*_gebucht`-Flag +
+  `*_Schulungsform` ergänzt (`Element aktualisieren`), wenn nein wird eine
+  neue Registrierungsnummer vergeben (`YYYY-NNN`, gleiches Zähler-Pattern
+  wie bei Rechnungsnummern über `Elemente abrufen` sortiert nach `Title
+  desc`, Top 1) und ein neuer Eintrag angelegt. Jede erfolgreiche Anmeldung
+  verschickt eine Bestätigungsmail mit der Registrierungsnummer (Vorbild:
+  "Anmeldung HP" macht das genauso bei jeder Fernanmeldung).
+
+  **Stufe-2-Nachweispflicht (09.10.2026, gerade fertig gebaut, noch nicht
+  getestet):** Bei `kurs=stufe2` muss der Teilnehmer entweder bereits
+  `Status_Theorie eq 'Bestanden' and StatusPraxis eq 'Bestanden'` haben
+  (Stufe 1 komplett bei uns gemacht) **oder** einen Nachweis hochladen
+  (Frontend zeigt dann ein Datei-Upload-Feld, als Base64 mitgeschickt).
+  Fehlt beides, antwortet der Flow mit `{success:false,
+  error:'nachweis_fehlt'}`, ohne irgendwas in SharePoint zu schreiben;
+  Frontend zeigt dann gezielt den Upload-Hinweis. Umgesetzt über eine
+  Hilfsvariable `varNachweisFehlt` (Boolean), die die finale
+  E-Mail+Antwort-Kette am Ende jedes Zweigs absichert (sonst würden
+  E-Mail/Erfolgsantwort trotzdem laufen, da sie strukturell außerhalb der
+  Nachweis-Prüfungs-Bedingung liegen). Hochgeladene Nachweise landen in der
+  Dokumentbibliothek `/Nachweise` auf Site "Ausbildung Zentrale" (genau wie
+  bei der Fernanmeldung über "Anmeldung HP"), Dateiname `<Regnr>_<Original-
+  Dateiname>`, danach wird `Nachweis_Stufe1_vorhanden = ja` gesetzt.
+
+  **Offen für morgen:** Drei Testfälle durchspielen — (1) Stufe 2 ohne
+  Nachweis als neuer Teilnehmer → muss `nachweis_fehlt` liefern, keine neue
+  Zeile; (2) Stufe 2 mit Foto-Upload als neuer Teilnehmer → muss
+  erfolgreich anlegen + Datei in `/Nachweise` ablegen; (3) Stufe 2 für
+  bestehenden Test-Teilnehmer `2026-001` (hat keine bestandene Stufe-1-
+  Prüfung) → muss ebenfalls `nachweis_fehlt` verlangen. Danach: Flow
+  veröffentlichen, falls nicht schon geschehen, und ggf. die Schulungsform-
+  Felder (`Stufe1_Schulungsform` etc.) nochmal gegenprüfen — waren laut
+  früherer Anweisung in "Element erstellen"/den drei "Element
+  aktualisieren"-Schritten zu ergänzen, Umsetzung nicht mehr einzeln per
+  Screenshot verifiziert.
 
 # ProDrive Akademie Niederbayern — Website & Automatisierung
 
