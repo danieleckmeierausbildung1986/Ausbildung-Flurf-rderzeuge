@@ -83,6 +83,18 @@ die Hofmann-Kooperation (Dozententätigkeit vor Ort, Abrechnung über Honorar st
   Pipeline (erzeugt immer eine Stripe-Rechnung pro Teilnehmer, hier nicht gewünscht,
   da Abrechnung separat über Honorar läuft).
 
+  **Felder in `Staplerprufung_Master` bestätigt (09.10.2026, per Screenshot aus
+  dem "Element erstellen"-Schritt in "Anmeldung HP"), relevant für die
+  Selbstanmeldung:** `Titel` (=Registrierungsnummer), `Name_Teilnehmer`,
+  `Vorname_Teilnehmer`, `Geburtsdatum`, `Geburtsort`, `Email_Teilnehmer`,
+  `Telefonnummer_Teilnehmer`, `Strasse`, `PLZ`, `Ort` — **alle existieren
+  bereits**, keine neuen Spalten nötig. Außerdem vorhanden (für die
+  Selbstanmeldung evtl. nicht gebraucht, aber zur Vollständigkeit):
+  `Stufe1_gebucht`, `Stufe1_Schulungsform` (Choice), `Stufe2_gebucht`,
+  `Stufe2_Schulungsform` (Choice), `LaSi_gebucht`, `LaSi_Schulungsform`
+  (Choice), `Training_gebucht`, `Nachweis_Stufe1_vorhanden` (Choice),
+  `Anmeldungsart` (Choice), `Firma`, `Kurse` (Lookup).
+
 # ProDrive Akademie Niederbayern — Website & Automatisierung
 
 Statische Multi-Page-HTML/CSS/Vanilla-JS-Website auf GitHub Pages (Custom Domain
