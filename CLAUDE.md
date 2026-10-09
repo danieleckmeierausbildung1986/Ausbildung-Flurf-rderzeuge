@@ -1,3 +1,45 @@
+## Offenes großes Thema: Stufe-2-Selbstanmeldung legt keine Staplerprufung_Stufe2-Zeile an (10.10.2026)
+
+Beim Testen der neuen Teilnehmer-Selbstanmeldung (siehe weiter unten) fiel
+auf: Ein über den Stufe-2-QR-Code neu angemeldeter Teilnehmer (Testfall
+"Karl Meier", `2026-002`) taucht in `nachpruefung_theorie.html` bei der
+Stufe-2-Erstprüfung-Freigabe **gar nicht auf** ("Keiner bereit"), obwohl er
+über die Selbstanmeldung erfolgreich als Stufe-2-Teilnehmer angelegt wurde.
+
+**Ursache bestätigt:** Stufe 2 läuft intern über eine **eigene, separate
+Liste** `Staplerprufung_Stufe2` (Site "Ausbildung Zentrale", **nicht**
+`Staplerprufung_Master`!) mit Spalten `Registrierungsnummer`,
+`Name_Teilnehmer`, `Vorname_Teilnehmer`, `Stufe`, sowie **je Gerät ein
+eigenes Buchungs- und Freigabe-Flag**: `Schubmast_gebucht`/
+`Pruefung_Schubmast_Freigegeben`, `Kommissionierer_gebucht`/
+`Pruefung_Kommissionierer_Freigegeben`, `Schmalgang_gebucht`/
+`Pruefung_Schmalgang_Freigegeben`. Für Karl Meier existiert dort **gar
+keine Zeile** — unser neuer Flow `Teilnehmer_Selbstanmeldung` setzt bei
+`kurs=stufe2` bisher nur `Stufe2_gebucht`/`Stufe2_Schulungsform` auf
+`Staplerprufung_Master`, legt aber nichts in `Staplerprufung_Stufe2` an.
+
+**Zusätzliches Problem, noch nicht gelöst:** Das aktuelle Stufe-2-
+Anmeldeformular (`anmeldung/index.html` im `fahrausweis-check`-Repo,
+`?kurs=stufe2`) fragt **nicht ab, welches Gerät** (Schubmast/
+Kommissionierer/Schmalgang) der Teilnehmer macht — diese Info fehlt also
+auch frontend-seitig komplett.
+
+**Explizit als "großes Thema" von Daniel benannt (10.10.2026) — bewusst
+nicht an diesem Tag weiterverfolgt, sondern auf einen eigenen, separaten
+Termin verschoben.** Für den nächsten Anlauf zu klären:
+- Geräteauswahl im Formular: Dropdown im bestehenden Stufe-2-QR-Formular,
+  oder drei komplett getrennte QR-Codes (je Gerät), analog zur aktuellen
+  Stufe1/Stufe2/LaSi-Dreiteilung? (Frage gestellt, noch nicht beantwortet)
+- Flow `Teilnehmer_Selbstanmeldung` müsste bei `kurs=stufe2` zusätzlich
+  eine Zeile in `Staplerprufung_Stufe2` anlegen/aktualisieren (inkl.
+  passendem Geräte-`gebucht`-Flag), nicht nur `Staplerprufung_Master`
+  befüllen — analog zur schon bestehenden Dual-Schreib-Logik beim
+  LaSi-Freigeben-Flow (der ja auch in zwei Listen schreibt).
+- Prüfen, ob die bestehende Stufe-2-Duplikat-Prüfung (Name+Geburtsdatum auf
+  `Staplerprufung_Master`) um einen entsprechenden Check/Update auf
+  `Staplerprufung_Stufe2` ergänzt werden muss, damit auch dort nicht
+  doppelt angelegt wird.
+
 ## Theorieprüfungen freigeben: ELearning_Zugang mit-setzen + Entziehen-Button (10.10.2026)
 
 Daniel musste bisher **zweimal** manuell ran, um einen Teilnehmer zur
