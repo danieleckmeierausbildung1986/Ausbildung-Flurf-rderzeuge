@@ -6,14 +6,75 @@ die Hofmann-Kooperation (Dozententätigkeit vor Ort, Abrechnung über Honorar st
 
 - **Stempeluhr** (`stempeluhr.html`, verlinkt im Trainerbereich): Ein-/Ausstempel-
   Button für Daniels eigene Arbeitszeit, Basis für die Dozenten-Honorarabrechnung
-  (kein Stripe/Teilnehmer-Rechnung, reine Zeiterfassung). Frontend ist fertig,
-  **Flow fehlt noch** — `FLOW_URL` in `stempeluhr.html` ist aktuell leer. Flow
-  müsste erwartete Requests `{aktion:'status'}` → `{offen:bool, eintrag:{einstempelzeit}}`,
-  `{aktion:'einstempeln', notiz}` → `{success:true}`, `{aktion:'ausstempeln', notiz}`
-  → `{success:true, dauer}` gegen eine neue SharePoint-Liste (Vorschlag:
-  `Dozent_Zeiterfassung`, Felder Einstempelzeit/Ausstempelzeit/Dauer/Notiz/Status
-  Offen-Abgeschlossen) bedienen. **Site bestätigt: "ProDrive Verwaltung"**
-  (wie `Zahlungen`/`Unterweisung_Buchungen`).
+  (kein Stripe/Teilnehmer-Rechnung, reine Zeiterfassung). **Fertig, end-to-end
+  getestet (09.10.2026).** Flow `Stempeluhr` (HTTP-Trigger, Site "ProDrive
+  Verwaltung") bedient `{aktion:'status'}` → `{offen:bool, eintrag:{einstempelzeit,
+  schulung, firma}}`, `{aktion:'einstempeln', firma, schulung, notiz}` →
+  `{success:true}`, `{aktion:'ausstempeln', notiz}` → `{success:true, dauer}`
+  gegen die SharePoint-Liste `Dozent_Zeiterfassung` (Site "ProDrive
+  Verwaltung", Felder: Titel=Firma als Freitext, Einstempelzeit/Ausstempelzeit
+  Datum+Uhrzeit, Dauer Einzeiliger Text, Notiz Einzeiliger Text, Status Auswahl
+  Offen/Abgeschlossen, Schulung Auswahl Stufe 1/Stufe 2/LaSi). Frontend-seitig:
+  Firma als Dropdown (feste, im Code erweiterbare Liste, aktuell nur "Hofmann
+  GmbH", + "Andere…"-Freitext-Fallback), Schulung als Dropdown, Notiz separates
+  optionales Freitextfeld.
+
+  **Stundenzettel-PDF (fertig, 09.10.2026):** Eigener, unabhängiger Flow
+  `Stundenzettel_Monatlich` (Wiederholung-Trigger, läuft automatisch **jeden 1.
+  eines Monats um 06:00**, Zeitzone Romance Standard Time — kein manuelles
+  Anstoßen nötig). Berechnet sich selbst den kompletten **Vormonat** als
+  Zeitraum (`varVon`/`varBis`), geht pro Firma aus einer fest hinterlegten
+  Liste (`varFirmenListe`, aktuell `["Hofmann GmbH"]` — **bei neuer Firma muss
+  diese Variable im Flow-Editor manuell erweitert werden**, keine automatische
+  Erkennung) alle `Abgeschlossen`-Einträge im Zeitraum durch, baut daraus eine
+  HTML-Tabelle (Datum/Schulung/Notiz/Dauer), summiert die Minuten (Berechnung
+  über `ticks()`-Differenz Ein-/Ausstempelzeit, nicht über das Text-Dauerfeld)
+  und berechnet das Honorar mit einem **festen Stundensatz von 75 €/h**
+  (Platzhalter, noch nicht final mit Hofmann verhandelt — maßgeblich bleibt der
+  Tagessatz 550-650€ Praxistag / 600-650€ LaSi, Stundensatz ist nur die
+  rechnerische Umlegung). PDF wird erzeugt (OneDrive HTML→PDF-Konvertierung)
+  und in einer **eigenen neuen Dokumentbibliothek "Stundenzettel"** auf Site
+  "ProDrive Verwaltung" abgelegt (bewusst nicht in "Rechnungen", eigene
+  Ablage gewünscht), Dateiname `Stundenzettel_<Firma>_<Jahr-Monat>.pdf`. Kein
+  automatischer Versand/E-Mail — nur Ablage, Daniel ruft sich die PDFs bei
+  Bedarf selbst ab.
+
+  **Power-Automate-Fallstricke (neu, beim Bau dieses Flows entdeckt):**
+  - Ein Ausdruck wie `items('Auf_alle_anwenden')`, der von Hand (nicht über
+    den Dynamische-Inhalte-Picker) in ein Textfeld eingetippt wird, wurde
+    mehrfach vom Designer stillschweigend zu `items('')` zurückgesetzt, ohne
+    Fehlermeldung beim Eintragen — erst `Veröffentlichen` schlug dann mit der
+    kryptischen Meldung `The name of template action '' ... is not defined`
+    fehl. **Zuverlässiger Fix:** eine eigene Variable (`varAktuelleFirma`)
+    anlegen, deren Wert als allererste Aktion in der Schleife **ausschließlich
+    über den Dynamische-Inhalte-Picker** ("Aktuelles Element") gesetzt wird,
+    und diese Variable überall sonst referenzieren statt direkt `items(...)`
+    einzutippen.
+  - **Fehlende Connector-Verbindung erzeugt denselben irreführenden
+    Fehlertext** (`template action '' ... not defined`) beim Veröffentlichen
+    — hat nichts mit einem Ausdrucksfehler zu tun. Der eigentliche Grund
+    steht nur sichtbar, wenn man die betroffene Aktion einzeln öffnet (hier:
+    "Es fehlt eine Verbindung für 'Datei erstellen'"). Bei dieser generischen
+    Fehlermeldung immer zuerst jede Datei-/Connector-Aktion einzeln auf eine
+    gültige Verbindung prüfen, bevor man Ausdrücke durchsucht.
+  - **Kritisch:** Wenn "Entwurf speichern"/"Veröffentlichen" wegen eines
+    solchen Fehlers fehlschlägt, bleibt der Flow nur als **ungespeicherte
+    Kopie im Browser** bestehen (Banner "Ihr Browser speichert eine nicht
+    gespeicherte Kopie dieses Flows"). Wird dieser Banner verworfen oder die
+    Seite in einem neuen/privaten Fenster geöffnet, geht der komplette
+    ungespeicherte Fortschritt verloren (ist einmal passiert, die komplette
+    Firmen-Schleife musste neu aufgebaut werden). Bei einem Veröffentlichen-
+    Fehler also **zuerst die eigentliche Fehlerursache beheben (siehe oben),
+    dann speichern** — nicht den Banner wegklicken oder die Seite in einem
+    neuen Tab/Fenster erneut öffnen, bevor erfolgreich gespeichert wurde.
+  - Ein als `''` (leere Zeichenfolge) gedachter Wert in einem "Variable
+    festlegen"-Wert-Feld wurde wiederholt beim erneuten Testen/Speichern auf
+    leer zurückgesetzt und erzeugte dann `'Wert' muss angegeben werden`.
+    Weder über das normale Textfeld noch über den fx-Formel-Editor zuverlässig
+    lösbar. **Funktionierender Workaround:** ein einzelnes Leerzeichen `' '`
+    statt eines echten Leerstrings eintragen — bleibt beim Rendern in HTML
+    unsichtbar, aber das Feld gilt nicht mehr als leer und der Fehler bleibt
+    weg.
 - **Teilnehmeranmeldung** (Vor-Ort-Selbstanmeldung per 3 getrennten QR-Codes,
   Stufe 1/Stufe 2/LaSi getrennt damit sich Teilnehmer nicht verklicken): Kachel im
   Trainerbereich existiert bereits (klappt die drei Kursoptionen auf), die drei
