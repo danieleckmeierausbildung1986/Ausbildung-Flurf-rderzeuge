@@ -1,3 +1,62 @@
+## Theorieprüfungen freigeben: ELearning_Zugang mit-setzen + Entziehen-Button (10.10.2026)
+
+Daniel musste bisher **zweimal** manuell ran, um einen Teilnehmer zur
+Theorieprüfung zuzulassen: einmal "Prüfung freigeben" in
+`nachpruefung_theorie.html` (setzt `Pruefung_Stufe1_Freigegeben`/
+`Pruefung_Kommissionierer_Freigegeben`/etc. bzw. `Pruefung_lasi_freigegeben`),
+und zusätzlich manuell `ELearning_Zugang` in SharePoint auf `Ja`, sonst kam
+der Teilnehmer über `login.html` gar nicht erst in den Teilnehmerbereich
+rein (der Login-Flow `ELearning_Zugangspruefung` blockt komplett, wenn
+`ELearning_Zugang` nicht `Ja` ist).
+
+**Gelöst:** Alle drei Freigeben-Flows (`Stufe1_Nachpruefung_freigeben` für
+Stufe 1 Erst- UND Nachprüfung, `Stufe2_Nachpruefung_freigeben` für Stufe 2
+Erst- UND Nachprüfung je Gerät, `LaSi_Nachpruefung_freigeben` für LaSi Erst-
+UND Nachprüfung) setzen jetzt bei `aktion:'freigeben'` **zusätzlich**
+`ELearning_Zugang = Ja` mit. Bei Stufe 2 und LaSi läuft das Haupt-Update
+gegen die jeweils eigene Liste (`Staplerprufung_Stufe2` bzw.
+`Ladungssicherung_Master`), `ELearning_Zugang` sitzt aber nur in
+`Staplerprufung_Master` — deshalb zusätzlicher Nachschlage-Schritt
+("Elemente abrufen" mit `Title eq '<regnr>'` auf `Staplerprufung_Master`,
+dann "Element aktualisieren" dort). **Wichtiger Build-Fehler, der dabei
+auftrat:** Der Nachschlage-Schritt wurde versehentlich erst **nach** dem
+darauf aufbauenden "Element aktualisieren"-Schritt platziert (bzw. nur in
+einem Bedingungszweig statt davor) — Power Automate verweigert dann beim
+Veröffentlichen mit `InvalidTemplate`/`cannot reference action ... must
+either be in runAfter path`. Immer darauf achten, dass ein referenzierter
+"Elemente abrufen"-Schritt wirklich **unconditioned davor** in der
+Ausführungsreihenfolge steht, nicht nur in einem Bedingungszweig.
+
+**Zusätzlich: Entziehen-Button.** Ursprünglich war ein eigenständiges
+Trainer-Tool "Zugang verwalten" geplant (Lookup per Regnr + Frei-/Entzieh-
+Button), wurde aber wieder verworfen zugunsten einer einfacheren Lösung:
+Jede Freigeben-Kachel in `nachpruefung_theorie.html` hat jetzt direkt einen
+zweiten Button **"Entziehen"** daneben (erscheint nur, wenn schon
+freigegeben), der denselben Flow mit `aktion:'entziehen'` aufruft — setzt
+dann sowohl das jeweilige `Pruefung_*_Freigegeben`-Flag als auch
+`ELearning_Zugang` zurück auf `Nein`. Alle drei Flows haben dafür eine
+Wahr/Falsch-Bedingung auf `triggerBody()?['aktion']` um jeden
+"Element aktualisieren"-Schritt bekommen (Wahr=`freigeben`→Ja, Falsch=
+alles andere→Nein).
+
+**Separater Bug gefunden und gefixt:** Die Kandidaten-Liste für "Stufe 1
+Erstprüfung bereit" (`Erstpruefung_Stufe1_Kandidaten_abrufen`, Filter lief
+gegen `Staplerprufung_Master`) filterte nur nach
+`Status_Theorie eq null or Status_Theorie eq ''` — **ohne** zu prüfen, ob
+`Stufe1_gebucht` überhaupt `Ja` ist. Da `Staplerprufung_Master` **alle**
+Teilnehmer enthält (nicht nur Stufe-1-Gebuchte), tauchten dadurch
+Teilnehmer, die z.B. nur Stufe 2 gebucht hatten, fälschlich auch in der
+Stufe-1-Freigabeliste auf. **Fix:** Filter auf
+`(Status_Theorie eq null or Status_Theorie eq '') and Stufe1_gebucht eq 1`
+erweitert (Klammern wichtig!). **Betrifft nur Stufe 1** — `Staplerprufung_
+Stufe2` und `Ladungssicherung_Master` sind eigene, exklusive Listen (nur
+Teilnehmer, die diesen Kurstyp wirklich gebucht haben), brauchen also
+keinen zusätzlichen Buchungs-Filter. Die Stufe-1-**Nachprüfung**-Variante
+(`Stufe1_Nachpruefung_Kandidaten_abrufen`, Filter
+`Status_Theorie eq 'nicht Bestanden'`) ist von diesem Bug nicht betroffen,
+da ein "nicht bestanden"-Status denknotwendig eine vorherige Stufe-1-Prüfung
+voraussetzt — bewusst unverändert gelassen.
+
 ## Stempeluhr & Vor-Ort-Teilnehmeranmeldung (ab 07.10.2026, Ziel 13.10.2026)
 
 Zwei neue, von allen bisherigen Systemen unabhängige Features, angestoßen durch
