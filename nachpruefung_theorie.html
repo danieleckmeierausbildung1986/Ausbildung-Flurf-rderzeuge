@@ -49,6 +49,9 @@ nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.95);backdrop-
 .btn.primary:hover{background:var(--blue-d)}
 .btn.primary:disabled{background:var(--line);color:var(--muted);cursor:not-allowed}
 .btn.done{background:var(--okbg);color:var(--green)}
+.btn.danger{background:#fff;color:var(--red);border:1.5px solid var(--red)}
+.btn.danger:hover{background:var(--redbg)}
+.btn-row{display:flex;gap:8px}
 
 .k2-block{border-bottom:1px solid var(--line)}
 .k2-block:last-child{border-bottom:none}
@@ -328,9 +331,14 @@ function renderKandidaten(kurs, rows){
         '<div class="k-meta">Prüfung am ' + datum + ' · ' + punkte + ' Punkte</div>' +
         '<div class="k-status ' + (istFrei ? 'frei' : 'offen') + '">' + (istFrei ? 'Nachprüfung freigegeben' : 'Wartet auf Freigabe') + '</div>' +
       '</div>' +
-      '<button class="btn ' + (istFrei ? 'done' : 'primary') + '" onclick="freigeben(\'' + kurs.id + '\',\'' + regnr + '\', this)" ' + (istFrei ? 'disabled' : '') + '>' +
-        (istFrei ? '✓ Freigegeben' : 'Nachprüfung freigeben') +
-      '</button>' +
+      '<div class="btn-row">' +
+      (istFrei ?
+        '<button class="btn done" disabled>✓ Freigegeben</button>' +
+        '<button class="btn danger" onclick="entziehen(\'' + kurs.id + '\',\'' + regnr + '\', this)">Entziehen</button>'
+        :
+        '<button class="btn primary" onclick="freigeben(\'' + kurs.id + '\',\'' + regnr + '\', this)">Nachprüfung freigeben</button>'
+      ) +
+      '</div>' +
     '</div>';
   }).join('');
 }
@@ -341,12 +349,33 @@ async function freigeben(kursId, regnr, btn){
   btn.disabled = true;
   btn.textContent = 'Wird freigegeben …';
   try{
-    await fetch(kurs.freigebenUrl, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ regnr: regnr }) });
-    btn.className = 'btn done';
-    btn.textContent = '✓ Freigegeben';
-    var status = btn.closest('.kandidat').querySelector('.k-status');
+    await fetch(kurs.freigebenUrl, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ regnr: regnr, aktion: 'freigeben' }) });
+    var row = btn.closest('.kandidat');
+    var status = row.querySelector('.k-status');
     status.className = 'k-status frei';
     status.textContent = 'Nachprüfung freigegeben';
+    row.querySelector('.btn-row').innerHTML =
+      '<button class="btn done" disabled>✓ Freigegeben</button>' +
+      '<button class="btn danger" onclick="entziehen(\'' + kursId + '\',\'' + regnr + '\', this)">Entziehen</button>';
+  } catch(e){
+    btn.disabled = false;
+    btn.textContent = 'Fehler – erneut versuchen';
+  }
+}
+
+async function entziehen(kursId, regnr, btn){
+  var kurs = KURSE_NACH.find(function(k){ return k.id === kursId; });
+  if(!confirm('Freigabe der Nachprüfung (' + kurs.label + ') für Registrierungsnummer ' + regnr + ' wieder entziehen?')) return;
+  btn.disabled = true;
+  btn.textContent = 'Wird entzogen …';
+  try{
+    await fetch(kurs.freigebenUrl, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ regnr: regnr, aktion: 'entziehen' }) });
+    var row = btn.closest('.kandidat');
+    var status = row.querySelector('.k-status');
+    status.className = 'k-status offen';
+    status.textContent = 'Wartet auf Freigabe';
+    row.querySelector('.btn-row').innerHTML =
+      '<button class="btn primary" onclick="freigeben(\'' + kursId + '\',\'' + regnr + '\', this)">Nachprüfung freigeben</button>';
   } catch(e){
     btn.disabled = false;
     btn.textContent = 'Fehler – erneut versuchen';
@@ -387,9 +416,14 @@ function renderKandidatenStufe2(rows){
           '<div class="k2-geraet">' + g.label + '</div>' +
           '<div class="k-status ' + (istFrei ? 'frei' : 'offen') + '">' + (istFrei ? 'Nachprüfung freigegeben' : 'Wartet auf Freigabe') + '</div>' +
         '</div>' +
-        '<button class="btn ' + (istFrei ? 'done' : 'primary') + '" onclick="freigebenStufe2(\'' + g.id + '\',\'' + regnr + '\', this)" ' + (istFrei ? 'disabled' : '') + '>' +
-          (istFrei ? '✓ Freigegeben' : 'Nachprüfung freigeben') +
-        '</button>' +
+        '<div class="btn-row">' +
+        (istFrei ?
+          '<button class="btn done" disabled>✓ Freigegeben</button>' +
+          '<button class="btn danger" onclick="entziehenStufe2(\'' + g.id + '\',\'' + regnr + '\', this)">Entziehen</button>'
+          :
+          '<button class="btn primary" onclick="freigebenStufe2(\'' + g.id + '\',\'' + regnr + '\', this)">Nachprüfung freigeben</button>'
+        ) +
+        '</div>' +
       '</div>';
     }).join('');
     if(rowsHtml){
@@ -412,12 +446,33 @@ async function freigebenStufe2(geraetId, regnr, btn){
   btn.disabled = true;
   btn.textContent = 'Wird freigegeben …';
   try{
-    await fetch(STUFE2_NACH.freigebenUrl, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ regnr: regnr, geraet: geraetId }) });
-    btn.className = 'btn done';
-    btn.textContent = '✓ Freigegeben';
-    var status = btn.closest('.k2-row').querySelector('.k-status');
+    await fetch(STUFE2_NACH.freigebenUrl, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ regnr: regnr, geraet: geraetId, aktion: 'freigeben' }) });
+    var row = btn.closest('.k2-row');
+    var status = row.querySelector('.k-status');
     status.className = 'k-status frei';
     status.textContent = 'Nachprüfung freigegeben';
+    row.querySelector('.btn-row').innerHTML =
+      '<button class="btn done" disabled>✓ Freigegeben</button>' +
+      '<button class="btn danger" onclick="entziehenStufe2(\'' + geraetId + '\',\'' + regnr + '\', this)">Entziehen</button>';
+  } catch(e){
+    btn.disabled = false;
+    btn.textContent = 'Fehler – erneut versuchen';
+  }
+}
+
+async function entziehenStufe2(geraetId, regnr, btn){
+  var g = STUFE2_NACH.geraete.find(function(x){ return x.id === geraetId; });
+  if(!confirm('Freigabe der Nachprüfung (Stufe 2 – ' + g.label + ') für Registrierungsnummer ' + regnr + ' wieder entziehen?')) return;
+  btn.disabled = true;
+  btn.textContent = 'Wird entzogen …';
+  try{
+    await fetch(STUFE2_NACH.freigebenUrl, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ regnr: regnr, geraet: geraetId, aktion: 'entziehen' }) });
+    var row = btn.closest('.k2-row');
+    var status = row.querySelector('.k-status');
+    status.className = 'k-status offen';
+    status.textContent = 'Wartet auf Freigabe';
+    row.querySelector('.btn-row').innerHTML =
+      '<button class="btn primary" onclick="freigebenStufe2(\'' + geraetId + '\',\'' + regnr + '\', this)">Nachprüfung freigeben</button>';
   } catch(e){
     btn.disabled = false;
     btn.textContent = 'Fehler – erneut versuchen';
@@ -463,9 +518,14 @@ function renderKandidatenErst(kurs, rows){
         (kurs.id === 'lasi' ? '' : '<div class="k-meta">' + (format || 'Schulungsform unbekannt') + '</div>') +
         '<div class="k-status ' + (istFrei ? 'frei' : 'offen') + '">' + (istFrei ? 'Erstprüfung freigegeben' : 'Bereit — wartet auf Freigabe') + '</div>' +
       '</div>' +
-      '<button class="btn ' + (istFrei ? 'done' : 'primary') + '" onclick="freigebenErst(\'' + kurs.id + '\',\'' + regnr + '\', this)" ' + (istFrei ? 'disabled' : '') + '>' +
-        (istFrei ? '✓ Freigegeben' : 'Erstprüfung freigeben') +
-      '</button>' +
+      '<div class="btn-row">' +
+      (istFrei ?
+        '<button class="btn done" disabled>✓ Freigegeben</button>' +
+        '<button class="btn danger" onclick="entziehenErst(\'' + kurs.id + '\',\'' + regnr + '\', this)">Entziehen</button>'
+        :
+        '<button class="btn primary" onclick="freigebenErst(\'' + kurs.id + '\',\'' + regnr + '\', this)">Erstprüfung freigeben</button>'
+      ) +
+      '</div>' +
     '</div>';
   }).join('');
 }
@@ -476,12 +536,33 @@ async function freigebenErst(kursId, regnr, btn){
   btn.disabled = true;
   btn.textContent = 'Wird freigegeben …';
   try{
-    await fetch(kurs.freigebenUrl, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ regnr: regnr }) });
-    btn.className = 'btn done';
-    btn.textContent = '✓ Freigegeben';
-    var status = btn.closest('.kandidat').querySelector('.k-status');
+    await fetch(kurs.freigebenUrl, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ regnr: regnr, aktion: 'freigeben' }) });
+    var row = btn.closest('.kandidat');
+    var status = row.querySelector('.k-status');
     status.className = 'k-status frei';
     status.textContent = 'Erstprüfung freigegeben';
+    row.querySelector('.btn-row').innerHTML =
+      '<button class="btn done" disabled>✓ Freigegeben</button>' +
+      '<button class="btn danger" onclick="entziehenErst(\'' + kursId + '\',\'' + regnr + '\', this)">Entziehen</button>';
+  } catch(e){
+    btn.disabled = false;
+    btn.textContent = 'Fehler – erneut versuchen';
+  }
+}
+
+async function entziehenErst(kursId, regnr, btn){
+  var kurs = KURSE_ERST.find(function(k){ return k.id === kursId; });
+  if(!confirm('Freigabe der Erstprüfung (' + kurs.label + ') für Registrierungsnummer ' + regnr + ' wieder entziehen?')) return;
+  btn.disabled = true;
+  btn.textContent = 'Wird entzogen …';
+  try{
+    await fetch(kurs.freigebenUrl, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ regnr: regnr, aktion: 'entziehen' }) });
+    var row = btn.closest('.kandidat');
+    var status = row.querySelector('.k-status');
+    status.className = 'k-status offen';
+    status.textContent = 'Bereit — wartet auf Freigabe';
+    row.querySelector('.btn-row').innerHTML =
+      '<button class="btn primary" onclick="freigebenErst(\'' + kursId + '\',\'' + regnr + '\', this)">Erstprüfung freigeben</button>';
   } catch(e){
     btn.disabled = false;
     btn.textContent = 'Fehler – erneut versuchen';
@@ -570,9 +651,14 @@ function renderStufe2ErstListe(counts){
         '<div class="k2-geraet">' + name + ' <span style="color:var(--muted);font-weight:500">(' + regnr + ')</span></div>' +
         '<div class="k-status ' + (istFrei ? 'frei' : 'offen') + '">' + (istFrei ? 'Erstprüfung freigegeben' : 'Bereit — wartet auf Freigabe') + '</div>' +
       '</div>' +
-      '<button class="btn ' + (istFrei ? 'done' : 'primary') + '" onclick="freigebenErstStufe2(\'' + g.id + '\',\'' + regnr + '\', this)" ' + (istFrei ? 'disabled' : '') + '>' +
-        (istFrei ? '✓ Freigegeben' : 'Erstprüfung freigeben') +
-      '</button>' +
+      '<div class="btn-row">' +
+      (istFrei ?
+        '<button class="btn done" disabled>✓ Freigegeben</button>' +
+        '<button class="btn danger" onclick="entziehenErstStufe2(\'' + g.id + '\',\'' + regnr + '\', this)">Entziehen</button>'
+        :
+        '<button class="btn primary" onclick="freigebenErstStufe2(\'' + g.id + '\',\'' + regnr + '\', this)">Erstprüfung freigeben</button>'
+      ) +
+      '</div>' +
     '</div>';
   }).join('');
 
@@ -591,12 +677,33 @@ async function freigebenErstStufe2(geraetId, regnr, btn){
   btn.disabled = true;
   btn.textContent = 'Wird freigegeben …';
   try{
-    await fetch(STUFE2_ERST.freigebenUrl, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ regnr: regnr, geraet: geraetId }) });
-    btn.className = 'btn done';
-    btn.textContent = '✓ Freigegeben';
-    var status = btn.closest('.k2-row').querySelector('.k-status');
+    await fetch(STUFE2_ERST.freigebenUrl, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ regnr: regnr, geraet: geraetId, aktion: 'freigeben' }) });
+    var row = btn.closest('.k2-row');
+    var status = row.querySelector('.k-status');
     status.className = 'k-status frei';
     status.textContent = 'Erstprüfung freigegeben';
+    row.querySelector('.btn-row').innerHTML =
+      '<button class="btn done" disabled>✓ Freigegeben</button>' +
+      '<button class="btn danger" onclick="entziehenErstStufe2(\'' + geraetId + '\',\'' + regnr + '\', this)">Entziehen</button>';
+  } catch(e){
+    btn.disabled = false;
+    btn.textContent = 'Fehler – erneut versuchen';
+  }
+}
+
+async function entziehenErstStufe2(geraetId, regnr, btn){
+  var g = STUFE2_ERST.geraete.find(function(x){ return x.id === geraetId; });
+  if(!confirm('Freigabe der Erstprüfung (Stufe 2 – ' + g.label + ') für Registrierungsnummer ' + regnr + ' wieder entziehen?')) return;
+  btn.disabled = true;
+  btn.textContent = 'Wird entzogen …';
+  try{
+    await fetch(STUFE2_ERST.freigebenUrl, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ regnr: regnr, geraet: geraetId, aktion: 'entziehen' }) });
+    var row = btn.closest('.k2-row');
+    var status = row.querySelector('.k-status');
+    status.className = 'k-status offen';
+    status.textContent = 'Bereit — wartet auf Freigabe';
+    row.querySelector('.btn-row').innerHTML =
+      '<button class="btn primary" onclick="freigebenErstStufe2(\'' + geraetId + '\',\'' + regnr + '\', this)">Erstprüfung freigeben</button>';
   } catch(e){
     btn.disabled = false;
     btn.textContent = 'Fehler – erneut versuchen';
