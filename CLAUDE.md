@@ -76,12 +76,11 @@ die Hofmann-Kooperation (Dozententätigkeit vor Ort, Abrechnung über Honorar st
     unsichtbar, aber das Feld gilt nicht mehr als leer und der Fehler bleibt
     weg.
 - **Teilnehmeranmeldung** (Vor-Ort-Selbstanmeldung per 3 getrennten QR-Codes,
-  Stufe 1/Stufe 2/LaSi getrennt damit sich Teilnehmer nicht verklicken): Kachel im
-  Trainerbereich existiert bereits (klappt die drei Kursoptionen auf), die drei
-  Optionen sind aber noch reine Platzhalter ("in Vorbereitung") — Backend/Formulare
-  noch nicht gebaut. Bewusst **nicht** über die bestehende "Anmeldung HP"-Flow-
-  Pipeline (erzeugt immer eine Stripe-Rechnung pro Teilnehmer, hier nicht gewünscht,
-  da Abrechnung separat über Honorar läuft).
+  Stufe 1/Stufe 2/LaSi getrennt damit sich Teilnehmer nicht verklicken).
+  **Fertig, end-to-end getestet (10.10.2026)**, siehe Details unten. Bewusst
+  **nicht** über die bestehende "Anmeldung HP"-Flow-Pipeline (erzeugt immer
+  eine Stripe-Rechnung pro Teilnehmer, hier nicht gewünscht, da Abrechnung
+  separat über Honorar läuft).
 
   **Felder in `Staplerprufung_Master` bestätigt (09.10.2026, per Screenshot aus
   dem "Element erstellen"-Schritt in "Anmeldung HP"), relevant für die
@@ -98,8 +97,8 @@ die Hofmann-Kooperation (Dozententätigkeit vor Ort, Abrechnung über Honorar st
   heißt "Stufe 1 komplett abgeschlossen" (wie auch schon von der
   Fahrausweis-Verifikation-Seite im `fahrausweis-check`-Repo geprüft).
 
-  **Stand 09.10.2026, Flow `Teilnehmer_Selbstanmeldung` fast fertig, noch
-  nicht final getestet:** Frontend (`fahrausweis-check`-Repo,
+  **Flow `Teilnehmer_Selbstanmeldung` fertig, end-to-end getestet
+  (10.10.2026):** Frontend (`fahrausweis-check`-Repo,
   `anmeldung/index.html` + `anmeldung/qr-stufe1.html`/`qr-stufe2.html`/
   `qr-lasi.html`) ist fertig und mit der echten Flow-URL verbunden. Flow-
   Logik: HTTP-Trigger nimmt `{kurs, nachname, vorname, geburtsdatum,
@@ -130,17 +129,24 @@ die Hofmann-Kooperation (Dozententätigkeit vor Ort, Abrechnung über Honorar st
   bei der Fernanmeldung über "Anmeldung HP"), Dateiname `<Regnr>_<Original-
   Dateiname>`, danach wird `Nachweis_Stufe1_vorhanden = ja` gesetzt.
 
-  **Offen für morgen:** Drei Testfälle durchspielen — (1) Stufe 2 ohne
-  Nachweis als neuer Teilnehmer → muss `nachweis_fehlt` liefern, keine neue
-  Zeile; (2) Stufe 2 mit Foto-Upload als neuer Teilnehmer → muss
-  erfolgreich anlegen + Datei in `/Nachweise` ablegen; (3) Stufe 2 für
-  bestehenden Test-Teilnehmer `2026-001` (hat keine bestandene Stufe-1-
-  Prüfung) → muss ebenfalls `nachweis_fehlt` verlangen. Danach: Flow
-  veröffentlichen, falls nicht schon geschehen, und ggf. die Schulungsform-
-  Felder (`Stufe1_Schulungsform` etc.) nochmal gegenprüfen — waren laut
-  früherer Anweisung in "Element erstellen"/den drei "Element
-  aktualisieren"-Schritten zu ergänzen, Umsetzung nicht mehr einzeln per
-  Screenshot verifiziert.
+  **Fertig, end-to-end getestet (10.10.2026), alle drei Testfälle grün:**
+  (1) bestehender Teilnehmer mit bestandener Stufe 1 meldet sich zu Stufe 2
+  an → kein Nachweis nötig, Flag + Schulungsform korrekt ergänzt; (2) neuer
+  Teilnehmer, direkt Stufe 2 ohne Nachweis → `nachweis_fehlt`, keine Zeile
+  angelegt; (3) neuer Teilnehmer, Stufe 2 mit Foto-Upload → erfolgreich
+  angelegt, Datei landet in `/Nachweise`.
+
+  **Fix beim Testen gefunden:** `Status_Theorie`/`StatusPraxis` liefern bei
+  "Elemente abrufen" einen **reinen String** zurück, nicht wie andere
+  Choice-Felder ein Objekt mit `.Value` — `?['Status_Theorie']?['Value']`
+  wirft dadurch einen harten Typfehler (`Property selection is not
+  supported on values of type 'String'`), der auch nicht durch `coalesce()`
+  abgefangen werden kann (die Property-Selektion selbst crasht, bevor
+  `coalesce` greift). Fix: `?['Value']` bei diesen beiden Feldern einfach
+  weglassen, direkt `?['Status_Theorie']`/`?['StatusPraxis']` verwenden.
+  **Lehre:** Nicht pauschal annehmen, dass jedes Choice-Feld als
+  `{Value:"..."}`-Objekt zurückkommt — im Zweifel per Testlauf/Codeansicht
+  gegenprüfen, welche Form das jeweilige Feld tatsächlich hat.
 
 # ProDrive Akademie Niederbayern — Website & Automatisierung
 
