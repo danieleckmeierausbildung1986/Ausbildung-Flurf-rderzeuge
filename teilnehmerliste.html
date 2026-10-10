@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Teilnehmerliste – ProDrive Akademie Niederbayern</title>
+<style>
+:root{
+  --bg:#0a1628;--blue:#1a4fa8;--blue-l:#2e75cc;--blue-d:#0d2d80;--blue-xl:#e8f0fb;
+  --navy:#16243f;--muted:#68788f;--line:#e3e8f0;--ink:#1a2330;--safety:#f07920;
+  --shadow:0 8px 40px rgba(0,0,0,.25);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:"Segoe UI",system-ui,sans-serif;
+  min-height:100vh;background:var(--bg);
+  display:flex;align-items:flex-start;justify-content:center;padding:20px;
+}
+body::before{
+  content:'';position:fixed;inset:0;
+  background:
+    radial-gradient(ellipse 80% 60% at 20% 20%, rgba(26,79,168,.28) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 80% at 80% 80%, rgba(13,45,128,.32) 0%, transparent 60%);
+  pointer-events:none;z-index:0;
+}
+.container{position:relative;z-index:1;width:100%;max-width:720px;margin-top:20px}
+.logo-area{text-align:center;margin-bottom:22px}
+.logo-area h1{color:#fff;font-size:21px;font-weight:700;margin-bottom:4px}
+.logo-area p{color:rgba(255,255,255,.6);font-size:13px}
+.card{background:#fff;border-radius:20px;box-shadow:var(--shadow);overflow:hidden;padding:28px 26px 26px}
+.filter-row{display:flex;gap:10px;align-items:flex-end;margin-bottom:22px;flex-wrap:wrap}
+.filter-wrap{flex:1;min-width:160px}
+.filter-wrap label{display:block;font-size:11px;font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:.6px;margin-bottom:7px}
+.filter-wrap input{
+  width:100%;padding:12px 14px;border:2px solid var(--line);border-radius:12px;
+  font-size:14px;background:#fafbfc;color:var(--ink);font-family:inherit;
+}
+.filter-wrap input:focus{outline:none;border-color:var(--blue);background:#fff}
+.load-btn{
+  padding:13px 20px;border:none;border-radius:12px;
+  background:linear-gradient(135deg,var(--blue),var(--blue-d));color:#fff;
+  font-size:14px;font-weight:700;cursor:pointer;transition:opacity .15s;white-space:nowrap;
+}
+.load-btn:hover:not(:disabled){opacity:.9}
+.load-btn:disabled{opacity:.5;cursor:not-allowed}
+.summary{font-size:13px;color:var(--muted);margin-bottom:14px;min-height:18px}
+.summary.error{color:#c0392b}
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+th{
+  text-align:left;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;
+  letter-spacing:.5px;padding:0 10px 8px;border-bottom:2px solid var(--line);
+}
+td{padding:11px 10px;border-bottom:1px solid var(--line);color:var(--ink)}
+tr:last-child td{border-bottom:none}
+.badge-row{display:flex;gap:5px;flex-wrap:wrap}
+.badge{
+  font-size:10.5px;font-weight:700;padding:3px 8px;border-radius:8px;
+  background:var(--blue-xl);color:var(--blue-d);white-space:nowrap;
+}
+.empty-state{text-align:center;padding:30px 10px;color:var(--muted);font-size:14px}
+.footer-area{padding-top:20px}
+.back-btn{
+  display:block;width:100%;padding:11px;border:2px solid var(--line);
+  border-radius:12px;background:#fff;color:var(--muted);
+  font-size:14px;font-weight:600;cursor:pointer;transition:all .15s;text-align:center;text-decoration:none;
+}
+.back-btn:hover{border-color:var(--blue);color:var(--blue)}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="logo-area">
+    <h1>Teilnehmerliste</h1>
+    <p>Wer hat sich an einem bestimmten Tag angemeldet?</p>
+  </div>
+  <div class="card">
+    <div class="filter-row">
+      <div class="filter-wrap">
+        <label>Datum</label>
+        <input type="date" id="datum">
+      </div>
+      <button class="load-btn" id="btnLaden" onclick="ladeListe()">Liste abrufen</button>
+    </div>
+
+    <div class="summary" id="summary"></div>
+    <div id="ergebnisWrap"></div>
+
+    <div class="footer-area">
+      <a class="back-btn" href="trainerbereich.html">← Zurück zum Trainerbereich</a>
+    </div>
+  </div>
+</div>
+
+<script>
+// TODO: FLOW_URL muss noch mit der echten Power-Automate-URL befüllt werden
+// (Flow "Teilnehmerliste_Abrufen" auf Basis von Staplerprufung_Master, Filter per Created-Datum, siehe CLAUDE.md)
+var FLOW_URL = '';
+
+function heuteAlsISO(){
+  var d = new Date();
+  var m = (d.getMonth()+1).toString().padStart(2,'0');
+  var t = d.getDate().toString().padStart(2,'0');
+  return d.getFullYear() + '-' + m + '-' + t;
+}
+document.getElementById('datum').value = heuteAlsISO();
+
+function zeigeSummary(type, text){
+  var el = document.getElementById('summary');
+  el.className = 'summary' + (type ? ' ' + type : '');
+  el.textContent = text;
+}
+
+function kursBadges(t){
+  var badges = [];
+  if(t.stufe1_gebucht) badges.push('Stufe 1');
+  if(t.stufe2_gebucht) badges.push('Stufe 2');
+  if(t.lasi_gebucht) badges.push('LaSi');
+  if(badges.length === 0) return '<span style="color:var(--muted)">—</span>';
+  return '<div class="badge-row">' + badges.map(function(b){ return '<span class="badge">' + b + '</span>'; }).join('') + '</div>';
+}
+
+function renderTabelle(teilnehmer){
+  var wrap = document.getElementById('ergebnisWrap');
+  if(!teilnehmer || teilnehmer.length === 0){
+    wrap.innerHTML = '<div class="empty-state">Keine Anmeldungen an diesem Tag.</div>';
+    return;
+  }
+  var html = '<table><thead><tr><th>Regnr.</th><th>Name</th><th>Kurse</th></tr></thead><tbody>';
+  teilnehmer.forEach(function(t){
+    html += '<tr>' +
+      '<td>' + (t.regnr || '') + '</td>' +
+      '<td>' + (t.vorname || '') + ' ' + (t.nachname || '') + '</td>' +
+      '<td>' + kursBadges(t) + '</td>' +
+      '</tr>';
+  });
+  html += '</tbody></table>';
+  wrap.innerHTML = html;
+}
+
+async function ladeListe(){
+  var datum = document.getElementById('datum').value;
+  if(!datum){
+    zeigeSummary('error', 'Bitte ein Datum wählen.');
+    return;
+  }
+  if(!FLOW_URL){
+    zeigeSummary('error', 'Flow-URL noch nicht hinterlegt — Teilnehmerliste ist technisch noch nicht fertig verbunden.');
+    return;
+  }
+  var btn = document.getElementById('btnLaden');
+  btn.disabled = true;
+  btn.textContent = 'Wird geladen…';
+  zeigeSummary('', '');
+  document.getElementById('ergebnisWrap').innerHTML = '';
+
+  try{
+    var resp = await fetch(FLOW_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ datum: datum })
+    });
+    var d = await resp.json();
+    var teilnehmer = (d && d.teilnehmer) ? d.teilnehmer : [];
+    zeigeSummary('', teilnehmer.length + (teilnehmer.length === 1 ? ' Anmeldung' : ' Anmeldungen') + ' am ' + new Date(datum + 'T00:00:00').toLocaleDateString('de-DE'));
+    renderTabelle(teilnehmer);
+  } catch(e){
+    zeigeSummary('error', 'Fehler beim Laden der Liste.');
+  }
+
+  btn.disabled = false;
+  btn.textContent = 'Liste abrufen';
+}
+
+ladeListe();
+</script>
+</body>
+</html>
