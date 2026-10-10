@@ -23,7 +23,8 @@ body::before{
     radial-gradient(ellipse 60% 80% at 80% 80%, rgba(13,45,128,.32) 0%, transparent 60%);
   pointer-events:none;z-index:0;
 }
-.container{position:relative;z-index:1;width:100%;max-width:640px}
+.container{position:relative;z-index:1;width:100%;max-width:640px;transition:max-width .2s}
+.container.wide{max-width:980px}
 .logo-area{text-align:center;margin-bottom:28px}
 .logo-tile{
   display:inline-block;background:#fff;border-radius:18px;padding:14px 22px;
@@ -33,11 +34,15 @@ body::before{
 .logo-area h1{color:#fff;font-size:22px;font-weight:700;margin-bottom:4px}
 .logo-area p{color:rgba(255,255,255,.6);font-size:13px;max-width:380px;margin:0 auto}
 .card{background:#fff;border-radius:20px;box-shadow:var(--shadow);overflow:hidden}
-.lib-grid{padding:22px 24px;display:grid;grid-template-columns:1fr 1fr;gap:18px}
-@media(max-width:520px){.lib-grid{grid-template-columns:1fr}}
-.section-block{grid-column:1/-1}
-.section-heads-row{grid-column:1/-1;display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-@media(max-width:640px){.section-heads-row{grid-template-columns:1fr}}
+.lib-grid{padding:22px 24px}
+.section-layout{display:flex;gap:18px;align-items:flex-start}
+.section-heads-col{display:flex;flex-direction:column;gap:10px;width:260px;flex-shrink:0}
+.section-content{flex:1;min-width:0;display:flex;flex-direction:column;gap:10px}
+@media(max-width:760px){
+  .section-layout{flex-direction:column}
+  .section-heads-col{flex-direction:row;width:100%;overflow-x:auto}
+  .section-heads-col .section-head-banner{flex:1 0 150px}
+}
 .section-head{
   display:flex;align-items:center;justify-content:space-between;gap:10px;
   padding:14px 16px;border:1.5px solid var(--line);border-radius:14px;
@@ -57,8 +62,8 @@ body::before{
   display:flex;flex-direction:column;width:100%;
   padding:0;overflow:hidden;position:relative;
 }
-.section-head-banner .section-banner-img-wrap{width:100%;aspect-ratio:1263/832;max-height:150px;overflow:hidden}
-.section-head-banner img{width:100%;height:100%;object-fit:cover;object-position:top;display:block}
+.section-head-banner .section-banner-img-wrap{width:100%;aspect-ratio:1186/896;max-height:160px;overflow:hidden;background:#fff}
+.section-head-banner img{width:100%;height:100%;object-fit:contain;display:block}
 .section-head-banner .section-chevron-strip{
   width:100%;padding:6px 10px;display:flex;justify-content:flex-end;align-items:center;
   background:#fafbfc;border-top:1px solid var(--line);
@@ -67,18 +72,20 @@ body::before{
 .section-head-banner.open .section-chevron-strip{background:var(--blue-xl)}
 .section-head-banner.open .section-chevron{transform:rotate(180deg);color:var(--blue)}
 .section-body{
-  display:none;grid-template-columns:1fr 1fr;gap:18px;
-  border:1.5px solid var(--blue);border-top:none;border-radius:0 0 14px 14px;
+  display:none;flex-wrap:wrap;gap:18px;
+  border:1.5px solid var(--blue);border-radius:14px;
   padding:18px;
 }
-.section-body.open{display:grid}
-@media(max-width:520px){.section-body.open{grid-template-columns:1fr}}
+.section-body.open{display:flex}
+.section-body .lib-card{width:220px;flex:0 0 220px}
+@media(max-width:520px){.section-body .lib-card{width:100%;flex:1 1 100%}}
 .lib-card-expand{cursor:pointer}
 .sub-panel{
-  grid-column:1/-1;display:none;gap:10px;padding:2px 2px 0;
+  flex-basis:100%;display:none;flex-wrap:wrap;gap:10px;padding:2px 2px 0;
 }
-.sub-panel.open{display:grid;grid-template-columns:1fr 1fr 1fr}
-@media(max-width:520px){.sub-panel.open{grid-template-columns:1fr}}
+.sub-panel.open{display:flex}
+.sub-panel .sub-card{width:190px;flex:0 0 190px}
+@media(max-width:520px){.sub-panel .sub-card{width:100%;flex:1 1 100%}}
 .sub-card{
   border:1.5px solid var(--line);border-radius:12px;padding:14px 12px;text-align:center;
   text-decoration:none;color:var(--navy);transition:all .15s;position:relative;
@@ -196,7 +203,8 @@ body::before{
       <div class="greeting-name" id="greetName"></div>
     </div>
     <div class="lib-grid">
-      <div class="section-heads-row">
+      <div class="section-layout">
+      <div class="section-heads-col">
         <div class="section-head section-head-banner" id="headPruefungen" onclick="toggleSection('Pruefungen')">
           <div class="section-banner-img-wrap"><img src="logos/logo_section_pruefungen.jpg" alt="Prüfungen &amp; Nachweise"></div>
           <div class="section-chevron-strip">
@@ -216,8 +224,8 @@ body::before{
           </div>
         </div>
       </div>
+      <div class="section-content">
 
-      <div class="section-block">
         <div class="section-body" id="bodyPruefungen">
           <a class="lib-card" href="praxispruefung_start.html">
             <div class="lib-icon" style="padding:0;overflow:hidden"><img src="logos/logo_praxispruefung.png" alt="" style="width:100%;height:100%;object-fit:contain"></div>
@@ -243,9 +251,7 @@ body::before{
             </div>
           </a>
         </div>
-      </div>
 
-      <div class="section-block">
         <div class="section-body" id="bodyVorOrt">
           <a class="lib-card" href="https://danieleckmeierausbildung1986.github.io/fahrausweis-check/checkin/qr.html" target="_blank" rel="noopener">
             <div class="lib-icon" style="padding:0;overflow:hidden"><img src="logos/logo_checkin.jpg" alt="" style="width:100%;height:100%;object-fit:cover"></div>
@@ -291,9 +297,7 @@ body::before{
             </a>
           </div>
         </div>
-      </div>
 
-      <div class="section-block">
         <div class="section-body" id="bodyVerwaltung">
           <a class="lib-card" href="termine.html">
             <div class="lib-icon" style="padding:0;overflow:hidden"><img src="logos/logo_terminanfragen.png" alt="" style="width:100%;height:100%;object-fit:contain"></div>
@@ -319,6 +323,7 @@ body::before{
           </a>
         </div>
       </div>
+      </div>
     </div>
     <div class="footer-area">
       <button class="back-btn" onclick="doLogout()" style="cursor:pointer">↩ Abmelden</button>
@@ -332,6 +337,7 @@ var TRAINER_LOGIN_URL = 'https://2bb3195223a7efb1a05e6e69ad5c54.4c.environment.a
 function showTools(name, benutzername){
   document.getElementById('loginCard').style.display = 'none';
   document.getElementById('toolsCard').style.display = 'block';
+  document.querySelector('.container').classList.add('wide');
   document.getElementById('greetName').textContent = name ? ('Hallo, ' + name + '!') : '';
   var zeigeCockpit = (benutzername === 'Trainer01');
   document.getElementById('cockpitCard').style.display = zeigeCockpit ? '' : 'none';
