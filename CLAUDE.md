@@ -1,44 +1,86 @@
-## Offenes großes Thema: Stufe-2-Selbstanmeldung legt keine Staplerprufung_Stufe2-Zeile an (10.10.2026)
+## Stufe-2-Selbstanmeldung legt jetzt auch Staplerprufung_Stufe2-Zeile an (fertig, 11.10.2026)
 
-Beim Testen der neuen Teilnehmer-Selbstanmeldung (siehe weiter unten) fiel
-auf: Ein über den Stufe-2-QR-Code neu angemeldeter Teilnehmer (Testfall
-"Karl Meier", `2026-002`) taucht in `nachpruefung_theorie.html` bei der
-Stufe-2-Erstprüfung-Freigabe **gar nicht auf** ("Keiner bereit"), obwohl er
-über die Selbstanmeldung erfolgreich als Stufe-2-Teilnehmer angelegt wurde.
-
-**Ursache bestätigt:** Stufe 2 läuft intern über eine **eigene, separate
-Liste** `Staplerprufung_Stufe2` (Site "Ausbildung Zentrale", **nicht**
-`Staplerprufung_Master`!) mit Spalten `Registrierungsnummer`,
+**Ursprüngliches Problem (10.10.2026):** Ein über den Stufe-2-QR-Code neu
+angemeldeter Teilnehmer (Testfall "Karl Meier", `2026-002`) tauchte in
+`nachpruefung_theorie.html` bei der Stufe-2-Erstprüfung-Freigabe gar nicht
+auf, weil Stufe 2 intern über eine **eigene, separate Liste**
+`Staplerprufung_Stufe2` (Site "Ausbildung Zentrale", **nicht**
+`Staplerprufung_Master`!) läuft — Spalten `Registrierungsnummer`,
 `Name_Teilnehmer`, `Vorname_Teilnehmer`, `Stufe`, sowie **je Gerät ein
-eigenes Buchungs- und Freigabe-Flag**: `Schubmast_gebucht`/
-`Pruefung_Schubmast_Freigegeben`, `Kommissionierer_gebucht`/
-`Pruefung_Kommissionierer_Freigegeben`, `Schmalgang_gebucht`/
-`Pruefung_Schmalgang_Freigegeben`. Für Karl Meier existiert dort **gar
-keine Zeile** — unser neuer Flow `Teilnehmer_Selbstanmeldung` setzt bei
+eigenes Buchungs-Flag**: `Schubmast_gebucht`, `Kommissionierer_gebucht`,
+`Schmalgang_gebucht`. Der Flow `Teilnehmer_Selbstanmeldung` setzte bei
 `kurs=stufe2` bisher nur `Stufe2_gebucht`/`Stufe2_Schulungsform` auf
-`Staplerprufung_Master`, legt aber nichts in `Staplerprufung_Stufe2` an.
+`Staplerprufung_Master`, legte aber nichts in `Staplerprufung_Stufe2` an.
+Zusätzlich fragte das Formular nicht ab, welches Gerät der Teilnehmer
+macht.
 
-**Zusätzliches Problem, noch nicht gelöst:** Das aktuelle Stufe-2-
-Anmeldeformular (`anmeldung/index.html` im `fahrausweis-check`-Repo,
-`?kurs=stufe2`) fragt **nicht ab, welches Gerät** (Schubmast/
-Kommissionierer/Schmalgang) der Teilnehmer macht — diese Info fehlt also
-auch frontend-seitig komplett.
+**Entscheidung (11.10.2026): drei getrennte QR-Codes statt Dropdown**, um
+Verklicken zu verhindern — analog zur bestehenden Stufe1/Stufe2/LaSi-
+Dreiteilung. Umgesetzt:
 
-**Explizit als "großes Thema" von Daniel benannt (10.10.2026) — bewusst
-nicht an diesem Tag weiterverfolgt, sondern auf einen eigenen, separaten
-Termin verschoben.** Für den nächsten Anlauf zu klären:
-- Geräteauswahl im Formular: Dropdown im bestehenden Stufe-2-QR-Formular,
-  oder drei komplett getrennte QR-Codes (je Gerät), analog zur aktuellen
-  Stufe1/Stufe2/LaSi-Dreiteilung? (Frage gestellt, noch nicht beantwortet)
-- Flow `Teilnehmer_Selbstanmeldung` müsste bei `kurs=stufe2` zusätzlich
-  eine Zeile in `Staplerprufung_Stufe2` anlegen/aktualisieren (inkl.
-  passendem Geräte-`gebucht`-Flag), nicht nur `Staplerprufung_Master`
-  befüllen — analog zur schon bestehenden Dual-Schreib-Logik beim
-  LaSi-Freigeben-Flow (der ja auch in zwei Listen schreibt).
-- Prüfen, ob die bestehende Stufe-2-Duplikat-Prüfung (Name+Geburtsdatum auf
-  `Staplerprufung_Master`) um einen entsprechenden Check/Update auf
-  `Staplerprufung_Stufe2` ergänzt werden muss, damit auch dort nicht
-  doppelt angelegt wird.
+- **Frontend** (`fahrausweis-check`-Repo): `qr-stufe2.html` ersetzt durch
+  drei neue Seiten `qr-stufe2-schubmast.html`, `qr-stufe2-kommissionierer.html`,
+  `qr-stufe2-schmalgang.html`, die auf `anmeldung/index.html?kurs=stufe2_schubmast`
+  etc. verlinken. `anmeldung/index.html` erkennt diese drei `kurs`-Werte,
+  zeigt den passenden Gerätenamen im Titel, setzt intern `geraet` (Schubmast/
+  Kommissionierer/Schmalgang) und schickt im Payload weiterhin `kurs:'stufe2'`
+  (für die bestehende Master-Logik) **plus** zusätzlich `geraet`. Trainerbereich-
+  Links in `trainerbereich.html` auf die drei neuen QR-Seiten umgestellt.
+- **Flow `Teilnehmer_Selbstanmeldung`** erweitert um zwei neue Blöcke:
+  - **Bestandsteilnehmer** (zweites Gerät für bereits laufenden Stufe-2-
+    Teilnehmer): direkt nach dem bestehenden "Element aktualisieren 1"
+    (setzt `Stufe2_gebucht` auf `Staplerprufung_Master`) ein neues "Elemente
+    abrufen" auf `Staplerprufung_Stufe2` (Filter `Registrierungsnummer eq
+    '<Title aus dem ursprünglichen Duplikat-Check>'`), Bedingung "Hat Stufe2
+    Zeile" (`length(...) > 0`): Wahr → "Element aktualisieren" setzt nur die
+    passende Gerätespalte auf `true`, die anderen bleiben beim bisherigen
+    Wert (`if(equals(triggerBody()?['geraet'],'Schubmast'), true, first(...)
+    ?['Schubmast_gebucht'])` je Spalte); Falsch → "Element erstellen" legt
+    die Zeile neu an (`Registrierungsnummer`, `Name_Teilnehmer`,
+    `Vorname_Teilnehmer`, `Stufe=2`, je Gerätespalte `equals(triggerBody()?
+    ['geraet'], '<Gerät>')`).
+  - **Neuanmeldung**: nach dem bestehenden "Element erstellen" (Master) eine
+    neue Bedingung "Ist Stufe2 Kurs" (`triggerBody()?['kurs'] eq 'stufe2'`)
+    → Wahr: direkt "Element erstellen" auf `Staplerprufung_Stufe2` (kein
+    Duplikat-Check nötig, da neuer Teilnehmer zwangsläufig noch keine
+    Stufe2-Zeile hat), dieselben Felder wie oben, Registrierungsnummer über
+    `variables('varRegnr')`.
+
+**Wichtiger Build-Fehler, neu entdeckt (11.10.2026):** Beim Einfügen der
+neuen verschachtelten Aktionen sind drei **vorbestehende, unveränderte**
+"Element aktualisieren"-Schritte (Stufe1_gebucht, Stufe2_gebucht/
+Stufe2_Schulungsform, LaSi_gebucht/LaSi_Schulungsform auf
+`Staplerprufung_Master`) beim Veröffentlichen mit `'Element' muss
+angegeben werden` bzw. `'Item.item/<Feld>' ist im Vorgangsschema nicht
+mehr vorhanden` fehlgeschlagen — reines Entfernen+Neuhinzufügen der
+einzelnen Parameterzeile über "Erweiterte Parameter" hat NICHT gereicht
+(Fehler blieb auch bei leerem Wert bestehen). Einzig zuverlässiger Fix:
+die komplette Aktion löschen und an gleicher Stelle neu anlegen. **Lehre:**
+Bei verschachtelten Bedingungen können unabhängig von der eigentlichen
+Änderung benachbarte, eigentlich unberührte "Element aktualisieren"-
+Schritte ihre Feld-Bindung verlieren (Power-Automate-Schema-Drift) — im
+Zweifel nicht stundenlang an der kaputten Parameterzeile herumreparieren,
+sondern die betroffene Aktion komplett neu aufbauen.
+
+**Weitere Falle beim Neuaufbau:** `schulungsform` ist im Trigger-JSON-
+Schema nicht deklariert (obwohl das Frontend es im Payload mitschickt) und
+taucht deshalb im Dynamischer-Inhalt-Picker nicht auf — funktioniert aber
+trotzdem zuverlässig per Hand-Ausdruck `triggerBody()?['schulungsform']`
+im fx-Editor.
+
+**Falle bestätigt:** `LaSi_gebucht`/`LaSi_Schulungsform` sitzen (wie
+`Stufe1_gebucht`/`Stufe2_gebucht`) auf `Staplerprufung_Master`, **nicht**
+auf `Ladungssicherung_Master` — letzteres ist nur die eigene Liste für die
+Freigabe-Flows (`pruefung_lasi_freigegeben`), nicht für die Buchung. Beim
+Neuanlegen der Aktion schlägt Power Automate automatisch ein ähnlich
+klingendes, aber falsches Feld vor (`Pruefung_lasi_freigegeben`) — Liste
+und Feldname beim Neuaufbau immer gegen die SharePoint-Struktur-Doku oben
+prüfen, nicht das Auto-Vorschlagsfeld blind übernehmen.
+
+Gespeichert und veröffentlicht (11.10.2026). **Noch zu testen:** kompletter
+End-to-End-Testlauf über einen der drei neuen QR-Codes (z.B. Schubmast),
+inkl. Prüfung ob der Teilnehmer danach korrekt in
+`nachpruefung_theorie.html` bei "Stufe 2 Erstprüfung bereit" auftaucht.
 
 ## Theorieprüfungen freigeben: ELearning_Zugang mit-setzen + Entziehen-Button (10.10.2026)
 
