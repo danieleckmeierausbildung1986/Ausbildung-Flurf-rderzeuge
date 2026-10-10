@@ -46,6 +46,32 @@ Dreiteilung. Umgesetzt:
     Stufe2-Zeile hat), dieselben Felder wie oben, Registrierungsnummer über
     `variables('varRegnr')`.
 
+**Zweiter Build-Fehler beim Bestandsteilnehmer-Update, gefunden und gefixt
+(11.10.2026):** Zwei Probleme mit dem ursprünglichen "Hat Stufe2 Zeile" →
+Wahr-Update:
+- Der Filter `Registrierungsnummer eq '...'` im "Elemente abrufen 2" auf
+  `Staplerprufung_Stufe2` schlug mit `Die Spalte 'Registrierungsnummer'
+  ist nicht vorhanden` fehl — klassische Title-Falle (siehe oben): die
+  Spalte heißt in der UI "Registrierungsnummer", intern aber `Title`.
+  Fix: Filter auf `Title eq '...'` umgestellt.
+- Der Ansatz, beim Update eines zweiten Geräts die jeweils anderen zwei
+  Gerätespalten per `if(equals(...), true, first(outputs(...)?['...']))`
+  auf ihrem alten Wert zu halten, hat NICHT funktioniert — der
+  Rücklese-Teil lieferte `null` statt des erwarteten Vorwerts, wodurch
+  z.B. ein bereits gesetztes `Schubmast_gebucht=Yes` beim Buchen von
+  Kommissionierer auf leer überschrieben wurde. **Fix:** Die einzelne
+  "Element aktualisieren"-Aktion durch eine **"Wechseln" (Switch)**-Aktion
+  auf `triggerBody()?['geraet']` ersetzt, mit drei Cases (`Schubmast`/
+  `Kommissionierer`/`Schmalgang`), die jeweils **nur ihre eigene**
+  Gerätespalte als Parameter setzen (keine der anderen beiden anfassen).
+  Da SharePoint "Element aktualisieren" nur die mitgeschickten Felder
+  überschreibt, bleiben die nicht angefassten Spalten automatisch
+  unverändert — kein Rücklesen/Vorwert-Handling mehr nötig. **Lehre:**
+  Bei "diesen einen Wert ändern, Rest soll bleiben wie er ist"-Logik in
+  Power Automate immer bevorzugt das betroffene Feld schlicht aus dem
+  Update weglassen, statt den alten Wert aktiv zurückzulesen und erneut
+  mitzuschreiben — letzteres ist fehleranfällig.
+
 **Wichtiger Build-Fehler, neu entdeckt (11.10.2026):** Beim Einfügen der
 neuen verschachtelten Aktionen sind drei **vorbestehende, unveränderte**
 "Element aktualisieren"-Schritte (Stufe1_gebucht, Stufe2_gebucht/
@@ -77,10 +103,14 @@ klingendes, aber falsches Feld vor (`Pruefung_lasi_freigegeben`) — Liste
 und Feldname beim Neuaufbau immer gegen die SharePoint-Struktur-Doku oben
 prüfen, nicht das Auto-Vorschlagsfeld blind übernehmen.
 
-Gespeichert und veröffentlicht (11.10.2026). **Noch zu testen:** kompletter
-End-to-End-Testlauf über einen der drei neuen QR-Codes (z.B. Schubmast),
-inkl. Prüfung ob der Teilnehmer danach korrekt in
-`nachpruefung_theorie.html` bei "Stufe 2 Erstprüfung bereit" auftaucht.
+**Fertig, end-to-end getestet (11.10.2026, Testfall "Emma Eckmeier",
+`2026-002`):** Neuanmeldung über Schubmast-QR-Code (Zeile in beiden Listen
+korrekt angelegt, inkl. Nachweis-Upload), danach zweimal erneut über
+Kommissionierer- und Schmalgang-QR-Code mit identischen Personendaten
+angemeldet (Update statt Neuanlage, gleiche Regnr `2026-002` beide Male) —
+am Ende stehen `Schubmast_gebucht`/`Kommissionierer_gebucht`/
+`Schmalgang_gebucht` alle drei korrekt auf Yes nebeneinander, keine
+gegenseitige Überschreibung mehr.
 
 ## Theorieprüfungen freigeben: ELearning_Zugang mit-setzen + Entziehen-Button (10.10.2026)
 
