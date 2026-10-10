@@ -35,13 +35,11 @@ body::before{
 .logo-area p{color:rgba(255,255,255,.6);font-size:13px;max-width:380px;margin:0 auto}
 .card{background:#fff;border-radius:20px;box-shadow:var(--shadow);overflow:hidden}
 .lib-grid{padding:22px 24px}
-.section-layout{display:flex;gap:18px;align-items:flex-start}
-.section-heads-col{display:flex;flex-direction:column;gap:10px;width:260px;flex-shrink:0}
+.section-layout{display:flex;gap:12px;align-items:flex-start}
+.section-heads-col{display:flex;flex-direction:column;gap:8px;width:260px;flex-shrink:0}
 .section-content{flex:1;min-width:0;display:flex;flex-direction:column;gap:10px}
-@media(max-width:760px){
-  .section-layout{flex-direction:column}
-  .section-heads-col{flex-direction:row;width:100%;overflow-x:auto}
-  .section-heads-col .section-head-banner{flex:1 0 150px}
+@media(max-width:600px){
+  .section-heads-col{width:96px}
 }
 .section-head{
   display:flex;align-items:center;justify-content:space-between;gap:10px;
