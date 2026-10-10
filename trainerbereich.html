@@ -44,7 +44,7 @@ body::before{
 #bodyVorOrt{grid-column:2;grid-row:2}
 #headVerwaltung{grid-column:1;grid-row:3}
 #bodyVerwaltung{grid-column:2;grid-row:3}
-@media(max-width:600px){
+@media(max-width:640px){
   .section-layout{grid-template-columns:96px 1fr}
 }
 .section-head{
@@ -76,17 +76,17 @@ body::before{
 .section-head-banner.open .section-chevron-strip{background:var(--blue-xl)}
 .section-head-banner.open .section-chevron{transform:rotate(180deg);color:var(--blue)}
 .section-body{
-  display:none;flex-wrap:nowrap;gap:14px;
+  display:none;flex-wrap:nowrap;gap:14px;min-width:0;
   border:1.5px solid var(--blue);border-radius:14px;
   padding:12px;height:172px;overflow-x:auto;overflow-y:hidden;
 }
 .section-body.open{display:flex}
-.section-body .lib-card{width:180px;flex:0 0 180px;padding-bottom:10px}
+.section-body .lib-card{width:180px;flex:0 0 180px;padding-bottom:10px;min-width:0}
 .section-body .lib-icon{height:64px;margin-bottom:8px}
 .section-body .lib-info{padding:0 12px}
-.section-body .lib-title{font-size:13.5px;margin-bottom:2px}
+.section-body .lib-title{font-size:13.5px;margin-bottom:2px;overflow-wrap:break-word}
 .section-body .lib-sub{font-size:11px;line-height:1.35;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
-@media(max-width:520px){
+@media(max-width:640px){
   .section-body{height:auto;flex-wrap:wrap;overflow:visible}
   .section-body .lib-card{width:100%;flex:1 1 100%}
 }
@@ -96,7 +96,7 @@ body::before{
 }
 .sub-panel.open{display:flex}
 .sub-panel .sub-card{width:190px;flex:0 0 190px}
-@media(max-width:520px){.sub-panel .sub-card{width:100%;flex:1 1 100%}}
+@media(max-width:640px){.sub-panel .sub-card{width:100%;flex:1 1 100%}}
 .sub-card{
   border:1.5px solid var(--line);border-radius:12px;padding:14px 12px;text-align:center;
   text-decoration:none;color:var(--navy);transition:all .15s;position:relative;
@@ -106,7 +106,7 @@ body::before{
 .sub-card .sub-note{font-size:11px;color:var(--muted)}
 .sub-disabled{opacity:.55;cursor:default;pointer-events:none}
 .lib-card{
-  display:flex;flex-direction:column;align-items:center;text-align:center;gap:0;padding:0 0 18px;
+  display:flex;flex-direction:column;align-items:stretch;text-align:center;gap:0;padding:0 0 18px;
   border:1.5px solid var(--line);border-radius:16px;text-decoration:none;overflow:hidden;
   transition:all .15s;
 }
@@ -219,19 +219,19 @@ body::before{
         <div class="section-head section-head-banner" id="headPruefungen" onclick="toggleSection('Pruefungen')">
           <div class="section-banner-img-wrap"><img src="logos/logo_section_pruefungen.jpg" alt="Prüfungen &amp; Nachweise"></div>
           <div class="section-chevron-strip">
-            <svg class="section-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+            <svg class="section-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"></polyline></svg>
           </div>
         </div>
         <div class="section-head section-head-banner" id="headVorOrt" onclick="toggleSection('VorOrt')">
           <div class="section-banner-img-wrap"><img src="logos/logo_section_vorort.jpg" alt="Vor Ort &amp; Schulungstag"></div>
           <div class="section-chevron-strip">
-            <svg class="section-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+            <svg class="section-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"></polyline></svg>
           </div>
         </div>
         <div class="section-head section-head-banner" id="headVerwaltung" onclick="toggleSection('Verwaltung')">
           <div class="section-banner-img-wrap"><img src="logos/logo_section_verwaltung.jpg" alt="Verwaltung &amp; Organisation"></div>
           <div class="section-chevron-strip">
-            <svg class="section-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+            <svg class="section-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"></polyline></svg>
           </div>
         </div>
       </div>
