@@ -35,11 +35,17 @@ body::before{
 .logo-area p{color:rgba(255,255,255,.6);font-size:13px;max-width:380px;margin:0 auto}
 .card{background:#fff;border-radius:20px;box-shadow:var(--shadow);overflow:hidden}
 .lib-grid{padding:22px 24px}
-.section-layout{display:flex;gap:12px;align-items:flex-start}
-.section-heads-col{display:flex;flex-direction:column;gap:8px;width:260px;flex-shrink:0}
-.section-content{flex:1;min-width:0;display:flex;flex-direction:column;gap:10px}
+.section-layout{display:grid;grid-template-columns:260px 1fr;column-gap:12px;row-gap:8px;align-items:center}
+.section-heads-col{display:contents}
+.section-content{display:contents}
+#headPruefungen{grid-column:1;grid-row:1}
+#bodyPruefungen{grid-column:2;grid-row:1}
+#headVorOrt{grid-column:1;grid-row:2}
+#bodyVorOrt{grid-column:2;grid-row:2}
+#headVerwaltung{grid-column:1;grid-row:3}
+#bodyVerwaltung{grid-column:2;grid-row:3}
 @media(max-width:600px){
-  .section-heads-col{width:96px}
+  .section-layout{grid-template-columns:96px 1fr}
 }
 .section-head{
   display:flex;align-items:center;justify-content:space-between;gap:10px;
