@@ -65,6 +65,23 @@ tr:last-child td{border-bottom:none}
   font-size:14px;font-weight:600;cursor:pointer;transition:all .15s;text-align:center;text-decoration:none;
 }
 .back-btn:hover{border-color:var(--blue);color:var(--blue)}
+.print-btn{
+  display:block;width:100%;padding:11px;border:2px solid var(--line);
+  border-radius:12px;background:#fff;color:var(--navy);
+  font-size:14px;font-weight:600;cursor:pointer;transition:all .15s;text-align:center;margin-bottom:10px;
+}
+.print-btn:hover{border-color:var(--blue);color:var(--blue)}
+.print-title{display:none}
+@media print{
+  body{background:#fff;padding:0;display:block}
+  body::before{display:none}
+  .logo-area, .filter-row, .print-btn, .footer-area{display:none}
+  .print-title{display:block;margin-bottom:16px}
+  .print-title h1{font-size:20px;color:var(--navy);margin-bottom:4px}
+  .print-title p{font-size:13px;color:var(--muted)}
+  .container{max-width:100%}
+  .card{box-shadow:none;border-radius:0;padding:0}
+}
 </style>
 </head>
 <body>
@@ -82,8 +99,15 @@ tr:last-child td{border-bottom:none}
       <button class="load-btn" id="btnLaden" onclick="ladeListe()">Liste abrufen</button>
     </div>
 
+    <div class="print-title">
+      <h1>Teilnehmerliste</h1>
+      <p id="printDatum"></p>
+    </div>
+
     <div class="summary" id="summary"></div>
     <div id="ergebnisWrap"></div>
+
+    <button class="print-btn" id="btnDrucken" onclick="window.print()" style="display:none">🖨 Liste drucken</button>
 
     <div class="footer-area">
       <a class="back-btn" href="trainerbereich.html">← Zurück zum Trainerbereich</a>
@@ -177,10 +201,14 @@ async function ladeListe(){
     var d = await resp.json();
     var teilnehmer = (d && d.teilnehmer) ? d.teilnehmer : [];
     var stufe2Liste = (d && d.stufe2) ? d.stufe2 : [];
-    zeigeSummary('', teilnehmer.length + (teilnehmer.length === 1 ? ' Anmeldung' : ' Anmeldungen') + ' am ' + new Date(datum + 'T00:00:00').toLocaleDateString('de-DE'));
+    var datumText = new Date(datum + 'T00:00:00').toLocaleDateString('de-DE');
+    zeigeSummary('', teilnehmer.length + (teilnehmer.length === 1 ? ' Anmeldung' : ' Anmeldungen') + ' am ' + datumText);
+    document.getElementById('printDatum').textContent = datumText;
     renderTabelle(teilnehmer, stufe2Liste);
+    document.getElementById('btnDrucken').style.display = teilnehmer.length > 0 ? '' : 'none';
   } catch(e){
     zeigeSummary('error', 'Fehler beim Laden der Liste.');
+    document.getElementById('btnDrucken').style.display = 'none';
   }
 
   btn.disabled = false;
