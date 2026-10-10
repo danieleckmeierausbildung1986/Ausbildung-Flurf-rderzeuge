@@ -1,3 +1,58 @@
+## LaSi-Selbstanmeldung legt jetzt auch Ladungssicherung_Master-Zeile an (fertig, 11.10.2026)
+
+**Gleiches Problem wie bei Stufe 2 (siehe unten), nachträglich auch bei LaSi
+entdeckt:** Nach Abschluss des Stufe-2-Themas beim Gegenchecken aufgefallen,
+dass `Ladungssicherung_Master` für Emma Eckmeier trotz `LaSi_gebucht = Ja`
+auf `Staplerprufung_Master` **komplett leer** war — derselbe Fehler wie bei
+Stufe 2: LaSi hat ebenfalls eine eigene, separate Liste
+`Ladungssicherung_Master` (Site "Ausbildung Zentrale", Spalten
+`Registrierungsnummer`/intern `Title`, `Name_Teilnehmer`,
+`Vorname_Teilnehmer`, `pruefung_lasi_freigegeben`, `Datum_Pruefung`,
+`Punkte_Theorie`, `Status_Theorie`, `Pruefer`, `Kommentar`, `Kurse`), gegen
+die `Erstpruefung_LaSi_Kandidaten_abrufen` filtert — der Flow
+`Teilnehmer_Selbstanmeldung` schrieb bei `kurs=lasi` bisher nur
+`LaSi_gebucht`/`LaSi_Schulungsform` auf `Staplerprufung_Master`, legte aber
+nichts in `Ladungssicherung_Master` an.
+
+**Einfacher als Stufe 2** (kein Gerät, keine Nachweispflicht), zwei neue
+Blöcke in `Teilnehmer_Selbstanmeldung`:
+
+- **Bestandsteilnehmer**: direkt nach "Element aktualisieren 2" (setzt
+  `LaSi_gebucht` auf `Staplerprufung_Master`, im Wahr-Zweig von "Ist LaSi
+  Anmeldung") ein neues "Elemente abrufen 3" auf `Ladungssicherung_Master`
+  (Filter `Title eq '<Title aus dem ursprünglichen Duplikat-Check>'`),
+  Bedingung "Hat LaSi Zeile" (`length(...) > 0`): Wahr → nichts tun (sollte
+  praktisch nie eintreten), Falsch → "Element erstellen 3" legt die Zeile
+  neu an (`Titel`, `Name_Teilnehmer`, `Vorname_Teilnehmer`,
+  `Pruefung_lasi_freigegeben = Nein`).
+- **Neuanmeldung**: eine neue Bedingung "Ist LaSi Kurs"
+  (`triggerBody()?['kurs'] eq 'lasi'`) **parallel neben** (nicht
+  verschachtelt in) "Ist Stufe2 Kurs", direkt nach deren Wahr/Falsch-
+  Zweigen, noch vor "Hat Nachweis Datei" — Wahr: direkt "Element erstellen
+  4" auf `Ladungssicherung_Master` (kein Duplikat-Check nötig, neuer
+  Teilnehmer), `Titel` = `variables('varRegnr')`, `Name_Teilnehmer`/
+  `Vorname_Teilnehmer` aus dem Trigger.
+
+**Build-Fehler unterwegs:** "Ist LaSi Kurs" wurde beim ersten Versuch (per
+Kopieren von "Ist Stufe2 Kurs") versehentlich im **falschen** Zweig
+eingefügt — auf der linken (Bestandsteilnehmer-)Seite als vierte,
+eigenständige Geschwister-Bedingung neben "Ist Stufe1/Stufe2 Anmeldung",
+statt auf der rechten (Neuanmeldungs-)Seite nach "Ist Stufe2 Kurs". Da
+diese Fehlplatzierung keinen Duplikat-Schutz hatte, hätte sie bei jeder
+erneuten LaSi-Anmeldung eines Bestandsteilnehmers eine zusätzliche,
+doppelte Zeile in `Ladungssicherung_Master` erzeugt — vor dem Testen
+bemerkt und auf die richtige Seite verschoben. **Lehre:** Beim Kopieren
+einer Bedingung in einem Flow mit zwei symmetrischen Zweigen (Bestand vs.
+Neu) nach dem Einfügen immer rauszoomen und die Platzierung gegen den
+Original-Zweig prüfen, nicht nur den Aktionsnamen.
+
+**Fertig, end-to-end getestet (11.10.2026):** Bestandsteilnehmer-Zweig über
+Emma (`2026-002`) bestätigt — Zeile in `Ladungssicherung_Master` korrekt
+angelegt. Neuanmeldungs-Zweig zusätzlich mit einem frischen Testdurchlauf
+bestätigt. Damit sind jetzt **alle drei Kurstypen** (Stufe 1, Stufe 2 je
+Gerät, LaSi) bei der Selbstanmeldung vollständig in ihren jeweiligen
+Modul-Listen abgebildet, nicht nur in `Staplerprufung_Master`.
+
 ## Stufe-2-Selbstanmeldung legt jetzt auch Staplerprufung_Stufe2-Zeile an (fertig, 11.10.2026)
 
 **Ursprüngliches Problem (10.10.2026):** Ein über den Stufe-2-QR-Code neu
