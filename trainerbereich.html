@@ -76,13 +76,20 @@ body::before{
 .section-head-banner.open .section-chevron-strip{background:var(--blue-xl)}
 .section-head-banner.open .section-chevron{transform:rotate(180deg);color:var(--blue)}
 .section-body{
-  display:none;flex-wrap:wrap;gap:18px;
+  display:none;flex-wrap:nowrap;gap:14px;
   border:1.5px solid var(--blue);border-radius:14px;
-  padding:18px;
+  padding:12px;height:172px;overflow-x:auto;overflow-y:hidden;
 }
 .section-body.open{display:flex}
-.section-body .lib-card{width:220px;flex:0 0 220px}
-@media(max-width:520px){.section-body .lib-card{width:100%;flex:1 1 100%}}
+.section-body .lib-card{width:180px;flex:0 0 180px;padding-bottom:10px}
+.section-body .lib-icon{height:64px;margin-bottom:8px}
+.section-body .lib-info{padding:0 12px}
+.section-body .lib-title{font-size:13.5px;margin-bottom:2px}
+.section-body .lib-sub{font-size:11px;line-height:1.35;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+@media(max-width:520px){
+  .section-body{height:auto;flex-wrap:wrap;overflow:visible}
+  .section-body .lib-card{width:100%;flex:1 1 100%}
+}
 .lib-card-expand{cursor:pointer}
 .sub-panel{
   flex-basis:100%;display:none;flex-wrap:wrap;gap:10px;padding:2px 2px 0;
