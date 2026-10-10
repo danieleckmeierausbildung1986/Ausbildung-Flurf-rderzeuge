@@ -343,9 +343,15 @@ function showTools(name, benutzername){
   if(countEl){ countEl.textContent = zeigeCockpit ? '3' : '2'; }
 }
 
+var ALLE_SEKTIONEN = ['Pruefungen', 'VorOrt', 'Verwaltung'];
+
 function toggleSection(name){
-  document.getElementById('head' + name).classList.toggle('open');
-  document.getElementById('body' + name).classList.toggle('open');
+  var wirdGeoeffnet = !document.getElementById('head' + name).classList.contains('open');
+  ALLE_SEKTIONEN.forEach(function(n){
+    var istDiese = (n === name);
+    document.getElementById('head' + n).classList.toggle('open', istDiese && wirdGeoeffnet);
+    document.getElementById('body' + n).classList.toggle('open', istDiese && wirdGeoeffnet);
+  });
 }
 
 function toggleAnmeldung(){
