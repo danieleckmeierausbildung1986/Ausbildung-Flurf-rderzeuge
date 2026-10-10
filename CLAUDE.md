@@ -21,11 +21,32 @@ nötig.
    hinterher eine TN-Liste "alle Hofmann-Teilnehmer vom Datum X" für einen
    Rechnungsnachweis zu ziehen.
 
-**Preislogik für die Schulung selbst noch nicht entschieden** (gefragt:
-fester Tagessatz unabhängig von TN-Zahl vs. Pro-Teilnehmer-Abrechnung wie
-bei Normalbuchungen über "Anmeldung HP") — **muss erst mit Hofmann
-geklärt werden, bevor hier irgendetwas gebaut wird.** Bis dahin bewusst
-zurückgestellt, nur als offener Punkt dokumentiert.
+**Preislogik-Richtung geklärt (11.10.2026):** Daniel strebt ein **festes
+Honorar** (Tagessatz) an, nicht Pro-Teilnehmer-Abrechnung — die Anzahl der
+sich selbst anmeldenden TN hat damit keinen Einfluss auf die Rechnungs-
+höhe. Die bestehende Stempeluhr/`Stundenzettel_Monatlich`-Pipeline deckt
+das in der Grundidee bereits ab (Zeiterfassung → Honorar). Lücke 1
+(Stundenzettel ist keine echte versendete Rechnung mit Rechnungsnummer)
+bleibt trotzdem offen, ist aber **kein eiliges Problem mehr** — Lücke 2
+(Firmenzuordnung der Selbstanmeldung) ist bei festem Honorar **hinfällig**,
+da keine TN-genaue Abrechnung mehr gebraucht wird. Exakte Ausgestaltung
+(Rechnungsnummer-Vergabe, Versand) noch nicht final mit Hofmann verhandelt
+— bei Bedarf später als eigener Ausbauschritt analog zur Unterweisung-
+Rechnung (siehe unten) nachziehbar.
+
+**Zur eigenen Übersicht trotzdem gebaut: `teilnehmerliste.html`** (neu,
+11.10.2026, verlinkt im Trainerbereich unter "Verwaltung & Organisation").
+Explizit **kein** Rechnungsbezug — reine Kontroll-Ansicht für Daniel, wer
+sich an einem bestimmten Tag angemeldet hat. Datumsauswahl (Standard:
+heute) → Tabelle mit Regnr./Name/gebuchten Kursen (Stufe1/Stufe2/LaSi als
+Badges). Nutzt das **eingebaute SharePoint-Feld `Created`** auf
+`Staplerprufung_Master` (kein neues Datumsfeld nötig) zum Filtern nach
+Tag. **Frontend fertig, Flow `Teilnehmerliste_Abrufen` noch nicht gebaut**
+— `FLOW_URL` in `teilnehmerliste.html` ist noch leer. Geplanter Aufbau:
+HTTP-Trigger nimmt `{datum}` entgegen, "Elemente abrufen" auf
+`Staplerprufung_Master` mit Filter `Created ge '<datum>T00:00:00' and
+Created le '<datum>T23:59:59'`, Antwort `{teilnehmer:[{regnr, vorname,
+nachname, stufe1_gebucht, stufe2_gebucht, lasi_gebucht}]}`.
 
 ## LaSi-Selbstanmeldung legt jetzt auch Ladungssicherung_Master-Zeile an (fertig, 11.10.2026)
 
