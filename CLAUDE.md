@@ -110,7 +110,21 @@ Kommissionierer- und Schmalgang-QR-Code mit identischen Personendaten
 angemeldet (Update statt Neuanlage, gleiche Regnr `2026-002` beide Male) —
 am Ende stehen `Schubmast_gebucht`/`Kommissionierer_gebucht`/
 `Schmalgang_gebucht` alle drei korrekt auf Yes nebeneinander, keine
-gegenseitige Überschreibung mehr.
+gegenseitige Überschreibung mehr. Zusätzlich im Trainerbereich bestätigt:
+Emma taucht in `nachpruefung_theorie.html` bei "Stufe 2 Erstprüfung bereit"
+korrekt unter allen drei Geräte-Tabs auf; "Erstprüfung freigeben" im
+Schubmast-Tab setzt in `Staplerprufung_Stufe2` ausschließlich
+`Pruefung_Schubmast_Freigegeben = Ja`, Kommissionierer/Schmalgang bleiben
+unberührt auf Nein.
+
+**Regressionstest der beim Neuaufbau mit-betroffenen Stufe1-/LaSi-
+Aktionen (11.10.2026):** Da "Element aktualisieren" (Stufe1) und "Element
+aktualisieren 2" (LaSi) im selben Flow wegen des Schema-Drift-Bugs
+ebenfalls komplett neu aufgebaut werden mussten (siehe oben), sicherheits-
+halber nochmal eine Bestandsanmeldung je Kurs getestet: Emma zusätzlich
+über den Stufe1- und den LaSi-QR-Code angemeldet — in `Staplerprufung_
+Master` stehen danach `Stufe1_gebucht`/`LaSi_gebucht` korrekt mit
+`Präsenz` als Schulungsform. Keine Regression durch den Neuaufbau.
 
 ## Theorieprüfungen freigeben: ELearning_Zugang mit-setzen + Entziehen-Button (10.10.2026)
 
