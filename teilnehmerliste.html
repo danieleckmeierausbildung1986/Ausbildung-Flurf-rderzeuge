@@ -110,27 +110,42 @@ function zeigeSummary(type, text){
   el.textContent = text;
 }
 
-function kursBadges(t){
+// Baut pro Teilnehmer die Kurs-Badges, inkl. Stufe-2-Gerätedetails
+// (aus der separaten Staplerprufung_Stufe2-Liste, per Regnr. zugeordnet).
+function kursBadges(master, stufe2ByRegnr){
   var badges = [];
-  if(t.stufe1_gebucht) badges.push('Stufe 1');
-  if(t.stufe2_gebucht) badges.push('Stufe 2');
-  if(t.lasi_gebucht) badges.push('LaSi');
+  if(master.Stufe1_gebucht) badges.push('Stufe 1');
+  if(master.LaSi_gebucht) badges.push('LaSi');
+  if(master.Stufe2_gebucht){
+    var s2 = stufe2ByRegnr[master.Title];
+    if(s2){
+      if(s2.Schubmast_gebucht) badges.push('Stufe 2 – Schubmast');
+      if(s2.Kommissionierer_gebucht) badges.push('Stufe 2 – Kommissionierer');
+      if(s2.Schmalgang_gebucht) badges.push('Stufe 2 – Schmalgang');
+      if(!s2.Schubmast_gebucht && !s2.Kommissionierer_gebucht && !s2.Schmalgang_gebucht) badges.push('Stufe 2');
+    } else {
+      badges.push('Stufe 2');
+    }
+  }
   if(badges.length === 0) return '<span style="color:var(--muted)">—</span>';
   return '<div class="badge-row">' + badges.map(function(b){ return '<span class="badge">' + b + '</span>'; }).join('') + '</div>';
 }
 
-function renderTabelle(teilnehmer){
+function renderTabelle(teilnehmer, stufe2Liste){
   var wrap = document.getElementById('ergebnisWrap');
   if(!teilnehmer || teilnehmer.length === 0){
     wrap.innerHTML = '<div class="empty-state">Keine Anmeldungen an diesem Tag.</div>';
     return;
   }
+  var stufe2ByRegnr = {};
+  (stufe2Liste || []).forEach(function(s){ stufe2ByRegnr[s.Title] = s; });
+
   var html = '<table><thead><tr><th>Regnr.</th><th>Name</th><th>Kurse</th></tr></thead><tbody>';
   teilnehmer.forEach(function(t){
     html += '<tr>' +
-      '<td>' + (t.regnr || '') + '</td>' +
-      '<td>' + (t.vorname || '') + ' ' + (t.nachname || '') + '</td>' +
-      '<td>' + kursBadges(t) + '</td>' +
+      '<td>' + (t.Title || '') + '</td>' +
+      '<td>' + (t.Vorname_Teilnehmer || '') + ' ' + (t.Name_Teilnehmer || '') + '</td>' +
+      '<td>' + kursBadges(t, stufe2ByRegnr) + '</td>' +
       '</tr>';
   });
   html += '</tbody></table>';
@@ -161,8 +176,9 @@ async function ladeListe(){
     });
     var d = await resp.json();
     var teilnehmer = (d && d.teilnehmer) ? d.teilnehmer : [];
+    var stufe2Liste = (d && d.stufe2) ? d.stufe2 : [];
     zeigeSummary('', teilnehmer.length + (teilnehmer.length === 1 ? ' Anmeldung' : ' Anmeldungen') + ' am ' + new Date(datum + 'T00:00:00').toLocaleDateString('de-DE'));
-    renderTabelle(teilnehmer);
+    renderTabelle(teilnehmer, stufe2Liste);
   } catch(e){
     zeigeSummary('error', 'Fehler beim Laden der Liste.');
   }
