@@ -1,3 +1,32 @@
+## Offenes Thema: Hofmann-Honorarrechnung für die eigentliche Schulung fehlt noch (11.10.2026)
+
+Idee von Daniel: Wenn Hofmann z.B. 7 TN für eine Stufe-1-Ausbildung meldet,
+reicht es, wenn die 7 TN am Schulungstag selbst da sind — sie können sich
+komplett über die neue Vor-Ort-Selbstanmeldung (QR-Code, siehe
+"Stempeluhr & Vor-Ort-Teilnehmeranmeldung" unten) selbst eintragen, keine
+vorherige Namensliste/Einzelbuchung über `anmeldung.html`/"Anmeldung HP"
+nötig.
+
+**Dabei zwei Lücken identifiziert, beide noch ungelöst:**
+
+1. **Es gibt aktuell keine echte Rechnung an Hofmann für die Schulung
+   selbst.** Die bestehende Stempeluhr/`Stundenzettel_Monatlich`-Pipeline
+   bildet nur Daniels **eigene Arbeitszeit als Dozent** ab (Zeiterfassung,
+   PDF-Ablage ohne Rechnungsnummer, kein Versand) — nicht den eigentlichen
+   Schulungs-Tagessatz (550–650€ Praxistag, 600–650€ LaSi), der laut
+   ursprünglicher Absprache mit Hofmann eigentlich maßgeblich sein sollte.
+2. **Keine Verknüpfung zwischen Selbstanmeldung und Firma.** Die
+   Teilnehmer-Selbstanmeldung (Flow `Teilnehmer_Selbstanmeldung`) erfasst
+   aktuell keine Firmenzugehörigkeit — es gibt also keine Möglichkeit,
+   hinterher eine TN-Liste "alle Hofmann-Teilnehmer vom Datum X" für einen
+   Rechnungsnachweis zu ziehen.
+
+**Preislogik für die Schulung selbst noch nicht entschieden** (gefragt:
+fester Tagessatz unabhängig von TN-Zahl vs. Pro-Teilnehmer-Abrechnung wie
+bei Normalbuchungen über "Anmeldung HP") — **muss erst mit Hofmann
+geklärt werden, bevor hier irgendetwas gebaut wird.** Bis dahin bewusst
+zurückgestellt, nur als offener Punkt dokumentiert.
+
 ## LaSi-Selbstanmeldung legt jetzt auch Ladungssicherung_Master-Zeile an (fertig, 11.10.2026)
 
 **Gleiches Problem wie bei Stufe 2 (siehe unten), nachträglich auch bei LaSi
