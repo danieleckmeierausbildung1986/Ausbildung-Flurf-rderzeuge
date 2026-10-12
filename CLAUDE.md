@@ -1,3 +1,17 @@
+## Bug gefixt: LaSi-E-Learning-Kachel ignorierte Schulungsform (12.10.2026)
+
+Beim Vorbereiten auf den Hofmann-Termin entdeckt: In `login.html` zeigen die
+Module-Kacheln im Teilnehmerbereich (Tab "E-Learning") für Stufe 1 und
+Stufe 2 korrekt nur an, wenn die jeweilige `Schulungsform` wirklich
+`"E-Learning"` ist — bei **LaSi fehlte dieser Check komplett**, die
+Kachel erschien dort unabhängig von der Schulungsform, sobald
+`LaSi_gebucht` gesetzt war. Dadurch sah ein Präsenz-LaSi-Teilnehmer nach
+Freigabe der Theorieprüfung (die `ELearning_Zugang` mit setzt, siehe oben)
+fälschlich auch die E-Learning-Lernmaterialien. **Fix:** `if(data.lasi){`
+zu `if(data.lasi && lform === 'elearning'){` ergänzt (Zeile ~638), analog
+zu Stufe1 (`s1form === 'elearning'`) und Stufe2 (`s2form === 'elearning'`).
+Reiner Frontend-Fix, kein Flow betroffen.
+
 ## Offenes Thema: Hofmann-Honorarrechnung für die eigentliche Schulung fehlt noch (11.10.2026)
 
 Idee von Daniel: Wenn Hofmann z.B. 7 TN für eine Stufe-1-Ausbildung meldet,
