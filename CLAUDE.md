@@ -10,7 +10,11 @@ Freigabe der Theorieprüfung (die `ELearning_Zugang` mit setzt, siehe oben)
 fälschlich auch die E-Learning-Lernmaterialien. **Fix:** `if(data.lasi){`
 zu `if(data.lasi && lform === 'elearning'){` ergänzt (Zeile ~638), analog
 zu Stufe1 (`s1form === 'elearning'`) und Stufe2 (`s2form === 'elearning'`).
-Reiner Frontend-Fix, kein Flow betroffen.
+Reiner Frontend-Fix, kein Flow betroffen. **Getestet und bestätigt
+(12.10.2026)**: Testaccount `2026-001` (Präsenz-LaSi, Prüfung
+freigegeben) zeigt jetzt korrekt "Keine E-Learning-Module gebucht" im
+E-Learning-Tab, während die Theorieprüfung weiterhin freigeschaltet
+bleibt.
 
 ## Offenes Thema: Hofmann-Honorarrechnung für die eigentliche Schulung fehlt noch (11.10.2026)
 
