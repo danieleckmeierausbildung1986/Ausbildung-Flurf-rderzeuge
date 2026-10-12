@@ -635,7 +635,7 @@ function showModules(data){
     examCount++;
   }
 
-  if(data.lasi){
+  if(data.lasi && lform === 'elearning'){
     list.innerHTML += `
       <a class="exam-tile" href="${BASE}lasi_auswahl.html?regnr=${encodeURIComponent(currentRegnr)}${langParam}">
         <img src="${BASE}${logoImg('lasi_header','jpg')}" alt="Ausbildung Ladungssicherung">
