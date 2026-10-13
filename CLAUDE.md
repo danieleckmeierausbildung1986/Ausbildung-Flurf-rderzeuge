@@ -38,6 +38,28 @@ getrennte, unabhängig voneinander nutzbare Möglichkeiten:
    dringend** — kein eigener `Teilnehmer_Selbstanmeldung`-Firmenbezug
    mehr nötig, da in dieser Variante ohnehin keine Teilnehmer über
    ProDrive laufen.
+
+   **Update (13.10.2026): Echte Rechnung jetzt doch als nächster
+   Schritt angefragt** — Daniel muss die Dozententätigkeit als
+   Kleinunternehmer (§19 UStG) ordentlich abrechnen, der reine
+   Stundenzettel reicht dafür nicht. Geplanter Aufbau (noch nicht
+   gebaut, wartet auf eine Information):
+   - **Auslösung:** automatisch monatlich, im selben Rhythmus wie
+     `Stundenzettel_Monatlich` (1. des Monats, Vormonat abrechnen) —
+     kein manuelles Anstoßen nötig.
+   - **Rechnungsnummer:** gemeinsame Reihe mit den übrigen Rechnungen
+     (`RE-YYYY-NNN`, wie bei der Jährlichen Unterweisung) statt einer
+     eigenen Nummernreihe — einfacher nachvollziehbar, kein
+     Kollisionsrisiko, eine Sequenz für die ganze Buchhaltung.
+   - **Blockiert durch:** den **Stundensatz** — noch nicht mit Hofmann
+     verhandelt (`Stundenzettel_Monatlich` nutzt aktuell nur einen
+     75€/h-Platzhalter). **Bewusst zurückgestellt, bis der Satz
+     feststeht** — eine echte Rechnung mit Platzhalterbetrag macht
+     keinen Sinn. Sobald der Satz steht: neuer Flow (oder Erweiterung
+     von `Stundenzettel_Monatlich`) analog zur
+     `UNTERWEISUNG_SPEICHERN_URL`-Rechnungslogik aufsetzen (PDF im
+     selben Layout, Ablage in der "Rechnungen"-Bibliothek auf Site
+     "ProDrive Verwaltung", damit alle Rechnungen an einem Ort bleiben).
 2. **Raum-/Geräte-Miete-Variante — weiterhin jederzeit möglich,
    unabhängig von Variante 1.** Daniel kann sich bei Hofmann Schulungs-
    räume und Flurförderzeuge mieten, um dort **eigene ProDrive-Kurse mit
