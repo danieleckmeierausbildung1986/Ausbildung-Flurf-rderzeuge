@@ -204,8 +204,8 @@ async function entscheiden(id, entscheidung){
     return;
   }
   var card = document.querySelector('.ta-card[data-id="'+CSS.escape(id)+'"]');
-  var vonInput = document.getElementById('date-von-'+id);
-  var bisInput = document.getElementById('date-bis-'+id);
+  var vonInput = document.getElementById('vorschlaege-'+id).querySelector('.v-von');
+  var bisInput = document.getElementById('vorschlaege-'+id).querySelector('.v-bis');
   var bestaetigterTerminVon = vonInput ? vonInput.value : '';
   var bestaetigterTerminBis = bisInput && bisInput.value ? bisInput.value : bestaetigterTerminVon;
   var kommentarInput = document.getElementById('kommentar-'+id);
