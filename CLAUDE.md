@@ -60,6 +60,18 @@ getrennte, unabhängig voneinander nutzbare Möglichkeiten:
      `UNTERWEISUNG_SPEICHERN_URL`-Rechnungslogik aufsetzen (PDF im
      selben Layout, Ablage in der "Rechnungen"-Bibliothek auf Site
      "ProDrive Verwaltung", damit alle Rechnungen an einem Ort bleiben).
+   - **Wichtig, nicht vergessen beim Bau:** Leermonate dürfen **keine**
+     Rechnung erzeugen. Da der Trigger zeitgesteuert läuft (nicht
+     ereignisgesteuert wie bei der Unterweisung), muss vor der
+     Rechnungsnummer-Vergabe eine Bedingung "Gab es Abgeschlossen-
+     Einträge im Zeitraum?" (`length(...) > 0` auf die gefilterten
+     `Dozent_Zeiterfassung`-Einträge der Firma) stehen — nur im
+     Wahr-Fall wird überhaupt eine Nummer vergeben und ein PDF erzeugt,
+     sonst wird der Monat für diese Firma stillschweigend übersprungen
+     (kein 0€-PDF, keine verbrauchte Rechnungsnummer). Gleiches Prinzip
+     wie die "Buchung noch offen"-Sperre bei der Unterweisung, nur dass
+     hier "gab es überhaupt Arbeit" statt "noch nicht abgeschlossen"
+     geprüft wird.
 2. **Raum-/Geräte-Miete-Variante — weiterhin jederzeit möglich,
    unabhängig von Variante 1.** Daniel kann sich bei Hofmann Schulungs-
    räume und Flurförderzeuge mieten, um dort **eigene ProDrive-Kurse mit
