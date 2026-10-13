@@ -16,41 +16,44 @@ freigegeben) zeigt jetzt korrekt "Keine E-Learning-Module gebucht" im
 E-Learning-Tab, während die Theorieprüfung weiterhin freigeschaltet
 bleibt.
 
-## Offenes Thema: Hofmann-Honorarrechnung für die eigentliche Schulung fehlt noch (11.10.2026)
+## Hofmann-Kooperation: Ergebnis des Kennenlerntermins (13.10.2026)
 
-Idee von Daniel: Wenn Hofmann z.B. 7 TN für eine Stufe-1-Ausbildung meldet,
-reicht es, wenn die 7 TN am Schulungstag selbst da sind — sie können sich
-komplett über die neue Vor-Ort-Selbstanmeldung (QR-Code, siehe
-"Stempeluhr & Vor-Ort-Teilnehmeranmeldung" unten) selbst eintragen, keine
-vorherige Namensliste/Einzelbuchung über `anmeldung.html`/"Anmeldung HP"
-nötig.
+Daniel hatte am 13.10. das Kennenlerngespräch bei Hofmann. Ergebnis, zwei
+getrennte, unabhängig voneinander nutzbare Möglichkeiten:
 
-**Dabei zwei Lücken identifiziert, beide noch ungelöst:**
+1. **Dozenten-Honorar-Variante — das ist die von Hofmann aktuell
+   bevorzugte und tatsächlich vereinbarte Variante.** Hofmann möchte
+   Daniel als Dozenten engagieren, dabei laufen Schulungsunterlagen,
+   Zertifikate und Fahrausweise über **Hofmanns eigenes System**, nicht
+   über ProDrive. Abgerechnet wird rein über **Honorar** (Zeiterfassung),
+   keine Pro-Teilnehmer-Abrechnung. **Wichtige Konsequenz:** Für dieses
+   Szenario sind unsere diese Woche gebauten Features
+   (Teilnehmer-Selbstanmeldung, Zertifikate/Fahrausweise, Teilnehmerliste)
+   **nicht relevant** — die Teilnehmer laufen komplett über Hofmanns
+   eigenes System. Relevant bleibt ausschließlich die **Stempeluhr +
+   `Stundenzettel_Monatlich`-Pipeline** (Zeiterfassung → Honorar), die
+   dafür schon fertig und getestet ist. Die ursprünglich diskutierte
+   "echte Rechnung mit Rechnungsnummer statt nur Stundenzettel"-Lücke
+   bleibt ein möglicher späterer Ausbauschritt, ist aber **nicht
+   dringend** — kein eigener `Teilnehmer_Selbstanmeldung`-Firmenbezug
+   mehr nötig, da in dieser Variante ohnehin keine Teilnehmer über
+   ProDrive laufen.
+2. **Raum-/Geräte-Miete-Variante — weiterhin jederzeit möglich,
+   unabhängig von Variante 1.** Daniel kann sich bei Hofmann Schulungs-
+   räume und Flurförderzeuge mieten, um dort **eigene ProDrive-Kurse mit
+   externen Teilnehmern** durchzuführen. In diesem Fall kommt das
+   komplette diese Woche gebaute ProDrive-System wie geplant zum Einsatz
+   (Selbstanmeldung, Zertifikate, Fahrausweise, Teilnehmerliste) — nur
+   der Schulungsort wäre dann bei Hofmann statt im eigenen Schulungsraum.
+   Diese Variante ist aktuell nicht der nächste Schritt, bleibt aber als
+   Option bestehen.
 
-1. **Es gibt aktuell keine echte Rechnung an Hofmann für die Schulung
-   selbst.** Die bestehende Stempeluhr/`Stundenzettel_Monatlich`-Pipeline
-   bildet nur Daniels **eigene Arbeitszeit als Dozent** ab (Zeiterfassung,
-   PDF-Ablage ohne Rechnungsnummer, kein Versand) — nicht den eigentlichen
-   Schulungs-Tagessatz (550–650€ Praxistag, 600–650€ LaSi), der laut
-   ursprünglicher Absprache mit Hofmann eigentlich maßgeblich sein sollte.
-2. **Keine Verknüpfung zwischen Selbstanmeldung und Firma.** Die
-   Teilnehmer-Selbstanmeldung (Flow `Teilnehmer_Selbstanmeldung`) erfasst
-   aktuell keine Firmenzugehörigkeit — es gibt also keine Möglichkeit,
-   hinterher eine TN-Liste "alle Hofmann-Teilnehmer vom Datum X" für einen
-   Rechnungsnachweis zu ziehen.
-
-**Preislogik-Richtung geklärt (11.10.2026):** Daniel strebt ein **festes
-Honorar** (Tagessatz) an, nicht Pro-Teilnehmer-Abrechnung — die Anzahl der
-sich selbst anmeldenden TN hat damit keinen Einfluss auf die Rechnungs-
-höhe. Die bestehende Stempeluhr/`Stundenzettel_Monatlich`-Pipeline deckt
-das in der Grundidee bereits ab (Zeiterfassung → Honorar). Lücke 1
-(Stundenzettel ist keine echte versendete Rechnung mit Rechnungsnummer)
-bleibt trotzdem offen, ist aber **kein eiliges Problem mehr** — Lücke 2
-(Firmenzuordnung der Selbstanmeldung) ist bei festem Honorar **hinfällig**,
-da keine TN-genaue Abrechnung mehr gebraucht wird. Exakte Ausgestaltung
-(Rechnungsnummer-Vergabe, Versand) noch nicht final mit Hofmann verhandelt
-— bei Bedarf später als eigener Ausbauschritt analog zur Unterweisung-
-Rechnung (siehe unten) nachziehbar.
+**Für die Praxis heißt das:** Die komplette diese Woche gebaute Vor-Ort-
+Selbstanmeldung/Zertifikat-Infrastruktur ist nicht hinfällig — sie bleibt
+für Variante 2 (Raummiete, eigene Kurse) einsatzbereit, wird aber für den
+aktuell konkret vereinbarten Dozenten-Honorar-Einstieg bei Hofmann nicht
+gebraucht. Einziges für Variante 1 benötigtes Werkzeug (Stempeluhr) ist
+bereits fertig.
 
 **Zur eigenen Übersicht trotzdem gebaut: `teilnehmerliste.html`** (neu,
 11.10.2026, verlinkt im Trainerbereich unter "Verwaltung & Organisation").
