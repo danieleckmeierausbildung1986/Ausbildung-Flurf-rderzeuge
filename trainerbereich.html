@@ -39,13 +39,24 @@ body::before{
 .section-block:last-child{margin-bottom:0}
 .section-head-banner{
   display:block;width:100%;border-radius:14px;overflow:hidden;position:relative;
-  border:1.5px solid var(--line);margin-bottom:14px;
+  border:1.5px solid var(--line);margin-bottom:0;cursor:pointer;transition:border-color .15s;
 }
+.section-head-banner:hover{border-color:var(--blue)}
+.section-head-banner.open{border-radius:14px 14px 0 0;border-color:var(--blue)}
 .section-head-banner .section-banner-img-wrap{width:100%;aspect-ratio:1186/896;max-height:140px;overflow:hidden;background:#fff}
 .section-head-banner img{width:100%;height:100%;object-fit:contain;display:block}
-.section-body{
-  display:flex;flex-wrap:wrap;gap:14px;min-width:0;
+.section-chevron-strip{
+  width:100%;padding:6px 10px;display:flex;justify-content:flex-end;align-items:center;
+  background:#fafbfc;border-top:1px solid var(--line);
 }
+.section-head-banner.open .section-chevron-strip{background:var(--blue-xl)}
+.section-chevron{width:16px;height:16px;flex-shrink:0;color:var(--muted);transition:transform .2s}
+.section-head-banner.open .section-chevron{transform:rotate(180deg);color:var(--blue)}
+.section-body{
+  display:none;flex-wrap:wrap;gap:14px;min-width:0;
+  border:1.5px solid var(--blue);border-top:none;border-radius:0 0 14px 14px;padding:14px;
+}
+.section-body.open{display:flex}
 .section-body .lib-card{flex:1 1 calc((100% - 28px)/3);min-width:0;padding-bottom:10px}
 .section-body .lib-icon{height:64px;margin-bottom:8px}
 .section-body .lib-info{padding:0 12px}
@@ -71,7 +82,7 @@ body::before{
 .sub-disabled{opacity:.55;cursor:default;pointer-events:none}
 .lib-card{
   display:flex;flex-direction:column;align-items:stretch;text-align:center;gap:0;padding:0 0 18px;
-  border:1.5px solid var(--line);border-radius:16px;text-decoration:none;overflow:hidden;
+  border:1.5px solid rgba(26,79,168,.28);border-radius:16px;text-decoration:none;overflow:hidden;
   transition:all .15s;
 }
 .lib-card:hover{border-color:var(--blue);transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.1)}
@@ -180,8 +191,11 @@ body::before{
     <div class="lib-grid">
 
       <div class="section-block">
-        <div class="section-head-banner">
+        <div class="section-head-banner" id="headPruefungen" onclick="toggleSection('Pruefungen')">
           <div class="section-banner-img-wrap"><img src="logos/logo_section_pruefungen.jpg" alt="Prüfungen &amp; Nachweise"></div>
+          <div class="section-chevron-strip">
+            <svg class="section-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+          </div>
         </div>
         <div class="section-body" id="bodyPruefungen">
           <a class="lib-card" href="praxispruefung_start.html">
@@ -211,8 +225,11 @@ body::before{
       </div>
 
       <div class="section-block">
-        <div class="section-head-banner">
+        <div class="section-head-banner" id="headVorOrt" onclick="toggleSection('VorOrt')">
           <div class="section-banner-img-wrap"><img src="logos/logo_section_vorort.jpg" alt="Vor Ort &amp; Schulungstag"></div>
+          <div class="section-chevron-strip">
+            <svg class="section-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+          </div>
         </div>
         <div class="section-body" id="bodyVorOrt">
           <a class="lib-card" href="https://danieleckmeierausbildung1986.github.io/fahrausweis-check/checkin/qr.html" target="_blank" rel="noopener">
@@ -262,8 +279,11 @@ body::before{
       </div>
 
       <div class="section-block">
-        <div class="section-head-banner">
+        <div class="section-head-banner" id="headVerwaltung" onclick="toggleSection('Verwaltung')">
           <div class="section-banner-img-wrap"><img src="logos/logo_section_verwaltung.jpg" alt="Verwaltung &amp; Organisation"></div>
+          <div class="section-chevron-strip">
+            <svg class="section-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+          </div>
         </div>
         <div class="section-body" id="bodyVerwaltung">
           <a class="lib-card" href="termine.html">
@@ -317,6 +337,11 @@ function showTools(name, benutzername){
   document.getElementById('cockpitCard').style.display = zeigeCockpit ? '' : 'none';
   var countEl = document.getElementById('countVerwaltung');
   if(countEl){ countEl.textContent = zeigeCockpit ? '3' : '2'; }
+}
+
+function toggleSection(name){
+  document.getElementById('head' + name).classList.toggle('open');
+  document.getElementById('body' + name).classList.toggle('open');
 }
 
 function toggleAnmeldung(){
