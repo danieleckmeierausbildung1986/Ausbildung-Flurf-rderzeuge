@@ -37,9 +37,15 @@ body::before{
 .tray-box{
   border:2px dashed var(--line);border-radius:12px;padding:14px 10px;text-align:center;
   cursor:grab;background:#fafbfc;transition:border-color .15s,background .15s;user-select:none;
+  touch-action:none;
 }
 .tray-box:hover{border-color:var(--blue);background:var(--blue-xl)}
-.tray-box.dragging{opacity:.4}
+.drag-clone{
+  position:fixed;z-index:1000;pointer-events:none;width:56px;height:62px;border-radius:4px;
+  background:linear-gradient(135deg,#d9c38a,#c7ac6c);border:2px solid #9c824a;
+  box-shadow:0 10px 24px rgba(0,0,0,.3);
+}
+.stage.drop-hover{box-shadow:inset 0 0 0 3px var(--safety)}
 .tray-crate{
   width:56px;height:62px;margin:0 auto 8px;border-radius:4px;
   background:linear-gradient(135deg,#d9c38a,#c7ac6c);border:2px solid #9c824a;
@@ -86,7 +92,7 @@ body::before{
   transition:transform .05s linear;
 }
 .drop-zone{
-  position:absolute;left:40px;bottom:0;width:360px;height:100%;
+  position:absolute;left:40px;bottom:0;width:360px;height:260px;
 }
 .crate-slot{
   position:absolute;left:140px;width:70px;height:85px;
@@ -103,7 +109,7 @@ body::before{
   position:absolute;width:14px;height:14px;border-radius:50%;
   background:var(--safety);display:none;
 }
-.show-hints .corner-hint{display:block}
+.show-hints .crate.loaded .corner-hint{display:block}
 .crate.loaded .corner-hint{top:4px}
 .crate.loaded:not(.flipped) .corner-hint{left:4px}
 .crate.loaded.flipped .corner-hint{right:4px}
@@ -144,12 +150,12 @@ body::before{
     <div class="layout">
       <div class="tray">
         <div class="tray-label">Kisten-Ablage</div>
-        <div class="tray-box" id="trayA" draggable="true" data-type="empty">
+        <div class="tray-box" id="trayA" data-type="empty">
           <div class="tray-crate"></div>
           <div class="tb-name">Kiste A</div>
           <div class="tb-sub">leer</div>
         </div>
-        <div class="tray-box" id="trayB" draggable="true" data-type="loaded">
+        <div class="tray-box" id="trayB" data-type="loaded">
           <div class="tray-crate"></div>
           <div class="tb-name">Kiste B</div>
           <div class="tb-sub">Ecke beladen</div>
@@ -234,25 +240,52 @@ function computeTipAngle(){
   return angleRad * 180/Math.PI;
 }
 
-// ---- Drag & Drop ----
+// ---- Ziehen (eigene Zeiger-basierte Logik statt natives HTML5-Drag-and-Drop,
+// das in manchen Browsern/Umgebungen unzuverlaessig und unschoen rendert) ----
+var activeDrag = null;
+
 document.querySelectorAll('.tray-box').forEach(function(el){
-  el.addEventListener('dragstart', function(e){
-    if(el.classList.contains('placed')){ e.preventDefault(); return; }
-    e.dataTransfer.setData('text/plain', el.dataset.type);
-    el.classList.add('dragging');
+  el.addEventListener('pointerdown', function(e){
+    if(el.classList.contains('placed') || stack.length >= 2) return;
+    e.preventDefault();
+    var clone = document.createElement('div');
+    clone.className = 'drag-clone';
+    positionClone(clone, e.clientX, e.clientY);
+    document.body.appendChild(clone);
+    activeDrag = { type: el.dataset.type, clone: clone };
+    document.addEventListener('pointermove', onDragMove);
+    document.addEventListener('pointerup', onDragEnd);
   });
-  el.addEventListener('dragend', function(){ el.classList.remove('dragging'); });
 });
 
-var dropZone = document.getElementById('dropZone');
-dropZone.addEventListener('dragover', function(e){ e.preventDefault(); });
-dropZone.addEventListener('drop', function(e){
-  e.preventDefault();
-  if(stack.length >= 2) return;
-  var type = e.dataTransfer.getData('text/plain');
-  if(!type) return;
-  addCrate(type);
-});
+function positionClone(clone, x, y){
+  clone.style.left = (x - 28) + 'px';
+  clone.style.top = (y - 31) + 'px';
+}
+
+function isOverDropZone(x, y){
+  var r = document.getElementById('dropZone').getBoundingClientRect();
+  return x >= r.left && x <= r.right && y >= r.top && y <= r.bottom;
+}
+
+function onDragMove(e){
+  if(!activeDrag) return;
+  positionClone(activeDrag.clone, e.clientX, e.clientY);
+  document.getElementById('stage').classList.toggle('drop-hover', isOverDropZone(e.clientX, e.clientY));
+}
+
+function onDragEnd(e){
+  if(!activeDrag) return;
+  var over = isOverDropZone(e.clientX, e.clientY);
+  activeDrag.clone.remove();
+  document.getElementById('stage').classList.remove('drop-hover');
+  document.removeEventListener('pointermove', onDragMove);
+  document.removeEventListener('pointerup', onDragEnd);
+  if(over && stack.length < 2){
+    addCrate(activeDrag.type);
+  }
+  activeDrag = null;
+}
 
 function addCrate(type){
   var trayEl = type === 'empty' ? document.getElementById('trayA') : document.getElementById('trayB');
@@ -327,22 +360,19 @@ function startKippen(){
   document.getElementById('resultMsg').classList.remove('tipped');
   angle = 0;
   tippedFlag = false;
-  var speed = 12; // Grad pro Sekunde
-  var last = performance.now();
+  var duration = 2600; // ms — feste Vorführdauer, unabhängig vom konkreten Kippwinkel
+  var start = performance.now();
 
   function step(now){
-    var dt = (now - last) / 1000;
-    last = now;
-    angle += speed * dt;
-    if(angle >= critical){
-      angle = critical;
-      document.getElementById('ramp').style.transform = 'rotate(-' + angle + 'deg)';
-      document.getElementById('angleVal').textContent = angle.toFixed(1) + '°';
+    var t = Math.min(1, (now - start) / duration);
+    var eased = t * t * (3 - 2*t); // smoothstep: sanfter Start, beschleunigt zur Mitte, sanftes Ende
+    angle = critical * eased;
+    document.getElementById('ramp').style.transform = 'rotate(-' + angle + 'deg)';
+    document.getElementById('angleVal').textContent = angle.toFixed(1) + '°';
+    if(t >= 1){
       tipOver(critical);
       return;
     }
-    document.getElementById('ramp').style.transform = 'rotate(-' + angle + 'deg)';
-    document.getElementById('angleVal').textContent = angle.toFixed(1) + '°';
     animId = requestAnimationFrame(step);
   }
   animId = requestAnimationFrame(step);
