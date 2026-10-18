@@ -202,7 +202,8 @@ body::before{
 // Beladene Kiste: Zusatzgewicht in einer oberen Ecke verschiebt den Schwerpunkt
 // deutlich Richtung dieser Ecke und nach oben -> kippt in diese Richtung sehr leicht,
 // in die Gegenrichtung (z.B. nach 180°-Drehung) dagegen kaum leichter als eine leere Kiste.
-var W = 70, H = 85;
+var W = 70, H = 85;         // nur fuer die Darstellung auf dem Bildschirm
+var H_PHYS = W / Math.tan(50 * Math.PI/180); // kalibriert: leere Kiste kippt real bei ~50 Grad (gemessen am Holzmodell)
 var BOX_MASS = 1;      // Eigengewicht der Kiste (gleich fuer beide, gleiche Kisten)
 var CORNER_MASS = 2;   // Zusatzgewicht in der Ecke bei Kiste B
 
@@ -212,14 +213,14 @@ var animId = null;
 var tippedFlag = false;
 
 function crateLocalCog(type, flipped){
-  // liefert {x,y} relativ zur Kiste (0..W, 0..H), x=0 ist die Scharnier-/Kippseite
+  // liefert {x,y} relativ zur Kiste (0..W, 0..H_PHYS), x=0 ist die Scharnier-/Kippseite
   if(type === 'empty'){
-    return {x: W/2, y: H/2, m: BOX_MASS};
+    return {x: W/2, y: H_PHYS/2, m: BOX_MASS};
   }
   var cornerX = flipped ? W : 0;
   var totalM = BOX_MASS + CORNER_MASS;
   var x = (BOX_MASS*(W/2) + CORNER_MASS*cornerX) / totalM;
-  var y = (BOX_MASS*(H/2) + CORNER_MASS*H) / totalM;
+  var y = (BOX_MASS*(H_PHYS/2) + CORNER_MASS*H_PHYS) / totalM;
   return {x:x, y:y, m: totalM};
 }
 
@@ -230,7 +231,7 @@ function computeTipAngle(){
     var c = crateLocalCog(box.type, box.flipped);
     totalM += c.m;
     sumX += c.m * c.x;
-    sumY += c.m * (c.y + i*H); // jede weitere Kiste sitzt H hoeher
+    sumY += c.m * (c.y + i*H_PHYS); // jede weitere Kiste sitzt H_PHYS hoeher
   });
   var cogX = sumX/totalM;
   var cogY = sumY/totalM;
