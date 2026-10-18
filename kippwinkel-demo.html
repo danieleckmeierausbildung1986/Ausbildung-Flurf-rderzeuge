@@ -82,20 +82,24 @@ body::before{
 }
 .ground{position:absolute;left:0;right:0;bottom:0;height:40px;background:var(--navy)}
 .pivot-mark{
-  position:absolute;left:60px;bottom:40px;width:10px;height:10px;border-radius:50%;
+  position:absolute;left:50%;bottom:40px;width:10px;height:10px;border-radius:50%;
   background:var(--navy);transform:translate(-50%,50%);z-index:5;
 }
+.ramp-left{
+  position:absolute;right:50%;bottom:40px;width:210px;height:16px;
+  background:linear-gradient(180deg,#e7cf9e,#c9a86a);border:2px solid #9c824a;border-radius:3px;
+}
 .ramp{
-  position:absolute;left:60px;bottom:40px;width:420px;height:16px;
+  position:absolute;left:50%;bottom:40px;width:210px;height:16px;
   background:linear-gradient(180deg,#e7cf9e,#c9a86a);border:2px solid #9c824a;border-radius:3px;
   transform-origin:0% 100%;transform:rotate(0deg);
   transition:transform .05s linear;
 }
 .drop-zone{
-  position:absolute;left:40px;bottom:0;width:360px;height:260px;
+  position:absolute;left:0;bottom:0;width:190px;height:260px;
 }
 .crate-slot{
-  position:absolute;left:140px;width:70px;height:85px;
+  position:absolute;left:6px;width:70px;height:85px;
 }
 .crate-slot.slot-0{bottom:16px}
 .crate-slot.slot-1{bottom:101px}
@@ -181,6 +185,7 @@ body::before{
         </div>
         <div class="stage" id="stage">
           <div class="empty-note" id="emptyNote">Kiste hierher ziehen</div>
+          <div class="ramp-left"></div>
           <div class="pivot-mark"></div>
           <div class="ramp" id="ramp">
             <div class="drop-zone" id="dropZone"></div>
