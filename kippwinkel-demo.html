@@ -93,7 +93,6 @@ body::before{
   position:absolute;left:50%;bottom:40px;width:210px;height:16px;
   background:linear-gradient(180deg,#e7cf9e,#c9a86a);border:2px solid #9c824a;border-radius:3px;
   transform-origin:0% 100%;transform:rotate(0deg);
-  transition:transform .05s linear;
 }
 .drop-zone{
   position:absolute;left:0;bottom:0;width:190px;height:260px;
@@ -107,7 +106,6 @@ body::before{
   width:100%;height:100%;border-radius:4px;position:relative;
   background:linear-gradient(135deg,#d9c38a,#c7ac6c);border:2px solid #9c824a;
   box-shadow:inset 0 0 0 3px rgba(255,255,255,.18);
-  transition:transform .5s cubic-bezier(.55,0,.85,.4);
 }
 .crate .corner-hint{
   position:absolute;width:14px;height:14px;border-radius:50%;
@@ -359,45 +357,53 @@ function toggleHints(){
 }
 
 function startKippen(){
-  if(stack.length === 0) return;
+  if(stack.length === 0 || tippedFlag) return;
   var critical = computeTipAngle();
   if(critical === null) return;
   document.getElementById('btnKippen').disabled = true;
   document.getElementById('resultMsg').textContent = '';
   document.getElementById('resultMsg').classList.remove('tipped');
   angle = 0;
-  tippedFlag = false;
-  var duration = 2600; // ms — feste Vorführdauer, unabhängig vom konkreten Kippwinkel
+
+  var riseDuration = 2600; // ms — langsames, gleichmäßiges Hochkippen
+  var fallDuration = 550;  // ms — beschleunigtes Umfallen, sobald der Kipppunkt erreicht ist
+  var fallExtra = 95;      // Grad, um die die Kiste zusätzlich über den Kipppunkt hinausfällt
   var start = performance.now();
+  var fallStart = null;
 
   function step(now){
-    var t = Math.min(1, (now - start) / duration);
-    var eased = t * t * (3 - 2*t); // smoothstep: sanfter Start, beschleunigt zur Mitte, sanftes Ende
-    angle = critical * eased;
-    document.getElementById('ramp').style.transform = 'rotate(-' + angle + 'deg)';
-    document.getElementById('angleVal').textContent = angle.toFixed(1) + '°';
-    if(t >= 1){
-      tipOver(critical);
-      return;
+    if(fallStart === null){
+      var t = Math.min(1, (now - start) / riseDuration);
+      var eased = t * t * (3 - 2*t); // smoothstep: sanfter Start/Ende, Tempo in der Mitte
+      angle = critical * eased;
+      document.getElementById('ramp').style.transform = 'rotate(-' + angle + 'deg)';
+      document.getElementById('angleVal').textContent = angle.toFixed(1) + '°';
+      if(t >= 1){
+        fallStart = now;
+        var msg = document.getElementById('resultMsg');
+        msg.textContent = 'Umgekippt bei ' + critical.toFixed(1) + '°';
+        msg.classList.add('tipped');
+        document.getElementById('dropZone').querySelectorAll('.remove-x').forEach(function(x){ x.style.display = 'none'; });
+      }
+    } else {
+      // Beschleunigendes Umfallen (ease-in, wie bei echter Schwerkraft) — direkte Fortsetzung
+      // derselben Animationsschleife, kein Wechsel auf eine separate CSS-Transition.
+      var ft = Math.min(1, (now - fallStart) / fallDuration);
+      var fallEased = ft * ft;
+      var extra = fallExtra * fallEased;
+      document.getElementById('dropZone').querySelectorAll('.crate').forEach(function(c, i){
+        c.style.transformOrigin = '0% 100%';
+        c.style.transform = 'rotate(-' + extra + 'deg) translate(' + (2*fallEased) + 'px, ' + (i*2*fallEased) + 'px)';
+      });
+      if(ft >= 1){
+        tippedFlag = true;
+        document.getElementById('dropZone').querySelectorAll('.crate').forEach(function(c){ c.classList.add('tipped'); });
+        return; // btnKippen bleibt gesperrt, bis "Zurücksetzen" geklickt wird
+      }
     }
     animId = requestAnimationFrame(step);
   }
   animId = requestAnimationFrame(step);
-}
-
-function tipOver(finalAngle){
-  tippedFlag = true;
-  var zone = document.getElementById('dropZone');
-  zone.querySelectorAll('.remove-x').forEach(function(x){ x.style.display = 'none'; });
-  zone.querySelectorAll('.crate').forEach(function(c, i){
-    c.style.transformOrigin = '0% 100%';
-    c.style.transform = 'rotate(-92deg) translate(2px, ' + (i*2) + 'px)';
-    c.classList.add('tipped');
-  });
-  var msg = document.getElementById('resultMsg');
-  msg.textContent = 'Umgekippt bei ' + finalAngle.toFixed(1) + '°';
-  msg.classList.add('tipped');
-  document.getElementById('btnKippen').disabled = false;
 }
 
 renderStage();
