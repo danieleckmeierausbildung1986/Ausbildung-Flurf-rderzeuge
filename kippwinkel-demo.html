@@ -209,8 +209,9 @@ body::before{
 // in die Gegenrichtung (z.B. nach 180°-Drehung) dagegen kaum leichter als eine leere Kiste.
 var W = 70, H = 85;         // nur fuer die Darstellung auf dem Bildschirm
 var H_PHYS = W / Math.tan(50 * Math.PI/180); // kalibriert: leere Kiste kippt real bei ~50 Grad (gemessen am Holzmodell)
-var BOX_MASS = 1;      // Eigengewicht der Kiste (gleich fuer beide, gleiche Kisten)
-var CORNER_MASS = 2;   // Zusatzgewicht in der Ecke bei Kiste B
+var BOX_MASS = 1;           // Eigengewicht der Kiste (gleich fuer beide, gleiche Kisten)
+var CORNER_MASS = 0.462;    // kalibriert an echten Messwerten (Kiste B kippt bei 60°/42°)
+var CORNER_Y = 20.58;       // Hoehe des Zusatzgewichts im Kisteninneren (kalibriert, ~35% der Hoehe von unten)
 
 var stack = []; // bottom -> top, each: {type:'empty'|'loaded', flipped:bool}
 var angle = 0;
@@ -225,7 +226,7 @@ function crateLocalCog(type, flipped){
   var cornerX = flipped ? W : 0;
   var totalM = BOX_MASS + CORNER_MASS;
   var x = (BOX_MASS*(W/2) + CORNER_MASS*cornerX) / totalM;
-  var y = (BOX_MASS*(H_PHYS/2) + CORNER_MASS*H_PHYS) / totalM;
+  var y = (BOX_MASS*(H_PHYS/2) + CORNER_MASS*CORNER_Y) / totalM;
   return {x:x, y:y, m: totalM};
 }
 
