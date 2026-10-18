@@ -109,8 +109,10 @@ body::before{
 }
 .crate .corner-hint{
   position:absolute;width:14px;height:14px;border-radius:50%;
-  background:var(--safety);display:none;
+  background:var(--safety);display:none;cursor:grab;touch-action:none;
+  box-shadow:0 0 0 3px rgba(240,121,32,.25);z-index:6;
 }
+.crate .corner-hint:hover{transform:scale(1.15)}
 .show-hints .crate.loaded .corner-hint{display:block}
 .crate.loaded .corner-hint{top:4px}
 .crate.loaded:not(.flipped) .corner-hint{left:4px}
@@ -292,6 +294,34 @@ function onDragEnd(e){
   activeDrag = null;
 }
 
+// Orangen Schwerpunkt-Punkt per Ziehen auf die jeweils andere Seite der Kiste verschieben
+// (Alternative zum Klick auf die ganze Kiste — direkter und anschaulicher beim Vorbereiten).
+function attachCornerDrag(dotEl, crateEl, idx){
+  dotEl.addEventListener('pointerdown', function(e){
+    if(tippedFlag) return;
+    e.stopPropagation();
+    e.preventDefault();
+    var rect = crateEl.getBoundingClientRect();
+    dotEl.style.right = 'auto';
+
+    function move(ev){
+      var relX = ev.clientX - rect.left - 7;
+      relX = Math.max(2, Math.min(rect.width - 16, relX));
+      dotEl.style.left = relX + 'px';
+    }
+    function up(ev){
+      var relX = ev.clientX - rect.left;
+      var flipped = relX > rect.width / 2;
+      document.removeEventListener('pointermove', move);
+      document.removeEventListener('pointerup', up);
+      stack[idx].flipped = flipped;
+      renderStage();
+    }
+    document.addEventListener('pointermove', move);
+    document.addEventListener('pointerup', up);
+  });
+}
+
 function addCrate(type){
   var trayEl = type === 'empty' ? document.getElementById('trayA') : document.getElementById('trayB');
   if(trayEl.classList.contains('placed')) return; // schon verwendet
@@ -318,12 +348,14 @@ function renderStage(){
   if(document.getElementById('hintToggle').checked) zone.classList.add('show-hints'); else zone.classList.remove('show-hints');
   // Klick auf beladene Kiste dreht sie (nur solange noch nicht gekippt wurde)
   zone.querySelectorAll('.crate.loaded').forEach(function(c){
+    var idx = parseInt(c.dataset.idx,10);
     c.addEventListener('click', function(){
       if(tippedFlag) return;
-      var idx = parseInt(c.dataset.idx,10);
       stack[idx].flipped = !stack[idx].flipped;
       renderStage();
     });
+    var dot = c.querySelector('.corner-hint');
+    if(dot) attachCornerDrag(dot, c, idx);
   });
   document.getElementById('btnKippen').disabled = stack.length === 0;
 }
