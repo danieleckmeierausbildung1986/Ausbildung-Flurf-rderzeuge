@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Kippwinkel-Demo – ProDrive Akademie Niederbayern</title>
+<style>
+:root{
+  --bg:#0a1628;--blue:#1a4fa8;--blue-l:#2e75cc;--blue-d:#0d2d80;--blue-xl:#e8f0fb;
+  --navy:#16243f;--muted:#68788f;--line:#e3e8f0;--ink:#1a2330;--safety:#f07920;
+  --shadow:0 8px 40px rgba(0,0,0,.25);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:"Segoe UI",system-ui,sans-serif;
+  min-height:100vh;background:var(--bg);
+  display:flex;align-items:center;justify-content:center;padding:20px;
+}
+body::before{
+  content:'';position:fixed;inset:0;
+  background:
+    radial-gradient(ellipse 80% 60% at 20% 20%, rgba(26,79,168,.28) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 80% at 80% 80%, rgba(13,45,128,.32) 0%, transparent 60%);
+  pointer-events:none;z-index:0;
+}
+.container{position:relative;z-index:1;width:100%;max-width:1040px}
+.logo-area{text-align:center;margin-bottom:22px}
+.logo-area h1{color:#fff;font-size:22px;font-weight:700;margin-bottom:4px}
+.logo-area p{color:rgba(255,255,255,.6);font-size:13px}
+.card{background:#fff;border-radius:20px;box-shadow:var(--shadow);overflow:hidden;padding:28px}
+
+.layout{display:grid;grid-template-columns:200px 1fr;gap:24px;align-items:start}
+@media(max-width:760px){.layout{grid-template-columns:1fr}}
+
+.tray{display:flex;flex-direction:column;gap:14px}
+.tray-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);margin-bottom:2px}
+.tray-box{
+  border:2px dashed var(--line);border-radius:12px;padding:14px 10px;text-align:center;
+  cursor:grab;background:#fafbfc;transition:border-color .15s,background .15s;user-select:none;
+}
+.tray-box:hover{border-color:var(--blue);background:var(--blue-xl)}
+.tray-box.dragging{opacity:.4}
+.tray-crate{
+  width:56px;height:62px;margin:0 auto 8px;border-radius:4px;
+  background:linear-gradient(135deg,#d9c38a,#c7ac6c);border:2px solid #9c824a;
+  box-shadow:inset 0 0 0 3px rgba(255,255,255,.18);
+}
+.tray-box .tb-name{font-size:12.5px;font-weight:700;color:var(--navy)}
+.tray-box .tb-sub{font-size:10.5px;color:var(--muted);margin-top:2px}
+.tray-box.placed{opacity:.35;cursor:default;pointer-events:none}
+
+.controls{display:flex;flex-direction:column;gap:8px;margin-top:4px}
+.btn{
+  padding:10px 14px;border:none;border-radius:10px;font-size:13px;font-weight:700;
+  cursor:pointer;transition:opacity .15s;
+}
+.btn-primary{background:linear-gradient(135deg,var(--safety),#d9690f);color:#fff}
+.btn-secondary{background:#fff;border:1.5px solid var(--line);color:var(--navy)}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.btn:hover:not(:disabled){opacity:.88}
+.hint-toggle{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted);margin-top:6px}
+
+.stage-wrap{position:relative}
+.readout{
+  display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;
+  padding:10px 16px;background:var(--blue-xl);border-radius:12px;
+}
+.readout .angle-val{font-size:26px;font-weight:800;color:var(--blue-d);font-variant-numeric:tabular-nums}
+.readout .angle-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted)}
+.readout .result-msg{font-size:13px;font-weight:700;color:var(--navy)}
+.result-msg.tipped{color:#c0392b}
+
+.stage{
+  position:relative;height:340px;border-radius:14px;overflow:hidden;
+  background:linear-gradient(180deg,#eef3fa,#dde7f3);border:1.5px solid var(--line);
+}
+.ground{position:absolute;left:0;right:0;bottom:0;height:40px;background:var(--navy)}
+.pivot-mark{
+  position:absolute;left:60px;bottom:40px;width:10px;height:10px;border-radius:50%;
+  background:var(--navy);transform:translate(-50%,50%);z-index:5;
+}
+.ramp{
+  position:absolute;left:60px;bottom:40px;width:420px;height:16px;
+  background:linear-gradient(180deg,#e7cf9e,#c9a86a);border:2px solid #9c824a;border-radius:3px;
+  transform-origin:0% 100%;transform:rotate(0deg);
+  transition:transform .05s linear;
+}
+.drop-zone{
+  position:absolute;left:40px;bottom:0;width:360px;height:100%;
+}
+.crate-slot{
+  position:absolute;left:140px;width:70px;height:85px;
+}
+.crate-slot.slot-0{bottom:16px}
+.crate-slot.slot-1{bottom:101px}
+.crate{
+  width:100%;height:100%;border-radius:4px;position:relative;
+  background:linear-gradient(135deg,#d9c38a,#c7ac6c);border:2px solid #9c824a;
+  box-shadow:inset 0 0 0 3px rgba(255,255,255,.18);
+  transition:transform .5s cubic-bezier(.55,0,.85,.4);
+}
+.crate .corner-hint{
+  position:absolute;width:14px;height:14px;border-radius:50%;
+  background:var(--safety);display:none;
+}
+.show-hints .corner-hint{display:block}
+.crate.loaded .corner-hint{top:4px}
+.crate.loaded:not(.flipped) .corner-hint{left:4px}
+.crate.loaded.flipped .corner-hint{right:4px}
+.crate.tipped{opacity:1}
+.crate-label{
+  position:absolute;top:-20px;left:0;right:0;text-align:center;font-size:10px;font-weight:700;
+  color:var(--navy);display:none;
+}
+.show-hints .crate-label{display:block}
+.remove-x{
+  position:absolute;top:-8px;right:-8px;width:20px;height:20px;border-radius:50%;
+  background:#c0392b;color:#fff;font-size:12px;line-height:20px;text-align:center;
+  cursor:pointer;z-index:10;
+}
+.empty-note{
+  position:absolute;bottom:50%;left:0;right:0;text-align:center;color:var(--muted);
+  font-size:12.5px;pointer-events:none;
+}
+.footer-area{padding-top:22px}
+.back-btn{
+  display:block;width:100%;padding:11px;border:2px solid var(--line);
+  border-radius:12px;background:#fff;color:var(--muted);
+  font-size:14px;font-weight:600;cursor:pointer;transition:all .15s;text-align:center;text-decoration:none;
+}
+.back-btn:hover{border-color:var(--blue);color:var(--blue)}
+.intro{font-size:13px;color:var(--muted);line-height:1.5;margin-bottom:18px}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="logo-area">
+    <h1>Kippwinkel-Demo</h1>
+    <p>Digitales Anschauungsmaterial für die Ladungssicherungs-Schulung</p>
+  </div>
+  <div class="card">
+    <p class="intro">Zieh eine oder zwei Kisten auf die Rampe (zweite Kiste stapelt sich automatisch auf die erste) und klick "Kippen" — die Rampe hebt sich langsam, bis die Kiste(n) umkippen. Beide Kisten sehen von außen identisch aus, verhalten sich aber je nach Beladung und Stapelreihenfolge völlig unterschiedlich.</p>
+
+    <div class="layout">
+      <div class="tray">
+        <div class="tray-label">Kisten-Ablage</div>
+        <div class="tray-box" id="trayA" draggable="true" data-type="empty">
+          <div class="tray-crate"></div>
+          <div class="tb-name">Kiste A</div>
+          <div class="tb-sub">leer</div>
+        </div>
+        <div class="tray-box" id="trayB" draggable="true" data-type="loaded">
+          <div class="tray-crate"></div>
+          <div class="tb-name">Kiste B</div>
+          <div class="tb-sub">Ecke beladen</div>
+        </div>
+
+        <div class="controls">
+          <button class="btn btn-primary" id="btnKippen" onclick="startKippen()" disabled>Kippen</button>
+          <button class="btn btn-secondary" onclick="resetStage()">Zurücksetzen</button>
+        </div>
+        <label class="hint-toggle">
+          <input type="checkbox" id="hintToggle" onchange="toggleHints()">
+          Trainer-Hinweise anzeigen
+        </label>
+      </div>
+
+      <div class="stage-wrap">
+        <div class="readout">
+          <div>
+            <div class="angle-label">Rampenwinkel</div>
+            <div class="angle-val" id="angleVal">0°</div>
+          </div>
+          <div class="result-msg" id="resultMsg"></div>
+        </div>
+        <div class="stage" id="stage">
+          <div class="empty-note" id="emptyNote">Kiste hierher ziehen</div>
+          <div class="pivot-mark"></div>
+          <div class="ramp" id="ramp">
+            <div class="drop-zone" id="dropZone"></div>
+          </div>
+          <div class="ground"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-area">
+      <a class="back-btn" href="trainerbereich.html">← Zurück zum Trainerbereich</a>
+    </div>
+  </div>
+</div>
+
+<script>
+// ---- Physik-Modell ----
+// Kiste als Rechteck W x H. Leere Kiste: Schwerpunkt mittig (W/2, H/2).
+// Beladene Kiste: Zusatzgewicht in einer oberen Ecke verschiebt den Schwerpunkt
+// deutlich Richtung dieser Ecke und nach oben -> kippt in diese Richtung sehr leicht,
+// in die Gegenrichtung (z.B. nach 180°-Drehung) dagegen kaum leichter als eine leere Kiste.
+var W = 70, H = 85;
+var BOX_MASS = 1;      // Eigengewicht der Kiste (gleich fuer beide, gleiche Kisten)
+var CORNER_MASS = 2;   // Zusatzgewicht in der Ecke bei Kiste B
+
+var stack = []; // bottom -> top, each: {type:'empty'|'loaded', flipped:bool}
+var angle = 0;
+var animId = null;
+var tippedFlag = false;
+
+function crateLocalCog(type, flipped){
+  // liefert {x,y} relativ zur Kiste (0..W, 0..H), x=0 ist die Scharnier-/Kippseite
+  if(type === 'empty'){
+    return {x: W/2, y: H/2, m: BOX_MASS};
+  }
+  var cornerX = flipped ? W : 0;
+  var totalM = BOX_MASS + CORNER_MASS;
+  var x = (BOX_MASS*(W/2) + CORNER_MASS*cornerX) / totalM;
+  var y = (BOX_MASS*(H/2) + CORNER_MASS*H) / totalM;
+  return {x:x, y:y, m: totalM};
+}
+
+function computeTipAngle(){
+  if(stack.length === 0) return null;
+  var totalM = 0, sumX = 0, sumY = 0;
+  stack.forEach(function(box, i){
+    var c = crateLocalCog(box.type, box.flipped);
+    totalM += c.m;
+    sumX += c.m * c.x;
+    sumY += c.m * (c.y + i*H); // jede weitere Kiste sitzt H hoeher
+  });
+  var cogX = sumX/totalM;
+  var cogY = sumY/totalM;
+  // Kippkante ist x=0 (Scharnierseite). Kritischer Winkel:
+  var dist = cogX; // Abstand Schwerpunkt -> Kippkante (x=0)
+  var angleRad = Math.atan(dist / cogY);
+  return angleRad * 180/Math.PI;
+}
+
+// ---- Drag & Drop ----
+document.querySelectorAll('.tray-box').forEach(function(el){
+  el.addEventListener('dragstart', function(e){
+    if(el.classList.contains('placed')){ e.preventDefault(); return; }
+    e.dataTransfer.setData('text/plain', el.dataset.type);
+    el.classList.add('dragging');
+  });
+  el.addEventListener('dragend', function(){ el.classList.remove('dragging'); });
+});
+
+var dropZone = document.getElementById('dropZone');
+dropZone.addEventListener('dragover', function(e){ e.preventDefault(); });
+dropZone.addEventListener('drop', function(e){
+  e.preventDefault();
+  if(stack.length >= 2) return;
+  var type = e.dataTransfer.getData('text/plain');
+  if(!type) return;
+  addCrate(type);
+});
+
+function addCrate(type){
+  var trayEl = type === 'empty' ? document.getElementById('trayA') : document.getElementById('trayB');
+  if(trayEl.classList.contains('placed')) return; // schon verwendet
+  trayEl.classList.add('placed');
+  stack.push({type:type, flipped:false});
+  renderStage();
+}
+
+function renderStage(){
+  var zone = document.getElementById('dropZone');
+  zone.innerHTML = '';
+  document.getElementById('emptyNote').style.display = stack.length ? 'none' : 'block';
+  stack.forEach(function(box, i){
+    var el = document.createElement('div');
+    el.className = 'crate-slot slot-' + i;
+    el.innerHTML =
+      '<div class="crate-label">' + (box.type==='empty' ? 'Kiste A – leer' : ('Kiste B – beladen' + (box.flipped?' (gedreht)':''))) + '</div>' +
+      '<div class="crate' + (box.type==='loaded' ? ' loaded' : '') + (box.flipped?' flipped':'') + '" data-idx="'+i+'">' +
+        '<div class="corner-hint"></div>' +
+      '</div>' +
+      (i === stack.length-1 ? '<div class="remove-x" onclick="removeTop()">✕</div>' : '');
+    zone.appendChild(el);
+  });
+  if(document.getElementById('hintToggle').checked) zone.classList.add('show-hints'); else zone.classList.remove('show-hints');
+  // Klick auf beladene Kiste dreht sie (nur solange noch nicht gekippt wurde)
+  zone.querySelectorAll('.crate.loaded').forEach(function(c){
+    c.addEventListener('click', function(){
+      if(tippedFlag) return;
+      var idx = parseInt(c.dataset.idx,10);
+      stack[idx].flipped = !stack[idx].flipped;
+      renderStage();
+    });
+  });
+  document.getElementById('btnKippen').disabled = stack.length === 0;
+}
+
+function removeTop(){
+  if(tippedFlag) return;
+  var box = stack.pop();
+  var trayEl = box.type === 'empty' ? document.getElementById('trayA') : document.getElementById('trayB');
+  trayEl.classList.remove('placed');
+  renderStage();
+}
+
+function resetStage(){
+  cancelAnimationFrame(animId);
+  stack = [];
+  angle = 0;
+  tippedFlag = false;
+  document.getElementById('trayA').classList.remove('placed');
+  document.getElementById('trayB').classList.remove('placed');
+  document.getElementById('ramp').style.transform = 'rotate(0deg)';
+  document.getElementById('angleVal').textContent = '0°';
+  document.getElementById('resultMsg').textContent = '';
+  document.getElementById('resultMsg').classList.remove('tipped');
+  renderStage();
+}
+
+function toggleHints(){
+  var show = document.getElementById('hintToggle').checked;
+  var zone = document.getElementById('dropZone');
+  if(show) zone.classList.add('show-hints'); else zone.classList.remove('show-hints');
+}
+
+function startKippen(){
+  if(stack.length === 0) return;
+  var critical = computeTipAngle();
+  if(critical === null) return;
+  document.getElementById('btnKippen').disabled = true;
+  document.getElementById('resultMsg').textContent = '';
+  document.getElementById('resultMsg').classList.remove('tipped');
+  angle = 0;
+  tippedFlag = false;
+  var speed = 12; // Grad pro Sekunde
+  var last = performance.now();
+
+  function step(now){
+    var dt = (now - last) / 1000;
+    last = now;
+    angle += speed * dt;
+    if(angle >= critical){
+      angle = critical;
+      document.getElementById('ramp').style.transform = 'rotate(-' + angle + 'deg)';
+      document.getElementById('angleVal').textContent = angle.toFixed(1) + '°';
+      tipOver(critical);
+      return;
+    }
+    document.getElementById('ramp').style.transform = 'rotate(-' + angle + 'deg)';
+    document.getElementById('angleVal').textContent = angle.toFixed(1) + '°';
+    animId = requestAnimationFrame(step);
+  }
+  animId = requestAnimationFrame(step);
+}
+
+function tipOver(finalAngle){
+  tippedFlag = true;
+  var zone = document.getElementById('dropZone');
+  zone.querySelectorAll('.remove-x').forEach(function(x){ x.style.display = 'none'; });
+  zone.querySelectorAll('.crate').forEach(function(c, i){
+    c.style.transformOrigin = '0% 100%';
+    c.style.transform = 'rotate(-92deg) translate(2px, ' + (i*2) + 'px)';
+    c.classList.add('tipped');
+  });
+  var msg = document.getElementById('resultMsg');
+  msg.textContent = 'Umgekippt bei ' + finalAngle.toFixed(1) + '°';
+  msg.classList.add('tipped');
+  document.getElementById('btnKippen').disabled = false;
+}
+
+renderStage();
+</script>
+<script defer src="schriftgroesse.js"></script>
+<script data-goatcounter="https://prodrive-akademie.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</body>
+</html>
