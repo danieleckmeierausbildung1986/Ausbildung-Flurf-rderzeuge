@@ -41,8 +41,8 @@ body::before{
 
 .dienstleister{border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin-bottom:14px}
 .dienstleister-title{background:var(--navy);color:#fff;font-size:12px;font-weight:700;text-align:center;padding:6px;border-radius:6px;margin-bottom:10px;text-transform:uppercase;letter-spacing:.5px}
-.dienstleister-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px 20px}
-.dl-opt{display:flex;align-items:center;gap:7px;font-size:13.5px;color:var(--ink)}
+.dienstleister select{width:100%;max-width:320px;padding:10px 12px;border:2px solid var(--line);border-radius:8px;font-size:14px;font-family:inherit;color:var(--ink);background:#fff}
+.dienstleister select:focus{outline:none;border-color:var(--blue)}
 
 .auftrag{background:var(--blue-xl);border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin-bottom:16px;font-size:13px;color:var(--ink);display:flex;gap:10px}
 .auftrag b{color:var(--blue-d);flex-shrink:0}
@@ -138,15 +138,9 @@ table.parkour td.sum-col{background:#fafbfc;font-weight:700;color:var(--blue-d)}
 
     <div class="dienstleister">
       <div class="dienstleister-title">Personal Dienstleister</div>
-      <div class="dienstleister-grid">
-        <label class="dl-opt"><input type="radio" name="dl" value="Fahrner"> Fahrner</label>
-        <label class="dl-opt"><input type="radio" name="dl" value="Unique"> Unique</label>
-        <label class="dl-opt"><input type="radio" name="dl" value="Randstad"> Randstad</label>
-        <label class="dl-opt"><input type="radio" name="dl" value="Hofmann"> Hofmann</label>
-        <label class="dl-opt"><input type="radio" name="dl" value="SCS"> SCS</label>
-        <label class="dl-opt"><input type="radio" name="dl" value="PIN"> PIN</label>
-        <label class="dl-opt"><input type="radio" name="dl" value="Ontime"> Ontime</label>
-      </div>
+      <select id="dienstleisterSelect">
+        <option value="">Bitte wählen…</option>
+      </select>
     </div>
 
     <div class="auftrag">
@@ -264,6 +258,32 @@ table.parkour td.sum-col{background:#fafbfc;font-weight:700;color:var(--blue-d)}
 
 <script>
 var FLOW_URL = ''; // TODO: URL des Flows "Staplertest_Speichern" eintragen, sobald gebaut
+var DIENSTLEISTER_FLOW_URL = ''; // TODO: URL des Flows "Personaldienstleister_Abrufen" eintragen, sobald gebaut
+
+var DIENSTLEISTER_FALLBACK = ['Fahrner', 'Unique', 'Randstad', 'Hofmann', 'SCS', 'PIN', 'Ontime'];
+
+function ladeDienstleister(){
+  var select = document.getElementById('dienstleisterSelect');
+  function fuelleListe(namen){
+    namen.forEach(function(name){
+      var opt = document.createElement('option');
+      opt.value = name;
+      opt.textContent = name;
+      select.appendChild(opt);
+    });
+  }
+  if(!DIENSTLEISTER_FLOW_URL){
+    fuelleListe(DIENSTLEISTER_FALLBACK);
+    return;
+  }
+  fetch(DIENSTLEISTER_FLOW_URL).then(function(r){ return r.json(); }).then(function(res){
+    var namen = (res && res.dienstleister) ? res.dienstleister : DIENSTLEISTER_FALLBACK;
+    fuelleListe(namen);
+  }).catch(function(){
+    fuelleListe(DIENSTLEISTER_FALLBACK);
+  });
+}
+ladeDienstleister();
 
 var SPALTEN = 10;
 var DISABLED_COLS = { ohneSchieben:[5,6,7,8,9,10], gabelEingestellt:[5,6,7,8,9,10], keinePylonen:[], versuch1:[5,6,7,8,9,10], versuch2:[5,6,7,8,9,10] };
@@ -327,7 +347,7 @@ function berechnen(){
 
 function sammleDaten(){
   var ergebnis = berechnen();
-  var dl = document.querySelector('input[name=dl]:checked');
+  var dl = document.getElementById('dienstleisterSelect').value;
   var gabel = document.querySelector('input[name=gabel]:checked');
 
   var tbody = document.querySelector('#parkourTable tbody');
@@ -352,7 +372,7 @@ function sammleDaten(){
     name_beurteiler: document.getElementById('nameBeurteiler').value,
     ist_trainer: document.getElementById('istTrainer').checked,
     datum: document.getElementById('datum').value,
-    dienstleister: dl ? dl.value : '',
+    dienstleister: dl || '',
     parkour_spalten: spalten,
     gesamtpunktzahl: ergebnis.gesamt,
     einschaetzung: ergebnis.einschaetzung,
