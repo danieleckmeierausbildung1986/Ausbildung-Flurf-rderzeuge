@@ -230,21 +230,52 @@ async function ladeStatus(){
   }
 }
 
+// Standort wird als Vor-Ort-Beleg beim Einstempeln miterfasst (Honorarabrechnung).
+// Blockiert das Einstempeln NICHT, falls Standort verweigert/nicht verfügbar ist.
+// Hinweis: standort_lat/standort_lon/standort_genauigkeit/standort_link werden erst
+// gespeichert, sobald die Spalten in "Dozent_Zeiterfassung" + der Flow "Stempeluhr"
+// entsprechend ergänzt wurden. Bis dahin ignoriert der Flow diese Zusatzfelder einfach.
+function holeStandort(){
+  return new Promise(function(resolve){
+    if(!navigator.geolocation){ resolve(null); return; }
+    navigator.geolocation.getCurrentPosition(
+      function(pos){
+        resolve({
+          lat: pos.coords.latitude,
+          lon: pos.coords.longitude,
+          genauigkeit: Math.round(pos.coords.accuracy)
+        });
+      },
+      function(){ resolve(null); },
+      { enableHighAccuracy: true, timeout: 8000, maximumAge: 0 }
+    );
+  });
+}
+
 async function einstempeln(){
   if(!FLOW_URL){ showStatus('error', 'Flow-URL fehlt noch.'); return; }
   var btn = document.getElementById('btnEin');
   btn.disabled = true;
-  btn.innerHTML = '<span class="spinner"></span>Wird gestartet…';
+  btn.innerHTML = '<span class="spinner"></span>Standort wird ermittelt…';
   showStatus('', '');
+  var standort = await holeStandort();
+  btn.innerHTML = '<span class="spinner"></span>Wird gestartet…';
   try{
+    var payload = { aktion:'einstempeln', firma: getFirmaWert(), schulung: document.getElementById('schulung').value.trim(), notiz: document.getElementById('notiz').value.trim() };
+    if(standort){
+      payload.standort_lat = standort.lat;
+      payload.standort_lon = standort.lon;
+      payload.standort_genauigkeit = standort.genauigkeit;
+      payload.standort_link = 'https://www.google.com/maps?q=' + standort.lat + ',' + standort.lon;
+    }
     var resp = await fetch(FLOW_URL, {
       method:'POST',
       headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({ aktion:'einstempeln', firma: getFirmaWert(), schulung: document.getElementById('schulung').value.trim(), notiz: document.getElementById('notiz').value.trim() })
+      body: JSON.stringify(payload)
     });
     var d = await resp.json();
     if(d && d.success){
-      showStatus('success', 'Eingestempelt.');
+      showStatus('success', 'Eingestempelt.' + (standort ? ' Standort erfasst.' : ' (Standort nicht verfügbar)'));
       await ladeStatus();
     } else {
       showStatus('error', 'Fehler beim Einstempeln.');
