@@ -215,6 +215,7 @@ table.parkour td.sum-col{background:#fafbfc;font-weight:700;color:var(--blue-d)}
       <div class="gabeltyp">
         <div class="gabeltyp-title">Einschätzung Beurteiler</div>
         <div class="einschaetzung-opt">
+          <label><input type="checkbox" id="einNichtGeeignet"> nicht geeignet</label>
           <label><input type="checkbox" id="einGeeignet"> geeignet</label>
           <label><input type="checkbox" id="einBedenkenlos"> bedenkenlos geeignet</label>
         </div>
@@ -333,13 +334,18 @@ var DISABLED_COLS = {
         inp.dataset.col = i;
         inp.addEventListener('change', berechnen);
         td.appendChild(inp);
-        td.addEventListener('click', function(inp){
+        td.addEventListener('click', function(inp, task, col){
           return function(e){
             if(e.target === inp) return;
             inp.checked = !inp.checked;
+            if(inp.checked && (task === 'versuch1' || task === 'versuch2')){
+              var gegenTask = (task === 'versuch1') ? 'versuch2' : 'versuch1';
+              var gegenInp = document.querySelector('input[data-task="' + gegenTask + '"][data-col="' + col + '"]');
+              if(gegenInp) gegenInp.checked = false;
+            }
             berechnen();
           };
-        }(inp));
+        }(inp, task, i));
       }
       tr.appendChild(td);
     }
@@ -375,6 +381,7 @@ function berechnen(){
   else if(gesamt >= 18){ document.getElementById('entMittel').classList.add('active'); gesamtBox.classList.add('mittel'); einschaetzung = 'geeignet'; }
   else { document.getElementById('entNiedrig').classList.add('active'); gesamtBox.classList.add('niedrig'); einschaetzung = 'nicht geeignet'; }
 
+  document.getElementById('einNichtGeeignet').checked = (einschaetzung === 'nicht geeignet');
   document.getElementById('einGeeignet').checked = (einschaetzung === 'geeignet');
   document.getElementById('einBedenkenlos').checked = (einschaetzung === 'bedenkenlos geeignet');
 
@@ -459,6 +466,7 @@ function formularZuruecksetzen(){
   document.querySelectorAll('#parkourTable input[type=checkbox]').forEach(function(inp){ inp.checked = false; });
 
   document.getElementById('gabeltypSelect').value = '';
+  document.getElementById('einNichtGeeignet').checked = false;
   document.getElementById('einGeeignet').checked = false;
   document.getElementById('einBedenkenlos').checked = false;
 
