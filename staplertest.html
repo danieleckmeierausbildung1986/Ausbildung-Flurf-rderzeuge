@@ -167,6 +167,36 @@ table.parkour td.sum-col{background:#fafbfc;font-weight:700;color:var(--blue-d)}
       <span>Behälter sortenrein stapeln auf vorgegebener Fläche ohne Pylonen (= Mitarbeiter / Säule) oder Linien zu überfahren. Wichtig: Behälter richtig und sicher stapeln.</span>
     </div>
 
+    <div class="fahrzeit">
+      <div class="fahrzeit-title">Fahrzeit erfassen</div>
+      <div class="fahrzeit-grid">
+        <div class="fahrzeit-row">
+          <h4>Kurzgabel (KG)</h4>
+          <div class="fahrzeit-info">
+            <span>Start: <b id="kgStart">–</b></span>
+            <span>Ende: <b id="kgEnde">–</b></span>
+            <span>Dauer: <b id="kgDauer">–</b></span>
+          </div>
+          <div class="fahrzeit-btns">
+            <button type="button" class="fz-btn start" id="kgStartBtn" onclick="fahrzeitStart('kg')">Start</button>
+            <button type="button" class="fz-btn stop" id="kgStopBtn" onclick="fahrzeitStop('kg')" disabled>Stopp</button>
+          </div>
+        </div>
+        <div class="fahrzeit-row">
+          <h4>Langgabel (LG)</h4>
+          <div class="fahrzeit-info">
+            <span>Start: <b id="lgStart">–</b></span>
+            <span>Ende: <b id="lgEnde">–</b></span>
+            <span>Dauer: <b id="lgDauer">–</b></span>
+          </div>
+          <div class="fahrzeit-btns">
+            <button type="button" class="fz-btn start" id="lgStartBtn" onclick="fahrzeitStart('lg')">Start</button>
+            <button type="button" class="fz-btn stop" id="lgStopBtn" onclick="fahrzeitStop('lg')" disabled>Stopp</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <table class="parkour" id="parkourTable">
       <thead>
         <tr>
@@ -224,36 +254,6 @@ table.parkour td.sum-col{background:#fafbfc;font-weight:700;color:var(--blue-d)}
       <div class="gesamt" id="gesamtBox">
         <div class="gesamt-label">Gesamtpunktzahl</div>
         <div class="gesamt-val" id="gesamtVal">0</div>
-      </div>
-    </div>
-
-    <div class="fahrzeit">
-      <div class="fahrzeit-title">Fahrzeit erfassen</div>
-      <div class="fahrzeit-grid">
-        <div class="fahrzeit-row">
-          <h4>Kurzgabel (KG)</h4>
-          <div class="fahrzeit-info">
-            <span>Start: <b id="kgStart">–</b></span>
-            <span>Ende: <b id="kgEnde">–</b></span>
-            <span>Dauer: <b id="kgDauer">–</b></span>
-          </div>
-          <div class="fahrzeit-btns">
-            <button type="button" class="fz-btn start" id="kgStartBtn" onclick="fahrzeitStart('kg')">Start</button>
-            <button type="button" class="fz-btn stop" id="kgStopBtn" onclick="fahrzeitStop('kg')" disabled>Stopp</button>
-          </div>
-        </div>
-        <div class="fahrzeit-row">
-          <h4>Langgabel (LG)</h4>
-          <div class="fahrzeit-info">
-            <span>Start: <b id="lgStart">–</b></span>
-            <span>Ende: <b id="lgEnde">–</b></span>
-            <span>Dauer: <b id="lgDauer">–</b></span>
-          </div>
-          <div class="fahrzeit-btns">
-            <button type="button" class="fz-btn start" id="lgStartBtn" onclick="fahrzeitStart('lg')">Start</button>
-            <button type="button" class="fz-btn stop" id="lgStopBtn" onclick="fahrzeitStop('lg')" disabled>Stopp</button>
-          </div>
-        </div>
       </div>
     </div>
 
