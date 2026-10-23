@@ -37,7 +37,6 @@ body::before{
 .head-field label{display:block;font-size:11px;font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
 .head-field input{width:100%;padding:10px 12px;border:2px solid var(--line);border-radius:8px;font-size:14px;font-family:inherit;color:var(--ink)}
 .head-field input:focus{outline:none;border-color:var(--blue)}
-.trainer-chk{display:flex;align-items:center;gap:6px;margin-top:7px;font-size:12px;color:var(--muted)}
 
 .dienstleister{border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin-bottom:14px}
 .dienstleister-title{background:var(--navy);color:#fff;font-size:12px;font-weight:700;text-align:center;padding:6px;border-radius:6px;margin-bottom:10px;text-transform:uppercase;letter-spacing:.5px}
@@ -73,9 +72,12 @@ table.parkour td.sum-col{background:#fafbfc;font-weight:700;color:var(--blue-d)}
 .einschaetzung-opt{display:flex;gap:16px;margin-top:6px;font-size:12.5px}
 .einschaetzung-opt label{display:flex;align-items:center;gap:5px}
 
-.gesamt{flex:0.8;min-width:160px;background:var(--navy);border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;padding:12px}
+.gesamt{flex:0.8;min-width:160px;background:var(--navy);border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;padding:12px;transition:background-color .2s}
 .gesamt-label{font-size:11px;text-transform:uppercase;letter-spacing:.5px;opacity:.8;margin-bottom:6px}
 .gesamt-val{font-size:34px;font-weight:800}
+.gesamt.niedrig{background:#c0392b}
+.gesamt.mittel{background:#c98f0a}
+.gesamt.hoch{background:#1f8a44}
 
 .verhalten{border:1px solid var(--line);border-radius:10px;overflow:hidden;margin-bottom:16px}
 .verhalten-title{background:var(--blue-xl);color:var(--blue-d);font-size:12.5px;font-weight:700;text-align:center;padding:8px;border-bottom:1px solid var(--line)}
@@ -84,8 +86,26 @@ table.parkour td.sum-col{background:#fafbfc;font-weight:700;color:var(--blue-d)}
 .verhalten-col:last-child{border-right:none}
 .verhalten-col h4{font-size:11.5px;color:var(--navy);text-transform:uppercase;letter-spacing:.3px;margin-bottom:8px;text-align:center}
 .verhalten-opt{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--ink);margin-bottom:7px}
-.zeit-row{display:flex;align-items:center;gap:6px;font-size:12px;margin-top:8px;color:var(--navy);font-weight:700}
-.zeit-row input{width:38px;padding:4px;border:1px solid var(--line);border-radius:5px;text-align:center}
+
+.fahrzeit{border:1px solid var(--line);border-radius:10px;overflow:hidden;margin-bottom:16px}
+.fahrzeit-title{background:var(--blue-xl);color:var(--blue-d);font-size:12.5px;font-weight:700;text-align:center;padding:8px;border-bottom:1px solid var(--line)}
+.fahrzeit-grid{display:grid;grid-template-columns:1fr 1fr}
+.fahrzeit-row{padding:12px 14px;display:flex;flex-direction:column;gap:8px}
+.fahrzeit-row:first-child{border-right:1px solid var(--line)}
+.fahrzeit-row h4{font-size:12px;color:var(--navy);text-transform:uppercase;letter-spacing:.3px}
+.fahrzeit-info{display:flex;gap:14px;flex-wrap:wrap;font-size:12.5px;color:var(--ink)}
+.fahrzeit-info b{color:var(--blue-d);font-variant-numeric:tabular-nums}
+.fahrzeit-btns{display:flex;gap:8px}
+.fz-btn{flex:1;padding:9px;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit}
+.fz-btn.start{background:var(--blue);color:#fff}
+.fz-btn.start:hover:not(:disabled){background:var(--blue-l)}
+.fz-btn.stop{background:var(--safety);color:#fff}
+.fz-btn.stop:hover:not(:disabled){background:#c85e10}
+.fz-btn:disabled{opacity:.45;cursor:not-allowed}
+@media(max-width:600px){
+  .fahrzeit-grid{grid-template-columns:1fr}
+  .fahrzeit-row:first-child{border-right:none;border-bottom:1px solid var(--line)}
+}
 
 .bemerkung{margin-bottom:18px}
 .bemerkung label{display:block;font-size:11px;font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
@@ -128,7 +148,6 @@ table.parkour td.sum-col{background:#fafbfc;font-weight:700;color:var(--blue-d)}
       <div class="head-field">
         <label>Name Beurteiler</label>
         <input type="text" id="nameBeurteiler">
-        <div class="trainer-chk"><input type="checkbox" id="istTrainer"> <span>Trainer</span></div>
       </div>
       <div class="head-field" style="max-width:170px">
         <label>Datum</label>
@@ -203,7 +222,7 @@ table.parkour td.sum-col{background:#fafbfc;font-weight:700;color:var(--blue-d)}
         </div>
       </div>
 
-      <div class="gesamt">
+      <div class="gesamt" id="gesamtBox">
         <div class="gesamt-label">Gesamtpunktzahl</div>
         <div class="gesamt-val" id="gesamtVal">0</div>
       </div>
@@ -237,8 +256,36 @@ table.parkour td.sum-col{background:#fafbfc;font-weight:700;color:var(--blue-d)}
           <label class="verhalten-opt"><input type="checkbox" data-v="gabeln_tief"> Gabeln in tiefer Stellung, Spitzen nach unten</label>
           <label class="verhalten-opt"><input type="checkbox" data-v="handbremse"> Handbremse angezogen</label>
           <label class="verhalten-opt"><input type="checkbox" data-v="schluessel"> Schlüssel abgezogen</label>
-          <div class="zeit-row">KG: <input type="text" id="kgZeit" placeholder="min"> min</div>
-          <div class="zeit-row">LG: <input type="text" id="lgZeit" placeholder="min"> min</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="fahrzeit">
+      <div class="fahrzeit-title">Fahrzeit erfassen</div>
+      <div class="fahrzeit-grid">
+        <div class="fahrzeit-row">
+          <h4>Kurzgabel (KG)</h4>
+          <div class="fahrzeit-info">
+            <span>Start: <b id="kgStart">–</b></span>
+            <span>Ende: <b id="kgEnde">–</b></span>
+            <span>Dauer: <b id="kgDauer">–</b></span>
+          </div>
+          <div class="fahrzeit-btns">
+            <button type="button" class="fz-btn start" id="kgStartBtn" onclick="fahrzeitStart('kg')">Start</button>
+            <button type="button" class="fz-btn stop" id="kgStopBtn" onclick="fahrzeitStop('kg')" disabled>Stopp</button>
+          </div>
+        </div>
+        <div class="fahrzeit-row">
+          <h4>Langgabel (LG)</h4>
+          <div class="fahrzeit-info">
+            <span>Start: <b id="lgStart">–</b></span>
+            <span>Ende: <b id="lgEnde">–</b></span>
+            <span>Dauer: <b id="lgDauer">–</b></span>
+          </div>
+          <div class="fahrzeit-btns">
+            <button type="button" class="fz-btn start" id="lgStartBtn" onclick="fahrzeitStart('lg')">Start</button>
+            <button type="button" class="fz-btn stop" id="lgStopBtn" onclick="fahrzeitStop('lg')" disabled>Stopp</button>
+          </div>
         </div>
       </div>
     </div>
@@ -334,15 +381,50 @@ function berechnen(){
   document.getElementById('entNiedrig').classList.remove('active');
   document.getElementById('entMittel').classList.remove('active');
   document.getElementById('entHoch').classList.remove('active');
+  var gesamtBox = document.getElementById('gesamtBox');
+  gesamtBox.classList.remove('niedrig', 'mittel', 'hoch');
   var einschaetzung = '';
-  if(gesamt >= 22){ document.getElementById('entHoch').classList.add('active'); einschaetzung = 'bedenkenlos geeignet'; }
-  else if(gesamt >= 18){ document.getElementById('entMittel').classList.add('active'); einschaetzung = 'geeignet'; }
-  else { document.getElementById('entNiedrig').classList.add('active'); einschaetzung = 'nicht geeignet'; }
+  if(gesamt >= 22){ document.getElementById('entHoch').classList.add('active'); gesamtBox.classList.add('hoch'); einschaetzung = 'bedenkenlos geeignet'; }
+  else if(gesamt >= 18){ document.getElementById('entMittel').classList.add('active'); gesamtBox.classList.add('mittel'); einschaetzung = 'geeignet'; }
+  else { document.getElementById('entNiedrig').classList.add('active'); gesamtBox.classList.add('niedrig'); einschaetzung = 'nicht geeignet'; }
 
   document.getElementById('einGeeignet').checked = (einschaetzung === 'geeignet');
   document.getElementById('einBedenkenlos').checked = (einschaetzung === 'bedenkenlos geeignet');
 
   return { gesamt: gesamt, einschaetzung: einschaetzung };
+}
+
+var fahrzeitState = { kg: { start: null, ende: null }, lg: { start: null, ende: null } };
+
+function fmtZeit(d){
+  function pad(n){ return n < 10 ? '0' + n : '' + n; }
+  return pad(d.getHours()) + ':' + pad(d.getMinutes()) + ':' + pad(d.getSeconds());
+}
+
+function fahrzeitStart(typ){
+  fahrzeitState[typ].start = new Date();
+  fahrzeitState[typ].ende = null;
+  document.getElementById(typ + 'Start').textContent = fmtZeit(fahrzeitState[typ].start);
+  document.getElementById(typ + 'Ende').textContent = '–';
+  document.getElementById(typ + 'Dauer').textContent = '–';
+  document.getElementById(typ + 'StartBtn').disabled = true;
+  document.getElementById(typ + 'StopBtn').disabled = false;
+}
+
+function fahrzeitStop(typ){
+  if(!fahrzeitState[typ].start) return;
+  fahrzeitState[typ].ende = new Date();
+  var dauerMin = Math.round((fahrzeitState[typ].ende - fahrzeitState[typ].start) / 60000);
+  document.getElementById(typ + 'Ende').textContent = fmtZeit(fahrzeitState[typ].ende);
+  document.getElementById(typ + 'Dauer').textContent = dauerMin + ' min';
+  document.getElementById(typ + 'StartBtn').disabled = false;
+  document.getElementById(typ + 'StopBtn').disabled = true;
+}
+
+function fahrzeitDauerMin(typ){
+  var s = fahrzeitState[typ];
+  if(!s.start || !s.ende) return null;
+  return Math.round((s.ende - s.start) / 60000);
 }
 
 function sammleDaten(){
@@ -370,7 +452,6 @@ function sammleDaten(){
   return {
     name_fahrer: document.getElementById('nameFahrer').value,
     name_beurteiler: document.getElementById('nameBeurteiler').value,
-    ist_trainer: document.getElementById('istTrainer').checked,
     datum: document.getElementById('datum').value,
     dienstleister: dl || '',
     parkour_spalten: spalten,
@@ -378,8 +459,12 @@ function sammleDaten(){
     einschaetzung: ergebnis.einschaetzung,
     gabeltyp: gabel ? gabel.value : '',
     verhalten: verhalten,
-    kg_zeit: document.getElementById('kgZeit').value,
-    lg_zeit: document.getElementById('lgZeit').value,
+    kg_start: fahrzeitState.kg.start ? fmtZeit(fahrzeitState.kg.start) : '',
+    kg_ende: fahrzeitState.kg.ende ? fmtZeit(fahrzeitState.kg.ende) : '',
+    kg_dauer_min: fahrzeitDauerMin('kg'),
+    lg_start: fahrzeitState.lg.start ? fmtZeit(fahrzeitState.lg.start) : '',
+    lg_ende: fahrzeitState.lg.ende ? fmtZeit(fahrzeitState.lg.ende) : '',
+    lg_dauer_min: fahrzeitDauerMin('lg'),
     bemerkung: document.getElementById('bemerkung').value
   };
 }
