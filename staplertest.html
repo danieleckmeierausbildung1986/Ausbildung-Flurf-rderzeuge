@@ -270,6 +270,14 @@ table.parkour td.sum-col{background:#fafbfc;font-weight:700;color:var(--blue-d)}
 </div>
 
 <script>
+var trainerAuth = null;
+try { trainerAuth = JSON.parse(sessionStorage.getItem('trainerAuth') || 'null'); } catch(e){}
+if(!trainerAuth || !trainerAuth.name){
+  window.location.replace('trainerbereich.html');
+} else {
+  document.getElementById('nameBeurteiler').value = trainerAuth.name;
+}
+
 var FLOW_URL = ''; // TODO: URL des Flows "Staplertest_Speichern" eintragen, sobald gebaut
 var DIENSTLEISTER_FLOW_URL = ''; // TODO: URL des Flows "Personaldienstleister_Abrufen" eintragen, sobald gebaut
 
@@ -444,7 +452,7 @@ function sammleDaten(){
 
 function formularZuruecksetzen(){
   document.getElementById('nameFahrer').value = '';
-  document.getElementById('nameBeurteiler').value = '';
+  document.getElementById('nameBeurteiler').value = trainerAuth && trainerAuth.name ? trainerAuth.name : '';
   document.getElementById('datum').value = '';
   document.getElementById('dienstleisterSelect').value = '';
 
