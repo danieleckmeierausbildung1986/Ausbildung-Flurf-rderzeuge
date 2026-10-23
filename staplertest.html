@@ -469,6 +469,34 @@ function sammleDaten(){
   };
 }
 
+function formularZuruecksetzen(){
+  document.getElementById('nameFahrer').value = '';
+  document.getElementById('nameBeurteiler').value = '';
+  document.getElementById('datum').value = '';
+  document.getElementById('dienstleisterSelect').value = '';
+
+  document.querySelectorAll('#parkourTable input[type=checkbox]').forEach(function(inp){ inp.checked = false; });
+
+  document.querySelectorAll('input[name=gabel]').forEach(function(inp){ inp.checked = false; });
+  document.getElementById('einGeeignet').checked = false;
+  document.getElementById('einBedenkenlos').checked = false;
+
+  document.querySelectorAll('.verhalten-opt input[type=checkbox]').forEach(function(inp){ inp.checked = false; });
+
+  ['kg', 'lg'].forEach(function(typ){
+    fahrzeitState[typ] = { start: null, ende: null };
+    document.getElementById(typ + 'Start').textContent = '–';
+    document.getElementById(typ + 'Ende').textContent = '–';
+    document.getElementById(typ + 'Dauer').textContent = '–';
+    document.getElementById(typ + 'StartBtn').disabled = false;
+    document.getElementById(typ + 'StopBtn').disabled = true;
+  });
+
+  document.getElementById('bemerkung').value = '';
+
+  berechnen();
+}
+
 function speichern(){
   var msg = document.getElementById('msg');
   var btn = document.getElementById('saveBtn');
@@ -495,6 +523,7 @@ function speichern(){
     if(res && res.success){
       msg.className = 'msg ok';
       msg.textContent = 'Test erfolgreich gespeichert.';
+      formularZuruecksetzen();
     } else {
       msg.className = 'msg err';
       msg.textContent = 'Fehler beim Speichern.';
