@@ -38,9 +38,10 @@ body::before{
 .head-field input{width:100%;padding:10px 12px;border:2px solid var(--line);border-radius:8px;font-size:14px;font-family:inherit;color:var(--ink)}
 .head-field input:focus{outline:none;border-color:var(--blue)}
 
-.dienstleister{border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin-bottom:14px}
+.top-selects{display:flex;gap:14px;margin-bottom:14px;flex-wrap:wrap}
+.dienstleister{flex:1;min-width:220px;border:1px solid var(--line);border-radius:10px;padding:12px 14px}
 .dienstleister-title{background:var(--navy);color:#fff;font-size:12px;font-weight:700;text-align:center;padding:6px;border-radius:6px;margin-bottom:10px;text-transform:uppercase;letter-spacing:.5px}
-.dienstleister select{width:100%;max-width:320px;padding:10px 12px;border:2px solid var(--line);border-radius:8px;font-size:14px;font-family:inherit;color:var(--ink);background:#fff}
+.dienstleister select{width:100%;padding:10px 12px;border:2px solid var(--line);border-radius:8px;font-size:14px;font-family:inherit;color:var(--ink);background:#fff}
 .dienstleister select:focus{outline:none;border-color:var(--blue)}
 
 .auftrag{background:var(--blue-xl);border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin-bottom:16px;font-size:13px;color:var(--ink);display:flex;gap:10px}
@@ -144,11 +145,21 @@ table.parkour td.sum-col{background:#fafbfc;font-weight:700;color:var(--blue-d)}
       </div>
     </div>
 
-    <div class="dienstleister">
-      <div class="dienstleister-title">Personal Dienstleister</div>
-      <select id="dienstleisterSelect">
-        <option value="">Bitte wählen…</option>
-      </select>
+    <div class="top-selects">
+      <div class="dienstleister">
+        <div class="dienstleister-title">Personal Dienstleister</div>
+        <select id="dienstleisterSelect">
+          <option value="">Bitte wählen…</option>
+        </select>
+      </div>
+      <div class="dienstleister">
+        <div class="dienstleister-title">Gabeltyp</div>
+        <select id="gabeltypSelect" onchange="berechnen()">
+          <option value="">Bitte wählen…</option>
+          <option value="KG">Kurzgabel (KG)</option>
+          <option value="LG">Langgabel (LG)</option>
+        </select>
+      </div>
     </div>
 
     <div class="auftrag">
@@ -202,9 +213,7 @@ table.parkour td.sum-col{background:#fafbfc;font-weight:700;color:var(--blue-d)}
       </div>
 
       <div class="gabeltyp">
-        <div class="gabeltyp-title">Test auf → Einschätzung Beurteiler</div>
-        <div class="gabeltyp-opt"><input type="radio" name="gabel" value="KG" id="gabelKG"> <label for="gabelKG">Kurzgabel (KG)</label></div>
-        <div class="gabeltyp-opt"><input type="radio" name="gabel" value="LG" id="gabelLG"> <label for="gabelLG">Langgabel (LG)</label></div>
+        <div class="gabeltyp-title">Einschätzung Beurteiler</div>
         <div class="einschaetzung-opt">
           <label><input type="checkbox" id="einGeeignet"> geeignet</label>
           <label><input type="checkbox" id="einBedenkenlos"> bedenkenlos geeignet</label>
@@ -400,7 +409,7 @@ function fahrzeitDauerMin(typ){
 function sammleDaten(){
   var ergebnis = berechnen();
   var dl = document.getElementById('dienstleisterSelect').value;
-  var gabel = document.querySelector('input[name=gabel]:checked');
+  var gabel = document.getElementById('gabeltypSelect').value;
 
   var tbody = document.querySelector('#parkourTable tbody');
   var rows = tbody.querySelectorAll('tr[data-task]');
@@ -422,7 +431,7 @@ function sammleDaten(){
     parkour_spalten: spalten,
     gesamtpunktzahl: ergebnis.gesamt,
     einschaetzung: ergebnis.einschaetzung,
-    gabeltyp: gabel ? gabel.value : '',
+    gabeltyp: gabel || '',
     kg_start: fahrzeitState.kg.start ? fmtZeit(fahrzeitState.kg.start) : '',
     kg_ende: fahrzeitState.kg.ende ? fmtZeit(fahrzeitState.kg.ende) : '',
     kg_dauer_min: fahrzeitDauerMin('kg'),
@@ -441,7 +450,7 @@ function formularZuruecksetzen(){
 
   document.querySelectorAll('#parkourTable input[type=checkbox]').forEach(function(inp){ inp.checked = false; });
 
-  document.querySelectorAll('input[name=gabel]').forEach(function(inp){ inp.checked = false; });
+  document.getElementById('gabeltypSelect').value = '';
   document.getElementById('einGeeignet').checked = false;
   document.getElementById('einBedenkenlos').checked = false;
 
