@@ -280,32 +280,17 @@ if(!trainerAuth || !trainerAuth.name){
 }
 
 var FLOW_URL = 'https://default8af25f9034bc4ef4aba22ab6f641d5.01.environment.api.powerplatform.com:443/powerautomate/automations/direct/cu/10/workflows/6227bec9f0fe4fe18d6f1e33ee86c7ea/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=xn-YbchLNSMPKaGqTmvcMPDfg0seLUcLyY6Q_e8teSI';
-var DIENSTLEISTER_FLOW_URL = ''; // TODO: URL des Flows "Personaldienstleister_Abrufen" eintragen, sobald gebaut
+var DIENSTLEISTER_LISTE = ['I.K.Hofmann', 'Unique'];
 
-var DIENSTLEISTER_FALLBACK = ['I.K.Hofmann', 'Unique'];
-
-function ladeDienstleister(){
+(function ladeDienstleister(){
   var select = document.getElementById('dienstleisterSelect');
-  function fuelleListe(namen){
-    namen.forEach(function(name){
-      var opt = document.createElement('option');
-      opt.value = name;
-      opt.textContent = name;
-      select.appendChild(opt);
-    });
-  }
-  if(!DIENSTLEISTER_FLOW_URL){
-    fuelleListe(DIENSTLEISTER_FALLBACK);
-    return;
-  }
-  fetch(DIENSTLEISTER_FLOW_URL).then(function(r){ return r.json(); }).then(function(res){
-    var namen = (res && res.dienstleister) ? res.dienstleister : DIENSTLEISTER_FALLBACK;
-    fuelleListe(namen);
-  }).catch(function(){
-    fuelleListe(DIENSTLEISTER_FALLBACK);
+  DIENSTLEISTER_LISTE.forEach(function(name){
+    var opt = document.createElement('option');
+    opt.value = name;
+    opt.textContent = name;
+    select.appendChild(opt);
   });
-}
-ladeDienstleister();
+})();
 
 var SPALTEN = 10;
 var DISABLED_COLS = {
