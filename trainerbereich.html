@@ -352,8 +352,15 @@ function showTools(name, benutzername){
 }
 
 function toggleSection(name){
-  document.getElementById('head' + name).classList.toggle('open');
-  document.getElementById('body' + name).classList.toggle('open');
+  var head = document.getElementById('head' + name);
+  var body = document.getElementById('body' + name);
+  head.classList.toggle('open');
+  body.classList.toggle('open');
+  if(body.classList.contains('open')){
+    setTimeout(function(){
+      head.scrollIntoView({ behavior:'smooth', block:'start' });
+    }, 50);
+  }
 }
 
 function toggleAnmeldung(){
