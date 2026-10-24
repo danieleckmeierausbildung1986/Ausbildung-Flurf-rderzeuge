@@ -23,8 +23,25 @@ body::before{
     radial-gradient(ellipse 60% 80% at 80% 80%, rgba(13,45,128,.32) 0%, transparent 60%);
   pointer-events:none;z-index:0;
 }
-.container{position:relative;z-index:1;width:100%;max-width:640px;transition:max-width .2s}
+.page-row{position:relative;z-index:1;display:flex;gap:28px;align-items:flex-start;justify-content:center;width:100%;max-width:1220px;margin:0 auto}
+.container{width:100%;max-width:640px;transition:max-width .2s}
 .container.wide{max-width:900px}
+.info-panel{
+  flex:0 0 260px;color:rgba(255,255,255,.85);
+  background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);
+  border-radius:16px;padding:22px 20px;backdrop-filter:blur(6px);
+  position:sticky;top:20px;
+}
+.info-panel h2{font-size:13px;font-weight:700;color:#fff;margin-bottom:10px;text-transform:uppercase;letter-spacing:.5px}
+.info-panel>p{font-size:13px;line-height:1.5;color:rgba(255,255,255,.75);margin-bottom:16px}
+.info-panel ul{list-style:none;padding:0;margin:0}
+.info-panel li{font-size:12.5px;line-height:1.5;color:rgba(255,255,255,.72);margin-bottom:12px;padding-left:16px;position:relative}
+.info-panel li:last-child{margin-bottom:0}
+.info-panel li::before{content:'';position:absolute;left:0;top:7px;width:6px;height:6px;border-radius:50%;background:var(--safety)}
+.info-panel li b{color:#fff;display:block;margin-bottom:2px;font-size:13px}
+@media(max-width:1060px){
+  .info-panel{display:none}
+}
 .logo-area{text-align:center;margin-bottom:28px}
 .logo-tile{
   display:inline-block;background:#fff;border-radius:18px;padding:14px 22px;
@@ -150,12 +167,13 @@ body::before{
 </style>
 </head>
 <body>
+<div class="page-row">
 <div class="container">
   <div class="logo-area">
     <div class="logo-tile">
       <img src="logos/logo_trainerzugang_full.png" alt="Trainerzugang – ProDrive Akademie Niederbayern">
     </div>
-    <p>Werkzeuge für Ausbilder und Prüfer — Unterweisungen, Praxisprüfungen und Nachweise.</p>
+    <p>Werkzeuge für Ausbilder und Prüfer</p>
   </div>
 
   <div class="card" id="loginCard">
@@ -335,6 +353,17 @@ body::before{
       <button class="back-btn" onclick="doLogout()" style="cursor:pointer">↩ Abmelden</button>
     </div>
   </div>
+</div>
+
+<aside class="info-panel">
+  <h2>Was ist hier?</h2>
+  <p>Der Trainerbereich bündelt alle Werkzeuge, die du als Ausbilder und Prüfer für den laufenden Schulungsbetrieb brauchst — von der Prüfung bis zur Verwaltung.</p>
+  <ul>
+    <li><b>Prüfungen &amp; Nachweise</b>Praxisprüfung, Theorieprüfungen freigeben und die Unterweisungsbibliothek inkl. Staplertest</li>
+    <li><b>Vor Ort &amp; Schulungstag</b>Check-in, Teilnehmer-Selbstanmeldung per QR-Code und deine Stempeluhr</li>
+    <li><b>Verwaltung &amp; Organisation</b>Terminanfragen bestätigen, Wissens-Assistent, Teilnehmerliste und das Business-Cockpit</li>
+  </ul>
+</aside>
 </div>
 
 <script>
