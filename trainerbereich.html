@@ -354,13 +354,30 @@ function showTools(name, benutzername){
 function toggleSection(name){
   var head = document.getElementById('head' + name);
   var body = document.getElementById('body' + name);
+  var opening = !body.classList.contains('open');
   head.classList.toggle('open');
   body.classList.toggle('open');
-  if(body.classList.contains('open')){
+  if(opening){
+    sessionStorage.setItem('offeneSparte', name);
     setTimeout(function(){
       head.scrollIntoView({ behavior:'smooth', block:'start' });
     }, 50);
+  } else {
+    sessionStorage.removeItem('offeneSparte');
   }
+}
+
+function stelleOffeneSparteWiederHer(){
+  var name = sessionStorage.getItem('offeneSparte');
+  if(!name) return;
+  var head = document.getElementById('head' + name);
+  var body = document.getElementById('body' + name);
+  if(!head || !body) return;
+  head.classList.add('open');
+  body.classList.add('open');
+  setTimeout(function(){
+    head.scrollIntoView({ behavior:'auto', block:'start' });
+  }, 50);
 }
 
 function toggleAnmeldung(){
@@ -407,6 +424,7 @@ async function doLogin(){
     if(data && data.zugang === true){
       sessionStorage.setItem('trainerAuth', JSON.stringify({ benutzername: benutzername, name: data.name || '' }));
       showTools(data.name, benutzername);
+      stelleOffeneSparteWiederHer();
     } else {
       errEl.textContent = 'Benutzername oder Passwort falsch.';
     }
@@ -424,6 +442,7 @@ async function doLogin(){
     try{
       var auth = JSON.parse(raw);
       showTools(auth.name, auth.benutzername);
+      stelleOffeneSparteWiederHer();
     }catch(e){ sessionStorage.removeItem('trainerAuth'); }
   }
 })();
