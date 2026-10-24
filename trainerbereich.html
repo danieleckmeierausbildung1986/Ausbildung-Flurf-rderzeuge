@@ -53,17 +53,19 @@ body::before{
 .section-chevron{width:16px;height:16px;flex-shrink:0;color:var(--muted);transition:transform .2s}
 .section-head-banner.open .section-chevron{transform:rotate(180deg);color:var(--blue)}
 .section-body{
-  display:none;flex-wrap:wrap;gap:14px;min-width:0;
+  display:none;flex-direction:column;gap:14px;min-width:0;
   border:1.5px solid var(--blue);border-top:none;border-radius:0 0 14px 14px;padding:14px;
 }
 .section-body.open{display:flex}
-.section-body .lib-card{flex:1 1 calc((100% - 28px)/3);min-width:0;padding-bottom:10px}
+.section-body .lib-card{flex:1 1 100%;min-width:0;padding-bottom:10px}
 .section-body .lib-icon{height:64px;margin-bottom:8px}
 .section-body .lib-info{padding:0 12px}
 .section-body .lib-title{font-size:13.5px;margin-bottom:2px;overflow-wrap:break-word}
 .section-body .lib-sub{font-size:11px;line-height:1.35;overflow-wrap:break-word}
-@media(max-width:640px){
-  .section-body .lib-card{flex:1 1 100%}
+.sparten-row{display:flex;gap:18px;align-items:flex-start}
+.sparten-row .section-block{flex:1;min-width:0;margin-bottom:0}
+@media(max-width:760px){
+  .sparten-row{flex-direction:column}
 }
 .lib-card-expand{cursor:pointer}
 .sub-panel{
@@ -189,6 +191,7 @@ body::before{
       <div class="greeting-name" id="greetName"></div>
     </div>
     <div class="lib-grid">
+      <div class="sparten-row">
 
       <div class="section-block">
         <div class="section-head-banner" id="headPruefungen" onclick="toggleSection('Pruefungen')">
@@ -326,6 +329,7 @@ body::before{
         </div>
       </div>
 
+      </div>
     </div>
     <div class="footer-area">
       <button class="back-btn" onclick="doLogout()" style="cursor:pointer">↩ Abmelden</button>
