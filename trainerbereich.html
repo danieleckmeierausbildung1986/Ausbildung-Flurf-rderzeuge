@@ -217,6 +217,7 @@ body::before{
           <option value="" disabled selected>Bitte wählen…</option>
           <option value="Trainer01">Trainer01</option>
           <option value="Trainer02">Trainer02</option>
+          <option value="TestUser">TestUser</option>
         </select>
       </div>
       <div class="lf">
@@ -407,7 +408,7 @@ function showTools(name, benutzername){
   document.getElementById('toolsCard').style.display = 'block';
   document.querySelector('.container').classList.add('wide');
   document.getElementById('greetName').textContent = name ? ('Hallo, ' + name + '!') : '';
-  var zeigeCockpit = (benutzername === 'Trainer01');
+  var zeigeCockpit = (benutzername === 'Trainer01' || benutzername === 'TestUser');
   document.getElementById('cockpitCard').style.display = zeigeCockpit ? '' : 'none';
   var countEl = document.getElementById('countVerwaltung');
   if(countEl){ countEl.textContent = zeigeCockpit ? '3' : '2'; }
