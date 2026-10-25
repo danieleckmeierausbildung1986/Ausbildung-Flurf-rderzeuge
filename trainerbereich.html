@@ -32,6 +32,28 @@ body::before{
   border-radius:16px;padding:22px 20px;backdrop-filter:blur(6px);
   position:sticky;top:20px;
 }
+.info-panel.hidden{display:none}
+.info-icon-wrap{display:flex;justify-content:center;margin-top:10px;position:relative}
+.info-icon-btn{
+  width:22px;height:22px;border-radius:50%;border:1px solid rgba(255,255,255,.35);
+  background:rgba(255,255,255,.08);color:rgba(255,255,255,.75);
+  font-size:12px;font-weight:700;font-style:italic;font-family:Georgia,serif;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;
+}
+.info-icon-btn:hover{border-color:#fff;color:#fff}
+.info-tooltip{
+  display:none;position:absolute;top:30px;left:50%;transform:translateX(-50%);
+  width:260px;max-width:80vw;background:#162032;border:1px solid rgba(255,255,255,.18);
+  border-radius:12px;padding:16px 16px;box-shadow:0 12px 30px rgba(0,0,0,.4);
+  z-index:5;text-align:left;
+}
+.info-tooltip.open{display:block}
+.info-tooltip p{font-size:12.5px;line-height:1.5;color:rgba(255,255,255,.75);margin-bottom:12px}
+.info-tooltip ul{list-style:none;padding:0;margin:0}
+.info-tooltip li{font-size:12px;line-height:1.5;color:rgba(255,255,255,.72);margin-bottom:10px;padding-left:14px;position:relative}
+.info-tooltip li:last-child{margin-bottom:0}
+.info-tooltip li::before{content:'';position:absolute;left:0;top:6px;width:5px;height:5px;border-radius:50%;background:var(--safety)}
+.info-tooltip li b{color:#fff;display:block;margin-bottom:2px;font-size:12.5px}
 .info-panel h2{font-size:13px;font-weight:700;color:#fff;margin-bottom:10px;text-transform:uppercase;letter-spacing:.5px}
 .info-panel>p{font-size:13px;line-height:1.5;color:rgba(255,255,255,.75);margin-bottom:16px}
 .info-panel ul{list-style:none;padding:0;margin:0}
@@ -174,6 +196,17 @@ body::before{
       <img src="logos/logo_trainerzugang_full.png" alt="Trainerzugang – ProDrive Akademie Niederbayern">
     </div>
     <p>Werkzeuge für Ausbilder und Prüfer</p>
+    <div class="info-icon-wrap" id="loginInfoIcon">
+      <button type="button" class="info-icon-btn" onclick="toggleLoginInfo()" aria-label="Was ist hier?">i</button>
+      <div class="info-tooltip" id="loginInfoTooltip">
+        <p>Der Trainerbereich bündelt alle Werkzeuge, die du als Ausbilder und Prüfer für den laufenden Schulungsbetrieb brauchst.</p>
+        <ul>
+          <li><b>Prüfungen &amp; Nachweise</b>Praxisprüfung, Theorieprüfungen freigeben und die Unterweisungsbibliothek inkl. Staplertest</li>
+          <li><b>Vor Ort &amp; Schulungstag</b>Check-in, Teilnehmer-Selbstanmeldung per QR-Code und deine Stempeluhr</li>
+          <li><b>Verwaltung &amp; Organisation</b>Terminanfragen bestätigen, Wissens-Assistent, Teilnehmerliste und das Business-Cockpit</li>
+        </ul>
+      </div>
+    </div>
   </div>
 
   <div class="card" id="loginCard">
@@ -355,7 +388,7 @@ body::before{
   </div>
 </div>
 
-<aside class="info-panel">
+<aside class="info-panel hidden" id="infoPanel">
   <h2>Was ist hier?</h2>
   <p>Der Trainerbereich bündelt alle Werkzeuge, die du als Ausbilder und Prüfer für den laufenden Schulungsbetrieb brauchst — von der Prüfung bis zur Verwaltung.</p>
   <ul>
@@ -378,6 +411,13 @@ function showTools(name, benutzername){
   document.getElementById('cockpitCard').style.display = zeigeCockpit ? '' : 'none';
   var countEl = document.getElementById('countVerwaltung');
   if(countEl){ countEl.textContent = zeigeCockpit ? '3' : '2'; }
+  document.getElementById('infoPanel').classList.remove('hidden');
+  var loginIcon = document.getElementById('loginInfoIcon');
+  if(loginIcon){ loginIcon.style.display = 'none'; }
+}
+
+function toggleLoginInfo(){
+  document.getElementById('loginInfoTooltip').classList.toggle('open');
 }
 
 function toggleSection(name){
