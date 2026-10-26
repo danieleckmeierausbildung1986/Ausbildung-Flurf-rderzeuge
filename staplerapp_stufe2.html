@@ -36,15 +36,16 @@ body::before{
 .prog-badge{font-size:11px;color:rgba(255,255,255,.55);margin-top:3px;min-height:14px;}
 /* STAGE */
 .stage{background:#fff;border-radius:18px;box-shadow:var(--shadow);overflow:hidden;
-  display:flex;flex-direction:column;width:100%;}
-.progress{height:5px;background:var(--line)}
+  display:flex;flex-direction:column;width:100%;height:calc(100vh - 230px);}
+.progress{height:5px;background:var(--line);flex-shrink:0;}
 .progress-bar{height:100%;background:linear-gradient(90deg,var(--acc1),var(--acc2));transition:width .25s ease;width:0}
 /* SCREENS */
 .screen{display:none;}
-.screen.active{display:block;}
+.screen.active{display:flex;flex-direction:column;flex:1;min-height:0;}
 /* WELCOME */
 .welcome-box{padding:40px 28px;text-align:center;display:flex;flex-direction:column;align-items:center;
-  justify-content:center;gap:14px;background:linear-gradient(135deg,var(--green-d),var(--green-l));}
+  justify-content:center;gap:14px;background:linear-gradient(135deg,var(--green-d),var(--green-l));
+  flex:1;min-height:0;}
 .welcome-logo{font-size:60px;}
 .welcome-titel{font-size:26px;font-weight:800;color:#fff;line-height:1.3;}
 .welcome-sub{font-size:15px;color:rgba(255,255,255,.85);line-height:1.6;max-width:500px;}
@@ -57,17 +58,20 @@ body::before{
   cursor:pointer;font-family:inherit;background:#fff;color:var(--green-d);margin-top:6px;}
 /* FOLIENBOX */
 .slidebox{position:relative;background:#0d1a2e;display:flex;align-items:center;justify-content:center;
-  min-height:200px;}
-.slidebox img{width:100%;height:auto;display:block;max-height:65vh;object-fit:contain;}
-/* ERKLÄRUNGS-KASTEN (aufklappbar, standardmäßig eingeklappt) */
-.erklaerung-box{background:#fff;border:1px solid var(--line);}
+  min-height:150px;flex:1;min-height:0;}
+.slidebox img{width:auto;height:auto;max-width:100%;max-height:100%;display:block;object-fit:contain;}
+.folie-label{flex-shrink:0;}
+#erklaerungBox{flex-shrink:0;}
+/* ERKLÄRUNGS-KASTEN (standardmäßig aufgeklappt, begrenzte Höhe mit eigenem Scroll) */
+.erklaerung-box{background:#fff;border:1px solid var(--line);
+  display:flex;flex-direction:column;max-height:30vh;overflow:hidden;}
 .erklaerung-label{display:flex;align-items:center;gap:8px;padding:12px 20px;font-size:14px;
-  font-weight:700;color:var(--acc1);cursor:pointer;user-select:none}
+  font-weight:700;color:var(--acc1);cursor:pointer;user-select:none;flex-shrink:0;}
 .erklaerung-label .chev{margin-left:auto;font-size:12px;transition:transform .2s ease}
 .erklaerung-box.open .erklaerung-label .chev{transform:rotate(180deg)}
-.erklaerung-content{max-height:0;overflow:hidden;transition:max-height .25s ease}
-.erklaerung-box.open .erklaerung-content{max-height:2000px}
-.erklaerung-content p{margin:0;padding:10px 20px 20px;font-size:17px;line-height:1.75;color:var(--ink)}
+.erklaerung-content{overflow-y:auto;flex:1;min-height:0;}
+.erklaerung-box:not(.open) .erklaerung-content{display:none;}
+.erklaerung-content p{margin:0;padding:10px 20px 20px;font-size:15px;line-height:1.65;color:var(--ink)}
 @media(max-width:600px){
   .erklaerung-label{font-size:13px;padding:10px 14px}
   .erklaerung-content p{font-size:15px;padding:8px 14px 16px}
@@ -80,7 +84,7 @@ body::before{
 .nav-zone span{color:#fff;font-size:30px;padding:0 14px;text-shadow:0 2px 8px rgba(0,0,0,.5)}
 .folie-label{font-size:12px;color:var(--muted);text-align:center;padding:6px 0 2px;}
 /* QUIZ */
-.quizbox{padding:28px;display:flex;flex-direction:column;}
+.quizbox{padding:28px;display:flex;flex-direction:column;flex:1;min-height:0;justify-content:center;}
 .quiz-badge{font-size:12px;font-weight:700;color:var(--acc2);text-transform:uppercase;letter-spacing:.6px;margin-bottom:12px;}
 .quiz-q{font-size:19px;font-weight:700;color:var(--navy);margin-bottom:20px;line-height:1.4;}
 .quiz-opts{display:flex;flex-direction:column;gap:10px;}
@@ -95,7 +99,7 @@ body::before{
 .quiz-prog{font-size:12px;color:var(--muted);margin-bottom:6px;}
 /* ABSCHLUSS */
 .abschluss-box{padding:48px 28px;text-align:center;display:flex;flex-direction:column;
-  align-items:center;justify-content:center;gap:14px;}
+  align-items:center;justify-content:center;gap:14px;flex:1;min-height:0;}
 .abschluss-icon{font-size:50px;}
 .abschluss-titel{font-size:22px;font-weight:800;color:var(--navy);}
 .abschluss-sub{font-size:14px;color:var(--muted);max-width:400px;}
@@ -135,7 +139,7 @@ body::before{
   .ti{width:36px;height:36px;font-size:17px;border-radius:9px}
   .topbar h1{font-size:14px}
   .topbar p{font-size:10px}
-  .stage{border-radius:12px}
+  .stage{border-radius:12px;height:calc(100vh - 190px)}
   .welcome-box{padding:22px 14px;gap:10px}
   .welcome-logo{font-size:42px}
   .welcome-titel{font-size:19px}
@@ -148,8 +152,8 @@ body::before{
   .abschluss-box{padding:22px 14px;gap:10px}
   .abschluss-icon{font-size:40px}
   .abschluss-titel{font-size:18px}
-  .slidebox{min-height:180px}
-  .slidebox img{max-height:52vh}
+  .erklaerung-box{max-height:36vh}
+  .erklaerung-content p{font-size:14px}
   .nav-zone{opacity:.35;width:22%}
   .controls{padding:9px 10px;gap:8px}
   .ctrl-btn{padding:10px 13px;font-size:13px}
@@ -165,6 +169,42 @@ body::before{
   .opt{font-size:13px}
   .ctrl-btn{padding:9px 10px;font-size:12px}
 }
+/* VOLLBILD-BUTTON (unten, schwebend) */
+.fs-float-btn{position:fixed;bottom:22px;right:22px;width:52px;height:52px;border-radius:50%;
+  border:none;background:rgba(13,36,63,.85);color:#fff;font-size:21px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;box-shadow:0 6px 22px rgba(0,0,0,.4);
+  z-index:50;transition:background .15s,transform .15s;}
+.fs-float-btn:hover{background:rgba(26,79,168,.95);transform:scale(1.06);}
+@media(max-width:600px){.fs-float-btn{width:44px;height:44px;font-size:17px;bottom:14px;right:14px;}}
+/* VOLLBILD-MODUS: Inhalte deutlich größer darstellen */
+body.fs-active{padding:0;}
+body.fs-active .wrap{max-width:1900px;padding:20px 48px 0;}
+body.fs-active .stage{height:calc(100vh - 150px);}
+body.fs-active .topbar h1{font-size:26px}
+body.fs-active .topbar p{font-size:15px}
+body.fs-active .ti{width:60px;height:60px;font-size:28px}
+body.fs-active .welcome-titel{font-size:38px}
+body.fs-active .welcome-sub{font-size:19px;max-width:700px}
+body.fs-active .welcome-grid{max-width:700px}
+body.fs-active .wg-titel{font-size:16px}
+body.fs-active .wg-text{font-size:14px}
+body.fs-active .welcome-start{font-size:20px;padding:18px 44px}
+body.fs-active .kontakt-bar{display:none}
+body.fs-active .back-btn{display:none}
+body.fs-active .erklaerung-label{font-size:18px;padding:16px 26px}
+body.fs-active .erklaerung-content p{font-size:19px;padding:10px 26px 20px}
+body.fs-active .quizbox{padding:44px}
+body.fs-active .quiz-badge{font-size:15px}
+body.fs-active .quiz-q{font-size:28px;margin-bottom:28px}
+body.fs-active .opt{font-size:20px;padding:20px 24px}
+body.fs-active .quiz-fb{font-size:19px}
+body.fs-active .abschluss-titel{font-size:30px}
+body.fs-active .abschluss-sub{font-size:18px;max-width:560px}
+body.fs-active .abschluss-score{font-size:19px}
+body.fs-active .abschluss-btn{font-size:20px;padding:18px 40px}
+body.fs-active .controls{padding:20px 26px}
+body.fs-active .ctrl-btn{font-size:18px;padding:15px 28px}
+body.fs-active .counter{font-size:17px}
 </style>
 </head>
 <body>
@@ -245,6 +285,7 @@ body::before{
   </div>
   <button class="back-btn" id="backBtnEl" onclick="goBack()"></button>
 </div>
+<button class="fs-float-btn" id="fsBtn" onclick="toggleFullscreen()" title="Vollbild">&#x26F6;</button>
 
 <script>
 
@@ -752,6 +793,30 @@ function showScreen(id){
 
 function toggleErkl(el){var box=el.closest('.erklaerung-box');if(box)box.classList.toggle('open');}
 
+/* ---- VOLLBILD ---- */
+function toggleFullscreen(){
+  var el = document.documentElement;
+  var isFs = document.fullscreenElement || document.webkitFullscreenElement || document.msFullscreenElement;
+  if(!isFs){
+    if(el.requestFullscreen){ el.requestFullscreen(); }
+    else if(el.webkitRequestFullscreen){ el.webkitRequestFullscreen(); }
+    else if(el.msRequestFullscreen){ el.msRequestFullscreen(); }
+  } else {
+    if(document.exitFullscreen){ document.exitFullscreen(); }
+    else if(document.webkitExitFullscreen){ document.webkitExitFullscreen(); }
+    else if(document.msExitFullscreen){ document.msExitFullscreen(); }
+  }
+}
+function updateFsBtn(){
+  var isFs = document.fullscreenElement || document.webkitFullscreenElement || document.msFullscreenElement;
+  var btn = document.getElementById('fsBtn');
+  if(btn){ btn.innerHTML = isFs ? '&#x2715;' : '&#x26F6;'; btn.title = isFs ? 'Vollbild beenden' : 'Vollbild'; }
+  document.body.classList.toggle('fs-active', !!isFs);
+}
+document.addEventListener('fullscreenchange', updateFsBtn);
+document.addEventListener('webkitfullscreenchange', updateFsBtn);
+document.addEventListener('msfullscreenchange', updateFsBtn);
+
 function render(){
   updateProg();
   if(idx<TOTAL){
@@ -760,7 +825,7 @@ function render(){
     document.getElementById('folieLabel').textContent=T.folie+' '+(idx+1)+' '+T.von+' '+TOTAL;
     var erkl=(ERKL&&ERKL[gerat])?ERKL[gerat][idx+1]:null;
     document.getElementById('erklaerungBox').innerHTML=erkl?(
-      '<div class="erklaerung-box">'+
+      '<div class="erklaerung-box open">'+
         '<div class="erklaerung-label" onclick="toggleErkl(this)">💡 '+T.erklaerung+'<span class="chev">▾</span></div>'+
         '<div class="erklaerung-content"><p>'+erkl+'</p></div>'+
       '</div>'

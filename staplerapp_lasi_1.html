@@ -211,6 +211,20 @@ button{font-family:inherit;cursor:pointer}
     background:rgba(0,0,0,.36);z-index:29}
   .stage{padding:14px 14px 60px}
 }
+/* VOLLBILD-BUTTON (unten, schwebend) */
+.fs-float-btn{position:fixed;bottom:22px;right:22px;width:52px;height:52px;border-radius:50%;
+  border:none;background:rgba(122,53,2,.9);color:#fff;font-size:21px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;box-shadow:0 6px 22px rgba(0,0,0,.4);
+  z-index:50;transition:background .15s,transform .15s;}
+.fs-float-btn:hover{background:rgba(184,80,10,.95);transform:scale(1.06);}
+@media(max-width:600px){.fs-float-btn{width:44px;height:44px;font-size:17px;bottom:14px;right:14px;}}
+/* VOLLBILD-MODUS: etwas größere Schrift */
+body.fs-active .chapter-intro h2{font-size:34px}
+body.fs-active .quiz-q{font-size:20px}
+body.fs-active .erklaerung-label{font-size:17px}
+body.fs-active .erklaerung-content p{font-size:19px}
+body.fs-active .welcome-card h2{font-size:30px}
+body.fs-active .welcome-card p{font-size:17px}
 
 </style>
 </head>
@@ -279,6 +293,7 @@ button{font-family:inherit;cursor:pointer}
     </div>
   </div>
 </div>
+<button class="fs-float-btn hidden" id="fsBtn" onclick="toggleFullscreen()" title="Vollbild">&#x26F6;</button>
 
 <script>
 const IMG_BASE = 'https://danieleckmeierausbildung1986.github.io/Ausbildung-Flurf-rderzeuge/LASI_BILDER/';
@@ -833,6 +848,7 @@ async function startApp(nr, vorname, nachname){
   overlay.style.display = 'none';
   document.getElementById('login').classList.add('hidden');
   document.getElementById('app').classList.remove('hidden');
+  document.getElementById('fsBtn').classList.remove('hidden');
   document.getElementById('topbar-who').textContent = nr;
   const backBtn = document.getElementById('backHomeBtn');
   backBtn.href = PORTAL_URL + '?regnr=' + encodeURIComponent(nr);
@@ -919,6 +935,30 @@ function goStep(idx){
 
 function toggleErkl(el){var box=el.closest('.erklaerung-box');if(box)box.classList.toggle('open');}
 
+/* ---- VOLLBILD ---- */
+function toggleFullscreen(){
+  var el = document.documentElement;
+  var isFs = document.fullscreenElement || document.webkitFullscreenElement || document.msFullscreenElement;
+  if(!isFs){
+    if(el.requestFullscreen){ el.requestFullscreen(); }
+    else if(el.webkitRequestFullscreen){ el.webkitRequestFullscreen(); }
+    else if(el.msRequestFullscreen){ el.msRequestFullscreen(); }
+  } else {
+    if(document.exitFullscreen){ document.exitFullscreen(); }
+    else if(document.webkitExitFullscreen){ document.webkitExitFullscreen(); }
+    else if(document.msExitFullscreen){ document.msExitFullscreen(); }
+  }
+}
+function updateFsBtn(){
+  var isFs = document.fullscreenElement || document.webkitFullscreenElement || document.msFullscreenElement;
+  var btn = document.getElementById('fsBtn');
+  if(btn){ btn.innerHTML = isFs ? '&#x2715;' : '&#x26F6;'; btn.title = isFs ? 'Vollbild beenden' : 'Vollbild'; }
+  document.body.classList.toggle('fs-active', !!isFs);
+}
+document.addEventListener('fullscreenchange', updateFsBtn);
+document.addEventListener('webkitfullscreenchange', updateFsBtn);
+document.addEventListener('msfullscreenchange', updateFsBtn);
+
 function renderFoot(showBack=true,showNext=true,nextLabel=L('Weiter →','Dalej →')){
   const foot=document.getElementById('foot');
   const s=STEPS[cur];
@@ -992,7 +1032,7 @@ function renderFolie(host,s){
   const isLast=nextStep&&nextStep.type==='quiz';
 
   const erkl=ERKLAERUNG[fn];
-  const erklHtml=erkl?`<div class="erklaerung-box"><div class="erklaerung-label" onclick="toggleErkl(this)">💡 ${L('Erklärung','Wyjaśnienie')}<span class="chev">▾</span></div><div class="erklaerung-content"><p>${erkl}</p></div></div>`:'';
+  const erklHtml=erkl?`<div class="erklaerung-box open"><div class="erklaerung-label" onclick="toggleErkl(this)">💡 ${L('Erklärung','Wyjaśnienie')}<span class="chev">▾</span></div><div class="erklaerung-content"><p>${erkl}</p></div></div>`:'';
   host.innerHTML=`<div class="slide-card">
     <img class="slide-img-full" src="${imgUrl}" loading="lazy" alt="Folie ${fn}">
     ${erklHtml}
