@@ -40,7 +40,7 @@ body::before{
 #host{overflow-y:auto;min-height:0;}
 .controls{flex-shrink:0;}
 .progress{flex-shrink:0;}
-body.fs-active .stage{max-height:calc(100vh - 270px);}
+body.fs-active .stage{max-height:calc(100vh - 150px);}
 .progress{height:5px;background:var(--line)}
 .progress-bar{height:100%;background:linear-gradient(90deg,var(--acc1),var(--acc2));transition:width .25s ease;width:0}
 /* WELCOME */
@@ -63,7 +63,7 @@ body.fs-active .stage{max-height:calc(100vh - 270px);}
 /* FOLIENBOX */
 .slidebox{position:relative;background:#0d1a2e;display:flex;align-items:center;justify-content:center;
   min-height:200px;}
-.slidebox img{width:100%;height:auto;display:block;max-height:65vh;object-fit:contain;}
+.slidebox img{width:100%;height:auto;display:block;max-height:42vh;object-fit:contain;}
 
 /* ERKLÄRUNGS-KASTEN (aufklappbar, standardmäßig eingeklappt) */
 .erklaerung-box{background:#fff;border:1px solid var(--line);border-top:none;border-radius:0 0 14px 14px;overflow:hidden}
@@ -181,7 +181,7 @@ body.fs-active .stage{max-height:calc(100vh - 270px);}
   .kapitel-titel{font-size:20px}
   .kapitel-sub{font-size:12px}
   .slidebox{min-height:220px}
-  .slidebox img{max-height:52vh}
+  .slidebox img{max-height:38vh}
   .nav-zone{opacity:.35;width:22%}
   .quizbox{padding:16px 14px}
   .quiz-badge{font-size:11px}
@@ -227,7 +227,7 @@ body.fs-active .stage{max-height:calc(100vh - 270px);}
 @media(max-width:600px){.fs-float-btn{width:44px;height:44px;font-size:17px;bottom:14px;right:14px;}}
 /* VOLLBILD-MODUS: Inhalte deutlich größer darstellen */
 body.fs-active{padding:0;}
-body.fs-active .wrap{max-width:1900px;padding:28px 48px;}
+body.fs-active .wrap{max-width:1900px;padding:20px 48px 0;}
 body.fs-active .topbar h1{font-size:26px}
 body.fs-active .topbar p{font-size:15px}
 body.fs-active .ti{width:60px;height:60px}
@@ -241,8 +241,10 @@ body.fs-active .welcome-start{font-size:20px;padding:18px 44px}
 body.fs-active .kapitel-titel{font-size:46px}
 body.fs-active .kapitel-sub{font-size:19px}
 body.fs-active .kapitel-box{min-height:380px}
-body.fs-active .slidebox{min-height:340px}
-body.fs-active .slidebox img{max-height:80vh}
+body.fs-active .slidebox{min-height:220px}
+body.fs-active .slidebox img{max-height:40vh}
+body.fs-active .kontakt-bar{display:none}
+body.fs-active .back-btn{display:none}
 body.fs-active .erklaerung-label{font-size:18px;padding:16px 26px}
 body.fs-active .erklaerung-content p{font-size:22px;padding:14px 26px 26px}
 body.fs-active .quizbox{padding:44px}
@@ -1265,7 +1267,7 @@ function render(){
       '<img src="'+ORDNER+'/Folie'+s.fn+'.PNG" alt="Folie '+s.fn+'">'+
       '</div>'+
       (erklaerung?(
-        '<div class="erklaerung-box">'+
+        '<div class="erklaerung-box open">'+
           '<div class="erklaerung-label" onclick="toggleErkl(this)">💡 '+T.erklaerung+'<span class="chev">▾</span></div>'+
           '<div class="erklaerung-content"><p>'+erklaerung+'</p></div>'+
         '</div>'
