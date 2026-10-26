@@ -36,11 +36,12 @@ body::before{
 .topbar p{color:rgba(255,255,255,.45);font-size:12px}
 /* STAGE */
 .stage{background:#fff;border-radius:18px;box-shadow:var(--shadow);overflow:hidden;
-  display:flex;flex-direction:column;height:max-content;max-height:calc(100vh - 230px);width:100%;}
-#host{overflow-y:auto;min-height:0;}
+  display:flex;flex-direction:column;height:calc(100vh - 230px);width:100%;}
+#host{overflow:hidden;min-height:0;flex:1;display:flex;flex-direction:column;}
+#host>div{flex:1;min-height:0;}
 .controls{flex-shrink:0;}
 .progress{flex-shrink:0;}
-body.fs-active .stage{max-height:calc(100vh - 150px);}
+body.fs-active .stage{height:calc(100vh - 150px);}
 .progress{height:5px;background:var(--line)}
 .progress-bar{height:100%;background:linear-gradient(90deg,var(--acc1),var(--acc2));transition:width .25s ease;width:0}
 /* WELCOME */
@@ -62,18 +63,19 @@ body.fs-active .stage{max-height:calc(100vh - 150px);}
 .kapitel-sub{font-size:14px;color:rgba(255,255,255,.7);margin-top:10px;}
 /* FOLIENBOX */
 .slidebox{position:relative;background:#0d1a2e;display:flex;align-items:center;justify-content:center;
-  min-height:200px;}
-.slidebox img{width:100%;height:auto;display:block;max-height:42vh;object-fit:contain;}
+  min-height:150px;flex:1;min-height:0;}
+.slidebox img{width:auto;height:auto;max-width:100%;max-height:100%;display:block;object-fit:contain;}
 
-/* ERKLÄRUNGS-KASTEN (aufklappbar, standardmäßig eingeklappt) */
-.erklaerung-box{background:#fff;border:1px solid var(--line);border-top:none;border-radius:0 0 14px 14px;overflow:hidden}
+/* ERKLÄRUNGS-KASTEN (standardmäßig aufgeklappt, begrenzte Höhe mit eigenem Scroll) */
+.erklaerung-box{background:#fff;border:1px solid var(--line);border-top:none;border-radius:0 0 14px 14px;
+  overflow:hidden;flex:0 0 auto!important;display:flex;flex-direction:column;max-height:30%;}
 .erklaerung-label{display:flex;align-items:center;gap:8px;padding:12px 20px;font-size:14px;
-  font-weight:700;color:var(--acc1);cursor:pointer;user-select:none}
+  font-weight:700;color:var(--acc1);cursor:pointer;user-select:none;flex-shrink:0;}
 .erklaerung-label .chev{margin-left:auto;font-size:12px;transition:transform .2s ease}
 .erklaerung-box.open .erklaerung-label .chev{transform:rotate(180deg)}
-.erklaerung-content{max-height:0;overflow:hidden;transition:max-height .25s ease}
-.erklaerung-box.open .erklaerung-content{max-height:2000px}
-.erklaerung-content p{margin:0;padding:10px 20px 20px;font-size:17px;line-height:1.75;color:var(--ink)}
+.erklaerung-content{overflow-y:auto;flex:1;min-height:0;}
+.erklaerung-box:not(.open) .erklaerung-content{display:none;}
+.erklaerung-content p{margin:0;padding:10px 20px 20px;font-size:15px;line-height:1.65;color:var(--ink)}
 @media(max-width:600px){
   .erklaerung-label{font-size:13px;padding:10px 14px}
   .erklaerung-content p{font-size:15px;padding:8px 14px 16px}
@@ -171,7 +173,7 @@ body.fs-active .stage{max-height:calc(100vh - 150px);}
   .topbar h1{font-size:14px;line-height:1.2}
   .topbar p{font-size:10px}
   .ov-btn{padding:7px 10px;font-size:12px}
-  .stage{border-radius:12px;max-height:calc(100vh - 190px)}
+  .stage{border-radius:12px;height:calc(100vh - 190px)}
   .welcome-box{padding:22px 14px;gap:10px}
   .welcome-titel{font-size:19px}
   .welcome-sub{font-size:13px}
@@ -180,8 +182,8 @@ body.fs-active .stage{max-height:calc(100vh - 150px);}
   .kapitel-box{padding:26px 14px;min-height:180px}
   .kapitel-titel{font-size:20px}
   .kapitel-sub{font-size:12px}
-  .slidebox{min-height:220px}
-  .slidebox img{max-height:38vh}
+  .erklaerung-box{max-height:36%}
+  .erklaerung-content p{font-size:14px}
   .nav-zone{opacity:.35;width:22%}
   .quizbox{padding:16px 14px}
   .quiz-badge{font-size:11px}
@@ -241,12 +243,10 @@ body.fs-active .welcome-start{font-size:20px;padding:18px 44px}
 body.fs-active .kapitel-titel{font-size:46px}
 body.fs-active .kapitel-sub{font-size:19px}
 body.fs-active .kapitel-box{min-height:380px}
-body.fs-active .slidebox{min-height:220px}
-body.fs-active .slidebox img{max-height:40vh}
 body.fs-active .kontakt-bar{display:none}
 body.fs-active .back-btn{display:none}
 body.fs-active .erklaerung-label{font-size:18px;padding:16px 26px}
-body.fs-active .erklaerung-content p{font-size:22px;padding:14px 26px 26px}
+body.fs-active .erklaerung-content p{font-size:19px;padding:10px 26px 20px}
 body.fs-active .quizbox{padding:44px}
 body.fs-active .quiz-badge{font-size:15px}
 body.fs-active .quiz-q{font-size:28px;margin-bottom:28px}
