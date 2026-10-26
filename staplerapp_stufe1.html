@@ -267,6 +267,7 @@ body::before{
   <div class="topbar">
     <div class="ti"><img src="logos/logo_icon.png" alt="ProDrive Akademie"></div>
     <div><h1 id="appTitle">ProDrive Akademie Niederbayern</h1><p id="appSubtitle">Allgemeine Ausbildung Stufe 1 &middot; DGUV Grundsatz 308-001</p><div class="prog-badge" id="progBadge"></div></div>
+    <button class="ov-btn" id="fsBtn" onclick="toggleFullscreen()" title="Vollbild">&#x26F6;</button>
     <button class="ov-btn" id="ovBtn" onclick="openOv()">&#9776; Kapitel</button>
   </div>
   <div class="stage">
@@ -1015,6 +1016,29 @@ function updateProgBadge(){
   var n=Object.keys(kapitelAbgeschlossen).length;
   b.textContent=n>0?n+' / '+KAPITEL.length+' '+T.kapitelAbgeschlossen:'';
 }
+
+/* ---- VOLLBILD ---- */
+function toggleFullscreen(){
+  var el = document.documentElement;
+  var isFs = document.fullscreenElement || document.webkitFullscreenElement || document.msFullscreenElement;
+  if(!isFs){
+    if(el.requestFullscreen){ el.requestFullscreen(); }
+    else if(el.webkitRequestFullscreen){ el.webkitRequestFullscreen(); }
+    else if(el.msRequestFullscreen){ el.msRequestFullscreen(); }
+  } else {
+    if(document.exitFullscreen){ document.exitFullscreen(); }
+    else if(document.webkitExitFullscreen){ document.webkitExitFullscreen(); }
+    else if(document.msExitFullscreen){ document.msExitFullscreen(); }
+  }
+}
+function updateFsBtn(){
+  var isFs = document.fullscreenElement || document.webkitFullscreenElement || document.msFullscreenElement;
+  var btn = document.getElementById('fsBtn');
+  if(btn){ btn.innerHTML = isFs ? '&#x2715;' : '&#x26F6;'; btn.title = isFs ? 'Vollbild beenden' : 'Vollbild'; }
+}
+document.addEventListener('fullscreenchange', updateFsBtn);
+document.addEventListener('webkitfullscreenchange', updateFsBtn);
+document.addEventListener('msfullscreenchange', updateFsBtn);
 
 /* ---- KAPITELÜBERSICHT ---- */
 function openOv(){
