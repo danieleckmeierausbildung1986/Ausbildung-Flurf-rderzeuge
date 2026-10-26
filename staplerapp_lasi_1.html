@@ -851,7 +851,7 @@ async function startApp(nr, vorname, nachname){
   document.getElementById('fsBtn').classList.remove('hidden');
   document.getElementById('topbar-who').textContent = nr;
   const backBtn = document.getElementById('backHomeBtn');
-  backBtn.href = PORTAL_URL + '?regnr=' + encodeURIComponent(nr);
+  backBtn.href = PORTAL_URL + 'lasi_auswahl.html?regnr=' + encodeURIComponent(nr) + '&lang=' + lang;
   buildSidebar();
   goStep(0);
 }

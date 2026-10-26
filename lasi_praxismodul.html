@@ -545,7 +545,7 @@ async function startApp(nr, vorname, nachname){
   document.getElementById('login').classList.add('hidden');
   document.getElementById('app').classList.remove('hidden');
   document.getElementById('topbar-who').textContent = nr;
-  document.getElementById('backHomeBtn').href = PORTAL_URL + '?regnr=' + encodeURIComponent(nr);
+  document.getElementById('backHomeBtn').href = PORTAL_URL + 'lasi_auswahl.html?regnr=' + encodeURIComponent(nr);
   const host = document.getElementById('host');
   host.innerHTML = MODUL_HTML;
   if(!modulInitialized){
