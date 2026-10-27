@@ -122,11 +122,18 @@ nav{
 .formate-sub{font-size:15px;color:var(--muted);text-align:center;margin-bottom:40px}
 .formate-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:0}
 .format-card{
-  background:#fff;border:1px solid var(--line);border-radius:18px;
+  position:relative;background:#fff;border:1px solid var(--line);border-radius:18px;
   padding:32px 28px;display:flex;flex-direction:column;align-items:flex-start;gap:0;
   box-shadow:0 2px 12px rgba(0,0,0,.06);transition:transform .2s,box-shadow .2s;
 }
 .format-card:hover{transform:translateY(-4px);box-shadow:0 8px 28px rgba(26,79,168,.12)}
+.format-card.disabled{opacity:.55}
+.format-card.disabled:hover{transform:none;box-shadow:0 2px 12px rgba(0,0,0,.06)}
+.format-card-badge{
+  position:absolute;top:18px;right:18px;background:var(--muted);color:#fff;
+  font-size:11px;font-weight:700;padding:4px 11px;border-radius:20px;
+  letter-spacing:.3px;text-transform:uppercase;
+}
 .format-illustration{width:100%;max-width:220px;height:190px;object-fit:contain;display:block;margin:0 auto 20px}
 .format-text h3{font-size:18px;font-weight:800;color:var(--navy);margin-bottom:8px}
 .format-text p{font-size:14px;color:var(--muted);line-height:1.6;margin-bottom:16px}
@@ -584,7 +591,8 @@ footer a{color:rgba(255,255,255,.4);text-decoration:underline}
     <div class="formate-title">Ihr Schulungsformat — Ihre Wahl</div>
     <div class="formate-sub">Alle Formate sind DGUV-konform und enden mit einer praktischen Prüfung vor Ort.</div>
     <div class="formate-grid">
-      <div class="format-card">
+      <div class="format-card disabled">
+        <div class="format-card-badge">In Arbeit</div>
         <img class="format-illustration" src="format_icons/elearning.png" alt="">
         <div class="format-text">
           <h3>Flex — E-Learning</h3>
