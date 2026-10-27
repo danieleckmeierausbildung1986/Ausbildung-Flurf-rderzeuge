@@ -128,6 +128,7 @@ body::before{
   border-radius:12px;background:rgba(255,255,255,.06);color:rgba(255,255,255,.8);
   font-size:14px;font-weight:600;cursor:pointer;text-align:center;font-family:inherit;margin-top:8px;}
 .back-btn:hover{border-color:var(--green-l);color:#fff;background:rgba(255,255,255,.12);}
+.copyright-note{font-size:10px;color:rgba(255,255,255,.35);text-align:center;margin-top:12px;line-height:1.5;}
 /* RESPONSIVE */
 @media(max-width:900px){
   .topbar h1{font-size:16px}
@@ -191,6 +192,7 @@ body.fs-active .wg-text{font-size:14px}
 body.fs-active .welcome-start{font-size:20px;padding:18px 44px}
 body.fs-active .kontakt-bar{display:none}
 body.fs-active .back-btn{display:none}
+body.fs-active .copyright-note{display:none}
 body.fs-active .erklaerung-label{font-size:18px;padding:16px 26px}
 body.fs-active .erklaerung-content p{font-size:19px;padding:10px 26px 20px}
 body.fs-active .quizbox{padding:44px}
@@ -284,6 +286,7 @@ body.fs-active .counter{font-size:17px}
     <a class="kontakt-btn mail" id="mailBtn" href="#" target="_blank">&#x2709;&#xFE0F; E-Mail</a>
   </div>
   <button class="back-btn" id="backBtnEl" onclick="goBack()"></button>
+  <p class="copyright-note">&copy; Daniel Eckmeier &middot; ProDrive Akademie Niederbayern. Alle Rechte vorbehalten. Diese Schulungsinhalte sind urheberrechtlich gesch&uuml;tzt und d&uuml;rfen nicht vervielf&auml;ltigt oder an Dritte weitergegeben werden.</p>
 </div>
 <button class="fs-float-btn" id="fsBtn" onclick="toggleFullscreen()" title="Vollbild">&#x26F6;</button>
 
