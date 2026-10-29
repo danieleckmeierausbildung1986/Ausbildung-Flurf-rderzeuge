@@ -1,3 +1,80 @@
+## Sicherheitsvorfall-Dokumentation: Zugangsprüfung Stufe-1/2-Module (29.10.2026)
+
+Auf Anfrage der Verwaltungsabteilung ("sind die Module auch über eine direkte
+URL nicht erreichbar?") systematisch alle `staplerapp_*.html`/`pruefung_*.html`
+auf dieselbe Bypass-Logik geprüft. Ergebnis, zur Ablage bei den
+Datenschutzunterlagen:
+
+**Datum der Entdeckung/Behebung:** 29.10.2026 (Fehler selbst vermutlich seit
+Einführung der jeweiligen Datei bestehend, siehe unten).
+
+**Fehler 1 (`staplerapp_stufe1.html`, `staplerapp_stufe2.html`):** Fehlte der
+URL-Parameter `?regnr=` komplett, wurde die Zugangsprüfung übersprungen und
+sofort voller Kursinhalt angezeigt (`if(!regnr){overlay.style.display='none';
+return;}`). Schlug der Zugangsprüfungs-Flow fehl (Netzwerkfehler), wurde
+ebenfalls automatisch Zugriff gewährt (`.catch(function(){overlay.style.
+display='none';})`) statt verweigert. **Fix:** beide Fälle zeigen jetzt die
+Sperr-Meldung "Zugriff nicht möglich" bzw. "Zugangsprüfung fehlgeschlagen",
+Zugriff nur noch bei explizit erfolgreicher Prüfung (`data.zugang === true`).
+
+**Fehler 2, beim systematischen Durchgehen zusätzlich entdeckt
+(`staplerapp_stufe2_schubmast.html`, `staplerapp_stufe2_kommissionierer.html`,
+`staplerapp_stufe2_schmalgang.html`):** Drei ältere, inzwischen durch die
+vereinheitlichte `staplerapp_stufe2.html?gerat=...` ersetzte Vorgänger-Dateien
+hatten **überhaupt keine** Zugangsprüfung — kein `regnr`-Check, kein
+Sessionstorage-Check, kein Flow-Aufruf. Jeder, der die URL kennt oder errät,
+bekam sofort vollen Zugriff auf Folien und Quiz. Laut Git-Historie existieren
+diese drei Dateien bereits seit dem 03.06.2026 (ältester Commit im Repo,
+also schon vor Einführung der Login-Plattform am 01.09.2026) und waren seither
+nirgends mehr auf der Website verlinkt (verifiziert per Repo-weiter Suche),
+aber öffentlich über GitHub Pages weiterhin erreichbar. **Fix:** Inhalt durch
+eine reine Weiterleitung auf die aktuelle, zugangsgeschützte
+`staplerapp_stufe2.html?gerat=<gerät>` ersetzt — Dateien bleiben bestehen
+(nicht gelöscht), liefern aber keinen Inhalt mehr ohne Zugangsprüfung.
+
+**Betroffener Zeitraum:** schätzungsweise seit Einführung der jeweiligen
+Datei bis 29.10.2026 (behoben).
+
+**Was in dieser Zeit ohne Login sichtbar war:** Ausschließlich generische
+Kursinhalte (Schulungsfolien, Quizfragen samt Lösungen) für das jeweilige
+Gerät/die jeweilige Stufe — keine personenbezogenen Daten. Die betroffenen
+Seiten selbst fragen beim Laden keine Teilnehmerliste, Namen oder
+Prüfungsergebnisse ab; eine Namensanzeige wird ausschließlich aus
+`sessionStorage` eines bereits erfolgreich eingeloggten Teilnehmers befüllt,
+nie aus der fehlerhaften Zugangsprüfung selbst. Einstufung: Sicherheitslücke
+im Sinne unbefugten Zugriffs auf urheberrechtlich geschützte Schulungsinhalte,
+aber **keine meldepflichtige Verletzung des Schutzes personenbezogener Daten
+nach Art. 33 DSGVO**, da keine personenbezogenen Daten einsehbar waren.
+
+**Prüfungsfragen/-antworten grundsätzlich clientseitig:** Sowohl die
+Übungsquiz in den `staplerapp_*.html`-Lernmodulen als auch der tatsächliche,
+bewertete Theorieprüfungsfragenkatalog in `pruefung_stufe1.html`/
+`pruefung_stufe2.html`/`pruefung_lasi.html` (Array `FRAGEN` mit Feld
+`correct`) liegen vollständig im öffentlichen Repo und im an den Browser
+ausgelieferten Quelltext — unabhängig von jeder Zugangsprüfung per
+"Quelltext anzeigen" einsehbar, da auf GitHub Pages (statisches Hosting ohne
+eigenes Backend) technisch nichts serverseitig zurückgehalten werden kann.
+Eine Auswertung der Prüfung passiert ebenfalls rein clientseitig im Browser;
+die Zugangsprüfung selbst bleibt dadurch unberührt korrekt (siehe oben,
+Fehler 1/2 behoben), aber die Prüfungsintegrität (kann ein Teilnehmer vorab
+die Lösungen einsehen) ist strukturell nicht gegeben. Sauberer, aber
+größerer Umbau wäre serverseitige Fragenhaltung/-auswertung über Power
+Automate/SharePoint, bei der nur die jeweils aktuelle Frage ausgeliefert
+wird — bewusst nicht Teil dieses Fixes, nur zur Kenntnis dokumentiert.
+
+**Zugriffsprotokolle:** GitHub Pages führt keine eigenen Zugriffsprotokolle;
+ob und wie oft die betroffenen URLs vor dem Fix abgerufen wurden, ist über
+die Website selbst nicht nachvollziehbar. GoatCounter (das auf allen Seiten
+eingebundene Analytics-Snippet, `data-goatcounter="https://prodrive-akademie.
+goatcounter.com/count"`) zählt Seitenaufrufe anonymisiert ohne IP-Speicherung
+und könnte ggf. Aufschluss über Aufrufzahlen (nicht über Identität) der
+betroffenen URLs geben — das müsste Daniel selbst im GoatCounter-Dashboard
+prüfen, kein Website-Code-Thema.
+
+**Dieser Eintrag ersetzt/ergänzt das vorherige Textfeedback an Daniel vom
+29.10.2026** und dient als die von der Verwaltungsabteilung angeforderte
+kurze Dokumentation (Datum, Fehler, Fix, Auswirkung, Entscheidung).
+
 ## Bug gefixt: LaSi-E-Learning-Kachel ignorierte Schulungsform (12.10.2026)
 
 Beim Vorbereiten auf den Hofmann-Termin entdeckt: In `login.html` zeigen die
