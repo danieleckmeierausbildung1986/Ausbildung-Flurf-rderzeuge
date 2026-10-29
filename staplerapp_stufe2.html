@@ -122,7 +122,6 @@ body::before{
 .kontakt-btn{display:flex;align-items:center;gap:7px;padding:10px 18px;border:none;border-radius:10px;
   font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;text-decoration:none;
   transition:all .15s;flex:1;justify-content:center;}
-.kontakt-btn.wa{background:#25D366;color:#fff;}
 .kontakt-btn.mail{background:#0072C6;color:#fff;}
 .back-btn{display:block;width:100%;padding:12px;border:2px solid rgba(255,255,255,.2);
   border-radius:12px;background:rgba(255,255,255,.06);color:rgba(255,255,255,.8);
@@ -282,7 +281,6 @@ body.fs-active .counter{font-size:17px}
   </div>
 
   <div class="kontakt-bar">
-    <a class="kontakt-btn wa" id="waBtn" href="#" target="_blank">&#x1F4AC; WhatsApp</a>
     <a class="kontakt-btn mail" id="mailBtn" href="#" target="_blank">&#x2709;&#xFE0F; E-Mail</a>
   </div>
   <button class="back-btn" id="backBtnEl" onclick="goBack()"></button>
@@ -296,7 +294,6 @@ var params=new URLSearchParams(window.location.search);
 var lang=params.get('lang')||'ro';
 var gerat=params.get('gerat')||'schubmast';
 var regnr=params.get('regnr')||'';
-var WA_NR='4916096877039';
 var MAIL='DanielEckmeier@Ausbildung1986.onmicrosoft.com';
 
 var ZUGANGSPRUEFUNG_URL = 'https://default8af25f9034bc4ef4aba22ab6f641d5.01.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/7058b6c8090842748465472db6085773/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=nxepIsGToa5my_-oIW5ZR5c3CQLtufN5DwNvM-qG1G4';
@@ -340,12 +337,11 @@ de:{
   abschlussPass:'Herzlichen Glückwunsch!',abschlussFail:'Nicht bestanden.',
   abschlussSub:'Sie haben die Sonderausbildung abgeschlossen.',
   ergebnis:'Ergebnis: ',startBtn:'Schulung starten ›',wiederholen:'Wiederholen',
-  waMsg:'Hallo, ich habe eine Frage zur Stufe-2-Ausbildung ({gerat}).\n\nMeine Frage: ',
   mailSubj:'Frage zur Stufe-2-Ausbildung – {gerat}',
   mailBody:'Hallo,\n\nich habe eine Frage zur Stufe-2-Ausbildung ({gerat}).\n\nMeine Frage:\n',
   wg1T:'Gerätespezifisch',wg1P:'Schulung für das jeweilige Sondergerät',
   wg2T:'Quiz',wg2P:'Wissensfragen am Ende der Schulung',
-  wg3T:'Kontakt',wg3P:'WhatsApp & E-Mail bei Fragen',
+  wg3T:'Kontakt',wg3P:'E-Mail bei Fragen',
   wg4T:'Nachweis',wg4P:'Dokumentation nach Abschluss'
 },
 ro:{
@@ -354,12 +350,11 @@ ro:{
   abschlussPass:'Felicitări!',abschlussFail:'Nepromovat.',
   abschlussSub:'Ați finalizat instruirea specială.',
   ergebnis:'Rezultat: ',startBtn:'Începe instruirea ›',wiederholen:'Repetați',
-  waMsg:'Bună ziua, am o întrebare despre instruirea de nivelul 2 ({gerat}).\n\nÎntrebarea mea: ',
   mailSubj:'Întrebare despre instruire nivelul 2 – {gerat}',
   mailBody:'Bună ziua,\n\nam o întrebare despre instruirea de nivelul 2 ({gerat}).\n\nÎntrebarea mea:\n',
   wg1T:'Specific dispozitivului',wg1P:'Instruire pentru dispozitivul special respectiv',
   wg2T:'Quiz',wg2P:'Întrebări de verificare la sfârșitul instruirii',
-  wg3T:'Contact',wg3P:'WhatsApp & e-mail pentru întrebări',
+  wg3T:'Contact',wg3P:'E-mail pentru întrebări',
   wg4T:'Dovadă',wg4P:'Documentare după finalizare'
 },
 pl:{
@@ -368,12 +363,11 @@ pl:{
   abschlussPass:'Gratulacje!',abschlussFail:'Nie zaliczono.',
   abschlussSub:'Ukończyłeś szkolenie specjalistyczne.',
   ergebnis:'Wynik: ',startBtn:'Rozpocznij szkolenie ›',wiederholen:'Powtórz',
-  waMsg:'Dzień dobry, mam pytanie dotyczące szkolenia 2. stopnia ({gerat}).\n\nMoje pytanie: ',
   mailSubj:'Pytanie dotyczące szkolenia 2. stopnia – {gerat}',
   mailBody:'Dzień dobry,\n\nmam pytanie dotyczące szkolenia 2. stopnia ({gerat}).\n\nMoje pytanie:\n',
   wg1T:'Specyficzne dla urządzenia',wg1P:'Szkolenie dla danego urządzenia specjalnego',
   wg2T:'Quiz',wg2P:'Pytania sprawdzające na końcu szkolenia',
-  wg3T:'Kontakt',wg3P:'WhatsApp i e-mail przy pytaniach',
+  wg3T:'Kontakt',wg3P:'E-mail przy pytaniach',
   wg4T:'Zaświadczenie',wg4P:'Dokumentacja po ukończeniu'
 },
 sq:{
@@ -382,12 +376,11 @@ sq:{
   abschlussPass:'Urime!',abschlussFail:'Nuk kaloi.',
   abschlussSub:'Keni përfunduar trajnimin special.',
   ergebnis:'Rezultat: ',startBtn:'Fillo trajnimin ›',wiederholen:'Përsërit',
-  waMsg:'Mirëdita, kam një pyetje rreth trajnimit të nivelit 2 ({gerat}).\n\nPyetja ime: ',
   mailSubj:'Pyetje rreth trajnimit të nivelit 2 – {gerat}',
   mailBody:'Mirëdita,\n\nkam një pyetje rreth trajnimit të nivelit 2 ({gerat}).\n\nPyetja ime:\n',
   wg1T:'Specifik i pajisjes',wg1P:'Trajnim për pajisjen speciale përkatëse',
   wg2T:'Quiz',wg2P:'Pyetje kontrolli në fund të trajnimit',
-  wg3T:'Kontakt',wg3P:'WhatsApp dhe e-mail për pyetje',
+  wg3T:'Kontakt',wg3P:'E-mail për pyetje',
   wg4T:'Vërtetim',wg4P:'Dokumentim pas përfundimit'
 }
 };
@@ -779,10 +772,8 @@ function updateProg(){
 }
 
 function updateContact(){
-  var waMsg=T.waMsg.replace('{gerat}',geratName);
   var mSubj=T.mailSubj.replace('{gerat}',geratName);
   var mBody=T.mailBody.replace('{gerat}',geratName);
-  document.getElementById('waBtn').href='https://wa.me/'+WA_NR+'?text='+encodeURIComponent(waMsg);
   document.getElementById('mailBtn').href='mailto:'+MAIL+'?subject='+encodeURIComponent(mSubj)+'&body='+encodeURIComponent(mBody);
 }
 
