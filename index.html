@@ -120,20 +120,13 @@ nav{
 .formate-inner{max-width:1100px;margin:0 auto}
 .formate-title{font-size:clamp(22px,3.5vw,32px);font-weight:800;color:var(--navy);text-align:center;margin-bottom:8px}
 .formate-sub{font-size:15px;color:var(--muted);text-align:center;margin-bottom:40px}
-.formate-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:0}
+.formate-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:24px;margin-top:0;max-width:760px;margin-left:auto;margin-right:auto}
 .format-card{
   position:relative;background:#fff;border:1px solid var(--line);border-radius:18px;
   padding:32px 28px;display:flex;flex-direction:column;align-items:flex-start;gap:0;
   box-shadow:0 2px 12px rgba(0,0,0,.06);transition:transform .2s,box-shadow .2s;
 }
 .format-card:hover{transform:translateY(-4px);box-shadow:0 8px 28px rgba(26,79,168,.12)}
-.format-card.disabled{opacity:.55}
-.format-card.disabled:hover{transform:none;box-shadow:0 2px 12px rgba(0,0,0,.06)}
-.format-card-badge{
-  position:absolute;top:18px;right:18px;background:var(--muted);color:#fff;
-  font-size:11px;font-weight:700;padding:4px 11px;border-radius:20px;
-  letter-spacing:.3px;text-transform:uppercase;
-}
 .format-illustration{width:100%;max-width:220px;height:190px;object-fit:contain;display:block;margin:0 auto 20px}
 .format-text h3{font-size:18px;font-weight:800;color:var(--navy);margin-bottom:8px}
 .format-text p{font-size:14px;color:var(--muted);line-height:1.6;margin-bottom:16px}
@@ -460,7 +453,7 @@ footer a{color:rgba(255,255,255,.4);text-decoration:underline}
 <section class="hero">
   <div class="hero-inner">
     <h1>Professionelle Schulungen für <em>Flurförderzeuge</em> & Ladungssicherung</h1>
-    <p>Berufsgenossenschaftskonforme Aus- und Weiterbildungen für Ihren Betrieb — mit modernem E-Learning und praxisnaher Präsenzschulung.</p>
+    <p>Schulungen für Flurförderzeugfahrer und zur Ladungssicherung für Ihren Betrieb — als Live-Online- oder Präsenzschulung. Die Inhalte orientieren sich an den einschlägigen Regeln (u. a. DGUV Grundsatz 308-001, VDI 2700).</p>
     <div class="hero-actions">
       <a class="btn-secondary" href="#kurse">Alle Schulungen ansehen</a>
       <a class="btn-primary" href="angebot.html">📄 Unverbindliches Angebot anfordern</a>
@@ -589,10 +582,11 @@ footer a{color:rgba(255,255,255,.4);text-decoration:underline}
 <section class="formate-section">
   <div class="formate-inner">
     <div class="formate-title">Ihr Schulungsformat — Ihre Wahl</div>
-    <div class="formate-sub">Alle Formate sind DGUV-konform und enden mit einer praktischen Prüfung vor Ort.</div>
+    <div class="formate-sub">Die Inhalte orientieren sich an den einschlägigen Regeln (u. a. DGUV Grundsatz 308-001, VDI 2700) — beide Formate enden mit einer praktischen Prüfung vor Ort.</div>
     <div class="formate-grid">
-      <div class="format-card disabled">
-        <div class="format-card-badge">In Arbeit</div>
+      <!-- Flex (E-Learning) vorübergehend offline (ZFU/FernUSG-Zulassungsfrage ungeklärt) —
+           Karte bewusst nicht gelöscht, nur auskommentiert, für spätere Reaktivierung.
+      <div class="format-card">
         <img class="format-illustration" src="format_icons/elearning.png" alt="">
         <div class="format-text">
           <h3>Flex — E-Learning</h3>
@@ -605,14 +599,15 @@ footer a{color:rgba(255,255,255,.4);text-decoration:underline}
           <li>Kontakt per E-Mail, Antwort in der Regel innerhalb von 24 Stunden</li>
         </ul>
       </div>
+      -->
       <div class="format-card">
         <img class="format-illustration" src="format_icons/online.png" alt="">
         <div class="format-text">
-          <h3>Online-Schulung</h3>
-          <p>Live-Unterricht per Video mit direktem Ausbilder-Kontakt. Interaktiv, termingebunden und ohne Anfahrtsweg.</p>
+          <h3>Live-Online-Schulung</h3>
+          <p>Live-Unterricht per Video in Echtzeit mit direktem Ausbilder-Kontakt — keine Aufzeichnung, kein Abruf im Nachhinein. Interaktiv, termingebunden und ohne Anfahrtsweg.</p>
         </div>
         <ul class="format-highlights">
-          <li>Direkter Ausbilder-Kontakt</li>
+          <li>Echtzeit-Interaktion mit dem Ausbilder</li>
           <li>Fragen sofort beantwortet</li>
           <li>Kein Anfahrtsweg</li>
           <li>Fester Terminrahmen</li>
@@ -861,10 +856,25 @@ footer a{color:rgba(255,255,255,.4);text-decoration:underline}
         <p><strong>Speicherdauer</strong><br>
         Die Daten verbleiben bei uns, bis der Zweck für die Verarbeitung entfällt (z. B. nach abgeschlossener Abwicklung Ihrer Schulung) oder Sie uns zur Löschung auffordern. Gesetzliche Aufbewahrungsfristen sowie Nachweispflichten gegenüber Berufsgenossenschaften für ausgestellte Zertifikate (DGUV/VDI) bleiben unberührt.</p>
 
-        <h3>5. Ihre Rechte als betroffene Person</h3>
-        <p>Sie haben im Rahmen der geltenden gesetzlichen Bestimmungen jederzeit das Recht auf kostenlose Auskunft über Ihre gespeicherten personenbezogenen Daten (Art. 15 DSGVO), Berichtigung oder Löschung (Art. 16, 17 DSGVO), Einschränkung der Verarbeitung (Art. 18 DSGVO), Datenübertragbarkeit (Art. 20 DSGVO) sowie Widerruf einer erteilten Einwilligung mit Wirkung für die Zukunft (Art. 7 Abs. 3 DSGVO). Wenden Sie sich hierzu an die im <a href="#impressum" onclick="openImpressum()">Impressum</a> angegebene Adresse. Zudem steht Ihnen ein Beschwerderecht bei der zuständigen Datenschutz-Aufsichtsbehörde zu.</p>
+        <h3>5. Kommunikation</h3>
+        <p>Wenn Sie uns per E-Mail oder Telefon kontaktieren, verarbeiten wir Ihre Angaben (Name, Kontaktdaten, Nachrichteninhalt), um Ihre Anfrage zu beantworten (Art. 6 Abs. 1 lit. b bzw. lit. f DSGVO). Wir löschen die Daten sechs Monate nach Kursende bzw. nach Abschluss der Anfrage, sofern keine gesetzliche Aufbewahrungspflicht besteht. Messenger-Dienste wie WhatsApp setzen wir nicht ein.</p>
 
-        <p style="color:var(--muted);font-size:12px;margin-top:20px">Stand: Version 1.0, Juli 2026</p>
+        <h3>6. Zahlungsabwicklung über Stripe</h3>
+        <p>Für Zahlungen nutzen wir Stripe Payments Europe, Ltd., Dublin, Irland. Dabei werden Zahlungs- und Rechnungsdaten (Name, E-Mail, Betrag, Zahlungsmittel) verarbeitet. Rechtsgrundlage ist Art. 6 Abs. 1 lit. b und c DSGVO. Stripe verarbeitet Daten auch in eigener Verantwortung, etwa zur Betrugs- und Geldwäscheprävention; Informationen dazu finden Sie unter <a href="https://stripe.com/de/privacy" target="_blank" rel="noopener">stripe.com/de/privacy</a>.</p>
+
+        <h3>7. Lernplattform und Login-Bereich</h3>
+        <p>Für das E-Learning-Angebot richten wir Ihnen einen Zugang ein. Verarbeitet werden Name, E-Mail, Zugangsdaten, Lernfortschritt und Prüfungsergebnisse, um die Schulung durchzuführen und zu dokumentieren (Art. 6 Abs. 1 lit. b DSGVO). Die Daten werden bei Microsoft SharePoint in der EU gespeichert und nach 5 Jahren gelöscht, sofern keine längere gesetzliche Aufbewahrungspflicht besteht. Der Zugang erlischt automatisch mit bestandener Prüfung, spätestens mit Ende der Laufzeit (höchstens 12 Monate ab Freischaltung).</p>
+
+        <h3>8. Anfrage- und Terminformular</h3>
+        <p>Die Angaben aus dem Formular (Name, Firma, E-Mail, Telefon, Nachricht) nutzen wir zur Bearbeitung Ihrer Anfrage (Art. 6 Abs. 1 lit. b DSGVO). Die Verarbeitung erfolgt über Microsoft 365 (Power Automate, SharePoint, Outlook). Anfragen ohne Buchung löschen wir nach sechs Monaten.</p>
+
+        <h3>9. Teilnehmerdaten bei Schulungen</h3>
+        <p>Zur Durchführung und zum Nachweis der Schulung erheben wir Name, Geburtsdatum, Geburtsort, Firma, Prüfungsergebnisse und ggf. Angaben zum Nachweis Ihrer Berechtigung. Rechtsgrundlagen: Art. 6 Abs. 1 lit. b und f DSGVO sowie bei gesetzlichen Nachweispflichten lit. c. Bei Firmenkunden erhalten Ihr Arbeitgeber bzw. Auftraggeber die Teilnahme- und Prüfungsnachweise. Ausweis- und Führerscheindokumente sehen wir nur ein und speichern keine Kopien.</p>
+
+        <h3>10. Ihre Rechte als betroffene Person</h3>
+        <p>Sie haben im Rahmen der geltenden gesetzlichen Bestimmungen jederzeit das Recht auf kostenlose Auskunft über Ihre gespeicherten personenbezogenen Daten (Art. 15 DSGVO), Berichtigung oder Löschung (Art. 16, 17 DSGVO), Einschränkung der Verarbeitung (Art. 18 DSGVO), Datenübertragbarkeit (Art. 20 DSGVO) sowie Widerruf einer erteilten Einwilligung mit Wirkung für die Zukunft (Art. 7 Abs. 3 DSGVO). Wenden Sie sich hierzu an die im <a href="#impressum" onclick="openImpressum()">Impressum</a> angegebene Adresse. Beschwerden richten Sie an das Bayerische Landesamt für Datenschutzaufsicht (BayLDA), Promenade 18, 91522 Ansbach.</p>
+
+        <p style="color:var(--muted);font-size:12px;margin-top:20px">Stand: Version 1.1, 29. Oktober 2026</p>
       </div>
     </div>
   </div>

@@ -92,7 +92,8 @@ nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.95);backdrop-
 .format-section{margin-bottom:28px}
 .format-section-title{font-size:15px;font-weight:700;color:var(--navy);margin-bottom:12px;display:flex;align-items:center;gap:8px}
 .format-section-title span{font-size:13px;font-weight:400;color:var(--muted)}
-.format-options{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.format-options{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.format-options-3{grid-template-columns:repeat(3,1fr)}
 .format-opt{
   position:relative;border:2px solid var(--line);border-radius:12px;padding:16px;cursor:pointer;
   text-align:center;transition:all .2s;background:#fff;
@@ -428,6 +429,8 @@ nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.95);backdrop-
 
 <script>
 // ── Preise (intern, nicht angezeigt) ──────────────────────────
+// Flex (E-Learning) aktuell offline (ZFU/FernUSG-Frage ungeklärt), Preise bleiben für
+// spätere Reaktivierung erhalten, siehe FLEX_VERFUEGBAR weiter unten.
 var PREISE = {
   stufe1:        {flex:239, online:279, praesenz:319},
   schubmast:     {flex:149, online:179, praesenz:199},
@@ -444,7 +447,8 @@ var MODULE_NAMEN = {
   lasi:'Ladungssicherung'
 };
 
-var FORMAT_NAMEN = {flex:'Flex (E-Learning)', online:'Online-Schulung', praesenz:'Präsenzschulung'};
+var FORMAT_NAMEN = {flex:'Flex (E-Learning)', online:'Live-Online-Schulung', praesenz:'Präsenzschulung'};
+var FLEX_VERFUEGBAR = false; // Flex vorübergehend offline (ZFU/FernUSG), auf true setzen zum Reaktivieren
 
 // ── State ──────────────────────────────────────────────────────
 var selected = {stufe1:true, stufe2:false, schubmast:false, kommissionierer:false, schmalgang:false, lasi:false};
@@ -531,9 +535,9 @@ function buildFormatSections(){
     sec.className = 'format-section';
     sec.innerHTML =
       '<div class="format-section-title">'+MODULE_NAMEN[id]+' <span>— Wie soll die Theorie stattfinden?</span></div>'+
-      '<div class="format-options">'+
-        formatOpt(id,'flex','💻','Flex','E-Learning — per E-Mail, Antwort in der Regel innerhalb von 24 Stunden',true)+
-        formatOpt(id,'online','🎥','Online','Live-Unterricht per Video')+
+      '<div class="format-options'+(FLEX_VERFUEGBAR?' format-options-3':'')+'">'+
+        (FLEX_VERFUEGBAR ? formatOpt(id,'flex','💻','Flex','E-Learning — per E-Mail, Antwort in der Regel innerhalb von 24 Stunden') : '')+
+        formatOpt(id,'online','🎥','Live-Online','Echtzeit-Unterricht per Video mit dem Trainer')+
         formatOpt(id,'praesenz','🏭','Präsenz','Vor Ort beim Kunden')+
       '</div>';
     container.appendChild(sec);
@@ -553,7 +557,6 @@ function formatOpt(modId, fmtId, icon, name, desc, disabled){
 }
 
 function selectFormat(modId, fmtId){
-  if(fmtId === 'flex') return; // Flex (E-Learning) aktuell deaktiviert, siehe formatOpt()
   formats[modId] = fmtId;
   ['flex','online','praesenz'].forEach(function(f){
     var el = document.getElementById('fopt-'+modId+'-'+f);
