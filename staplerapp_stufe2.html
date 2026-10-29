@@ -304,7 +304,11 @@ var geraetAbgeschlossen = false;
   var overlay = document.getElementById('zugangsCheckOverlay');
   var content = document.getElementById('zugangsCheckContent');
   var nr = params.get('regnr');
-  if(!nr){ overlay.style.display='none'; return; }
+  var backBtnNoRegnr = '<button onclick="window.location.href=\'login.html\'" style="padding:12px 28px;border:none;border-radius:12px;background:#fff;color:#0d4a24;font-weight:700;font-size:14px;cursor:pointer;font-family:inherit">&larr; Zur&uuml;ck zur Startseite</button>';
+  if(!nr){
+    content.innerHTML = '<div style="max-width:420px"><div style="font-size:40px;margin-bottom:12px">&#x1F512;</div><div style="font-size:18px;font-weight:700;margin-bottom:8px">Zugriff nicht m&ouml;glich</div><div style="font-size:14px;color:rgba(255,255,255,.75);line-height:1.6;margin-bottom:20px">Bitte melden Sie sich zuerst auf der Startseite mit Ihrer Registriernummer, Vor- und Nachnamen an.</div>' + backBtnNoRegnr + '</div>';
+    return;
+  }
   var freigabeKey = gerat === 'kommissionier' ? 'pruefung_kommissionierer_freigegeben'
     : gerat === 'schmalgang' ? 'pruefung_schmalgang_freigegeben'
     : 'pruefung_schubmast_freigegeben';
@@ -326,7 +330,9 @@ var geraetAbgeschlossen = false;
     } else {
       overlay.style.display = 'none';
     }
-  }).catch(function(){ overlay.style.display = 'none'; });
+  }).catch(function(){
+    content.innerHTML = '<div style="max-width:420px"><div style="font-size:40px;margin-bottom:12px">&#x26A0;&#xFE0F;</div><div style="font-size:18px;font-weight:700;margin-bottom:8px">Zugangspr&uuml;fung fehlgeschlagen</div><div style="font-size:14px;color:rgba(255,255,255,.75);line-height:1.6;margin-bottom:20px">Bitte laden Sie die Seite neu oder versuchen Sie es sp&auml;ter erneut.</div>' + backBtnNoRegnr + '</div>';
+  });
 })();
 
 /* ---- TEXTE ---- */

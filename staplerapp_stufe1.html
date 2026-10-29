@@ -960,7 +960,11 @@ var ZUGANGSPRUEFUNG_URL = 'https://default8af25f9034bc4ef4aba22ab6f641d5.01.envi
 (function(){
   var overlay = document.getElementById('zugangsCheckOverlay');
   var content = document.getElementById('zugangsCheckContent');
-  if(!regnr){ overlay.style.display='none'; return; }
+  var backBtnNoRegnr = '<button onclick="window.location.href=\'login.html\'" style="padding:12px 28px;border:none;border-radius:12px;background:#fff;color:#0d4a24;font-weight:700;font-size:14px;cursor:pointer;font-family:inherit">&larr; Zur&uuml;ck zur Startseite</button>';
+  if(!regnr){
+    content.innerHTML = '<div style="max-width:420px"><div style="font-size:40px;margin-bottom:12px">&#x1F512;</div><div style="font-size:18px;font-weight:700;margin-bottom:8px">Zugriff nicht m&ouml;glich</div><div style="font-size:14px;color:rgba(255,255,255,.75);line-height:1.6;margin-bottom:20px">Bitte melden Sie sich zuerst auf der Startseite mit Ihrer Registriernummer, Vor- und Nachnamen an.</div>' + backBtnNoRegnr + '</div>';
+    return;
+  }
   var authVorname = sessionStorage.getItem('authVorname');
   var authNachname = sessionStorage.getItem('authNachname');
   fetch(ZUGANGSPRUEFUNG_URL, {
@@ -979,7 +983,9 @@ var ZUGANGSPRUEFUNG_URL = 'https://default8af25f9034bc4ef4aba22ab6f641d5.01.envi
     } else {
       overlay.style.display = 'none';
     }
-  }).catch(function(){ overlay.style.display = 'none'; });
+  }).catch(function(){
+    content.innerHTML = '<div style="max-width:420px"><div style="font-size:40px;margin-bottom:12px">&#x26A0;&#xFE0F;</div><div style="font-size:18px;font-weight:700;margin-bottom:8px">Zugangspr&uuml;fung fehlgeschlagen</div><div style="font-size:14px;color:rgba(255,255,255,.75);line-height:1.6;margin-bottom:20px">Bitte laden Sie die Seite neu oder versuchen Sie es sp&auml;ter erneut.</div>' + backBtnNoRegnr + '</div>';
+  });
 })();
 var ERKLAERUNG_MAP=ERKLAERUNG_MAP_DE;
 if(lang==='pl'){ORDNER='PL_BILDER';KAPITEL=KAPITEL_PL;QUIZ_DATA=QUIZ_DATA_PL;ERKLAERUNG_MAP=ERKLAERUNG_MAP_PL;}
