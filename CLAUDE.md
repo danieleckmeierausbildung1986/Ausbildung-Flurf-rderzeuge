@@ -75,6 +75,31 @@ prüfen, kein Website-Code-Thema.
 29.10.2026** und dient als die von der Verwaltungsabteilung angeforderte
 kurze Dokumentation (Datum, Fehler, Fix, Auswirkung, Entscheidung).
 
+**Update (30.10.2026): Git-Historie zusätzlich bereinigt.** Die Verwaltung
+wies zu Recht darauf hin, dass die alten, ungeschützten Inhalte der drei
+Legacy-Dateien trotz des Fixes weiterhin über alte Commits im öffentlichen
+Repo abrufbar waren. Auf Rückfrage bestätigte Daniel, dass ihm wichtig ist,
+dass die Website beim späteren Reaktivieren der E-Learning-Module weiterhin
+funktioniert — das ist unabhängig von der Git-Historie gegeben, da der
+komplette Kursinhalt (Folien, Quiz, Lösungen) unverändert in der aktuellen,
+zugangsgeschützten `staplerapp_stufe2.html?gerat=...` liegt, nicht in den
+drei entfernten Legacy-Dateien. Mit Daniels ausdrücklicher Zustimmung per
+`git filter-repo --invert-paths` (analog zur cockpit.html-Bereinigung vom
+13.10.2026) die drei Dateipfade komplett aus jedem Commit entfernt, zuvor in
+einem Wegwerf-Mirror-Klon getestet und verifiziert (0 Treffer für
+`Schubmaststapler`/`SCHUB_BILDER`/`KOMM_BILDER`/`SCHMAL_BILDER` über die
+komplette Historie). Nur `main` und `claude/github-app-b8mqkk` wurden
+force-gepusht — die drei fremden, unabhängigen Session-Branches im selben
+GitHub-Repo (`claude/jarvis-crypto-trading-assistant-bm4hu1`,
+`claude/nice-hawking-gn9qc1`, `claude/sharepoint-course-assignment-3yljqn`)
+wurden bewusst nicht angefasst/gepusht, obwohl sie (da sie dieselbe
+Commit-Vorgeschichte teilen) beim lokalen Rewrite ebenfalls neue Hashes
+bekommen hätten — diese lokalen Kopien wurden verworfen. Die drei
+Redirect-Dateien wurden danach als neuer, historienfreier Commit wieder
+angelegt (identischer Inhalt wie vor der Bereinigung), damit alte
+Lesezeichen/Suchmaschinen-Treffer weiterhin sauber auf die aktuelle Seite
+umgeleitet werden.
+
 ## Bug gefixt: LaSi-E-Learning-Kachel ignorierte Schulungsform (12.10.2026)
 
 Beim Vorbereiten auf den Hofmann-Termin entdeckt: In `login.html` zeigen die

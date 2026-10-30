@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Schubmaststapler – Stufe 2</title>
+</head>
+<body>
+<script>
+// Diese Seite ist eine veraltete, nicht mehr verlinkte Vorgängerversion ohne Zugangspruefung.
+// Sie leitet jetzt ausschliesslich auf die aktuelle, zugangsgeschuetzte Seite weiter.
+var params = new URLSearchParams(window.location.search);
+var nr = params.get('regnr');
+var lang = params.get('lang');
+var BASE = 'https://danieleckmeierausbildung1986.github.io/Ausbildung-Flurf-rderzeuge/';
+var url = BASE + 'staplerapp_stufe2.html?gerat=schubmast'
+  + (nr ? '&regnr=' + encodeURIComponent(nr) : '')
+  + (lang ? '&lang=' + encodeURIComponent(lang) : '');
+window.location.replace(url);
+</script>
+</body>
+</html>
