@@ -448,7 +448,15 @@ var MODULE_NAMEN = {
 };
 
 var FORMAT_NAMEN = {flex:'Flex (E-Learning)', online:'Live-Online-Schulung', praesenz:'Präsenzschulung'};
-var FLEX_VERFUEGBAR = false; // Flex vorübergehend offline (ZFU/FernUSG), auf true setzen zum Reaktivieren
+// Flex vorübergehend offline (ZFU/FernUSG), pro Kurs einzeln auf true setzen zum Reaktivieren.
+// Reaktivierung nur für Stufe 2 (schubmast/kommissionierer/schmalgang) ändert nichts an Stufe 1/LaSi.
+var FLEX_VERFUEGBAR = {
+  stufe1: false,
+  schubmast: false,
+  kommissionierer: false,
+  schmalgang: false,
+  lasi: false
+};
 
 // ── State ──────────────────────────────────────────────────────
 var selected = {stufe1:true, stufe2:false, schubmast:false, kommissionierer:false, schmalgang:false, lasi:false};
@@ -535,8 +543,8 @@ function buildFormatSections(){
     sec.className = 'format-section';
     sec.innerHTML =
       '<div class="format-section-title">'+MODULE_NAMEN[id]+' <span>— Wie soll die Theorie stattfinden?</span></div>'+
-      '<div class="format-options'+(FLEX_VERFUEGBAR?' format-options-3':'')+'">'+
-        (FLEX_VERFUEGBAR ? formatOpt(id,'flex','💻','Flex','E-Learning — per E-Mail, Antwort in der Regel innerhalb von 24 Stunden') : '')+
+      '<div class="format-options'+(FLEX_VERFUEGBAR[id]?' format-options-3':'')+'">'+
+        (FLEX_VERFUEGBAR[id] ? formatOpt(id,'flex','💻','Flex','E-Learning — per E-Mail, Antwort in der Regel innerhalb von 24 Stunden') : '')+
         formatOpt(id,'online','🎥','Live-Online','Echtzeit-Unterricht per Video mit dem Trainer')+
         formatOpt(id,'praesenz','🏭','Präsenz','Vor Ort beim Kunden')+
       '</div>';

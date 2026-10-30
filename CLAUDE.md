@@ -1,3 +1,32 @@
+## Flex-Flag auf pro-Kurs umgestellt, nur für Stufe 2 reaktivierbar (30.10.2026)
+
+Die IT/Verwaltung wies darauf hin, dass der bisherige globale `FLEX_VERFUEGBAR`-
+Schalter in `angebot.html` beim Reaktivieren alle drei Kurstypen (Stufe 1,
+Stufe 2, LaSi) gleichzeitig betroffen hätte, während absehbar ist, dass Flex
+(falls überhaupt) zunächst nur für Stufe 2 wieder angeboten werden soll.
+**Umgebaut:** `FLEX_VERFUEGBAR` ist jetzt ein Objekt mit einem Eintrag je
+Kurs/Gerät (`stufe1`, `schubmast`, `kommissionierer`, `schmalgang`, `lasi`),
+alle standardmäßig `false` — Verhalten der Website unverändert, reine
+Vorbereitung. Zum Reaktivieren künftig nur die gewünschten Stufe-2-Geräte
+einzeln auf `true` setzen, Stufe 1/LaSi bleiben unberührt auf `false`.
+Rein Frontend, keine Flow-Änderung nötig/vorgenommen.
+
+**Wichtig für die AGB bei künftiger Reaktivierung (noch nicht umgesetzt,
+nur dokumentiert):** Die aktuell auskommentierten Flex-Passagen sind zwei
+unterschiedliche Dinge, die beim Reaktivieren getrennt behandelt werden
+müssen:
+- Die **Marketing-Karte** auf der Startseite (`index.html`, Abschnitt
+  "Ihr Schulungsformat — Ihre Wahl") bewirbt Flex generell für alle Kurse
+  und sollte **weiterhin auskommentiert bleiben**, solange Flex nicht für
+  alle drei Kurstypen gilt — sonst suggeriert sie fälschlich, Flex sei
+  überall buchbar.
+- Die **rechtlichen AGB-Klauseln** (§3 Formatbeschreibung, §5 Storno, §7
+  Widerrufsrecht, §9 Lernplattform-Zugang) sind nicht kursspezifisch
+  formuliert — sie regeln das Format "Flex" als solches, unabhängig vom
+  Kurstyp. Diese müssten reaktiviert werden, sobald **irgendein** Kurs
+  (auch nur Stufe 2) Flex tatsächlich wieder anbietet, da sie unabhängig
+  vom Kurstyp für jede Flex-Buchung rechtlich gelten.
+
 ## Sicherheitsvorfall-Dokumentation: Zugangsprüfung Stufe-1/2-Module (29.10.2026)
 
 Auf Anfrage der Verwaltungsabteilung ("sind die Module auch über eine direkte
