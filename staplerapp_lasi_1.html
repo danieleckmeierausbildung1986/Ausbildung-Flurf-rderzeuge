@@ -150,6 +150,11 @@ body.fs-active .copyright-note{display:none}
   font-family:inherit;flex-shrink:0}
 .video-fs-btn:hover{background:rgba(255,255,255,.28)}
 .video-wrap iframe{display:block;width:100%;aspect-ratio:16/9;border:none}
+.video-facade{aspect-ratio:16/9;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;background:#0b1620;color:#fff;text-align:center;padding:24px;cursor:pointer;border:none;width:100%;font-family:inherit}
+.video-facade .vf-play{width:60px;height:60px;border-radius:50%;background:rgba(255,255,255,.12);display:flex;align-items:center;justify-content:center;font-size:24px;transition:background .15s}
+.video-facade:hover .vf-play{background:rgba(255,255,255,.22)}
+.video-facade .vf-hint{font-size:12px;color:rgba(255,255,255,.62);max-width:380px;line-height:1.55}
+.video-facade .vf-btn{margin-top:2px;padding:9px 20px;border:none;border-radius:9px;background:var(--steel);color:#fff;font-weight:700;font-size:13px;pointer-events:none}
 .mail-btn svg{width:13px;height:13px;fill:#1a56db;flex-shrink:0}
 
 /* QUIZ */
@@ -1050,7 +1055,11 @@ function renderVideo(host,s){
   host.innerHTML=`<div class="slide-card video-slide">
     <div class="video-wrap">
       <div class="video-label"><span>▶ ${s.titel}</span><button class="video-fs-btn" onclick="videoVollbild()">⛶ ${L('Vollbild','Pełny ekran')}</button></div>
-      <iframe id="videoFrame" src="${s.vidUrl}" allow="autoplay; fullscreen; picture-in-picture; encrypted-media" allowfullscreen></iframe>
+      <button type="button" class="video-facade" id="videoFacade" onclick="videoLaden('${s.vidUrl}')">
+        <div class="vf-play">▶</div>
+        <div class="vf-hint">${L('Beim Laden wird eine Verbindung zu YouTube (Google) hergestellt. Dabei werden Daten in die USA übertragen. Es gelten die Datenschutzbestimmungen von Google.','Podczas ładowania nawiązywane jest połączenie z YouTube (Google). Dane są przy tym przesyłane do USA. Obowiązują zasady ochrony danych Google.')}</div>
+        <div class="vf-btn">${L('Video laden','Załaduj wideo')}</div>
+      </button>
     </div>
   </div>`;
   renderFoot(true,true,isLast?L('Zum Quiz →','Do quizu →'):L('Weiter →','Dalej →'));
@@ -1061,6 +1070,17 @@ function videoVollbild(){
   if(!el)return;
   const req=el.requestFullscreen||el.webkitRequestFullscreen||el.mozRequestFullScreen||el.msRequestFullscreen;
   if(req)req.call(el);
+}
+// Klick-zum-Laden: Verbindung zu YouTube/Google wird erst nach aktivem Klick aufgebaut, nicht schon beim Anzeigen der Folie.
+function videoLaden(url){
+  const facade=document.getElementById('videoFacade');
+  if(!facade)return;
+  const iframe=document.createElement('iframe');
+  iframe.id='videoFrame';
+  iframe.src=url;
+  iframe.allow='autoplay; fullscreen; picture-in-picture; encrypted-media';
+  iframe.allowFullscreen=true;
+  facade.replaceWith(iframe);
 }
 
 /* ── QUIZ ── */

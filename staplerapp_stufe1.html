@@ -307,6 +307,11 @@ body.fs-active .kontakt-btn{font-size:16px;padding:13px 20px}
 .video-fs-btn{background:rgba(255,255,255,.15);border:none;border-radius:7px;color:#fff;font-size:12px;font-weight:600;padding:4px 10px;cursor:pointer;font-family:inherit;flex-shrink:0;}
 .video-fs-btn:hover{background:rgba(255,255,255,.28);}
 .video-wrap iframe{display:block;width:100%;aspect-ratio:16/9;border:none;flex:1;}
+.video-facade{aspect-ratio:16/9;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;background:#0b1620;color:#fff;text-align:center;padding:24px;cursor:pointer;border:none;width:100%;font-family:inherit;}
+.video-facade .vf-play{width:60px;height:60px;border-radius:50%;background:rgba(255,255,255,.12);display:flex;align-items:center;justify-content:center;font-size:24px;transition:background .15s;}
+.video-facade:hover .vf-play{background:rgba(255,255,255,.22);}
+.video-facade .vf-hint{font-size:12px;color:rgba(255,255,255,.62);max-width:380px;line-height:1.55;}
+.video-facade .vf-btn{margin-top:2px;padding:9px 20px;border:none;border-radius:9px;background:var(--acc2);color:#fff;font-weight:700;font-size:13px;pointer-events:none;}
 </style>
 </head>
 <body>
@@ -375,6 +380,7 @@ de:{
   lsaLabel:'Lastschwerpunktabstand in mm',lastLabel:'Last in kg',hubLabel:'Hub in mm',
   richtigDiag:'✓ Richtig! ',falschDiag:'✗ Falsch. ',
   kennlinieRichtig:'✓ Richtig! Kennlinie ',korrekt:'✗ Korrekt: ',vollbild:'Vollbild',
+  videoLaden:'Video laden',videoHinweis:'Beim Laden wird eine Verbindung zu YouTube (Google) hergestellt. Dabei werden Daten in die USA übertragen. Es gelten die Datenschutzbestimmungen von Google.',
   prevBtnTxt:'‹ Zurück',backBtnTxt:'← Zurück zur Startseite',
   appTitel:'ProDrive Akademie Niederbayern',
   appSub:'Allgemeine Ausbildung Stufe 1 &middot; DGUV Grundsatz 308-001',
@@ -416,6 +422,7 @@ pl:{
   lsaLabel:'Odległość środka ciężkości ładunku w mm',lastLabel:'Ładunek w kg',hubLabel:'Skok w mm',
   richtigDiag:'✓ Prawidłowo! ',falschDiag:'✗ Błędnie. ',
   kennlinieRichtig:'✓ Prawidłowo! Krzywa ',korrekt:'✗ Prawidłowo: ',vollbild:'Pełny ekran',
+  videoLaden:'Załaduj wideo',videoHinweis:'Podczas ładowania nawiązywane jest połączenie z YouTube (Google). Dane są przy tym przesyłane do USA. Obowiązują zasady ochrony danych Google.',
   prevBtnTxt:'‹ Wstecz',backBtnTxt:'← Do strony startowej',
   appTitel:'Wózek widłowy — szkolenie',
   appSub:'Szkolenie ogólne Poziom 1 &middot; DGUV Grundsatz 308-001',
@@ -457,6 +464,7 @@ ro:{
   lsaLabel:'Distanța centrului de greutate al sarcinii în mm',lastLabel:'Sarcină în kg',hubLabel:'Înălțime ridicare în mm',
   richtigDiag:'✓ Corect! ',falschDiag:'✗ Greșit. ',
   kennlinieRichtig:'✓ Corect! Curbă ',korrekt:'✗ Corect: ',vollbild:'Ecran complet',
+  videoLaden:'Încarcă videoclipul',videoHinweis:'La încărcare se stabilește o conexiune cu YouTube (Google). Datele sunt transferate în SUA. Se aplică politica de confidențialitate Google.',
   prevBtnTxt:'‹ Înapoi',backBtnTxt:'← Înapoi la pagina principală',
   appTitel:'Instruire stivuitor',
   appSub:'Formare generală Nivelul 1 &middot; DGUV Grundsatz 308-001',
@@ -498,6 +506,7 @@ sq:{
   lsaLabel:'Distanca e qendrës së gravitetit të ngarkesës në mm',lastLabel:'Ngarkesa në kg',hubLabel:'Ngritja në mm',
   richtigDiag:'✓ Saktë! ',falschDiag:'✗ Gabim. ',
   kennlinieRichtig:'✓ Saktë! Kurbë ',korrekt:'✗ Saktë: ',vollbild:'Ekran i plotë',
+  videoLaden:'Ngarko videon',videoHinweis:'Gjatë ngarkimit krijohet një lidhje me YouTube (Google). Të dhënat transferohen në SHBA. Vlejnë kushtet e privatësisë së Google.',
   prevBtnTxt:'‹ Kthehu',backBtnTxt:'← Kthehu në faqen kryesore',
   appTitel:'Trajnimi i stivueses',
   appSub:'Trajnim i përgjithëshm Niveli 1 &middot; DGUV Grundsatz 308-001',
@@ -1049,6 +1058,17 @@ function videoVollbild(){
   var req=el.requestFullscreen||el.webkitRequestFullscreen||el.mozRequestFullScreen||el.msRequestFullscreen;
   if(req)req.call(el);
 }
+// Klick-zum-Laden: Verbindung zu YouTube/Google wird erst nach aktivem Klick aufgebaut, nicht schon beim Anzeigen der Folie.
+function videoLaden(url){
+  var facade=document.getElementById('videoFacade');
+  if(!facade)return;
+  var iframe=document.createElement('iframe');
+  iframe.id='videoFrame';
+  iframe.src=url;
+  iframe.allow='autoplay; fullscreen; picture-in-picture; encrypted-media';
+  iframe.allowFullscreen=true;
+  facade.replaceWith(iframe);
+}
 
 /* ---- LERNFORTSCHRITT ---- */
 function saveProgress(){
@@ -1280,7 +1300,11 @@ function render(){
     host.innerHTML='<div class="slidebox video-slide">'+
       '<div class="video-wrap">'+
         '<div class="video-label"><span>&#9654; '+s.titel+'</span><button class="video-fs-btn" onclick="videoVollbild()">&#x26F6; '+T.vollbild+'</button></div>'+
-        '<iframe id="videoFrame" src="'+s.vidUrl+'" allow="autoplay; fullscreen; picture-in-picture; encrypted-media" allowfullscreen></iframe>'+
+        '<button type="button" class="video-facade" id="videoFacade" onclick="videoLaden(\''+s.vidUrl+'\')">'+
+          '<div class="vf-play">&#9654;</div>'+
+          '<div class="vf-hint">'+T.videoHinweis+'</div>'+
+          '<div class="vf-btn">'+T.videoLaden+'</div>'+
+        '</button>'+
       '</div>'+
       '</div>';
     counter.textContent='&#9654; '+s.titel;
