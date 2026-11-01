@@ -16,7 +16,9 @@ Beratung" — Sicherheitsvorfälle dort bewusst nur als "behoben am
 [Datum]" ohne technische Details, auch wenn das Repo privat ist),
 `03_Marketing_Akquise.md` (Claude-Projekt „ProDrive Marketing &
 Akquise"), `04_IT_Systeme.md` (bleibt ausschließlich in Claude Code,
-nicht für die Claude-Projekte gedacht).
+nicht für die Claude-Projekte gedacht), `05_Medien.md` (Claude-Projekt
+„ProDrive Medien" — Branding, Bildsprache, vorhandene Medien, Kanäle,
+Bild-/Videorechte).
 
 **Wenn Daniel ein „Update aus Projekt [Name]" einfügt:** Die Infos in die
 passende Datei im `prodrive-wissen`-Repo eintragen, das „Stand:"-Datum am
