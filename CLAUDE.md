@@ -1,17 +1,29 @@
-## Ordner „Wissen" — zentrale Wissensbasis (seit 01.11.2026)
+## Zentrale Wissensbasis: Repo „prodrive-wissen" (seit 01.11.2026)
 
-Der Ordner `Wissen/` ist die zentrale Wissensbasis für ProDrive Akademie
-Niederbayern. Daniel lädt die Dateien zusätzlich in seine Claude-Projekte
-hoch: `00_Grundlagen.md` in alle drei, `01_Finanzen.md` in „ProDrive
-Finanzen", `02_Verwaltung_Beratung.md` in „ProDrive Verwaltung &
-Beratung", `03_Marketing_Akquise.md` in „ProDrive Marketing & Akquise".
-`04_IT_Systeme.md` bleibt ausschließlich hier in Claude Code.
+Die zentrale Wissensbasis für ProDrive Akademie Niederbayern liegt
+**nicht** in diesem Repo, sondern in einem eigenen **privaten** GitHub-
+Repo `danieleckmeierausbildung1986/prodrive-wissen` (lokal unter
+`/home/user/prodrive-wissen`, falls im selben Arbeitsverzeichnis
+verfügbar — sonst per `add_repo` neu hinzufügen). Bewusst getrennt vom
+hier öffentlichen Website-Repo, da die Wissensbasis u. a. Sicherheits-
+und Compliance-Notizen enthält, die nicht öffentlich einsehbar sein
+sollen.
+
+Fünf Dateien: `00_Grundlagen.md` (Basis für alle Claude-Projekte),
+`01_Finanzen.md` (Claude-Projekt „ProDrive Finanzen"),
+`02_Verwaltung_Beratung.md` (Claude-Projekt „ProDrive Verwaltung &
+Beratung" — Sicherheitsvorfälle dort bewusst nur als "behoben am
+[Datum]" ohne technische Details, auch wenn das Repo privat ist),
+`03_Marketing_Akquise.md` (Claude-Projekt „ProDrive Marketing &
+Akquise"), `04_IT_Systeme.md` (bleibt ausschließlich in Claude Code,
+nicht für die Claude-Projekte gedacht).
 
 **Wenn Daniel ein „Update aus Projekt [Name]" einfügt:** Die Infos in die
-passende Datei eintragen, das „Stand:"-Datum am Dateianfang aktualisieren,
-und am Ende sagen, welche Dateien er in welchem Claude-Projekt neu
-hochladen muss (meist nur die eine geänderte Datei plus `00_Grundlagen.md`,
-falls auch Grundlagen betroffen sind).
+passende Datei im `prodrive-wissen`-Repo eintragen, das „Stand:"-Datum am
+Dateianfang aktualisieren, committen und pushen, und am Ende sagen,
+welche Dateien er in welchem Claude-Projekt neu hochladen muss (meist nur
+die eine geänderte Datei plus `00_Grundlagen.md`, falls auch Grundlagen
+betroffen sind).
 
 ## Flex-Flag auf pro-Kurs umgestellt, nur für Stufe 2 reaktivierbar (30.10.2026)
 
