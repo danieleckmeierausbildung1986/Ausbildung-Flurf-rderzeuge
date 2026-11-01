@@ -1,3 +1,18 @@
+## Ordner „Wissen" — zentrale Wissensbasis (seit 01.11.2026)
+
+Der Ordner `Wissen/` ist die zentrale Wissensbasis für ProDrive Akademie
+Niederbayern. Daniel lädt die Dateien zusätzlich in seine Claude-Projekte
+hoch: `00_Grundlagen.md` in alle drei, `01_Finanzen.md` in „ProDrive
+Finanzen", `02_Verwaltung_Beratung.md` in „ProDrive Verwaltung &
+Beratung", `03_Marketing_Akquise.md` in „ProDrive Marketing & Akquise".
+`04_IT_Systeme.md` bleibt ausschließlich hier in Claude Code.
+
+**Wenn Daniel ein „Update aus Projekt [Name]" einfügt:** Die Infos in die
+passende Datei eintragen, das „Stand:"-Datum am Dateianfang aktualisieren,
+und am Ende sagen, welche Dateien er in welchem Claude-Projekt neu
+hochladen muss (meist nur die eine geänderte Datei plus `00_Grundlagen.md`,
+falls auch Grundlagen betroffen sind).
+
 ## Flex-Flag auf pro-Kurs umgestellt, nur für Stufe 2 reaktivierbar (30.10.2026)
 
 Die IT/Verwaltung wies darauf hin, dass der bisherige globale `FLEX_VERFUEGBAR`-
